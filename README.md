@@ -1,4 +1,4 @@
 GeoKnowGeneatorUI
 =================
 
-A skeleton UI for GeoKnow Generator Applications
+A skeleton UI for GeoKnow Generator Applications. It uses Vaadin framework. 
