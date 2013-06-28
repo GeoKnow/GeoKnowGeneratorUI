@@ -23,6 +23,19 @@ body{
 	font-family: 'Droid Sans','Helvetica','Arial', sans-serif;
 }
 
+h2{
+	color: #BC1B8B;
+	font-size:1em;
+    font-weight: bold;
+    border-color: #84BB41;
+    border-style: solid none;
+    border-width: 1px;
+    line-height: 1.091;
+    margin-bottom: 0.667em;
+    padding: 0.407em 0;
+	font-family: 'Droid Sans','Helvetica','Arial',sans-serif;
+}
+
 /* Set heights of the components to fill the browser */
 
 .v-ui{
@@ -44,7 +57,7 @@ body{
 }
 
 .v-link-logo{
-	margin-left:10px;
+	margin:5px 0 0 10px;
 }
 
 .v-slot-workspace{
@@ -86,28 +99,48 @@ body{
     z-index: 1;
 }
 
+.welcomeLogo {
+	margin-top:5px;
+}
+
 .logo .v-icon {
    height: 75px;
 }
 
+.homeb{
+	margin-top:10px;
+	margin-right:37px;
+	font-size: 0.813em;
+	text-transform: uppercase;
+	border-bottom:2px;
+}
+
+.v-button-link .v-button-caption{
+	text-decoration:none;
+	color:black;
+}
+
+.homeb:hover{border-bottom:1px solid black}
+
+.introV{
+	margin:0 40px 0 45px;
+}
+
+/*
 .slagzin_image {
     font-family:'Droid Sans', Arial, sans-serif; font-weight:normal; font-style:normal;
 	font-size:1.4em;
     line-height:1.5;
     background: url("/GeoKnow/VAADIN/themes/geoknow/app_images/geoknow-logo.png");
 }
-
+*/
 
 .eugif {
-   height: 50px
+   margin-right:40px;
 }
 
 .v-icon {
 	height: 75px
-}
-
-.v-textarea-readonly {
-	width: 1200px
 }
 
 .second {
@@ -177,10 +210,6 @@ body{
 	font-weight:bold;
 }
 
-.menubarContainer {
-    
-}
-
 .v-slot-menubarContainer{
 	border-bottom: 1px solid #84BB41;
     border-top: 1px solid #84BB41;
@@ -213,9 +242,43 @@ body{
     color: #84BB41;
 }
 
+.v-menubar .v-menubar-menuitem-selected,
+.v-menubar-submenu .v-menubar-menuitem-selected {
+	background: #FFF;
+	color: #84BB41;
+	text-shadow: none;
+	font-weight:bold;
+}
+
+.v-menubar-submenu {
+	background: #FFF;
+	border: none;
+	padding: 4px 0;
+	font-weight:bold;
+	color: #BC1B8B;
+}
+
+.v-menubar-popup {
+	background:none;
+	-moz-box-shadow: inset 0 0 5px #888;
+	-webkit-box-shadow: inset 0 0 5px#888;
+	box-shadow: inner 0 0 0 #888;
+}
+
+.v-menubar .v-menubar-menuitem-selected, .geoknow .v-menubar-submenu .v-menubar-menuitem-selected {
+	background-color: #FFF;
+	border-left: solid 1px #84BB41;
+	border-right: solid 1px #84BB41;
+	text-shadow: none;
+	background-image: none;
+	-moz-box-shadow: inset 0 0 5px #888;
+	-webkit-box-shadow: inset 0 0 5px#888;
+	box-shadow: inner 0 0 0 #888;
+}
+
 .v-menubar-menuitem-caption { 
     	font-family:"Droid Sans", sans-serif; 
-	font-size: 12px;
+		font-size: 12px;
 }
   
 }
