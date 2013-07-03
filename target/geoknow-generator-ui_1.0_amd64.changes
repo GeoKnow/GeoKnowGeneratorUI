@@ -1,0 +1,37 @@
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
+
+Format: 1.8
+Date: Wed, 03 Jul 2013 12:27:42 +0200
+Source: geoknow-generator-ui
+Binary: geoknow-generator-ui
+Architecture: all
+Version: 1.0
+Distribution: lod2
+Urgency: low
+Maintainer: Vadim Zaslawski <vadim.zaslawski@ontos.com>
+Changed-By: Vadim Zaslawski <vadim.zaslawski@ontos.com>
+Description: 
+ geoknow-generator-ui - <insert up to 60 chars description>
+Changes: 
+ geoknow-generator-ui (1.0) lod2; urgency=low
+ .
+   * Initial Release.
+Checksums-Sha1: 
+ ab9eac75f3dd01371c6d01c73005e350b4bf4c3d 1978 geoknow-generator-ui_1.0_all.deb
+Checksums-Sha256: 
+ 54fe63d5efbd0075b97f3ab0e2fb42d3bc8c36b05fe19e3f88a550c543636e7b 1978 geoknow-generator-ui_1.0_all.deb
+Files: 
+ 7552d5c1742053dfbff6536b5dffe3b7 1978 unknown extra geoknow-generator-ui_1.0_all.deb
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQEcBAEBAgAGBQJR0/8SAAoJEE40y91kuOF2aNAH/j0aQSbVk2M/aiDK6hLvGlp3
+1hACzhgREiU7qQ+mGJUdk995Qmj2GU64BhbJNrL0ER8HojTfDnQO/6JWZf1FqgPs
+hrgvnG7moeXULpr/d85YNNEG+6KhIhQ/tIGotTIrdk349gUkQxlvCxdrz/Hcugyp
+eASxyIS7Mkrvpo+PxhRkorOmmEiAQ1QTblqPMGZ/Oq6i6iyMp8fHF00s79Ku/J9b
+LvTTe56uAKvUdjp2xtywq0y3xI67B6R/Xe8C3jY5jwxO6nD8BpFoiWTk+fjMK5CA
+GCTnSoMH7lv9cke1+slovktnT7F3ySDaKmIZ76fhbYKslsff9Dd+8bXm31zrENE=
+=mzVI
+-----END PGP SIGNATURE-----

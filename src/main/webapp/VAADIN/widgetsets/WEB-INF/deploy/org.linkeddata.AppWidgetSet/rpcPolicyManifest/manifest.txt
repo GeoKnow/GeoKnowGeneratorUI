@@ -1,0 +1,2 @@
+# Module org.linkeddata.AppWidgetSet
+# RPC service class, partial path of RPC policy file
