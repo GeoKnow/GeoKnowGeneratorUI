@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>GeoKnow Generator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="description" content=""/>
+    <meta name="author" content=""/>
+
+    <!-- Le styles -->
+    <link href="css/bootstrap.css" rel="stylesheet"/>
+    <link href="css/font-awesome.css" rel="stylesheet"/>
+    <style>
+      body {
+        padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+      }
+    </style>
+    <link href="css/bootstrap-responsive.css" rel="stylesheet"/>
+    <link href="css/app.css" rel="stylesheet"/>
+    <link href="css/smoothness/jquery-ui-1.10.1.custom.min.css" rel="stylesheet"/>
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le fav and touch icons -->
+    <!-- <link rel="shortcut icon" href="../assets/ico/favicon.ico"/>
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="img/ico/apple-touch-icon-144-precomposed.png"/>
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="img/ico/apple-touch-icon-114-precomposed.png"/>
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="img/ico/apple-touch-icon-72-precomposed.png"/>
+    <link rel="apple-touch-icon-precomposed" href="img/ico/apple-touch-icon-57-precomposed.png"/>
+ -->  
+  </head>
+
+  <body ng-cloak ng-app="app">
+
+    <div class="navbar navbar-fixed-top">
+        <div class="navbar-inner">
+            <div class="container">
+                <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </a>
+                <a class="geoknowbrand" href="">
+                  <img src="img/geoknow-logo.png" alt="GeoKnow logo" />
+                </a>
+                <div class="nav-collapse">
+                    <ul class="nav" nav-menu>
+                        <li class="active"><a href="#/home"><i class="icon-home"></i> Home </a></li>
+                        <li><a href="#/settings"><i class="icon-th-list"></i> Settings </a></li>
+                        <li><a href="#/login"><i class="icon-tags" ></i> MyAccount </a></li>
+                        <li><a href="#/about"><i class="icon-info-sign"></i> About</a></li>
+                    </ul>
+                </div><!--/.nav-collapse -->
+          
+                <form class="navbar-form form-search pull-right" method="POST" action="" accept-charset="UTF-8">
+                <div class="input-append">
+                    <input type="text" name="q" class="span2 search-query" placeholder="Something">
+                    <button type="submit" class="btn">Search</button>
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
+ 
+    
+    <div ng-view></div>
+
+    <!--  <div id="editor" ace-editor></div>-->
+    <alert id="error"></alert>  
+
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <!-- <script src="lib/jquery/jquery-1.7.2.min.js"></script> -->
+    
+    <script src="lib/jquery/jquery-1.9.1.js"></script>
+    <script src="lib/jquery/jquery-ui-1.10.1.custom.min.js"></script>
+     
+<!--     <script src="lib/ace/ace.js" charset="utf-8"></script> -->
+    <script src="https://apis.google.com/js/api.js"></script>
+    <script src="https://www.google.com/jsapi"></script>
+    <script src="lib/bootstrap/bootstrap.js"></script>
+    <script src="lib/angular/angular.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/services.js"></script>
+    <script src="js/controllers.js"></script>
+    <script src="js/filters.js"></script>
+    <script src="js/directives.js"></script>
+
+  </body>
+</html>
