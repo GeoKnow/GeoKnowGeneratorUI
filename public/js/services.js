@@ -3,16 +3,21 @@
 
 var module = angular.module('app.services', []);
 
-app.factory('SettingsService', function($http) {
+var api = "http://localhost:8080/geoknow-generator-core-0.0.1-SNAPSHOT/api/"
+
+module.factory('SettingsService', function($http) {
   var SettingsService = {
-    async: function() {
+    getSettings: function() {
       // $http returns a promise, which has a then function, which also returns a promise
-      var promise = $http.json("http://localhost:8080/geoknow-generator-core-0.0.1-SNAPSHOT/api/settings").then(function (response) {
-        // The then function here is an opportunity to modify the response
-        console.log(response);
-        // The return value gets picked up by the then in the controller.
-        return response.data;
-      });
+      var promise = $http
+          //.jsonp("http://public-api.wordpress.com/rest/v1/sites/wtmpeachtest.wordpress.com/posts?callback=JSON_CALLBACK")
+          .jsonp( api + "settings?callback=JSON_CALLBACK")
+          .success(function (data, status, headers, config) {
+             alert(data.found);
+          })
+          .error(function (data, status, headers, config) {
+            return {"status": false};
+          });
       // Return the promise to the controller
       return promise;
     }

@@ -6,8 +6,8 @@ var module = angular.module('app.directives', []);
 return attributes of a directive: 
 restrict:'E' // A=Attribute, C=Class Name, E=Element, M=HTML
 */
-
-directives.directive('navMenu', function($location) {
+/*
+module.directive('navMenu', function($location) {
 	return {
         restrict: 'A',
         link: function(scope, element) {
@@ -30,7 +30,7 @@ directives.directive('navMenu', function($location) {
         }
 
     };
-});
+});*/
 
 /*
 module.directive('autoComplete', 

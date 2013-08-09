@@ -3,14 +3,16 @@
 function LoginCtrl() {}
 LoginCtrl.$inject = [];
 
-function SettingsCtrl() {
-
-	SettingsService.async().then(function(d) {
-    	$scope.data = d;
-  	});
+function SettingsCtrl(scope, service) {
+	scope.settings = "";
+	service.getSettings().then(
+		function(promise) {
+    		scope.settings = angular.fromJson(promise);
+  		}, 
+  		function(reason) {console.log("Error SettingsCtrl"); throw reason });
 }
 
-SettingsCtrl.$inject = [];
+SettingsCtrl.$inject = ['$scope', 'SettingsService'];
 
 
 // app.controller('MainCtrl', function( myService,$scope) {
