@@ -6,11 +6,13 @@ TODO: complete this
 
 ## Install
 
-	npm install restify
+The actual version of Node.js is required.
+For installation instructions see:
+https://github.com/joyent/node/wiki/Installing-Node.js-via-package-manager
 
 ## Run
 
-	node app.js 
+	nodejs app.js 
 
 ## Contact
 

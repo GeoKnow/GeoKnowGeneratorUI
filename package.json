@@ -1,8 +1,9 @@
 {
-  "name": "geoknow-generator-ui"i,
-  "version": "0.1",
-  "dependencies": {
-    "restify": "~2.4.1",
-    "less-middleware": "~0.1.11"
-  }
+	"name": "geoknow-generator-ui",
+	"version": "0.1.0",
+	"dependencies":
+	{
+		"restify": "~2.4.1",
+		"less-middleware": "~0.1.11"
+	}
 }
