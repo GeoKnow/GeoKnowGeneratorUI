@@ -10,11 +10,6 @@
     <!-- Le styles -->
     <link href="css/bootstrap.css" rel="stylesheet"/>
     <link href="css/font-awesome.css" rel="stylesheet"/>
-    <style>
-      body {
-        padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
-      }
-    </style>
     <link href="css/bootstrap-responsive.css" rel="stylesheet"/>
     <link href="css/app.css" rel="stylesheet"/>
     <link href="css/smoothness/jquery-ui-1.10.1.custom.min.css" rel="stylesheet"/>
@@ -34,39 +29,67 @@
   </head>
 
   <body ng-cloak ng-app="app">
-
-    <div class="navbar navbar-fixed-top">
-        <div class="navbar-inner">
+	
+	<div id="masthead">
+	<a class="geoknowbrand" href="http://www.geoknow.eu" target="blank">
+                  <img src="img/geoknow-logo.png" alt="GeoKnow logo" />
+                </a>
+    <a class="eufp7" href="">
+                  <img src="img/eu-logos.jpg" alt="EU FP7" />
+                </a>
+               </div>
+    <div class="navbar" bs-navbar>
             <div class="container">
                 <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </a>
-                <a class="geoknowbrand" href="">
-                  <img src="img/geoknow-logo.png" alt="GeoKnow logo" />
-                </a>
+                
                 <div class="nav-collapse">
                     <ul class="nav" nav-menu>
-                        <li class="active"><a href="#/home"><i class="icon-home"></i> Home </a></li>
-                        <li><a href="#/settings"><i class="icon-th-list"></i> Settings </a></li>
-                        <li><a href="#/login"><i class="icon-tags" ></i> MyAccount </a></li>
-                        <li><a href="#/about"><i class="icon-info-sign"></i> About</a></li>
+                        <li><a href="#/home"> Home </a></li>
+                        <li><a href="#/settings"> Settings </a></li>
+                        <li><a href="#/login"> Account </a></li>
+                        <li><a href="#/about"> About</a></li>
                     </ul>
                 </div><!--/.nav-collapse -->
-          
-                <form class="navbar-form form-search pull-right" method="POST" action="" accept-charset="UTF-8">
+            </div>
+    </div>
+    <div class="lower-navbar">
+    	<form class="navbar-form form-search pull-right" method="POST" action="" accept-charset="UTF-8">
                 <div class="input-append">
                     <input type="text" name="q" class="span2 search-query" placeholder="Something">
                     <button type="submit" class="btn">Search</button>
                 </div>
                 </form>
-            </div>
-        </div>
     </div>
  
+ 	<div class="span3 bs-docs-sidebar">
+      <ul class="nav nav-list bs-docs-sidenav animated affix">
+        <li onclick="expandMenu('submenu-0')"><a href="">Extraction and Loading</a></li>
+        	<ul id="submenu-0" class="nav nav-list submenu" hidden="hidden">
+        		<li class="submenu-li"><a href="#/settings">Upload RDF file or RDF from URL</a></li>
+        		<li class="submenu-li"><a href="#modal">Load RDF data from publicdata.eu</a></li>
+        		<li class="submenu-li"><a href="#modal">Extract RDF from XML</a></li>
+        		<li class="submenu-li"><a href="#modal">Extract RDF from SQL</a></li>
+        	</ul>
+        <li onclick="expandMenu('submenu-1')"><a href="">Querying and Exploration</a></li>
+        	<ul id="submenu-1" class="nav nav-list submenu" hidden="hidden" nav-menu>
+        		<li class="submenu-li"><a href="#/geospatial">Geospatial Exploration</a></li>
+        	</ul>
+        <li onclick="expandMenu('submenu-2')"><a href="">Authoring</a></li>
+        	<ul id="submenu-2" class="nav nav-list submenu" hidden="hidden" nav-menu>
+        		<li class="submenu-li"><a href="#/ontowiki">OntoWiki</a></li>
+        	</ul>
+        <li class=""><a href="#tab">Linking</a></li>
+        <li><a href="#dropdown">Enriching and Data Cleaning</a></li>
+        <li class=""><a href="#navbar">Services</a></li>
+        <li class=""><a href="#tab">Configuration</a></li>
+      </ul>
+    </div>
     
-    <div ng-view></div>
+    <div id="workspace" ng-view></div>
 
     <!--  <div id="editor" ace-editor></div>-->
     <alert id="error"></alert>  
@@ -89,6 +112,27 @@
     <script src="js/controllers.js"></script>
     <script src="js/filters.js"></script>
     <script src="js/directives.js"></script>
-
+    <script src="lib/osm/OpenLayers.js"></script>
+	<script>
+	
+		$( ".navbar li" ).click(function() {
+			$('.nav-list').find('li').css('background', 'none');
+			$('.nav-list').find('a').css('color', '#BC1B8B');
+			$('.nav-list').find('ul[id*=submenu]').hide();
+		});
+	
+		$( ".nav-list li" ).click(function() {
+			$('.nav-list').find('li').css('background', 'none');
+			$('.nav-list').find('a').css('color', '#BC1B8B');
+			$(this).css('background-color', '#EF7D00');
+			$(this).find('a').css('color', '#FFFFFF');
+		});
+		
+		function expandMenu(menu){
+			$('.nav-list').find('ul[id*=submenu]').hide();
+			$('#'+menu).toggle();
+		}
+		
+	</script>
   </body>
 </html>

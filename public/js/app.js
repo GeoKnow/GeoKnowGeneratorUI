@@ -18,5 +18,13 @@ angular.module('app', ['app.services', 'app.directives'])
             templateUrl:'partials/about.html', 
             controller:LoginCtrl 
         })
+        .when('/geospatial', {
+            templateUrl:'partials/geospatial.html', 
+            controller:openmap 
+        })
+        .when('/ontowiki', {
+            templateUrl:'partials/ontowiki.html', 
+            controller:LoginCtrl 
+        })
         .otherwise({redirectTo:'/home'});
 }]);
