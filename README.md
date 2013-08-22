@@ -6,11 +6,7 @@ TODO: complete this
 
 ## Install
 
-	npm install restify
-
-## Run
-
-	node app.js 
+	Copy src/main/webapp contents to a server of your choice
 
 ## Contact
 
