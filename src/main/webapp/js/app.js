@@ -15,7 +15,6 @@ app.config(function($routeSegmentProvider, $routeProvider) {
             .when('/settings/datasets', 'settings.datasets')
             .when('/settings/components', 'settings.components')
             .when('/settings/preferences', 'settings.preferences')
-            .when('/about', 'about')
             .when('/extraction-and-loading/rdf-external', 'default.rdf-external')
             .when('/extraction-and-loading/rdf-local', 'default.rdf-local')
             .when('/extraction-and-loading/xml', 'default.xml')
