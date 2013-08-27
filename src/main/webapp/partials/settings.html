@@ -1,9 +1,36 @@
-<div class="container">
+<div class="container-fluid">
+  <div class="row-fluid">
+  	<div class="span3"> 
+	    
+			<div ng-controller="SettingsMenuCtrl">
+			  <ul class="nav nav-tabs nav-stacked">  
+					<li ng-repeat="item in items">
+						<a href="{{item.route}}">{{item.name}}</a>
+					</li>  
+				</ul>  
+			</div>
+		</div>
 
-  <div class="row">
-    <div class="span9">
-    	Settings
+	  <div class="span6" app-view-segment="1">
+	  	
+	  <h2>General Settings</h2>
+	   
+		<form class="form-horizontal">
 
- 	  </div>
+		  <div class="control-group">
+		    <label class="control-label" for="inputPassword">Export Current Settings</label>
+		    <div class="controls">
+		      <label class="radio ">
+					  <input type="radio" name="optionsRadios" id="optionsRadios1" value="xml/rdf">RDF/XML</label>
+					<label class="radio ">
+					  <input type="radio" name="optionsRadios" id="optionsRadios2" value="option2">NTriples</label>
+		      <button type="submit" class="btn">Export</button>
+		    </div>
+		  </div>
+		</form>
+
+
+	 
+		</div>
   </div>
 </div>

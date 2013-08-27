@@ -8,8 +8,13 @@ app.config(function($routeSegmentProvider, $routeProvider) {
         $routeSegmentProvider
             // TODO: these routes may have to be loaded from the configuration
             .when('/', 'default')
-            .when('/login','login')
+            .when('/account','account')
             .when('/settings', 'settings')
+            .when('/settings/data-sources', 'settings.data-sources')
+            .when('/settings/graphs', 'settings.graphs')
+            .when('/settings/datasets', 'settings.datasets')
+            .when('/settings/components', 'settings.components')
+            .when('/settings/preferences', 'settings.preferences')
             .when('/about', 'about')
             .when('/extraction-and-loading/rdf-external', 'default.rdf-external')
             .when('/extraction-and-loading/rdf-local', 'default.rdf-local')
@@ -21,8 +26,7 @@ app.config(function($routeSegmentProvider, $routeProvider) {
             .when('/enriching-and-cleaning/geolift', 'default.geolift')
 
             .segment('default', {
-                templateUrl:'partials/default.html', 
-                controller:LoginCtrl })
+                templateUrl:'partials/default.html'})
                 .within()
                     .segment('rdf-local', {
                         templateUrl: 'partials/extraction-and-loading/rdf-local.html'})
@@ -42,11 +46,24 @@ app.config(function($routeSegmentProvider, $routeProvider) {
                         templateUrl: 'partials/linking/limes.html' })
                 .up()
 
-
             .segment('settings', {
                 templateUrl:'partials/settings.html' })
-            .segment('login', {
-                templateUrl:'partials/login.html' })
+                .within()
+                    .segment('graphs', {
+                        templateUrl: 'partials/settings/graphs.html'})
+                    .segment('datasets', {
+                        templateUrl: 'partials/settings/datasets.html'})
+                    .segment('data-sources', {
+                        templateUrl: 'partials/settings/data-sources.html'})
+                    .segment('components', {
+                        templateUrl: 'partials/settings/components.html'})
+                    .segment('preferences', {
+                        templateUrl: 'partials/settings/preferences.html' })
+                .up()
+
+            .segment('account', {
+                templateUrl:'partials/account.html', 
+                controller:LoginCtrl })
             .segment('about', {
                 templateUrl:'partials/about.html' })
             .segment('under-consrtuction', {

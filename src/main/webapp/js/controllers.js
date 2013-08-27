@@ -1,6 +1,19 @@
 'use strict';
 
-function StackCtrl($scope) {
+
+
+function SettingsMenuCtrl($scope) {
+  $scope.oneAtATime = true;
+  // these data can be replaced later with the configuration
+  $scope.items = [
+		{ name: "Data Sources", route:'#/settings/data-sources' },
+  	{ name: "Datasets", route:'#/settings/datasets' },
+  	{ name: "Graphs", route:'#/settings/graphs' },
+  	{ name: "Components", route:'#/settings/components' },
+    { name: "User Preferences",   route:'#/settings/preferences' }];
+}
+
+function StackMenuCtrl($scope) {
   $scope.oneAtATime = true;
   // these data can be replaced later with the configuration
   $scope.groups = [
@@ -37,9 +50,14 @@ function StackCtrl($scope) {
 
 }
 
-
 function LoginCtrl() {}
 LoginCtrl.$inject = [];
+
+
+function SettingsComponentCtrl(scope, service){
+	scope.components = service.getComponents().components;
+}
+SettingsComponentCtrl.$inject = ['$scope', 'SettingsServiceDoomy'];
 
 
 function SettingsCtrl(scope, service) {

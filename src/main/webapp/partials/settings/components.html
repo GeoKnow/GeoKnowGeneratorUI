@@ -1,0 +1,27 @@
+<h2>Components management</h2>
+
+
+<p>Current workbench configuration has integrated the following components.</p>
+
+<table class="table table-striped" ng-controller="SettingsComponentCtrl">
+<thead>
+  <tr>
+  	<th>URI</th>
+    <th>Name</th>
+    <th>Service URL</th>
+    <th>Version</th>
+
+  </tr>
+</thead>
+<tbody>
+  <tr ng-repeat="component in components">
+  	<td>{{component.uri}}</td>
+    <td>{{component.label}}</td>
+    <td>{{component.url}}</td>
+    <td>{{component.version}}</td>
+
+  </tr>
+</tbody>
+</table>
+
+
