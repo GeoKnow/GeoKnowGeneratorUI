@@ -9,17 +9,17 @@ module.factory('SettingsService', function($http) {
   var SettingsService = {
     getSettings: function() {
       // $http returns a promise, which has a then function, which also returns a promise
-      var promise = $http
-          //.jsonp("http://public-api.wordpress.com/rest/v1/sites/wtmpeachtest.wordpress.com/posts?callback=JSON_CALLBACK")
-          .jsonp( api + "settings?callback=JSON_CALLBACK")
-          .success(function (data, status, headers, config) {
-             alert(data.found);
-          })
-          .error(function (data, status, headers, config) {
-            return {"status": false};
-          });
-      // Return the promise to the controller
-      return promise;
+      // var promise = $http
+      //     //.jsonp("http://public-api.wordpress.com/rest/v1/sites/wtmpeachtest.wordpress.com/posts?callback=JSON_CALLBACK")
+      //     .jsonp( api + "settings?callback=JSON_CALLBACK")
+      //     .success(function (data, status, headers, config) {
+      //        alert(data.found);
+      //     })
+      //     .error(function (data, status, headers, config) {
+      //       return {"status": false};
+      //     });
+      // // Return the promise to the controller
+      // return promise;
     }
   };
   return SettingsService;

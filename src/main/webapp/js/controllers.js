@@ -1,7 +1,46 @@
 'use strict';
 
+function StackCtrl($scope) {
+  $scope.oneAtATime = true;
+  // these data can be replaced later with the configuration
+  $scope.groups = [
+    {
+      title: "Extraction and Loading",
+      items: [ 
+      	{name: 'Upload RDF file or RDF from URL', route:'#/extraction-and-loading/rdf-local' }, 
+       	{name: 'Load RDF data from publicdata.eu', route:'#/extraction-and-loading/rdf-external' }, 
+        {name: 'Extract RDF from XML', route:'#/extraction-and-loading/xml' }, 
+        {name: 'Extract RDF from SQL', route:'#/extraction-and-loading/sql' }]
+    },
+    {
+      title: "Querying and Exploration",
+      items: [ 
+      	{name: 'Geospatial Exploration', route:'#/querying-and-exploration/geospatial' }]
+    },
+    {
+      title: "Authoring",
+      items: [ 
+      	{name: 'OntoWiki', route:'#/authoring/ontowiki' }]
+    },
+    {
+      title: "Linking",
+      items: [ 
+      	{name: 'LIMES', route:'#/linking/limes' }]
+    }, 
+    {
+    	title: "Enriching and Data Cleaning", 
+    	items: [ 
+      	{name: 'GeoLift', route:'#/enriching-and-cleaning/geolift' }]
+    }
+
+  ];
+
+}
+
+
 function LoginCtrl() {}
 LoginCtrl.$inject = [];
+
 
 function SettingsCtrl(scope, service) {
 	scope.settings = "";
@@ -11,15 +50,8 @@ function SettingsCtrl(scope, service) {
   		},
   		function(reason) {console.log("Error SettingsCtrl"); throw reason });
 }
-
 SettingsCtrl.$inject = ['$scope', 'SettingsService'];
 
-// app.controller('MainCtrl', function( myService,$scope) {
-//   // Call the async method and then do stuff with what is returned inside our own then function
-//   myService.async().then(function(d) {
-//     $scope.data = d;
-//   });
-// });
 
 // DELETE //
 function googlemap($scope, $timeout, $log){

@@ -48,48 +48,17 @@
                 
                 <div class="nav-collapse">
                     <ul class="nav" nav-menu>
-                        <li><a href="#/home"> Home </a></li>
-                        <li><a href="#/settings"> Settings </a></li>
-                        <li><a href="#/login"> Account </a></li>
-                        <li><a href="#/about"> About</a></li>
+                        <li ng-class="{active: $routeSegment.startsWith('default')}" ><a href="#/"> Home </a></li>
+                        <li ng-class="{active: $routeSegment.startsWith('settings')}"><a href="#/settings"> Settings </a></li>
+                        <li ng-class="{active: $routeSegment.startsWith('login')}"><a href="#/login"> Account </a></li>
+                        <li ng-class="{active: $routeSegment.startsWith('about')}"><a href="#/about"> About</a></li>
                     </ul>
                 </div><!--/.nav-collapse -->
             </div>
     </div>
-    <div class="lower-navbar">
-    	<form class="navbar-form form-search pull-right" method="POST" action="" accept-charset="UTF-8">
-                <div class="input-append">
-                    <input type="text" name="q" class="span2 search-query" placeholder="Something">
-                    <button type="submit" class="btn">Search</button>
-                </div>
-                </form>
-    </div>
- 
- 	<div class="span3 bs-docs-sidebar">
-      <ul class="nav nav-list bs-docs-sidenav animated affix">
-        <li onclick="expandMenu('submenu-0')"><a href="">Extraction and Loading</a></li>
-        	<ul id="submenu-0" class="nav nav-list submenu" hidden="hidden">
-        		<li class="submenu-li"><a href="#/settings">Upload RDF file or RDF from URL</a></li>
-        		<li class="submenu-li"><a href="#modal">Load RDF data from publicdata.eu</a></li>
-        		<li class="submenu-li"><a href="#modal">Extract RDF from XML</a></li>
-        		<li class="submenu-li"><a href="#modal">Extract RDF from SQL</a></li>
-        	</ul>
-        <li onclick="expandMenu('submenu-1')"><a href="">Querying and Exploration</a></li>
-        	<ul id="submenu-1" class="nav nav-list submenu" hidden="hidden" nav-menu>
-        		<li class="submenu-li"><a href="#/geospatial">Geospatial Exploration</a></li>
-        	</ul>
-        <li onclick="expandMenu('submenu-2')"><a href="">Authoring</a></li>
-        	<ul id="submenu-2" class="nav nav-list submenu" hidden="hidden" nav-menu>
-        		<li class="submenu-li"><a href="#/ontowiki">OntoWiki</a></li>
-        	</ul>
-        <li class=""><a href="#tab">Linking</a></li>
-        <li><a href="#dropdown">Enriching and Data Cleaning</a></li>
-        <li class=""><a href="#navbar">Services</a></li>
-        <li class=""><a href="#tab">Configuration</a></li>
-      </ul>
-    </div>
-    
-    <div id="workspace" ng-view></div>
+
+    <div id="contents" app-view-segment="0"></div>
+  <!-- THIS IS REPLACED BY THE LINE ABOVE TO USE SEGMENTS <div id="workspace" ng-view></div> -->
 
     <!--  <div id="editor" ace-editor></div>-->
     <alert id="error"></alert>  
@@ -102,9 +71,9 @@
     <script src="lib/jquery/jquery-1.9.1.js"></script>
     <script src="lib/jquery/jquery-ui-1.10.1.custom.min.js"></script>
      
-<!--     <script src="lib/ace/ace.js" charset="utf-8"></script> -->
+<!--     <script src="lib/ace/ace.js" charset="utf-8"></script> 
     <script src="https://apis.google.com/js/api.js"></script>
-    <script src="https://www.google.com/jsapi"></script>
+    <script src="https://www.google.com/jsapi"></script>-->
     <script src="lib/bootstrap/bootstrap.js"></script>
     <script src="lib/angular/angular.js"></script>
     <script src="js/app.js"></script>
@@ -113,26 +82,8 @@
     <script src="js/filters.js"></script>
     <script src="js/directives.js"></script>
     <script src="lib/osm/OpenLayers.js"></script>
-	<script>
-	
-		$( ".navbar li" ).click(function() {
-			$('.nav-list').find('li').css('background', 'none');
-			$('.nav-list').find('a').css('color', '#BC1B8B');
-			$('.nav-list').find('ul[id*=submenu]').hide();
-		});
-	
-		$( ".nav-list li" ).click(function() {
-			$('.nav-list').find('li').css('background', 'none');
-			$('.nav-list').find('a').css('color', '#BC1B8B');
-			$(this).css('background-color', '#EF7D00');
-			$(this).find('a').css('color', '#FFFFFF');
-		});
-		
-		function expandMenu(menu){
-			$('.nav-list').find('ul[id*=submenu]').hide();
-			$('#'+menu).toggle();
-		}
-		
-	</script>
+    <script src="lib/ui-bootstrap/ui-bootstrap-tpls-0.5.0.js"></script>
+    <script src="lib/angular-route-segment/angular-route-segment.min.js"></script>
+
   </body>
 </html>

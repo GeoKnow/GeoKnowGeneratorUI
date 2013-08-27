@@ -2,6 +2,7 @@
 
 var module = angular.module('app.directives', []);
 
+
 /* directives are actions to happens when an event is triggered
 return attributes of a directive: 
 restrict:'E' // A=Attribute, C=Class Name, E=Element, M=HTML
