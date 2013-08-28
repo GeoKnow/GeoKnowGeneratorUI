@@ -16,6 +16,8 @@ app.config(function($routeSegmentProvider, $routeProvider) {
             .when('/extraction-and-loading/xml', 'default.xml')
             .when('/extraction-and-loading/sql', 'default.sql')
             .when('/querying-and-exploration/geospatial', 'default.geospatial')
+            .when('/querying-and-exploration/googlemap', 'default.googlemap')
+            .when('/querying-and-exploration/facete', 'default.facete')
             .when('/authoring/ontowiki', 'default.ontowiki')
             .when('/linking/limes', 'default.limes')
             .when('/enriching-and-cleaning/geolift', 'default.geolift')
@@ -33,7 +35,11 @@ app.config(function($routeSegmentProvider, $routeProvider) {
                     .segment('sql', {
                         templateUrl: 'partials/extraction-and-loading/sql.html' })
                     .segment('geospatial', {
-                        templateUrl: 'partials/querying-and-exploration/geospatial.html' })
+                        templateUrl: 'partials/querying-and-exploration/geospatial.html'})
+                    .segment('googlemap', {
+                        templateUrl: 'partials/querying-and-exploration/googlemap.html'})
+                    .segment('facete', {
+                        templateUrl: 'partials/querying-and-exploration/facete.html'})
                     .segment('ontowiki', {
                         templateUrl: 'partials/authoring/ontowiki.html' })
                     .segment('geolift', {

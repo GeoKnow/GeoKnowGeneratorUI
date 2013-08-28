@@ -15,7 +15,9 @@ function StackCtrl($scope) {
     {
       title: "Querying and Exploration",
       items: [ 
-      	{name: 'Geospatial Exploration', route:'#/querying-and-exploration/geospatial' }]
+      	{name: 'Geospatial Exploration', route:'#/querying-and-exploration/geospatial' },
+      	{name: 'Google Maps', route:'#/querying-and-exploration/googlemap' },
+      	{name: 'Facete', route:'#/querying-and-exploration/facete' }]
     },
     {
       title: "Authoring",
@@ -37,6 +39,23 @@ function StackCtrl($scope) {
 
 }
 
+var ModalWindow = function ($scope) {
+
+	  $scope.open = function () {
+	    $scope.shouldBeOpen = true;
+	  };
+
+	  $scope.close = function () {
+	    $scope.closeMsg = 'I was closed at: ' + new Date();
+	    $scope.shouldBeOpen = false;
+	  };
+
+	  $scope.opts = {
+	    backdropFade: true,
+	    dialogFade:true
+	  };
+
+	};
 
 function LoginCtrl() {}
 LoginCtrl.$inject = [];
@@ -53,8 +72,7 @@ function SettingsCtrl(scope, service) {
 SettingsCtrl.$inject = ['$scope', 'SettingsService'];
 
 
-// DELETE //
-function googlemap($scope, $timeout, $log){
+app.controller('GoogleMap', function GoogleMap($scope, $timeout, $log){
 
 	// Enable the new Google Maps visuals until it gets enabled by default.
     // See http://googlegeodevelopers.blogspot.ca/2013/05/a-fresh-new-look-for-maps-api-for-all.html
@@ -64,15 +82,15 @@ function googlemap($scope, $timeout, $log){
 
 	    position: {
 	      coords: {
-	        latitude: 45,
-	        longitude: -73
+	        latitude: 47.1267762,
+	        longitude: 7.2424403
 	      }
 	    },
 
 		/** the initial center of the map */
 		centerProperty: {
-			latitude: 45,
-			longitude: -73
+			latitude: 47.1267762,
+	        longitude: 7.2424403
 		},
 
 		/** the initial zoom level of the map */
@@ -80,8 +98,8 @@ function googlemap($scope, $timeout, $log){
 
 		/** list of markers to put in the map */
 		markersProperty: [ {
-				latitude: 45,
-				longitude: -74
+				latitude: 47.1267762,
+		        longitude: 7.2424403
 			}],
 
 		// These 2 properties will be set when clicking on the map
@@ -97,10 +115,9 @@ function googlemap($scope, $timeout, $log){
 		}
 	});
 
-}
-//DELETE //
+});
 
-function openmap($scope, $timeout, $log){
+app.controller('OpenMap', function OpenMap($scope, $timeout, $log){
 
 	 var map = new OpenLayers.Map( 'map', {controls:[
 	                                             new OpenLayers.Control.Navigation(),
@@ -117,5 +134,39 @@ function openmap($scope, $timeout, $log){
 	                                              map.getProjectionObject()
 	                                          ), 13 
 	                                      );
+});
 
-}
+var OpenMapWindow = function OpenMapWindow($scope, $timeout, $log) {
+	
+	var map = new OpenLayers.Map( 'map', {controls:[
+		                                             new OpenLayers.Control.Navigation(),
+		                                             new OpenLayers.Control.PanZoomBar(),
+		                                             //new OpenLayers.Control.LayerSwitcher(),
+		                                             new OpenLayers.Control.Attribution()],
+		                                             units: 'm',
+		                                         });
+		                                      var layer = new OpenLayers.Layer.OSM( "Biel/Bienne Map");
+		                                      map.addLayer(layer);
+		                                      map.setCenter(
+		                                          new OpenLayers.LonLat(7.25 , 47.133333).transform(
+		                                              new OpenLayers.Projection("EPSG:4326"),
+		                                              map.getProjectionObject()
+		                                          ), 13 
+		                                      );
+	};
+	
+var GoogleMapWindow = function ($scope, $timeout, $log) {
+		
+			var map;
+			
+			  var mapOptions = {
+			    zoom: 14,
+			    center: new google.maps.LatLng(47.126776, 7.24),
+			    mapTypeId: google.maps.MapTypeId.ROADMAP
+			  };
+			  
+			  map = new google.maps.Map(document.getElementById('map'),
+			      mapOptions);
+			
+		};
+

@@ -1,5 +1,29 @@
 /* app css stylesheet */
 
+html, body{
+	height:100%;
+}
+
+#contents { 
+    height: 100%;
+}
+
+#contents {
+    height: 100%;
+}
+
+div[class*='fluid']{
+	height:100%;
+}
+
+div[class*='span']{
+	height:100%;
+}
+
+div[class*='ng-scope']{
+	height:100%;
+}
+
 /* Masthead - Logos */
 
 #masthead{
@@ -127,7 +151,6 @@
 	/*background: none;*/
 }
 
-
 /* Workspace & elements - Map */
 /*
 #workspace{
@@ -153,13 +176,32 @@
 */
 /* Geospatial page */
 
-/*#map{
+#map{
 	width:100%;
 	height:100%;
 }
 
+/* OntoWiki */
+
 #ow-frame{
+	  position: absolute;
+	  top: 0;
+	  height: 100%;
+	  width: 100%;
+}
+
+.modal.fade.in {
 	width:100%;
 	height:100%;
+	margin:0;
+	top:0;
+	left:0;
 }
-*/
+
+.modal-body {
+	position: relative;
+    max-height: 82%;
+    min-height: 82%;
+    overflow-y: auto;
+    padding: 15px;
+}

@@ -1,1 +1,14 @@
-limes.html
+<div ng-controller="ModalWindow">
+    <button class="btn" ng-click="open()">Open me!</button>
+    <div modal="shouldBeOpen" close="close()" options="opts">
+        <div class="modal-header">
+            <h4>LIMES</h4>
+        </div>
+        <div class="modal-body">
+            <iframe id="ow-frame" src="http://139.18.2.136:8080/SAIM"></iframe>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-warning cancel" ng-click="close()">Close</button>
+        </div>
+    </div>
+</div>
