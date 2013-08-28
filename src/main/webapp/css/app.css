@@ -207,12 +207,9 @@ div[class*='ng-scope']{
 }
 
 .menu{
-    position: fixed;               
-    top: 50px;
+    position: fixed;
     left: 0;
-    height:200px;
-    width: 100px;
-    background:gray;
+    width: 15%;
     
     -webkit-transition: all 500ms ;
     -moz-transition: all 500ms ;
@@ -222,5 +219,5 @@ div[class*='ng-scope']{
 }
 
 .menu.close{
-  left:-75px;
+  left:-14%;
 }
