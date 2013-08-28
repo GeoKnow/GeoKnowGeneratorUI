@@ -1,7 +1,24 @@
+<div class="span3">
+  <div ng-controller="CollapseDemoCtrl">
+	    	<div collapse="isCollapsed">
+			<div ng-controller="StackMenuCtrl">
+			  <accordion>
+			    <accordion-group heading="{{group.title}}" ng-repeat="group in groups">
+			    	<ul>
+			      	<li ng-repeat="item in group.items">
+								<a href="{{item.route}}">{{item.name}}</a>
+			      	</li>
+						</ul>
+			    </accordion-group>
+			  </accordion>
+			</div>
+			</div>
+			<button class="btn" ng-click="isCollapsed = !isCollapsed">Toggle collapse</button>
+		</div>
+	</div>
 
-
-<div class="container-fluid">
-  <div class="row-fluid">
+<div class="container">
+  <!--  <div class="row-fluid">
   	<div class="span3"> 
 	    
 			<div ng-controller="StackMenuCtrl">
@@ -16,7 +33,7 @@
 			  </accordion>
 			</div>
 		</div>
-
+-->
 	  <div class="span9">
 	  	<div app-view-segment="1">
  		 <p>
@@ -39,8 +56,8 @@
 
 	  	</div>
 	   
-		</div>
-  </div>
+		<!-- </div>
+  </div> -->
 </div>
 
 
