@@ -205,3 +205,22 @@ div[class*='ng-scope']{
     overflow-y: auto;
     padding: 15px;
 }
+
+.menu{
+    position: fixed;               
+    top: 50px;
+    left: 0;
+    height:200px;
+    width: 100px;
+    background:gray;
+    
+    -webkit-transition: all 500ms ;
+    -moz-transition: all 500ms ;
+    -ms-transition: all 500ms ;
+    -o-transition: all 500ms ;
+    transition: all 500ms ;
+}
+
+.menu.close{
+  left:-75px;
+}

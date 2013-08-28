@@ -169,8 +169,4 @@ var GoogleMapWindow = function ($scope, $timeout, $log) {
 			      mapOptions);
 			
 		};
-		
-		function CollapseDemoCtrl($scope) {
-			  $scope.isCollapsed = false;
-			}
 
