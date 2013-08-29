@@ -8,15 +8,15 @@ html, body{
     height: 100%;
 }
 
-#contents {
-    height: 100%;
+.container{
+	width:100%;
 }
 
 div[class*='fluid']{
 	height:100%;
 }
 
-div[class*='span']{
+div[class*='span9']{
 	height:100%;
 }
 
@@ -204,4 +204,30 @@ div[class*='ng-scope']{
     min-height: 82%;
     overflow-y: auto;
     padding: 15px;
+}
+
+.menu{
+    position: fixed;
+    left: 0;
+    width: 15%;
+    
+    -webkit-transition: all 500ms ;
+    -moz-transition: all 500ms ;
+    -ms-transition: all 500ms ;
+    -o-transition: all 500ms ;
+    transition: all 500ms ;
+}
+
+.menu.close{
+  left:-14%;
+}
+
+.menutab{
+	 display: inline-block;
+    -webkit-transform: rotate(270deg);
+    -moz-transform: rotate(270deg);
+    -ms-transform: rotate(270deg);
+    -o-transform: rotate(270deg);
+    transform: rotate(270deg);
+    float:right;
 }

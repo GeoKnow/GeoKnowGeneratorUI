@@ -1,7 +1,22 @@
+<div class="menu" ng-class="{'close' : menuClose}">
+			<div ng-controller="StackMenuCtrl">
+			  <accordion>
+			    <accordion-group heading="{{group.title}}" ng-repeat="group in groups">
+			    	<ul>
+			      	<li ng-repeat="item in group.items">
+								<a href="{{item.route}}">{{item.name}}</a>
+			      	</li>
+						</ul>
+			    </accordion-group>
+			  </accordion>
+			</div>
+				<div class="menutab">
+				<a accordion-transclude="heading" ng-click="menuClose = !menuClose; containerWide = !containerWide" class="accordion-toggle ng-binding">Hide Menu</a>
+				</div>
+			</div>
 
-
-<div class="container-fluid">
-  <div class="row-fluid">
+<div class="container" ng-class="{'wide' : containerWide}">
+  <!--  <div class="row-fluid">
   	<div class="span3"> 
 	    
 			<div ng-controller="StackMenuCtrl">
@@ -16,8 +31,8 @@
 			  </accordion>
 			</div>
 		</div>
-
-	  <div class="span9">
+-->
+	  
 	  	<div app-view-segment="1">
  		 <p>
 	    This is Version 0.1 of the GeoKnow Generator, which comprises a number of tools for managing the life-cycle of Geographic Linked Data. The life-cycle comprises in particular the stages:
@@ -36,12 +51,9 @@
 			<p>
 			You can find further information about the GeoKnow project at <a href="http://geoknow.eu" target="blank">http://geoknow.eu</a>.
 			</p>
-
-	  	</div>
-	   
-		</div>
+	   </div>
+		
   </div>
-</div>
 
 
  	  
