@@ -1,43 +1,65 @@
 'use strict';
 
-function StackMenuCtrl($scope) {
+function SettingsMenuCtrl($scope) {
   $scope.oneAtATime = true;
   // these data can be replaced later with the configuration
-  $scope.groups = [
-    {
-      title: "Extraction and Loading",
-      items: [ 
-      	{name: 'Upload RDF file or RDF from URL', route:'#/extraction-and-loading/rdf-local' }, 
-       	{name: 'Load RDF data from publicdata.eu', route:'#/extraction-and-loading/rdf-external' }, 
-        {name: 'Extract RDF from XML', route:'#/extraction-and-loading/xml' }, 
-        {name: 'Extract RDF from SQL', route:'#/extraction-and-loading/sql' }]
-    },
-    {
-      title: "Querying and Exploration",
-      items: [ 
-      	{name: 'Geospatial Exploration', route:'#/querying-and-exploration/geospatial' },
-      	{name: 'Google Maps', route:'#/querying-and-exploration/googlemap' },
-      	{name: 'Facete', route:'#/querying-and-exploration/facete' }]
-    },
-    {
-      title: "Authoring",
-      items: [ 
-      	{name: 'OntoWiki', route:'#/authoring/ontowiki' }]
-    },
-    {
-      title: "Linking",
-      items: [ 
-      	{name: 'LIMES', route:'#/linking/limes' }]
-    }, 
-    {
-    	title: "Enriching and Data Cleaning", 
-    	items: [ 
-      	{name: 'GeoLift', route:'#/enriching-and-cleaning/geolift' }]
-    }
-
-  ];
-
+  $scope.items = [
+		{ name: "Data Sources", route:'#/settings/data-sources' },
+  	{ name: "Datasets", route:'#/settings/datasets' },
+  	{ name: "Graphs", route:'#/settings/graphs' },
+  	{ name: "Components", route:'#/settings/components' },
+    { name: "User Preferences",   route:'#/settings/preferences' }];
 }
+
+function StackMenuCtrl($scope) {
+	  $scope.oneAtATime = true;
+	  // these data can be replaced later with the configuration
+	  $scope.groups = [
+	    {
+	      title: "Extraction and Loading",
+	      items: [
+	       {name: 'Upload RDF file or RDF from URL', route:'#/extraction-and-loading/rdf-local' },
+	        {name: 'Load RDF data from publicdata.eu', route:'#/extraction-and-loading/rdf-external' },
+	        {name: 'Extract RDF from XML', route:'#/extraction-and-loading/xml' },
+	        {name: 'Extract RDF from SQL', route:'#/extraction-and-loading/sql' }]
+	    },
+	    {
+	      title: "Querying and Exploration",
+	      items: [
+	       {name: 'Geospatial Exploration', route:'#/querying-and-exploration/geospatial' },
+	       {name: 'Google Maps', route:'#/querying-and-exploration/googlemap' },
+	       {name: 'Facete', route:'#/querying-and-exploration/facete' }]
+	    },
+	    {
+	      title: "Authoring",
+	      items: [
+	       {name: 'OntoWiki', route:'#/authoring/ontowiki' }]
+	    },
+	    {
+	      title: "Linking",
+	      items: [
+	       {name: 'LIMES', route:'#/linking/limes' }]
+	    },
+	    {
+	     title: "Enriching and Data Cleaning",
+	     items: [
+	       {name: 'GeoLift', route:'#/enriching-and-cleaning/geolift' }]
+	    }
+
+	  ];
+
+	}
+
+
+
+function LoginCtrl() {}
+LoginCtrl.$inject = [];
+
+function SettingsComponentCtrl(scope, service){
+	scope.components = service.getComponents().components;
+}
+SettingsComponentCtrl.$inject = ['$scope', 'SettingsServiceDoomy'];
+
 
 var ModalWindow = function ($scope) {
 
@@ -56,66 +78,6 @@ var ModalWindow = function ($scope) {
 	  };
 
 	};
-
-function LoginCtrl() {}
-LoginCtrl.$inject = [];
-
-
-function SettingsCtrl(scope, service) {
-	scope.settings = "";
-	service.getSettings().then(
-		function(promise) {
-    		scope.settings = angular.fromJson(promise);		
-  		},
-  		function(reason) {console.log("Error SettingsCtrl"); throw reason });
-}
-SettingsCtrl.$inject = ['$scope', 'SettingsService'];
-
-
-app.controller('GoogleMap', function GoogleMap($scope, $timeout, $log){
-
-	// Enable the new Google Maps visuals until it gets enabled by default.
-    // See http://googlegeodevelopers.blogspot.ca/2013/05/a-fresh-new-look-for-maps-api-for-all.html
-    google.maps.visualRefresh = true;
-
-	angular.extend($scope, {
-
-	    position: {
-	      coords: {
-	        latitude: 47.1267762,
-	        longitude: 7.2424403
-	      }
-	    },
-
-		/** the initial center of the map */
-		centerProperty: {
-			latitude: 47.1267762,
-	        longitude: 7.2424403
-		},
-
-		/** the initial zoom level of the map */
-		zoomProperty: 4,
-
-		/** list of markers to put in the map */
-		markersProperty: [ {
-				latitude: 47.1267762,
-		        longitude: 7.2424403
-			}],
-
-		// These 2 properties will be set when clicking on the map
-		clickedLatitudeProperty: null,	
-		clickedLongitudeProperty: null,
-
-		eventsProperty: {
-		  click: function (mapModel, eventName, originalEventArgs) {	
-		    // 'this' is the directive's scope
-		    $log.log("user defined event on map directive with scope", this);
-		    $log.log("user defined event: " + eventName, mapModel, originalEventArgs);
-		  }
-		}
-	});
-
-});
 
 app.controller('OpenMap', function OpenMap($scope, $timeout, $log){
 
@@ -169,4 +131,3 @@ var GoogleMapWindow = function ($scope, $timeout, $log) {
 			      mapOptions);
 			
 		};
-
