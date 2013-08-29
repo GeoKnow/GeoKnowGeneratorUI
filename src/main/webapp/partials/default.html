@@ -10,10 +10,12 @@
 			    </accordion-group>
 			  </accordion>
 			</div>
-			<ul><li ng-click="menuClose = !menuClose">Hide Menu</li></ul>
+				<div class="menutab">
+				<a accordion-transclude="heading" ng-click="menuClose = !menuClose; containerWide = !containerWide" class="accordion-toggle ng-binding">Hide Menu</a>
+				</div>
 			</div>
 
-<div class="container">
+<div class="container" ng-class="{'wide' : containerWide}">
   <!--  <div class="row-fluid">
   	<div class="span3"> 
 	    

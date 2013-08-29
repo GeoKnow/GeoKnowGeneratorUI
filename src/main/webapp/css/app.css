@@ -8,8 +8,8 @@ html, body{
     height: 100%;
 }
 
-#contents {
-    height: 100%;
+.container{
+	width:100%;
 }
 
 div[class*='fluid']{
@@ -220,4 +220,14 @@ div[class*='ng-scope']{
 
 .menu.close{
   left:-14%;
+}
+
+.menutab{
+	 display: inline-block;
+    -webkit-transform: rotate(270deg);
+    -moz-transform: rotate(270deg);
+    -ms-transform: rotate(270deg);
+    -o-transform: rotate(270deg);
+    transform: rotate(270deg);
+    float:right;
 }
