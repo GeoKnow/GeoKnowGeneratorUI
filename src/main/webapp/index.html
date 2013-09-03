@@ -8,9 +8,9 @@
     <meta name="author" content=""/>
 
     <!-- Le styles -->
-    <link href="css/bootstrap.css" rel="stylesheet"/>
     <link href="css/font-awesome.css" rel="stylesheet"/>
-    <link href="css/bootstrap-responsive.css" rel="stylesheet"/>
+    <link href="css/bootstrap-theme.css" rel="stylesheet"/>
+    <link href="css/bootstrap.css" rel="stylesheet"/>
     <link href="css/app.css" rel="stylesheet"/>
     <link href="css/smoothness/jquery-ui-1.10.1.custom.min.css" rel="stylesheet"/>
 
@@ -29,33 +29,21 @@
   </head>
 
   <body ng-cloak ng-app="app">
-	
-	<div id="masthead">
-	<a class="geoknowbrand" href="http://www.geoknow.eu" target="blank">
-                  <img src="img/geoknow-logo.png" alt="GeoKnow logo" />
-                </a>
-    <a class="eufp7" href="">
-                  <img src="img/eu-logos.jpg" alt="EU FP7" />
-                </a>
-               </div>
-    <div class="navbar" bs-navbar>
-            <div class="container">
-                <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </a>
-                
-                <div class="nav-collapse">
-                    <ul class="nav" nav-menu>
-                        <li ng-class="{active: $routeSegment.startsWith('default')}" ><a href="#/"> Home </a></li>
-                        <li ng-class="{active: $routeSegment.startsWith('settings')}"><a href="#/settings"> Settings </a></li>
-                        <li ng-class="{active: $routeSegment.startsWith('account')}"><a href="#/account"> Account </a></li>
-                        <li ng-class="{active: $routeSegment.startsWith('about')}"><a href="http://geoknow.eu" target="_blanc"> About</a></li>
-                    </ul>
-                </div><!--/.nav-collapse -->
-            </div>
-    </div>
+	<div class="navbar navbar-static-top">
+			<div class="container">
+	                <a class="navbar-brand" href="#/"><img src="img/gkg-logo.png" /></a>
+	                    <div ng-controller="NavbarCtrl">
+	                    	<ul class="nav navbar-nav navbar-left">
+	                        <li ng-class="{active:isActive('/')}" ><a href="#/"><div class="glyphicon glyphicon-home"></div> Home </a></li>
+	                        <li ng-class="{active:isActive('/settings')}"><a href="#/settings"><div class="glyphicon glyphicon-wrench"></div> Settings </a></li>
+	                        </ul>
+	                        <ul class="nav navbar-nav navbar-right">
+	                        <li ng-class="{active:isActive('/account')}"><a href="#/account"><div class="glyphicon glyphicon-user"></div> Account </a></li>
+	                        <li><a href="http://geoknow.eu" target="_blanc"><div class="glyphicon glyphicon-info-sign"></div> About</a></li>
+	                        </ul>
+	                    </div>
+	        </div>
+	 </div>
 
     <div id="contents" app-view-segment="0"></div>
   <!-- THIS IS REPLACED BY THE LINE ABOVE TO USE SEGMENTS <div id="workspace" ng-view></div> -->

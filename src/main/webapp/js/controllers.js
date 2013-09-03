@@ -4,7 +4,7 @@ function SettingsMenuCtrl($scope) {
   $scope.oneAtATime = true;
   // these data can be replaced later with the configuration
   $scope.items = [
-		{ name: "Data Sources", route:'#/settings/data-sources' },
+	{ name: "Data Sources", route:'#/settings/data-sources' },
   	{ name: "Datasets", route:'#/settings/datasets' },
   	{ name: "Graphs", route:'#/settings/graphs' },
   	{ name: "Components", route:'#/settings/components' },
@@ -17,14 +17,16 @@ function StackMenuCtrl($scope) {
 	  $scope.groups = [
 	    {
 	      title: "Extraction and Loading",
+	      id:"menu1",
 	      items: [
-	       {name: 'Upload RDF file or RDF from URL', route:'#/extraction-and-loading/rdf-local' },
+	       {name: 'Upload RDF file or RDF from URL', route:'#/extraction-and-loading/rdf-local', url:'/extraction-and-loading/rdf-local' },
 	        {name: 'Load RDF data from publicdata.eu', route:'#/extraction-and-loading/rdf-external' },
 	        {name: 'Extract RDF from XML', route:'#/extraction-and-loading/xml' },
 	        {name: 'Extract RDF from SQL', route:'#/extraction-and-loading/sql' }]
 	    },
 	    {
 	      title: "Querying and Exploration",
+	      id:"menu2",
 	      items: [
 	       {name: 'Geospatial Exploration', route:'#/querying-and-exploration/geospatial' },
 	       {name: 'Google Maps', route:'#/querying-and-exploration/googlemap' },
@@ -32,16 +34,19 @@ function StackMenuCtrl($scope) {
 	    },
 	    {
 	      title: "Authoring",
+	      id:"menu3",
 	      items: [
 	       {name: 'OntoWiki', route:'#/authoring/ontowiki' }]
 	    },
 	    {
 	      title: "Linking",
+	      id:"menu4",
 	      items: [
 	       {name: 'LIMES', route:'#/linking/limes' }]
 	    },
 	    {
 	     title: "Enriching and Data Cleaning",
+	     id:"menu5",
 	     items: [
 	       {name: 'GeoLift', route:'#/enriching-and-cleaning/geolift' }]
 	    }
@@ -49,7 +54,6 @@ function StackMenuCtrl($scope) {
 	  ];
 
 	}
-
 
 
 function LoginCtrl() {}
@@ -78,6 +82,18 @@ var ModalWindow = function ($scope) {
 	  };
 
 	};
+	
+app.controller('NavbarCtrl', function($scope, $location) {
+	    $scope.isActive = function(route) {
+	        return route === $location.path();
+	    }
+	});
+
+app.controller('SidebarCtrl', function($scope, $location) {
+    $scope.isSelected = function(route) {
+        return route === $location.path();
+    }
+});
 
 app.controller('OpenMap', function OpenMap($scope, $timeout, $log){
 
