@@ -10,7 +10,7 @@
 @prefix sd: <http://www.w3.org/ns/sparql-service-description#> .
 
 :GeoKnowGeneratorService a sd:Service;
-    sd:endpoint <http://http://localhost:8890/sparql>;
+    sd:endpoint <http://localhost:8890/sparql>;
     sd:supportedLanguage sd:SPARQL11Query ;
     sd:defaultDatasetDescription [
         a sd:Dataset;
