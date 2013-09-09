@@ -26,15 +26,15 @@
 		dcterms:description "Contains a copy of this SD+VoID file!";
 .
 :settingsGraph a sd:NamedGraph;
-		sd:name <http://http://localhost/SettingsGraph>;
+		sd:name <http://localhost/SettingsGraph>;
     sd:graph [
               a sd:Graph, void:Dataset;
               dcterms:title "This Graph contains the application specific settings and configurations";
-              foaf:homepage <http://http://localhost/#/settings/>; 
+              foaf:homepage <http://localhost/#/settings/>; 
           ];
 .
 :schemaGraph a sd:NamedGraph;
-      sd:name <http://http://localhost/schemaGraph>;
+      sd:name <http://localhost/schemaGraph>;
       sd:graph [
             a sd:Graph, void:Dataset;
             dcterms:title "Integrated LDS schema";
