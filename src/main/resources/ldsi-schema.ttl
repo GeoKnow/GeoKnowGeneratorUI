@@ -13,6 +13,8 @@
 @prefix void:    <http://rdfs.org/ns/void#> .
 @prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
 
+
+
 lds:  rdf:type owl:Ontology ;
       dcterms:contributor "Alejandra Garcia Rojas"^^xsd:string ;
       dcterms:descripton "Schema for integrating Software components from the Linked Data Stack"^^xsd:string ;
@@ -150,8 +152,3 @@ sd:NamedGraph
 sd:Service
       rdf:type rdfs:Class ;
       rdfs:label "Service URL"^^xsd:string .
-
-d2rq:Database
-      rdf:type owl:Class ;
-      rdfs:label "Service URL"^^xsd:string ;
-      rdfs:subClassOf lds:DataSource .

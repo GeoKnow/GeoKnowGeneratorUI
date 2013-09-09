@@ -1,3 +1,4 @@
+@prefix :        <http://generator.geoknow.eu/> .
 @prefix d2rq:    <http://www.wiwiss.fu-berlin.de/suhl/bizer/D2RQ/0.1#> .
 @prefix dcmit:   <http://purl.org/dc/dcmitype/> .
 @prefix dcterms:  <http://purl.org/dc/terms/> .
@@ -11,20 +12,18 @@
 @prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
 
 
-<http://localhost/GeoKnowGenerator>
+:GeoKnowGenerator
       rdf:type lds:StackComponent ;
       rdfs:comment "This resource contains all the configuration required by the application"^^xsd:string ;
       rdfs:label "GeoKnowGeneator"^^xsd:string ;
-      lds:integrates <http://localhost/Virtuoso> ;
-      lds:outputGraph <http://localhost/SettingsGraph> ;
-      lds:inputGraph <http://localhost/SettingsGraph> ;
+      lds:integrates :Virtuoso ;
+      lds:outputGraph :SettingsGraph ;
       lds:serviceURL "http://localhost"^^xsd:string ;
-      lds:useService <http://localhost/GeoKnowGeneratorService> .
+      lds:useService :GeoKnowGeneratorService .
 
-<http://localhost/Virtuoso>
+:Virtuoso
       rdf:type lds:StackComponent ;
       rdfs:label "Service URL"^^xsd:string ;
       lds:servicePassword "dba"^^xsd:string ;
       lds:serviceURL "http://localhost:8890/sparql"^^xsd:string ;
       lds:serviceUser "dba"^^xsd:string .
-
