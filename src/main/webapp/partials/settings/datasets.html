@@ -1,8 +1,22 @@
 
 <h2>Dataset Management</h2>
 
-<div >
-<button ng-controller="OpenModalCtrl" type="button" class="btn btn-large btn-primary" bs-modal="'partials/modals/datasets.html'">Add new dataset</button>
+<div ng-controller="ModalWindow">
+<button type="button" class="btn btn-large btn-primary" ng-click="AddNewDataset()">Add new dataset</button>
+
+<div class="modal fade" id="modalWindow">
+    
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h5 class="modal-title green bold">Edit dataset</h5>
+        </div>
+        <div class="modal-body">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-sm btn-success" data-dismiss="modal">Close</button>
+        </div>
+        
+  	</div><!-- /.modal -->
 </div>
 
 <h3>Existing Dataset</h3>

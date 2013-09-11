@@ -64,13 +64,20 @@ SettingsComponentCtrl.$inject = ['$scope', 'SettingsServiceStatic'];
 
 function ModalWindow($scope) {
 
-	  $scope.open = function () {
+	  $scope.OpenFullWindow = function () {
 	    $("#modalWindow").modal({
 	    	height : $(window).height() - 165,
 	    	width : "100%",
 	        show: true
 	    });
 	  };
+	  
+	  $scope.AddNewDataset = function () {
+		    $("#modalWindow").modal({
+		    	remote : "partials/modals/datasets.html",
+		        show: true
+		    });
+		  };
 	}; 
 	
 app.controller('NavbarCtrl', function($scope, $location) {
