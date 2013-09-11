@@ -1,24 +1,28 @@
 
-
-<div class="container-fluid">
-  <div class="row-fluid">
-  	<div class="span3"> 
-	    
-			<div ng-controller="StackMenuCtrl">
-			  <accordion>
-			    <accordion-group heading="{{group.title}}" ng-repeat="group in groups">
-			    	<ul>
-			      	<li ng-repeat="item in group.items">
-								<a href="{{item.route}}">{{item.name}}</a>
-			      	</li>
-						</ul>
-			    </accordion-group>
-			  </accordion>
+  <div class="row contents">
+  	<div class="col-lg-2">
+			
+			<div class="panel-group" id="accordion" ng-controller="StackMenuCtrl">
+			  <div class="panel panel-default" ng-repeat="group in groups">
+				  <div class="panel-heading">
+					  <h5 class="panel-title">
+				        <span class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#{{group.id}}">
+				          {{group.title}}
+				        </span>
+				      </h5>
+				  </div>
+				  <div id="{{group.id}}" class="panel-collapse collapse" ng-controller="SidebarCtrl">
+					  <div class="list-item" ng-class="{selected:isSelected('{{item.url}}')}" ng-repeat="item in group.items">
+							<h6><a class="list-group-item" href="{{item.route}}">{{item.name}}</a></h6>
+					  </div>
+				  </div>
+			  	</div>
 			</div>
+			
 		</div>
 
-	  <div class="span9">
-	  	<div app-view-segment="1">
+	  <div class="col-lg-10 contents" app-view-segment="1">
+	  	<div class="col-lg-7">
  		 <p>
 	    This is Version 0.1 of the GeoKnow Generator, which comprises a number of tools for managing the life-cycle of Geographic Linked Data. The life-cycle comprises in particular the stages:
 			</p>
@@ -38,10 +42,10 @@
 			</p>
 
 	  	</div>
-	   
+	    </div>
 		</div>
   </div>
-</div>
+
 
 
  	  

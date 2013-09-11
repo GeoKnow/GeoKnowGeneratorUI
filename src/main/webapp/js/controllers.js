@@ -4,10 +4,10 @@ function SettingsMenuCtrl($scope) {
   $scope.oneAtATime = true;
   // these data can be replaced later with the configuration
   $scope.items = [
-		{ name: "Data Sources", route:'#/settings/data-sources' },
-  	{ name: "Datasets", route:'#/settings/datasets' },
-  	{ name: "Components", route:'#/settings/components' },
-    { name: "User Preferences",   route:'#/settings/preferences' }];
+  	{ name: "Data Sources", route:'#/settings/data-sources', url:'/settings/data-sources' },
+  	{ name: "Datasets", route:'#/settings/datasets', url:'/settings/datasets' },
+  	{ name: "Components", route:'#/settings/components', url:'/settings/components' },
+    { name: "User Preferences",   route:'#/settings/preferences', url:'/settings/preferences' }];
 }
 
 function StackMenuCtrl($scope) {
@@ -16,31 +16,36 @@ function StackMenuCtrl($scope) {
 	  $scope.groups = [
 	    {
 	      title: "Extraction and Loading",
+	      id:"extraction-loading",
 	      items: [
-	        {name: 'Import RDF data', route:'#/extraction-and-loading/import-rdf' },
-	        {name: 'Extract with Sparqlify', route:'#/extraction-and-loading/sparqlify' }]
+	        {name: 'Import RDF data', route:'#/extraction-and-loading/import-rdf',  url:'/home/extraction-and-loading/import-rdf' },
+	        {name: 'Extract with Sparqlify', route:'#/extraction-and-loading/sparqlify',  url:'/home/extraction-and-loading/sparqlify' }]
 	    },
 	    {
 	      title: "Querying and Exploration",
+	      id:"querying-exploration",
 	      items: [
-	       {name: 'Geospatial Exploration', route:'#/querying-and-exploration/geospatial' },
-	       {name: 'Google Maps', route:'#/querying-and-exploration/googlemap' },
-	       {name: 'Facete', route:'#/querying-and-exploration/facete' }]
+	       {name: 'Geospatial Exploration', route:'#/home/querying-and-exploration/geospatial', url:'/home/querying-and-exploration/geospatial' },
+	       {name: 'Google Maps', route:'#/home/querying-and-exploration/googlemap', url:'/home/querying-and-exploration/googlemap' },
+	       {name: 'Facete', route:'#/home/querying-and-exploration/facete', url:'/home/querying-and-exploration/facete' }]
 	    },
 	    {
 	      title: "Authoring",
+	      id:"authoring",
 	      items: [
-	       {name: 'OntoWiki', route:'#/authoring/ontowiki' }]
+	       {name: 'OntoWiki', route:'#/home/authoring/ontowiki', url:'/home/authoring/ontowiki' }]
 	    },
 	    {
 	      title: "Linking",
+	      id:"linking",
 	      items: [
-	       {name: 'LIMES', route:'#/linking/limes' }]
+	       {name: 'LIMES', route:'#/home/linking/limes', url:'/home/linking/limes' }]
 	    },
 	    {
 	     title: "Enriching and Data Cleaning",
+	     id:"enriching-cleansing",
 	     items: [
-	       {name: 'GeoLift', route:'#/enriching-and-cleaning/geolift' }]
+	       {name: 'GeoLift', route:'#/home/enriching-and-cleaning/geolift', url:'/home/enriching-and-cleaning/geolift' }]
 	    }
 
 	  ];
@@ -57,23 +62,36 @@ function SettingsComponentCtrl(scope, service){
 SettingsComponentCtrl.$inject = ['$scope', 'SettingsServiceStatic'];
 
 
-var ModalWindow = function ($scope) {
+function ModalWindow($scope) {
 
 	  $scope.open = function () {
-	    $scope.shouldBeOpen = true;
+	    $("#modalWindow").modal({
+	    	height : $(window).height() - 165,
+	    	width : "100%",
+	        show: true
+	    });
 	  };
+	  
+	}; 
+	
+app.controller('NavbarCtrl', function($scope, $location) {
+		//if($location.path === "/"){
+		//	$location.path('/home')
+		//}
+		$scope.getClass = function(path) {
+			if ($location.path().substr(0, path.length) === path) {
+			      return "active"
+			    } else {
+			      return ""
+			    }
+			}
+	});
 
-	  $scope.close = function () {
-	    $scope.closeMsg = 'I was closed at: ' + new Date();
-	    $scope.shouldBeOpen = false;
-	  };
-
-	  $scope.opts = {
-	    backdropFade: true,
-	    dialogFade:true
-	  };
-
-	};
+app.controller('SidebarCtrl', function($scope, $location) {
+	    $scope.isSelected = function(route) {
+	        return route === $location.path();
+	    }
+});
 
 app.controller('OpenMap', function OpenMap($scope, $timeout, $log){
 
