@@ -72,9 +72,9 @@ function ModalWindow($scope) {
 	    });
 	  };
 	  
-	  $scope.AddNewDataset = function () {
+	  $scope.OpenFormWindow = function (template) {
 		    $("#modalWindow").modal({
-		    	remote : "partials/modals/datasets.html",
+		    	remote : template,
 		        show: true
 		    });
 		  };
@@ -160,25 +160,6 @@ var DataSourceTabCtrl = function($scope, $window, $location) {
     return $scope.tabs[$scope.tabs.index]; 
     }
   
-};
-
-
-var OpenModalCtrl = function($scope, $modal) {
-
-  $scope.viaService = function() {
-    // do something	
-    var modal = $modal({
-      template: "=bsModal",
-      show: true,
-      backdrop: 'static',
-      scope: $scope
-    });
-  }
-  $scope.parentController = function(dismiss) {
-    console.warn(arguments);
-    // do something
-    dismiss();
-  }
 };
 
 
