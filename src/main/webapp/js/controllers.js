@@ -4,9 +4,8 @@ function SettingsMenuCtrl($scope) {
   $scope.oneAtATime = true;
   // these data can be replaced later with the configuration
   $scope.items = [
-	{ name: "Data Sources", route:'#/settings/data-sources', url:'/settings/data-sources' },
+  	{ name: "Data Sources", route:'#/settings/data-sources', url:'/settings/data-sources' },
   	{ name: "Datasets", route:'#/settings/datasets', url:'/settings/datasets' },
-  	{ name: "Graphs", route:'#/settings/graphs', url:'/settings/graphs' },
   	{ name: "Components", route:'#/settings/components', url:'/settings/components' },
     { name: "User Preferences",   route:'#/settings/preferences', url:'/settings/preferences' }];
 }
@@ -19,10 +18,8 @@ function StackMenuCtrl($scope) {
 	      title: "Extraction and Loading",
 	      id:"extraction-loading",
 	      items: [
-	       {name: 'Upload RDF file or RDF from URL', route:'#/home/extraction-and-loading/rdf-local', url:'/home/extraction-and-loading/rdf-local' },
-	        {name: 'Load RDF data from publicdata.eu', route:'#/home/extraction-and-loading/rdf-external', url:'/home/extraction-and-loading/rdf-external' },
-	        {name: 'Extract RDF from XML', route:'#/home/extraction-and-loading/xml', url:'/home/extraction-and-loading/xml' },
-	        {name: 'Extract RDF from SQL', route:'#/home/extraction-and-loading/sql', url:'/home/extraction-and-loading/sql' }]
+	        {name: 'Import RDF data', route:'#/extraction-and-loading/import-rdf',  url:'/home/extraction-and-loading/import-rdf' },
+	        {name: 'Extract with Sparqlify', route:'#/extraction-and-loading/sparqlify',  url:'/home/extraction-and-loading/sparqlify' }]
 	    },
 	    {
 	      title: "Querying and Exploration",
@@ -62,7 +59,7 @@ LoginCtrl.$inject = [];
 function SettingsComponentCtrl(scope, service){
 	scope.components = service.getComponents().components;
 }
-SettingsComponentCtrl.$inject = ['$scope', 'SettingsServiceDoomy'];
+SettingsComponentCtrl.$inject = ['$scope', 'SettingsServiceStatic'];
 
 
 function ModalWindow($scope) {
@@ -97,53 +94,84 @@ app.controller('SidebarCtrl', function($scope, $location) {
 
 app.controller('OpenMap', function OpenMap($scope, $timeout, $log){
 
-	 var map = new OpenLayers.Map( 'map', {controls:[
-	                                             new OpenLayers.Control.Navigation(),
-	                                             new OpenLayers.Control.PanZoomBar(),
-	                                             //new OpenLayers.Control.LayerSwitcher(),
-	                                             new OpenLayers.Control.Attribution()],
-	                                             units: 'm',
-	                                         });
-	                                      var layer = new OpenLayers.Layer.OSM( "Biel/Bienne Map");
-	                                      map.addLayer(layer);
-	                                      map.setCenter(
-	                                          new OpenLayers.LonLat(7.25 , 47.133333).transform(
-	                                              new OpenLayers.Projection("EPSG:4326"),
-	                                              map.getProjectionObject()
-	                                          ), 13 
-	                                      );
+  var map = new OpenLayers.Map( 'map', {controls:[
+         new OpenLayers.Control.Navigation(),
+         new OpenLayers.Control.PanZoomBar(),
+         //new OpenLayers.Control.LayerSwitcher(),
+         new OpenLayers.Control.Attribution()],
+         units: 'm',
+     });
+  var layer = new OpenLayers.Layer.OSM( "Biel/Bienne Map");
+  map.addLayer(layer);
+  map.setCenter(
+      new OpenLayers.LonLat(7.25 , 47.133333).transform(
+          new OpenLayers.Projection("EPSG:4326"),
+          map.getProjectionObject()
+      ), 13 
+  );
 });
 
-var OpenMapWindow = function OpenMapWindow($scope, $timeout, $log) {
+var OpenMapWindow = function ($scope, $timeout, $log) {
 	
 	var map = new OpenLayers.Map( 'map', {controls:[
-		                                             new OpenLayers.Control.Navigation(),
-		                                             new OpenLayers.Control.PanZoomBar(),
-		                                             //new OpenLayers.Control.LayerSwitcher(),
-		                                             new OpenLayers.Control.Attribution()],
-		                                             units: 'm',
-		                                         });
-		                                      var layer = new OpenLayers.Layer.OSM( "Biel/Bienne Map");
-		                                      map.addLayer(layer);
-		                                      map.setCenter(
-		                                          new OpenLayers.LonLat(7.25 , 47.133333).transform(
-		                                              new OpenLayers.Projection("EPSG:4326"),
-		                                              map.getProjectionObject()
-		                                          ), 13 
-		                                      );
-	};
+         new OpenLayers.Control.Navigation(),
+         new OpenLayers.Control.PanZoomBar(),
+         //new OpenLayers.Control.LayerSwitcher(),
+         new OpenLayers.Control.Attribution()],
+         units: 'm',
+     });
+  var layer = new OpenLayers.Layer.OSM( "Biel/Bienne Map");
+  map.addLayer(layer);
+  map.setCenter(
+      new OpenLayers.LonLat(7.25 , 47.133333).transform(
+          new OpenLayers.Projection("EPSG:4326"),
+          map.getProjectionObject()
+      ), 13 
+  );
+};
 	
 var GoogleMapWindow = function ($scope, $timeout, $log) {
-		
-			var map;
-			
-			  var mapOptions = {
-			    zoom: 14,
-			    center: new google.maps.LatLng(47.126776, 7.24),
-			    mapTypeId: google.maps.MapTypeId.ROADMAP
-			  };
-			  
-			  map = new google.maps.Map(document.getElementById('map'),
-			      mapOptions);
-			
-		};
+	var map;
+
+  var mapOptions = {
+    zoom: 14,
+    center: new google.maps.LatLng(47.126776, 7.24),
+    mapTypeId: google.maps.MapTypeId.ROADMAP
+  };
+  
+  map = new google.maps.Map(documßent.getElementById('map'),
+      mapOptions);
+	
+};
+
+var DataSourceTabCtrl = function($scope, $window, $location) {
+
+  // The tab directive will use this data
+  $scope.tabs = ['SPARQL Endpoint', 'Relational Database'];
+  $scope.tabs.index = 0;
+  $scope.tabs.active = function() { 
+    return $scope.tabs[$scope.tabs.index]; 
+    }
+  
+};
+
+
+var OpenModalCtrl = function($scope, $modal) {
+
+  $scope.viaService = function() {
+    // do something	
+    var modal = $modal({
+      template: "=bsModal",
+      show: true,
+      backdrop: 'static',
+      scope: $scope
+    });
+  }
+  $scope.parentController = function(dismiss) {
+    console.warn(arguments);
+    // do something
+    dismiss();
+  }
+};
+
+

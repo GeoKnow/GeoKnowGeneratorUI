@@ -1,6 +1,11 @@
 'use strict';
 
-var app = angular.module('app', ['app.services', 'app.directives', 'ui.bootstrap','route-segment', 'view-segment']);
+var app = angular.module('app', ['app.services', 
+                                 'app.directives', 
+                                 'ui.bootstrap',
+                                 'route-segment',
+                                 'view-segment',
+                                 '$strap.directives']);
 
 app.config(function($routeSegmentProvider, $routeProvider) {
 
@@ -11,14 +16,11 @@ app.config(function($routeSegmentProvider, $routeProvider) {
             .when('/account','account')
             .when('/settings', 'settings')
             .when('/settings/data-sources', 'settings.data-sources')
-            .when('/settings/graphs', 'settings.graphs')
             .when('/settings/datasets', 'settings.datasets')
             .when('/settings/components', 'settings.components')
             .when('/settings/preferences', 'settings.preferences')
-            .when('/home/extraction-and-loading/rdf-external', 'default.rdf-external')
-            .when('/home/extraction-and-loading/rdf-local', 'default.rdf-local')
-            .when('/home/extraction-and-loading/xml', 'default.xml')
-            .when('/home/extraction-and-loading/sql', 'default.sql')
+            .when('/home/extraction-and-loading/import-rdf', 'default.import-rdf')
+            .when('/home/extraction-and-loading/sparqlify', 'default.sparqlify')
             .when('/home/querying-and-exploration/geospatial', 'default.geospatial')
             .when('/home/querying-and-exploration/googlemap', 'default.googlemap')
             .when('/home/querying-and-exploration/facete', 'default.facete')
@@ -29,14 +31,10 @@ app.config(function($routeSegmentProvider, $routeProvider) {
             .segment('default', {
                 templateUrl:'partials/default.html'})
                 .within()
-                    .segment('rdf-local', {
-                        templateUrl: 'partials/extraction-and-loading/rdf-local.html'})
-                    .segment('rdf-external', {
-                        templateUrl: 'partials/extraction-and-loading/rdf-external.html' })
-                    .segment('xml', {
-                        templateUrl: 'partials/extraction-and-loading/xml.html' })
-                    .segment('sql', {
-                        templateUrl: 'partials/extraction-and-loading/sql.html' })
+                    .segment('import-rdf', {
+                        templateUrl: 'partials/extraction-and-loading/import-rdf.html' })
+                    .segment('sparqlify', {
+                        templateUrl: 'partials/extraction-and-loading/sparqlify.html' })
                     .segment('geospatial', {
                         templateUrl: 'partials/querying-and-exploration/geospatial.html'})
                     .segment('googlemap', {
@@ -54,8 +52,6 @@ app.config(function($routeSegmentProvider, $routeProvider) {
             .segment('settings', {
                 templateUrl:'partials/settings.html' })
                 .within()
-                    .segment('graphs', {
-                        templateUrl: 'partials/settings/graphs.html'})
                     .segment('datasets', {
                         templateUrl: 'partials/settings/datasets.html'})
                     .segment('data-sources', {
@@ -67,8 +63,7 @@ app.config(function($routeSegmentProvider, $routeProvider) {
                 .up()
 
             .segment('account', {
-                templateUrl:'partials/account.html', 
-                controller:LoginCtrl })
+                templateUrl:'partials/account.html' })
             .segment('about', {
                 templateUrl:'partials/about.html' })
             .segment('under-construction', {

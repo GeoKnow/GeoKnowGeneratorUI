@@ -1,59 +1,62 @@
 
-<h2>Data Source Management</h2>
+<h2>Data Sources</h2>
 
-<h3>Add a Source</h3>
+<div >
+<button ng-controller="OpenModalCtrl" type="button" class="btn btn-large btn-primary" bs-modal="'partials/modals/data-sources.html'">Add new data source</button>
+</div>
 
-
-
-<h3>External Data Sources</h3>
+<h3>Relational Databases</h3>
 
 <table class="table table-striped">
 <thead>
   <tr>
-    <th>url</th>
-    <th>Description</th>
-    <th>Type</th>
     <th>Action</th>
+    <th>Description</th>
+    <th>Server</th>
+    <th>Database</th>
+    <th>Driver</th>
+    <th>User</th>
+    <th>Password</th>
   </tr>
 </thead>
 <tbody>
   <tr>
-    <td>http://publicdata.eu/</td>
-    <td>publicdata.eu</td>
-    <td>http://localhost/geoknow-generator-config</td>
     <td>
-    	<ul>
-    		<i class="icon-trash icon-large"></i>
-    		<i class="icon-edit icon-large"></i>
-    	</ul>
+      <ul>
+        <i class="icon-trash icon-large"></i>
+        <i class="icon-edit icon-large"></i>
+      </ul>
     </td>
+    <td>Hotels MySQL</td>
+    <td>http://localhost/</td>
+    <td>test</td>
+    <td>MySQL</td>
+    <td>root</td>
+    <td>12345</td>
   </tr>
 </tbody>
 </table>
 
-
-<h3>Internal Data Sources</h3>
+<h3>SPARQL Endpoint</h3>
 
 <table class="table table-striped">
 <thead>
   <tr>
-    <th>uri</th>
-    <th>Description</th>
-    <th>Type</th>
     <th>Action</th>
+    <th>Description</th>
+    <th>url</th>
   </tr>
 </thead>
 <tbody>
   <tr>
-    <td>http://geoknow.eu/resource/UnisterHotels</td>
-    <td>Hotels MySQL</td>
-    <td>http://localhost/geoknow-generator-config</td>
     <td>
-    	<ul>
-    		<i class="icon-trash icon-large"></i>
-    		<i class="icon-edit icon-large"></i>
-    	</ul>
+      <ul>
+        <i class="icon-trash icon-large"></i>
+        <i class="icon-edit icon-large"></i>
+      </ul>
     </td>
+    <td>Dbpedia</td>
+    <td>http://dbpedia.org/sparql</td>
   </tr>
 </tbody>
 </table>
