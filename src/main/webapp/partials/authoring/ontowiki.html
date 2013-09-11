@@ -1,3 +1,4 @@
+<!--  
 <div ng-controller="ModalWindow">
     <button class="btn" ng-click="open()">Open me!</button>
     <div modal="shouldBeOpen" close="close()" options="opts">
@@ -12,4 +13,28 @@
         </div>
     </div>
 </div>
+-->
+
+<div ng-controller="ModalWindow">
+	<h3 class="green bold">OntoWiki</h3>
+    <a class="btn btn-primary btn-large" ng-click="open()">Launch OntoWiki</a>
+
+  <!-- Modal -->
+  <div class="modal fade" id="modalWindow">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h5 class="modal-title green bold">OntoWiki</h5>
+        </div>
+        <div class="modal-body">
+        <iframe id="mod-frame" src="http://10.0.0.90/ontowiki"></iframe>
+        </div>
+        <div class="modal-footer">
+          <button class="btn-sm btn-success" class="close" data-dismiss="modal">Close</button>
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->
+  </div>
 

@@ -7,7 +7,7 @@ app.config(function($routeSegmentProvider, $routeProvider) {
         $routeSegmentProvider.options.autoLoadTemplates = true;
         $routeSegmentProvider
             // TODO: these routes may have to be loaded from the configuration
-            .when('/', 'default')
+            .when('/home', 'default')
             .when('/account','account')
             .when('/settings', 'settings')
             .when('/settings/data-sources', 'settings.data-sources')
@@ -15,16 +15,16 @@ app.config(function($routeSegmentProvider, $routeProvider) {
             .when('/settings/datasets', 'settings.datasets')
             .when('/settings/components', 'settings.components')
             .when('/settings/preferences', 'settings.preferences')
-            .when('/extraction-and-loading/rdf-external', 'default.rdf-external')
-            .when('/extraction-and-loading/rdf-local', 'default.rdf-local')
-            .when('/extraction-and-loading/xml', 'default.xml')
-            .when('/extraction-and-loading/sql', 'default.sql')
-            .when('/querying-and-exploration/geospatial', 'default.geospatial')
-            .when('/querying-and-exploration/googlemap', 'default.googlemap')
-            .when('/querying-and-exploration/facete', 'default.facete')
-            .when('/authoring/ontowiki', 'default.ontowiki')
-            .when('/linking/limes', 'default.limes')
-            .when('/enriching-and-cleaning/geolift', 'default.geolift')
+            .when('/home/extraction-and-loading/rdf-external', 'default.rdf-external')
+            .when('/home/extraction-and-loading/rdf-local', 'default.rdf-local')
+            .when('/home/extraction-and-loading/xml', 'default.xml')
+            .when('/home/extraction-and-loading/sql', 'default.sql')
+            .when('/home/querying-and-exploration/geospatial', 'default.geospatial')
+            .when('/home/querying-and-exploration/googlemap', 'default.googlemap')
+            .when('/home/querying-and-exploration/facete', 'default.facete')
+            .when('/home/authoring/ontowiki', 'default.ontowiki')
+            .when('/home/linking/limes', 'default.limes')
+            .when('/home/enriching-and-cleaning/geolift', 'default.geolift')
 
             .segment('default', {
                 templateUrl:'partials/default.html'})
@@ -71,11 +71,11 @@ app.config(function($routeSegmentProvider, $routeProvider) {
                 controller:LoginCtrl })
             .segment('about', {
                 templateUrl:'partials/about.html' })
-            .segment('under-consrtuction', {
-                templateUrl:'partials/under-consrtuction.html' });
+            .segment('under-construction', {
+                templateUrl:'partials/under-construction.html' });
 
         // TODO: replace with a not found page or something like that
-        $routeProvider.otherwise({redirectTo: '/'}); 
+        $routeProvider.otherwise({redirectTo: '/home'}); 
 
 });
 

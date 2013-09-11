@@ -1,14 +1,20 @@
 <div ng-controller="ModalWindow">
-    <button class="btn" ng-click="open()">Open me!</button>
-    <div modal="shouldBeOpen" close="close()" options="opts">
+	<h3 class="green bold">Facete</h3>
+    <a class="btn btn-primary btn-large" ng-click="open()">Launch Facete</a>
+
+  <!-- Modal -->
+  <div class="modal fade" id="modalWindow">
+    
         <div class="modal-header">
-            <h4>Facete</h4>
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h5 class="modal-title green bold">Facete</h5>
         </div>
         <div class="modal-body">
-            <iframe id="ow-frame" src="http://10.0.0.90/facete"></iframe>
+        <iframe id="mod-frame" src="http://10.0.0.90/facete"></iframe>
         </div>
         <div class="modal-footer">
-            <button class="btn btn-warning cancel" ng-click="close()">Close</button>
+          <button class="btn-sm btn-success" class="close" data-dismiss="modal">Close</button>
         </div>
-    </div>
-</div>
+        
+  	</div><!-- /.modal -->
+  </div>

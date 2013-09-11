@@ -4,11 +4,11 @@ function SettingsMenuCtrl($scope) {
   $scope.oneAtATime = true;
   // these data can be replaced later with the configuration
   $scope.items = [
-	{ name: "Data Sources", route:'#/settings/data-sources' },
-  	{ name: "Datasets", route:'#/settings/datasets' },
-  	{ name: "Graphs", route:'#/settings/graphs' },
-  	{ name: "Components", route:'#/settings/components' },
-    { name: "User Preferences",   route:'#/settings/preferences' }];
+	{ name: "Data Sources", route:'#/settings/data-sources', url:'/settings/data-sources' },
+  	{ name: "Datasets", route:'#/settings/datasets', url:'/settings/datasets' },
+  	{ name: "Graphs", route:'#/settings/graphs', url:'/settings/graphs' },
+  	{ name: "Components", route:'#/settings/components', url:'/settings/components' },
+    { name: "User Preferences",   route:'#/settings/preferences', url:'/settings/preferences' }];
 }
 
 function StackMenuCtrl($scope) {
@@ -17,38 +17,38 @@ function StackMenuCtrl($scope) {
 	  $scope.groups = [
 	    {
 	      title: "Extraction and Loading",
-	      id:"menu1",
+	      id:"extraction-loading",
 	      items: [
-	       {name: 'Upload RDF file or RDF from URL', route:'#/extraction-and-loading/rdf-local', url:'/extraction-and-loading/rdf-local' },
-	        {name: 'Load RDF data from publicdata.eu', route:'#/extraction-and-loading/rdf-external' },
-	        {name: 'Extract RDF from XML', route:'#/extraction-and-loading/xml' },
-	        {name: 'Extract RDF from SQL', route:'#/extraction-and-loading/sql' }]
+	       {name: 'Upload RDF file or RDF from URL', route:'#/home/extraction-and-loading/rdf-local', url:'/home/extraction-and-loading/rdf-local' },
+	        {name: 'Load RDF data from publicdata.eu', route:'#/home/extraction-and-loading/rdf-external', url:'/home/extraction-and-loading/rdf-external' },
+	        {name: 'Extract RDF from XML', route:'#/home/extraction-and-loading/xml', url:'/home/extraction-and-loading/xml' },
+	        {name: 'Extract RDF from SQL', route:'#/home/extraction-and-loading/sql', url:'/home/extraction-and-loading/sql' }]
 	    },
 	    {
 	      title: "Querying and Exploration",
-	      id:"menu2",
+	      id:"querying-exploration",
 	      items: [
-	       {name: 'Geospatial Exploration', route:'#/querying-and-exploration/geospatial' },
-	       {name: 'Google Maps', route:'#/querying-and-exploration/googlemap' },
-	       {name: 'Facete', route:'#/querying-and-exploration/facete' }]
+	       {name: 'Geospatial Exploration', route:'#/home/querying-and-exploration/geospatial', url:'/home/querying-and-exploration/geospatial' },
+	       {name: 'Google Maps', route:'#/home/querying-and-exploration/googlemap', url:'/home/querying-and-exploration/googlemap' },
+	       {name: 'Facete', route:'#/home/querying-and-exploration/facete', url:'/home/querying-and-exploration/facete' }]
 	    },
 	    {
 	      title: "Authoring",
-	      id:"menu3",
+	      id:"authoring",
 	      items: [
-	       {name: 'OntoWiki', route:'#/authoring/ontowiki' }]
+	       {name: 'OntoWiki', route:'#/home/authoring/ontowiki', url:'/home/authoring/ontowiki' }]
 	    },
 	    {
 	      title: "Linking",
-	      id:"menu4",
+	      id:"linking",
 	      items: [
-	       {name: 'LIMES', route:'#/linking/limes' }]
+	       {name: 'LIMES', route:'#/home/linking/limes', url:'/home/linking/limes' }]
 	    },
 	    {
 	     title: "Enriching and Data Cleaning",
-	     id:"menu5",
+	     id:"enriching-cleansing",
 	     items: [
-	       {name: 'GeoLift', route:'#/enriching-and-cleaning/geolift' }]
+	       {name: 'GeoLift', route:'#/home/enriching-and-cleaning/geolift', url:'/home/enriching-and-cleaning/geolift' }]
 	    }
 
 	  ];
@@ -65,34 +65,35 @@ function SettingsComponentCtrl(scope, service){
 SettingsComponentCtrl.$inject = ['$scope', 'SettingsServiceDoomy'];
 
 
-var ModalWindow = function ($scope) {
+function ModalWindow($scope) {
 
 	  $scope.open = function () {
-	    $scope.shouldBeOpen = true;
+	    $("#modalWindow").modal({
+	    	height : $(window).height() - 165,
+	    	width : "100%",
+	        show: true
+	    });
 	  };
-
-	  $scope.close = function () {
-	    $scope.closeMsg = 'I was closed at: ' + new Date();
-	    $scope.shouldBeOpen = false;
-	  };
-
-	  $scope.opts = {
-	    backdropFade: true,
-	    dialogFade:true
-	  };
-
-	};
+	  
+	}; 
 	
 app.controller('NavbarCtrl', function($scope, $location) {
-	    $scope.isActive = function(route) {
-	        return route === $location.path();
-	    }
+		//if($location.path === "/"){
+		//	$location.path('/home')
+		//}
+		$scope.getClass = function(path) {
+			if ($location.path().substr(0, path.length) === path) {
+			      return "active"
+			    } else {
+			      return ""
+			    }
+			}
 	});
 
 app.controller('SidebarCtrl', function($scope, $location) {
-    $scope.isSelected = function(route) {
-        return route === $location.path();
-    }
+	    $scope.isSelected = function(route) {
+	        return route === $location.path();
+	    }
 });
 
 app.controller('OpenMap', function OpenMap($scope, $timeout, $log){
