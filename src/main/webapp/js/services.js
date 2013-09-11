@@ -26,6 +26,16 @@ module.factory('SettingsServiceStatic', function($http) {
           { uri: "<http://geoknow.eu/resource/geoknow-workbench>", label: "GeoKnow Workbench", version:"0.1.0", 
             url: "http://localhost/geoknow-workbench" } ] 
       };      
+    },
+    getEndpoint: function() {
+      return { url:"http://localhost:8890/sparql" };      
+    },
+    getGraphs: function() {
+      return { graphs:
+        [ { uri: "<http://generator.geoknow.eu/test-graph>", label: "test", description:"testing graphs"},
+          { uri: "<http://generator.geoknow.eu/dbpedia-import>", label: "OntoWiki", description:"has a subset of dbpedia"},
+          { uri: "<http://generator.geoknow.eu/hotles>", label: "Hotels", description:"hotels imported"}] 
+      };      
     }}
     return SettingsService;
 });
