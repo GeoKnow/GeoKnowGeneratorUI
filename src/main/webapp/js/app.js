@@ -12,7 +12,7 @@ app.config(function($routeSegmentProvider, $routeProvider) {
         $routeSegmentProvider.options.autoLoadTemplates = true;
         $routeSegmentProvider
             // TODO: these routes may have to be loaded from the configuration
-            .when('home', 'default')
+            .when('/home', 'default')
             .when('/account','account')
             .when('/settings', 'settings')
             .when('/settings/data-sources', 'settings.data-sources')
