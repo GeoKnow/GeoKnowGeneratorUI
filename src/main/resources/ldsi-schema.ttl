@@ -1,0 +1,154 @@
+# baseURI: http://linkeddata.org/integrated-stack-schema/
+
+@prefix :        <http://linkeddata.org/integrated-stack-schema/> .
+@prefix d2rq:    <http://www.wiwiss.fu-berlin.de/suhl/bizer/D2RQ/0.1#> .
+@prefix dcmit:   <http://purl.org/dc/dcmitype/> .
+@prefix dcterms:  <http://purl.org/dc/terms/> .
+@prefix lds:     <http://linkeddata.org/integrated-stack-schema/> .
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix schema:  <http://schema.org/> .
+@prefix sd:      <http://www.w3.org/ns/sparql-service-description#> .
+@prefix void:    <http://rdfs.org/ns/void#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+
+
+
+lds:  rdf:type owl:Ontology ;
+      dcterms:contributor "Alejandra Garcia Rojas"^^xsd:string ;
+      dcterms:descripton "Schema for integrating Software components from the Linked Data Stack"^^xsd:string ;
+      dcterms:title "LDStack - Language Specification v0.1"^^xsd:string ;
+      owl:versionInfo "0.1.0"^^xsd:string .
+
+lds:API
+      rdf:type owl:Class ;
+      rdfs:label "Service URL"^^xsd:string ;
+      rdfs:subClassOf lds:SoftwareComponent .
+
+lds:CKAN
+      rdf:type owl:Class ;
+      rdfs:label "Service URL"^^xsd:string ;
+      rdfs:subClassOf lds:DataSource .
+
+lds:DataSource
+      rdf:type owl:Class ;
+      rdfs:label "Data Source"^^xsd:string ;
+      rdfs:subClassOf owl:Thing .
+
+lds:Namespace
+      rdf:type owl:Class ;
+      rdfs:label "Service URL"^^xsd:string ;
+      rdfs:subClassOf owl:Thing .
+
+lds:SoftwareComponent
+      rdf:type owl:Class ;
+      rdfs:label "Service URL"^^xsd:string ;
+      rdfs:subClassOf owl:Thing .
+
+lds:StackComponent
+      rdf:type owl:Class ;
+      rdfs:label "Software Component      "^^xsd:string ;
+      rdfs:subClassOf lds:SoftwareComponent .
+
+lds:identifier
+      rdf:type owl:DatatypeProperty ;
+      rdfs:comment "This property is used to create the URIs"^^xsd:string ;
+      rdfs:domain lds:DataSource ;
+      rdfs:label "Identifier"^^xsd:string ;
+      rdfs:range xsd:string .
+
+lds:inputGraph
+      rdf:type owl:ObjectProperty ;
+      rdfs:domain lds:StackComponent ;
+      rdfs:label "Service URL"^^xsd:string ;
+      rdfs:range sd:NamedGraph .
+
+lds:integrates
+      rdf:type owl:ObjectProperty ;
+      rdfs:domain lds:StackComponent ;
+      rdfs:label "integrates"^^xsd:string ;
+      rdfs:range lds:StackComponent .
+
+lds:outputGraph
+      rdf:type owl:ObjectProperty ;
+      rdfs:domain lds:StackComponent ;
+      rdfs:label "Service URL"^^xsd:string ;
+      rdfs:range sd:NamedGraph .
+
+lds:prefix
+      rdf:type owl:DatatypeProperty ;
+      rdfs:domain lds:Namespace ;
+      rdfs:label "Service URL"^^xsd:string ;
+      rdfs:range xsd:string .
+
+lds:provenanceGraph
+      rdf:type owl:ObjectProperty ;
+      rdfs:domain lds:StackComponent ;
+      rdfs:label "Service URL"^^xsd:string ;
+      rdfs:range sd:NamedGraph .
+
+lds:requires
+      rdf:type owl:ObjectProperty ;
+      rdfs:domain lds:StackComponent ;
+      rdfs:label "Service URL"^^xsd:string ;
+      rdfs:range lds:StackComponent .
+
+lds:servicePassword
+      rdf:type owl:DatatypeProperty ;
+      rdfs:comment "If the component requires user/password authentication method (for instance a database)"^^xsd:string ;
+      rdfs:domain lds:SoftwareComponent ;
+      rdfs:label "Service password"^^xsd:string ;
+      rdfs:range xsd:string .
+
+lds:serviceURL
+      rdf:type owl:DatatypeProperty ;
+      rdfs:domain lds:SoftwareComponent ;
+      rdfs:label "Service URL"^^xsd:string ;
+      rdfs:range xsd:string .
+
+lds:serviceUser
+      rdf:type owl:DatatypeProperty ;
+      rdfs:comment "If the component requires user/password authentication method (for instance a database)"^^xsd:string ;
+      rdfs:domain lds:SoftwareComponent ;
+      rdfs:label "Service user"^^xsd:string ;
+      rdfs:range xsd:string .
+
+lds:uri
+      rdf:type owl:DatatypeProperty ;
+      rdfs:domain lds:Namespace ;
+      rdfs:label "Service URL"^^xsd:string ;
+      rdfs:range xsd:string .
+
+lds:useDataService
+      rdfs:domain lds:StackComponent ;
+      rdfs:label "Service URL"^^xsd:string ;
+      rdfs:range sd:Service .
+
+lds:useService
+      rdf:type owl:ObjectProperty ;
+      rdfs:domain lds:StackComponent ;
+      rdfs:label "Service URL"^^xsd:string ;
+      rdfs:range sd:Service .
+
+void:Dataset
+      rdf:type rdfs:Class , owl:Class ;
+      rdfs:comment "A set of RDF triples that are published, maintained or aggregated by a single provider." ;
+      rdfs:isDefinedBy <http://vocab.deri.ie/void> ;
+      rdfs:label "dataset" ;
+      rdfs:subClassOf lds:DataSource , dcmit:Dataset .
+
+void:Linkset
+      rdf:type owl:Class , rdfs:Class ;
+      rdfs:comment "A collection of RDF links between two void:Datasets." ;
+      rdfs:isDefinedBy <http://vocab.deri.ie/void> ;
+      rdfs:label "linkset" ;
+      rdfs:subClassOf void:Dataset .
+
+sd:NamedGraph
+      rdf:type rdfs:Class ;
+      rdfs:label "Service URL"^^xsd:string .
+
+sd:Service
+      rdf:type rdfs:Class ;
+      rdfs:label "Service URL"^^xsd:string .
