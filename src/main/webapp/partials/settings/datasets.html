@@ -1,15 +1,9 @@
 
 <h2>Dataset Management</h2>
 
-<h3>Add a Dataset</h3>
-
-<form class="form-inline">
-  <input type="text" class="input-large" placeholder="Description">
-  <input type="text" class="input-large" placeholder="Endpoint">
-  <input type="text" class="input-large" placeholder="Source">
-  <button type="submit" class="btn">Add</button>
-</form>
-
+<div >
+<button ng-controller="OpenModalCtrl" type="button" class="btn btn-large btn-primary" bs-modal="'partials/modals/datasets.html'">Add new dataset</button>
+</div>
 
 <h3>Existing Dataset</h3>
 
@@ -17,12 +11,13 @@
 <thead>
   <tr>
     <th>URI</th>
-    <th>dcterms:title</th>
-    <th>dcterms:description</th>
-    <th>dcterms:contributor</th>
-		<th>dcterms:publisher</th>
-    <th>dcterms:source</th>
-    <th>dcterms:modified</th>
+    <th>title</th>
+    <th>description</th>
+    <th>contributor</th>
+		<th>publisher</th>
+    <th>source</th>
+    <th>created</th>
+    <th>updated</th>
   </tr>
 </thead>
 <tbody>
