@@ -63,8 +63,7 @@ app.config(function($routeSegmentProvider, $routeProvider) {
                 .up()
 
             .segment('account', {
-                templateUrl:'partials/account.html', 
-                controller:LoginCtrl })
+                templateUrl:'partials/account.html' })
             .segment('about', {
                 templateUrl:'partials/about.html' })
             .segment('under-construction', {

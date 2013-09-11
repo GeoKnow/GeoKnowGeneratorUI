@@ -161,7 +161,7 @@ var OpenModalCtrl = function($scope, $modal) {
 
   $scope.viaService = function() {
     // do something	
-    var modal = $modal({ß
+    var modal = $modal({
       template: "=bsModal",
       show: true,
       backdrop: 'static',
