@@ -6,14 +6,16 @@ html, body{
 }
 
 #contents{
-	width:96%;
+	position:absolute;
+	top:70px;
+	bottom:0;
+	width:100%;
 	max-width:1920px;
-	margin-left:auto;
-	margin-right:auto;
+	padding-left:20px;
 }
 
 .contents{
-	height:96%;
+	height:100%;
 }
 
 /* Navbar and elements */
@@ -145,7 +147,6 @@ a.accordion-toggle:hover{
 
 #mainwindow{
 	height:100%;
-	width:100%;
 }
 
 #main-frame{

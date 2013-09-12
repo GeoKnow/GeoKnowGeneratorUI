@@ -1,5 +1,9 @@
 <div ng-controller="ModalWindow">
 	<h3 class="green bold">Facete</h3>
+	
+    <h4 >A tool for exploring (geographical) Linked Data datasets on the Web.</h4>
+          
+	
     <a class="btn btn-primary btn-large" ng-click="OpenFullWindow()">Launch Facete</a>
 
   <!-- Modal -->
@@ -10,7 +14,9 @@
           <h5 class="modal-title green bold">Facete</h5>
         </div>
         <div class="modal-body">
-        <iframe id="mod-frame" src="http://10.0.0.90/facete"></iframe>
+        <iframe id="mod-frame" src="http://[2001:638:902:2010:0:168:35:114]:8080/facete/?service-uri=http://localhost:8890/sparql&default-graph-uri=http://localhost/lod2democonfiguration"></iframe>
+        <!-- http://localhost:8080/facete/?service-uri=http://localhost:8890/sparql&default-graph-uri=http://localhost/lod2democonfiguration -->
+        <!--  http://[2001:638:902:2010:0:168:35:114]:8080/facete/?service-uri=http://localhost:8890/sparql&default-graph-uri=http://localhost/lod2democonfiguration -->
         </div>
         <div class="modal-footer">
           <button type="button" class="btn-sm btn-success" data-dismiss="modal">Close</button>
