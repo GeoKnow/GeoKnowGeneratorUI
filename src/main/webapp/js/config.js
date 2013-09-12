@@ -16,7 +16,6 @@
 
 "use strict";
 
-// todo: use regex for "indeof" and "replace"
 // todo: geather triples by types
 
 var CONFIG = CONFIG || (function()
@@ -30,19 +29,19 @@ var CONFIG = CONFIG || (function()
 	,	RDFS                   = "http://www.w3.org/2000/01/rdf-schema#"
 	,	GKG                    = GRAPH_URI + "#"
 
-	,	NAMESPACES             = "PREFIX gkg: <" + GKG + ">"
+	,	NAMESPACES             = "PREFIX : <" + GKG + ">"
 
 	,	FORMAT                 = "application/sparql-results+json"
 	,	EOL                    = "\r\n";
 
 	var triples =
 	[	// defaults
-		[ "http://dbpedia.org/sparql",		"rdf:type",		"gkg:sparqlEndpoint"	]
-	,	[ "http://dbpedia.org/sparql",		"rdfs:label",	"DBpedia"				]
-	,	[ "http://www.openstreetmap.org",	"rdf:type",		"gkg:mapService"		]
-	,	[ "http://www.openstreetmap.org",	"rdfs:label",	"OpenStreetMap"			]
-	,	[ "http://maps.google.com",			"rdf:type",		"gkg:mapService"		]
-	,	[ "http://maps.google.com",			"rdfs:label",	"Google Maps"			]
+		[ "http://dbpedia.org/sparql",		"rdf:type",		":sparqlEndpoint"	]
+	,	[ "http://dbpedia.org/sparql",		"rdfs:label",	"DBpedia"			]
+	,	[ "http://www.openstreetmap.org",	"rdf:type",		":mapService"		]
+	,	[ "http://www.openstreetmap.org",	"rdfs:label",	"OpenStreetMap"		]
+	,	[ "http://maps.google.com",			"rdf:type",		":mapService"		]
+	,	[ "http://maps.google.com",			"rdfs:label",	"Google Maps"		]
 	];
 
 	var isLoaded = false;
@@ -73,10 +72,22 @@ var CONFIG = CONFIG || (function()
 				}
 			,	function(data)
 				{
-					function prefix(v)
+					function setPrefix(v)
 					{
-						return v.type != "uri" ? v.value
-						:	v.value.replace(RDF, "rdf:").replace(RDFS, "rdfs:").replace(GKG, "gkg:");
+						var value = v.value;
+
+						function replace(namespace, prefix)
+						{
+							var len = namespace.length;
+							return namespace == value.slice(0, len ) ? prefix + ":"  + value.slice(len) : null;
+						}
+
+						return v.type == "uri" ?
+							replace(RDF,  "rdf" )
+						||	replace(RDFS, "rdfs")
+						||	replace(GKG,  ""    )
+						||	value
+						:	value;
 					}
 
 					try
@@ -87,7 +98,7 @@ var CONFIG = CONFIG || (function()
 						for (var i = 0, c = bindings.length; i < c; ++i)
 						{
 							var binding = bindings[i];
-							triples.push([ prefix(binding.s), prefix(binding.p), prefix(binding.o) ]);
+							triples.push([ setPrefix(binding.s), setPrefix(binding.p), setPrefix(binding.o) ]);
 						}
 
 						isLoaded = true;
@@ -107,7 +118,7 @@ var CONFIG = CONFIG || (function()
 		{
 			function uri(s)
 			{
-				return s.indexOf("http://") ? s : ("<" + s + ">");
+				return s.slice(0, 7) == "http://" ? "<" + s + ">" : s;
 			}
 
 			function str(s)
