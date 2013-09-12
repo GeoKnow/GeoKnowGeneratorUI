@@ -12,7 +12,6 @@
  *   CONFIG_SPARQL_ENDPOINT           - must be set to your server
  *   CONFIG.read([success(settings)]) - load settings
  *   CONFIG.write()                   - save settings
- *   CONFIG.get()                     - get settings
  */
 
 "use strict";
@@ -46,14 +45,25 @@ var CONFIG = CONFIG || (function()
 	,	[ "http://maps.google.com",			"rdfs:label",	"Google Maps"			]
 	];
 
-	return {
-		get: function()
-		{
-			return triples;
-		}
+	var isLoaded = false;
 
-	,	read: function(success)
+	return {
+		read: function(success)
 		{
+			if (isLoaded)
+			{
+				if (success)
+					try
+					{
+						success(triples);
+					}
+					catch (e)
+					{
+						console.error(e);
+					}
+				return;
+			}
+
 			$.getJSON(CONFIG_SPARQL_ENDPOINT + "?callback=?",
 				{
 					format: FORMAT
@@ -80,11 +90,14 @@ var CONFIG = CONFIG || (function()
 							triples.push([ prefix(binding.s), prefix(binding.p), prefix(binding.o) ]);
 						}
 
+						isLoaded = true;
+
 						if (success)
 							success(triples);
 					}
 					catch (e)
 					{
+						console.error(e);
 					}
 				}
 			);
@@ -132,6 +145,7 @@ var CONFIG = CONFIG || (function()
 					}
 					catch (e)
 					{
+						console.error(e);
 					}
 				}
 			);
