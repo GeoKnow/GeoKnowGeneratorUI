@@ -4,8 +4,7 @@ var app = angular.module('app', ['app.services',
                                  'app.directives', 
                                  'ui.bootstrap',
                                  'route-segment',
-                                 'view-segment',
-                                 '$strap.directives']);
+                                 'view-segment']);
 
 app.config(function($routeSegmentProvider, $routeProvider) {
 

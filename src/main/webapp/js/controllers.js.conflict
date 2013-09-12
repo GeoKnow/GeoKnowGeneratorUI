@@ -71,10 +71,21 @@ function ModalWindow($scope) {
 	        show: true
 	    });
 	  };
-
-	  $scope.AddNewDataset = function () {
+	  
+<<<<<<< HEAD
+	  $scope.OpenFullWindowFacete = function () {
 		    $("#modalWindow").modal({
-		    	remote : "partials/modals/datasets.html",
+		    	remote : "http://[2001:638:902:2010:0:168:35:114]:8080/facete/?service-uri=http://localhost:8890/sparql&default-graph-uri=http://localhost/lod2democonfiguration",
+		        show: true
+		    });
+		  };
+	  
+	  $scope.AddNewDataset = function () {
+=======
+	  $scope.OpenFormWindow = function (template) {
+>>>>>>> 5e548cad536f362fe932ea9bcfc35052112fc927
+		    $("#modalWindow").modal({
+		    	remote : template,
 		        show: true
 		    });
 		  };
@@ -162,22 +173,4 @@ var DataSourceTabCtrl = function($scope, $window, $location) {
   
 };
 
-
-var OpenModalCtrl = function($scope, $modal) {
-
-  $scope.viaService = function() {
-    // do something	
-    var modal = $modal({
-      template: "=bsModal",
-      show: true,
-      backdrop: 'static',
-      scope: $scope
-    });
-  }
-  $scope.parentController = function(dismiss) {
-    console.warn(arguments);
-    // do something
-    dismiss();
-  }
-};
 
