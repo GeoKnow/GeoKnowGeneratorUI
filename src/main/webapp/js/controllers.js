@@ -18,8 +18,8 @@ function StackMenuCtrl($scope) {
 	      title: "Extraction and Loading",
 	      id:"extraction-loading",
 	      items: [
-	        {name: 'Import RDF data', route:'#/extraction-and-loading/import-rdf',  url:'/home/extraction-and-loading/import-rdf' },
-	        {name: 'Extract with Sparqlify', route:'#/extraction-and-loading/sparqlify',  url:'/home/extraction-and-loading/sparqlify' }]
+	        {name: 'Import RDF data', route:'#/home/extraction-and-loading/import-rdf',  url:'/home/extraction-and-loading/import-rdf' },
+	        {name: 'Extract with Sparqlify', route:'#/home/extraction-and-loading/sparqlify',  url:'/home/extraction-and-loading/sparqlify' }]
 	    },
 	    {
 	      title: "Querying and Exploration",
@@ -148,7 +148,35 @@ var GoogleMapWindow = function ($scope, $timeout, $log) {
   
   map = new google.maps.Map(documßent.getElementById('map'),
       mapOptions);
-	
+
+};
+
+var ImportFormCtrl = function($scope) {
+  $scope.sourceTypes = [
+    {value:'file', label:'File'},
+    {value:'url', label:'URL'},
+    {value:'query', label:'SPARQL Query'}
+  ];
+  $scope.updateForm = function() {
+    if($scope.sourceType.value == 'file'){
+    	$scope.fileElements = true;	
+		  $scope.urlElements = false;
+  		$scope.queryElements = false;
+    }
+    else if($scope.sourceType.value == 'url'){
+    	$scope.fileElements = false;	
+		  $scope.urlElements = true;
+  		$scope.queryElements = false;
+    }
+    else if($scope.sourceType.value == 'query'){
+    	$scope.fileElements = false;	
+		  $scope.urlElements = false;
+  		$scope.queryElements = true;
+    }
+  };
+  $scope.fileElements = false;
+  $scope.urlElements = false;
+  $scope.queryElements = false;
 };
 
 var DataSourceTabCtrl = function($scope, $window, $location) {

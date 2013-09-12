@@ -1,11 +1,61 @@
-<h2>Import RDF Data</h2>
+<h3 class="green bold">Import RDF Data</h3>
 
-User can choose the following options:
+<div ng-controller="ImportFormCtrl">
+	<form class="form-horizontal" role="form">
+		<div class="form-group">
+			<label for="source-type" class="col-lg-2 control-label">Import from a </label>
+			<div class="col-lg-10">
+	      <select id="source-type" class="form-control" ng-model="sourceType" 
+	      				ng-options="c.label for c in sourceTypes" ng-change="updateForm()">
+        </select>
+  		</div>
+		</div>
+	
+		<div class="form-group">
+			<label for="graph" class="col-lg-2 control-label">To a dataset </label>
+			<div class="col-lg-10">
+	      <select id="graph" class="form-control" ng-model="graph"></select>
+	    </div>
+  	</div>
 
-<ul>
-	<li>From a File</li>
-	<li>From a URL</li>
-	<li>From a SPARQL Endpoint</li>
-</ul>
+		<div ng-show="fileElements" class="animate-show">
+			<div class="form-group">
+	    	<label for="inputFile" class="col-lg-2 control-label">File input</label>
+	    	<div class="col-lg-10">
+			    <input type="file" id="inputFile" class="form-control">
+	  		</div>
+	  	</div>
+	  </div>
 
-The imported data will be loaded inside a graph specified by a user. 
+		<div ng-show="urlElements" class="animate-show">
+			<div class="form-group">
+	    	<label for="inputUrl" class="col-lg-2 control-label">Url input</label>
+		    <div class="col-lg-10">
+			    <input type="text" id="inputUrl" class="form-control">
+	  		</div>
+	  	</div>
+	  </div>
+
+		<div ng-show="queryElements" class="animate-show">
+			<div class="form-group">
+	    	<label for="inputEndPoint" class="col-lg-2 control-label">SPARQL EndPoint</label>
+		    <div class="col-lg-10">
+			    <input type="text" id="inputEndPoint" class="form-control">
+	  		</div>
+	  	</div>
+			<div class="form-group">
+	    	<label for="inputFile" class="col-lg-2 control-label">Query</label>
+		    <div class="col-lg-10">
+		    	<textarea class="form-control" rows="3"></textarea>
+	  		</div>
+	  	</div>
+	  </div>
+
+		<div class="form-group">
+    	<div class="col-lg-offset-2 col-lg-10">
+      	<button type="submit" class="btn btn-default">Import</button>
+    	</div>
+  	</div>
+
+	</form>
+</div>

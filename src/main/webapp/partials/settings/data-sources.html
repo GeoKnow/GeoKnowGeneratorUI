@@ -1,27 +1,69 @@
 
 <h2>Data Sources</h2>
 
-<div ng-controller="ModalWindow">
-<button type="button" class="btn btn-large btn-primary" ng-click="OpenFormWindow('partials/modals/data-sources.html')">Add new data source</button>
 
-<div class="modal fade" id="modalWindow">
-    
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-          <h5 class="modal-title green bold">Edit datas sources</h5>
-        </div>
-        <div class="modal-body">
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn-sm btn-success" data-dismiss="modal">Save</button>
-          <button type="button" class="btn-sm btn-success" data-dismiss="modal">Cancel</button>
-        </div>
-        
-    </div><!-- /.modal -->
+<h3>SPARQL Endpoint</h3>
+
+<div ng-controller="ModalWindow">
+  <button type="button" class="btn btn-large btn-primary" 
+    ng-click="OpenFormWindow('partials/modals/endpoint.html')">Add new Endpoint</button>
+
+  <div class="modal fade" id="modalWindow">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+      <h5 class="modal-title green bold">Edit Endpoint</h5>
+    </div>
+    <div class="modal-body">
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn-sm btn-success" data-dismiss="modal">Save</button>
+      <button type="button" class="btn-sm btn-success" data-dismiss="modal">Cancel</button>
+    </div>   
+  </div><!-- /.modal -->
 </div>
 
 
+<table class="table table-striped">
+<thead>
+  <tr>
+    <th>Action</th>
+    <th>Description</th>
+    <th>url</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td>
+      <button type="button" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-trash"></span></button>
+      <button type="button" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-edit"></span></button>
+    </td>
+    <td>Dbpedia</td>
+    <td>http://dbpedia.org/sparql</td>
+  </tr>
+</tbody>
+</table>
+
+
+
 <h3>Relational Databases</h3>
+
+<div ng-controller="ModalWindow">
+
+  <button type="button" class="btn btn-large btn-primary" 
+    ng-click="OpenFormWindow('partials/modals/database.html')">Add new Database</button>
+
+  <div class="modal fade" id="modalWindow">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+      <h5 class="modal-title green bold">Edit Databases</h5>
+    </div>
+    <div class="modal-body"></div>
+    <div class="modal-footer">
+      <button type="button" class="btn-sm btn-success" data-dismiss="modal">Save</button>
+      <button type="button" class="btn-sm btn-success" data-dismiss="modal">Cancel</button>
+    </div>
+  </div><!-- /.modal -->
+</div>
 
 <table class="table table-striped">
 <thead>
@@ -38,10 +80,8 @@
 <tbody>
   <tr>
     <td>
-      <ul>
-        <i class="icon-trash icon-large"></i>
-        <i class="icon-edit icon-large"></i>
-      </ul>
+      <button type="button" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-trash"></span></button>
+      <button type="button" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-edit"></span></button>
     </td>
     <td>Hotels MySQL</td>
     <td>http://localhost/</td>
@@ -53,26 +93,3 @@
 </tbody>
 </table>
 
-<h3>SPARQL Endpoint</h3>
-
-<table class="table table-striped">
-<thead>
-  <tr>
-    <th>Action</th>
-    <th>Description</th>
-    <th>url</th>
-  </tr>
-</thead>
-<tbody>
-  <tr>
-    <td>
-      <ul>
-        <i class="icon-trash icon-large"></i>
-        <i class="icon-edit icon-large"></i>
-      </ul>
-    </td>
-    <td>Dbpedia</td>
-    <td>http://dbpedia.org/sparql</td>
-  </tr>
-</tbody>
-</table>
