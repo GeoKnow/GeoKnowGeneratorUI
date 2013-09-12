@@ -72,6 +72,13 @@ function ModalWindow($scope) {
 	    });
 	  };
 	  
+	  $scope.OpenFullWindowFacete = function () {
+		    $("#modalWindow").modal({
+		    	remote : "http://[2001:638:902:2010:0:168:35:114]:8080/facete/?service-uri=http://localhost:8890/sparql&default-graph-uri=http://localhost/lod2democonfiguration",
+		        show: true
+		    });
+		  };
+	  
 	  $scope.AddNewDataset = function () {
 		    $("#modalWindow").modal({
 		    	remote : "partials/modals/datasets.html",
@@ -146,7 +153,7 @@ var GoogleMapWindow = function ($scope, $timeout, $log) {
     mapTypeId: google.maps.MapTypeId.ROADMAP
   };
   
-  map = new google.maps.Map(documßent.getElementById('map'),
+  map = new google.maps.Map(document.getElementById('map'),
       mapOptions);
 	
 };
