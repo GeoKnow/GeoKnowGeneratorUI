@@ -78,6 +78,7 @@ function ModalWindow($scope) {
        show: true
     });
   }; 
+};
 	
 app.controller('NavbarCtrl', function($scope, $location) {
 		//if($location.path === "/"){
