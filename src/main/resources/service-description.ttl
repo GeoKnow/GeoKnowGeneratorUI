@@ -27,9 +27,9 @@
     rdfs:label "GeoKnow Generator";
     dcterms:description "The GeoKnow Generator Service";
     sd:defaultGraph <http://localhost:8890/DAV>;
-    sd:namedGraph: serviceDescription;
-    sd:namedGraph: settingsGraph;
-    sd:namedGraph: schemaGraph;
+    sd:namedGraph :serviceDescription;
+    sd:namedGraph :settingsGraph;
+    sd:namedGraph :schemaGraph;
 .
 <http://localhost:8890/DAV> a sd:Graph, void:Dataset;
 		rdfs:label "Default Graph";
