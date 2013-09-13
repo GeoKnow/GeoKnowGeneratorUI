@@ -1,60 +1,110 @@
 
-<h2>Dataset Management</h2>
+<h2>Named Graphs Management</h2>
+
+<div ng-controller="GraphManagement">
 
 <div ng-controller="ModalWindow">
-<button type="button" class="btn btn-large btn-primary" ng-click="OpenFormWindow('partials/modals/datasets.html')">Add new dataset</button>
+  <button type="button" class="btn btn-large btn-primary" ng-click="OpenWindow(); new()">Add new dataset</button>
 
-<div class="modal fade" id="modalWindow">
-    
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-          <h5 class="modal-title green bold">Edit datasets</h5>
-        </div>
-        <div class="modal-body">
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn-sm btn-success" data-dismiss="modal">Save</button>
-          <button type="button" class="btn-sm btn-success" data-dismiss="modal">Cancel</button>
-        </div>
-        
-  	</div><!-- /.modal -->
-</div>
+  <div class="modal fade" id="modalWindow">
+    <form name="graphForm" class="form-horizontal" role="form" >
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h5 class="modal-title green bold">Edit Named Graph</h5>
+      </div>
 
-<h3>Existing Dataset</h3>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="name" class="col-lg-2 control-label">Name</label>
+          <div class="col-lg-10">
+            <input type="text" class="form-control" id="label" placeholder="Name" ng-model="namedgraph.name" required />
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="label" class="col-lg-2 control-label">Label</label>
+          <div class="col-lg-10">
+            <input type="text" class="form-control" id="label" placeholder="Label" ng-model="namedgraph.graph.label" required />
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="description" class="col-lg-2 control-label">Description</label>
+          <div class="col-lg-10">
+            <input type="text" class="form-control" id="description" placeholder="Description" ng-model="namedgraph.graph.description">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-lg-2 control-label">Created</label>
+          <div class="col-lg-10">
+            <p class="form-control-static">{{namedgraph.graph.created}}</p>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-lg-2 control-label">Modified</label>
+          <div class="col-lg-10">
+            <p class="form-control-static">{{namedgraph.graph.modified}}</p>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-lg-2 control-label">SPARQL Endpoint</label>
+          <div class="col-lg-10">
+            <p class="form-control-static">{{namedgraph.graph.endpoint}}</p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn-sm btn-success" data-dismiss="modal" ng-click="save()">Save</button>
+        <button type="button" class="btn-sm btn-success" data-dismiss="modal">Cancel</button>
+      </div>      
+    </form>
+ 	</div>
+
+
+<!-- 
+for each named graph the rdf would be
+:settingsGraph a sd:NamedGraph;
+    sd:name :settingsGraph;
+    sd:graph [
+              a sd:Graph, void:Dataset;
+              rdfs:label "Generator Settings";
+              dcterms:description "GeoKnow Generator settings and configurations";
+              foaf:homepage <http://localhost/#/settings/>; 
+              dcterms:modified "2013-09-12"^^xsd:date;
+              dcterms:created "2013-09-12"^^xsd:date;
+              void:sparqlEndpoint <http://localhost:8890/sparql>;
+          ];
+
+ -->
+
+<h3>Existing Graphs</h3>
 
 <table class="table table-striped">
 <thead>
   <tr>
+    <th>Action</th>
     <th>URI</th>
     <th>title</th>
     <th>description</th>
     <th>contributor</th>
-		<th>publisher</th>
     <th>source</th>
     <th>created</th>
     <th>modified</th>
   </tr>
 </thead>
 <tbody>
-  <tr>
-    <td>:DBpedia</td>
-    <td>DBPedia</td>
-    <td>RDF data extracted from Wikipedia</td>
-    <td><ul>
-    	<li>:FU_Berlin;</li>
-    	<li>:University_Leipzig;</li>
-    	<li>:OpenLink_Software;</li>
-    	<li>:DBpedia_community;</li>
-    </ul></td>
-    <td> <http://dbpedia.org/resource/Wikipedia></td>
-    <td>2008-11-17</td>
+   <tr ng-repeat="namedgraph in namedgraphs">
     <td>
-    	<ul>
-    		<i class="glyphicon glyphicon-trash"></i>
-        <i class="glyphicon glyphicon-edit"></i>
-    	</ul>
+      <button type="button" class="btn btn-default btn-xs" ng-click="edit('{{namedgraph.name}}'); OpenWindow();"><span class="glyphicon glyphicon-edit"></span></button>
+      <button type="button" class="btn btn-default btn-xs" ng-click="delete('{{namedgraph.name}}')"><span class="glyphicon glyphicon-trash"></span></button>
     </td>
+    <td>{{namedgraph.name}}</td>
+    <td>{{namedgraph.graph.label}}</td>
+    <td>{{namedgraph.graph.description}}</td>
+    <td></td>
+    <td></td>
+    <td>{{namedgraph.graph.created}}</td>
+    <td>{{namedgraph.graph.modified}}</td>
   </tr>
 </tbody>
 </table>
-
+</div><!-- /.modal -->
+</div> <!-- controller div -->

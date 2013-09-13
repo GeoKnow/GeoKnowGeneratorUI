@@ -9,34 +9,64 @@
 @prefix wv: <http://vocab.org/waiver/terms/norms> .        
 @prefix sd: <http://www.w3.org/ns/sparql-service-description#> .
 
+#
+# This file is a simulated implementation of the Service Descrioption recommendation
+# in order to describe named graphs
+# This file is to be loaded on a graph <http://generator.geoknow.eu/serviceDescription>
+# All information about datasets and named graphs is to be stored in this graph 
+# including those datasets that are on external endpoints 
+# 
+
 :GeoKnowGeneratorService a sd:Service;
     sd:endpoint <http://localhost:8890/sparql>;
     sd:supportedLanguage sd:SPARQL11Query ;
-    sd:defaultDatasetDescription [
-        a sd:Dataset;
-        dcterms:title "GeoKnow Generator";
-        dcterms:description "The GeoKnow Generator Service";
-        sd:defaultGraph :defaultGraph;
-        sd:namedGraph :settingsGraph;
-        sd:namedGraph :schemaGraph;
-     ];
+    sd:defaultDataset :default-dataset;
+    .
+
+:default-dataset a sd:Dataset;
+    rdfs:label "GeoKnow Generator";
+    dcterms:description "The GeoKnow Generator Service";
+    sd:defaultGraph <http://localhost:8890/DAV>;
+    sd:namedGraph: serviceDescription;
+    sd:namedGraph: settingsGraph;
+    sd:namedGraph: schemaGraph;
 .
-:defaultGraph a sd:Graph, void:Dataset;
-		dcterms:title "GeoKnow Generator SPARQL Endpoint Description";
-		dcterms:description "Contains a copy of this SD+VoID file!";
+<http://localhost:8890/DAV> a sd:Graph, void:Dataset;
+		rdfs:label "Default Graph";
+		dcterms:description "Default graph";
+.
+
+:serviceDescription a sd:NamedGraph;
+    sd:name :serviceDescription;
+    sd:graph [
+              a sd:Graph, void:Dataset;
+              rdfs:label "Service Description";
+              dcterms:description "This Graph contains the service description of this endpoint ";
+              dcterms:modified "2013-09-12"^^xsd:date;
+              dcterms:created "2013-09-12"^^xsd:date;
+              void:sparqlEndpoint <http://localhost:8890/sparql>;
+          ];
 .
 :settingsGraph a sd:NamedGraph;
 		sd:name :settingsGraph;
     sd:graph [
               a sd:Graph, void:Dataset;
-              dcterms:title "This Graph contains the application specific settings and configurations";
+              rdfs:label "Generator Settings";
+              dcterms:description "GeoKnow Generator settings and configurations";
               foaf:homepage <http://localhost/#/settings/>; 
+              dcterms:modified "2013-09-12"^^xsd:date;
+              dcterms:created "2013-09-12"^^xsd:date;
+              void:sparqlEndpoint <http://localhost:8890/sparql>;
           ];
 .
 :schemaGraph a sd:NamedGraph;
       sd:name :schemaGraph;
       sd:graph [
             a sd:Graph, void:Dataset;
-            dcterms:title "Integrated LDS schema";
+            rdfs:label "LDS schema";
+            dcterms:description "The Linked Data Stack schema for describing components and their configurations";
+            dcterms:modified "2013-09-12"^^xsd:date;
+            dcterms:created "2013-09-12"^^xsd:date;
+            void:sparqlEndpoint <http://localhost:8890/sparql>; 
     	];
 .

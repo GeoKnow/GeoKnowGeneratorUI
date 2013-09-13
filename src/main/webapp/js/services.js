@@ -4,6 +4,13 @@
 var module = angular.module('app.services', []);
 
 module.factory('SettingsServiceStatic', function($http) {
+
+  var NamedGraphsStatic= { namedgraphs: [
+        { name: "<http://localhost:8890/DAV>", graph: {label: "Defautl Graph", description:"", created:"2013-09-12", modified:"" }},
+        { name: "<http://generator.geoknow.eu/settingsGraph>", graph: {label: "Generator Settings", description:"", created:"2013-09-12",modified:""}},
+        { name: "<http://generator.geoknow.eu/schemaGraph>", graph: {label: "LDS Schema", description:"", created:"2013-09-12",modified:""}},
+        { name: "<http://generator.geoknow.eu/serviceDescription>", graph: {label: "Service Description", description:"", created:"2013-09-12",modified:""}}]};
+
   var SettingsService = {
 
     getComponentCategories: function() {
@@ -15,6 +22,7 @@ module.factory('SettingsServiceStatic', function($http) {
           { name: "Enriching and Data Cleaning", id:"enriching-and-cleaning" }]
       }
     },
+    
     getComponents: function() {
       return { components:
         [ { uri: "<http://geoknow.eu/resource/Virtuoso>", label: "Virtuoso", version:"6", category:"storage-querying", 
@@ -27,15 +35,47 @@ module.factory('SettingsServiceStatic', function($http) {
             url: "http://localhost/geoknow-workbench" } ] 
       };      
     },
+
     getEndpoint: function() {
-      return { url:"http://localhost:8890/sparql" };      
+      return "http://localhost:8890/sparql" ;      
     },
-    getGraphs: function() {
-      return { graphs:
-        [ { uri: "<http://generator.geoknow.eu/test-graph>", label: "test", description:"testing graphs"},
-          { uri: "<http://generator.geoknow.eu/dbpedia-import>", label: "OntoWiki", description:"has a subset of dbpedia"},
-          { uri: "<http://generator.geoknow.eu/hotles>", label: "Hotels", description:"hotels imported"}] 
-      };      
-    }}
-    return SettingsService;
+
+    getDefaultDataset: function() {
+      return "<http://generator.geoknow.eu/default-datase>" ;      
+    },
+
+    getDefaultGraph: function() {
+      return "<http://localhost:8890/DAV>";      
+    },
+
+    // get all named graphs described in the service description graph
+    getNamedGraphs: function() {
+      return NamedGraphsStatic;      
+    },
+
+  // get all named graphs described in the service description graph
+    getNamedGraph: function(name) {
+      return NamedGraphsStatic.namedgraphs[1];  // dummy allways return the same to test
+    },
+
+    // add a named graph in the store
+    add: function(namedGraph) {
+      alert("insert graph");
+      return true;
+    },
+
+    // saves a named graph in the store
+    save: function(namedGraph) {
+      alert("save graph");
+      return true;
+    },
+
+    // saves a named graph in the store
+    delete: function(namedGraph) {
+      alert("delete graph");
+      return true;
+    }
+
+  };
+  return SettingsService;
 });

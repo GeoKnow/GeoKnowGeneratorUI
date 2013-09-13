@@ -56,11 +56,6 @@ function StackMenuCtrl($scope) {
 function LoginCtrl() {}
 LoginCtrl.$inject = [];
 
-function SettingsComponentCtrl(scope, service){
-	scope.components = service.getComponents().components;
-}
-SettingsComponentCtrl.$inject = ['$scope', 'SettingsServiceStatic'];
-
 
 function ModalWindow($scope) {
 
@@ -72,7 +67,13 @@ function ModalWindow($scope) {
     });
   };
 
-  $scope.OpenFormWindow = function (template) {
+  $scope.OpenWindow = function () {
+    $("#modalWindow").modal({
+       show: true
+    });
+  }; 
+
+  $scope.OpenTemplateWindow = function (template) {
     $("#modalWindow").modal({
        remote : template,
        show: true
