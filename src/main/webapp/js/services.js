@@ -59,19 +59,19 @@ module.factory('SettingsServiceStatic', function($http) {
     },
 
     // add a named graph in the store
-    add: function(namedGraph) {
+    createGraph: function(namedGraph) {
       alert("insert graph");
       return true;
     },
 
     // saves a named graph in the store
-    save: function(namedGraph) {
+    updateGraph: function(namedGraph) {
       alert("save graph");
       return true;
     },
 
     // saves a named graph in the store
-    delete: function(namedGraph) {
+    deleteGraph: function(namedGraph) {
       alert("delete graph");
       return true;
     }

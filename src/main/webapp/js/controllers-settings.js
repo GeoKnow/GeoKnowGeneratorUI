@@ -12,6 +12,7 @@ function GraphManagement(scope, service){
 	var newGraph=true;
 	scope.new = function(){
 		// default values
+		newGraph=true;
 		var defaultEndpoint = service.getEndpoint();
 		var newGraph = { graph:{ created:"now", endpoint: defaultEndpoint }};
 		scope.namedgraph = angular.copy(newGraph);
@@ -25,13 +26,13 @@ function GraphManagement(scope, service){
 
 	scope.save = function(){
 		if(newGraph)
-			service.add(scope.namedgraph);
+			service.createGraph(scope.namedgraph);
 		else
-			service.save(scope.namedgraph);
+			service.updateGraph(scope.namedgraph);
 	};
 
 	scope.delete = function(graphName){
-		service.delete(graphName);
+		service.deleteGraph(graphName);
 	};
 }
 GraphManagement.$inject = ['$scope', 'SettingsServiceStatic'];
