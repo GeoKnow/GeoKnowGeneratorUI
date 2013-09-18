@@ -2,7 +2,25 @@
 
 var module = angular.module('app.directives', []);
 
-
+var URL_REGEXP = /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/;
+module.directive('url', function() {
+  return {
+    require: 'ngModel',
+    link: function(scope, elm, attrs, ctrl) {
+      ctrl.$parsers.unshift(function(viewValue) {
+        if (URL_REGEXP.test(viewValue)) {
+          // it is valid
+          ctrl.$setValidity('url', true);
+          return viewValue;
+        } else {
+          // it is invalid, return undefined (no model update)
+          ctrl.$setValidity('url', false);
+          return undefined;
+        }
+      });
+    }
+  };
+});
 
 /* 
 return attributes of a directive: 

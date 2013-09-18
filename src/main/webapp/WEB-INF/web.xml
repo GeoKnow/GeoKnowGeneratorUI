@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+
+<web-app xmlns="http://java.sun.com/xml/ns/j2ee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
+    version="2.4">
+
+  <display-name>GeoKnow Generator</display-name>
+  
+  <context-param> 
+    <description>Location to store uploaded file</description> 
+    <param-name>file-upload</param-name> 
+    <param-value>/uploads/</param-value> 
+  </context-param>
+
+  <context-param> 
+    <description>Maximum file size to be uploaded 50 * 1024</description> 
+    <param-name>max-file-size</param-name> 
+    <param-value>51200</param-value> 
+  </context-param>
+
+  <context-param> 
+    <description>Maximum size that will be stored in memory 4 * 1024</description> 
+    <param-name>max-mem-size</param-name> 
+    <param-value>4096</param-value>
+  </context-param>
+
+  <context-param> 
+    <description>Location to save data that is larger than maxMemSize</description> 
+    <param-name>temp-data</param-name> 
+    <param-value>/Users/alejandragarciarojas/tmp/upload/temp</param-value> 
+  </context-param>
+
+  <servlet>
+     <servlet-name>UploadServlet</servlet-name>
+     <servlet-class>UploadServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+     <servlet-name>UploadServlet</servlet-name>
+     <url-pattern>/UploadServlet</url-pattern>
+  </servlet-mapping>
+
+  <mime-mapping>
+    <extension>n3</extension>
+    <mime-type>text/n3</mime-type>
+  </mime-mapping>
+
+  <mime-mapping>
+    <extension>ttl</extension>
+    <mime-type>text/turtle</mime-type>
+  </mime-mapping>
+
+  <mime-mapping>
+    <extension>rdf</extension>
+    <mime-type>application/rdf+xml</mime-type>
+  </mime-mapping>
+
+</web-app> 

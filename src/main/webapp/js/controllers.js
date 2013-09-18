@@ -152,12 +152,17 @@ var GoogleMapWindow = function ($scope, $timeout, $log) {
 
 };
 
-var ImportFormCtrl = function($scope) {
+var ImportFormCtrl = function($scope, $http, SettingsServiceStatic) {
+
+  $scope.namedGraphs = SettingsServiceStatic.getNamedGraphs().namedgraphs;
+
   $scope.sourceTypes = [
     {value:'file', label:'File'},
     {value:'url', label:'URL'},
     {value:'query', label:'SPARQL Query'}
   ];
+  var type = '';
+
   $scope.updateForm = function() {
     if($scope.sourceType.value == 'file'){
     	$scope.fileElements = true;	
@@ -174,11 +179,58 @@ var ImportFormCtrl = function($scope) {
 		  $scope.urlElements = false;
   		$scope.queryElements = true;
     }
+    type = $scope.sourceType.value;
   };
   $scope.fileElements = false;
   $scope.urlElements = false;
   $scope.queryElements = false;
+
+  var fileUploaded= false;
+
+  $scope.onFileSelect = function($files) {
+    //$files: an array of files selected, each file has name, size, and type.
+    for (var i = 0; i < $files.length; i++) {
+      var $file = $files[i];
+      $http.uploadFile({
+        url: 'UploadServlet', //upload.php script, node.js route, or servlet uplaod url)
+        data: {myObj: $scope.myModelObj},
+        file: $file
+      }).then(function(data, status, headers, config) {
+        // file is uploaded successfully
+        console.log(data);
+        fileUploaded=true;
+      }); 
+    }
+  };
+
+  $scope.isValid= function(){
+    var valid=true;
+    if(type == 'file' && !$scope.fileForm.$invalid){
+        if(fileUploaded){
+          valid = false;
+        }
+    }
+    
+    return valid;
+  };
+
+  $scope.import = function(){
+    // validate the input fields accoding to the import type
+    if(type == 'file'){
+      if(fileUploaded){
+        alert("import file in graph");
+      }
+    }
+    else if(type == 'url'){
+      alert("import url in graph");
+    }
+    else if(type == 'query'){
+      alert("import results in graph");
+    }
+  };
+  
 };
+
 
 var DataSourceTabCtrl = function($scope, $window, $location) {
 

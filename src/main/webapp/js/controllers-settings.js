@@ -5,6 +5,7 @@ function SettingsComponentCtrl(scope, service){
 }
 SettingsComponentCtrl.$inject = ['$scope', 'SettingsServiceStatic'];
 
+
 function GraphManagement(scope, service){
 
 	scope.namedgraphs = service.getNamedGraphs().namedgraphs;

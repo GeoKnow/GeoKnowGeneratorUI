@@ -49,11 +49,22 @@ module.factory('SettingsServiceStatic', function($http) {
     },
 
     // get all named graphs described in the service description graph
+//     SELECT ?namedGraph ?name ?graph
+// WHERE {
+// ?namedGraph a sd:NamedGraph .
+// ?namedGraph sd:name ?name .
+// ?namedGraph sd:graph ?graph .
+// }
     getNamedGraphs: function() {
       return NamedGraphsStatic;      
     },
 
   // get all named graphs described in the service description graph
+//   SELECT ?s ?p
+// WHERE {
+// <http://generator.geoknow.eu/serviceDescription> sd:graph ?graph .
+// ?graph ?s ?p
+// }
     getNamedGraph: function(name) {
       return NamedGraphsStatic.namedgraphs[1];  // dummy allways return the same to test
     },

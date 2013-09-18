@@ -25,7 +25,7 @@
 
 :default-dataset a sd:Dataset;
     rdfs:label "GeoKnow Generator";
-    dcterms:description "The GeoKnow Generator Service";
+    dcterms:description "The GeoKnow Generator Service"^^xsd:string;
     sd:defaultGraph <http://localhost:8890/DAV>;
     sd:namedGraph :serviceDescription;
     sd:namedGraph :settingsGraph;
@@ -33,15 +33,15 @@
 .
 <http://localhost:8890/DAV> a sd:Graph, void:Dataset;
 		rdfs:label "Default Graph";
-		dcterms:description "Default graph";
+		dcterms:description "Default graph"^^xsd:string;
 .
 
 :serviceDescription a sd:NamedGraph;
     sd:name :serviceDescription;
     sd:graph [
               a sd:Graph, void:Dataset;
-              rdfs:label "Service Description";
-              dcterms:description "This Graph contains the service description of this endpoint ";
+              rdfs:label "Service Description"^^xsd:string;
+              dcterms:description "This Graph contains the service description of this endpoint"^^xsd:string;
               dcterms:modified "2013-09-12"^^xsd:date;
               dcterms:created "2013-09-12"^^xsd:date;
               void:sparqlEndpoint <http://localhost:8890/sparql>;
@@ -51,8 +51,8 @@
 		sd:name :settingsGraph;
     sd:graph [
               a sd:Graph, void:Dataset;
-              rdfs:label "Generator Settings";
-              dcterms:description "GeoKnow Generator settings and configurations";
+              rdfs:label "Generator Settings"^^xsd:string;
+              dcterms:description "GeoKnow Generator settings and configurations"^^xsd:string;
               foaf:homepage <http://localhost/#/settings/>; 
               dcterms:modified "2013-09-12"^^xsd:date;
               dcterms:created "2013-09-12"^^xsd:date;
@@ -63,8 +63,8 @@
       sd:name :schemaGraph;
       sd:graph [
             a sd:Graph, void:Dataset;
-            rdfs:label "LDS schema";
-            dcterms:description "The Linked Data Stack schema for describing components and their configurations";
+            rdfs:label "LDS schema"^^xsd:string;
+            dcterms:description "The Linked Data Stack schema for describing components and their configurations"^^xsd:string;
             dcterms:modified "2013-09-12"^^xsd:date;
             dcterms:created "2013-09-12"^^xsd:date;
             void:sparqlEndpoint <http://localhost:8890/sparql>; 

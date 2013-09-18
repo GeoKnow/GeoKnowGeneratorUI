@@ -4,7 +4,8 @@ var app = angular.module('app', ['app.services',
                                  'app.directives', 
                                  'ui.bootstrap',
                                  'route-segment',
-                                 'view-segment']);
+                                 'view-segment', 
+                                 'angularFileUpload']);
 
 app.config(function($routeSegmentProvider, $routeProvider) {
 
