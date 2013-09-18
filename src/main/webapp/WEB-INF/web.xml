@@ -7,29 +7,37 @@
 
   <display-name>GeoKnow Generator</display-name>
   
+  <!-- File Upload parameters  -->
   <context-param> 
     <description>Location to store uploaded file</description> 
     <param-name>file-upload</param-name> 
     <param-value>/uploads/</param-value> 
   </context-param>
-
   <context-param> 
     <description>Maximum file size to be uploaded 50 * 1024</description> 
     <param-name>max-file-size</param-name> 
     <param-value>51200</param-value> 
   </context-param>
-
   <context-param> 
     <description>Maximum size that will be stored in memory 4 * 1024</description> 
     <param-name>max-mem-size</param-name> 
     <param-value>4096</param-value>
   </context-param>
-
   <context-param> 
     <description>Location to save data that is larger than maxMemSize</description> 
     <param-name>temp-data</param-name> 
     <param-value>/Users/alejandragarciarojas/tmp/upload/temp</param-value> 
   </context-param>
+  
+  <servlet>
+     <servlet-name>UploadServlet</servlet-name>
+     <servlet-class>UploadServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+     <servlet-name>UploadServlet</servlet-name>
+     <url-pattern>/UploadServlet</url-pattern>
+  </servlet-mapping>
 
   <servlet>
      <servlet-name>UploadServlet</servlet-name>
@@ -40,6 +48,7 @@
      <servlet-name>UploadServlet</servlet-name>
      <url-pattern>/UploadServlet</url-pattern>
   </servlet-mapping>
+
 
   <mime-mapping>
     <extension>n3</extension>

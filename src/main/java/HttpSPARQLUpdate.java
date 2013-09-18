@@ -1,6 +1,8 @@
 import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
@@ -35,20 +37,27 @@ public class HttpSPARQLUpdate {
         // Construct data
         //  Virtuoso does not support INSERT DATA {graph <graph> {}} thus a default-graph-uri  parameter has to be passed
         // TODO: make store independent or implement special cases such as Virtuoso
-        String data = "query=" + URLEncoder.encode(this.getUpdateString(), "UTF-8") + "&"+
+        String urlParameters = "query=" + URLEncoder.encode(this.getUpdateString(), "UTF-8") + "&"+
                 	  "default-graph-uri="+ URLEncoder.encode(this.getGraph(), "UTF-8");
-        System.out.println(data);
-        // Send data
-        URL url = new URL(endpoint);
-    
-        URLConnection conn = url.openConnection();
-        conn.setDoOutput(true);
-        OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
-        wr.write(data);
+       
+        URL url = new URL(endpoint); 
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();           
+        connection.setDoOutput(true);
+        connection.setDoInput(true);
+        connection.setInstanceFollowRedirects(false); 
+        connection.setRequestMethod("POST"); 
+        connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded"); 
+        connection.setRequestProperty("charset", "utf-8");
+        connection.setRequestProperty("Content-Length", "" + Integer.toString(urlParameters.getBytes().length));
+        connection.setUseCaches (false);
+
+        DataOutputStream wr = new DataOutputStream(connection.getOutputStream ());
+        wr.writeBytes(urlParameters);
         wr.flush();
-    
+
+        
         // Get the response
-        BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+        BufferedReader rd = new BufferedReader(new InputStreamReader(connection.getInputStream()));
         String response = "";
         String line;
         while ((line = rd.readLine()) != null) {
