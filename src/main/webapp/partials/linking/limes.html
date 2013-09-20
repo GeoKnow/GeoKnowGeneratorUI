@@ -23,14 +23,14 @@
   <!-- Modal -->
   <div class="modal fade" id="modalWindow">
         <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <button type="button" class="close" ng-click="close()" aria-hidden="true">&times;</button>
           <h5 class="modal-title green bold">LIMES - SAIM</h5>
         </div>
         <div class="modal-body">
         <iframe id="mod-frame" src="http://139.18.2.136:8080/SAIM"></iframe>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn-sm btn-success" data-dismiss="modal">Close</button>
+          <button type="button" class="btn-sm btn-success" ng-click="close()">Close</button>
         </div>
   </div><!-- /.modal -->
   </div>

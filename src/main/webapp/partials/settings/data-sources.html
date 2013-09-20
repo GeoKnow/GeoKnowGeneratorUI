@@ -10,14 +10,14 @@
 
   <div class="modal fade" id="modalWindow">
     <div class="modal-header">
-      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+      <button type="button" class="close" ng-click="close()" aria-hidden="true">&times;</button>
       <h5 class="modal-title green bold">Edit Endpoint</h5>
     </div>
     <div class="modal-body">
     </div>
     <div class="modal-footer">
-      <button type="button" class="btn-sm btn-success" data-dismiss="modal">Save</button>
-      <button type="button" class="btn-sm btn-success" data-dismiss="modal">Cancel</button>
+      <button type="button" class="btn-sm btn-success" ng-click="close()">Save</button>
+      <button type="button" class="btn-sm btn-success" ng-click="close()">Cancel</button>
     </div>   
   </div><!-- /.modal -->
 </div>

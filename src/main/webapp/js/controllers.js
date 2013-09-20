@@ -78,7 +78,15 @@ function ModalWindow($scope) {
        remote : template,
        show: true
     });
-  }; 
+  };
+  
+  $scope.close = function () {
+	  $("#modalWindow").modal('hide');
+	  $('body').removeClass('modal-open');
+	  $('.modal-backdrop').slideUp();
+	  $('.modal-scrollable').slideUp();
+  };
+  
 };
 	
 app.controller('NavbarCtrl', function($scope, $location) {
