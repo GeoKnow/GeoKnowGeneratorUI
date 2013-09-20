@@ -9,7 +9,7 @@
   <div class="modal fade" id="modalWindow">
     <form name="graphForm" class="form-horizontal" role="form" novalidate>
       <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <button type="button" class="close" ng-click="close()" aria-hidden="true">&times;</button>
         <h5 class="modal-title green bold">Edit Named Graph</h5>
       </div>
 
@@ -52,9 +52,9 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn-sm btn-success" data-dismiss="modal" ng-click="save()"
+        <button type="button" class="btn-sm btn-success" ng-click="close()" ng-click="save()"
         ng-disabled="graphForm.$invalid || isUnchanged(namedgraph)">Save</button>
-        <button type="button" class="btn-sm btn-default " data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn-sm btn-default " ng-click="close()">Cancel</button>
       </div>      
     </form>
  	</div>

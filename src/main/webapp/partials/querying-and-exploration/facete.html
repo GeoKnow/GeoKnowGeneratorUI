@@ -10,7 +10,7 @@
   <div class="modal fade" id="modalWindow">
     
         <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <button type="button" class="close" ng-click="close()" aria-hidden="true">&times;</button>
           <h5 class="modal-title green bold">Facete</h5>
         </div>
         <div class="modal-body">
@@ -19,7 +19,7 @@
         <!--  http://[2001:638:902:2010:0:168:35:114]:8080/facete/?service-uri=http://localhost:8890/sparql&default-graph-uri=http://localhost/lod2democonfiguration -->
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn-sm btn-success" data-dismiss="modal">Close</button>
+          <button type="button" class="btn-sm btn-success" ng-click="close()">Close</button>
         </div>
         
   	</div><!-- /.modal -->
