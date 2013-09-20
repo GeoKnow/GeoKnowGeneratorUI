@@ -3,6 +3,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -15,6 +16,7 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.codehaus.jackson.map.ObjectMapper;
 
 public class UploadServlet extends HttpServlet {
 
@@ -33,17 +35,20 @@ public class UploadServlet extends HttpServlet {
       tempData = getServletContext().getInitParameter("temp-data");
    }
    
-   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-      doPost(request, response);
-   }
-
    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-      response.setContentType("text/html");
+      
+	  response.setContentType("application/json");
       PrintWriter out = response.getWriter();
 
+      JsonResponse res = new JsonResponse();
+      ObjectMapper mapper = new ObjectMapper();
+      
       boolean isMultipartContent = ServletFileUpload.isMultipartContent(request);
       if (!isMultipartContent) {
-         out.println("Not a file.");
+    	 res.setStatus("FAIL");
+         res.setMessage("Not a file.");
+         mapper.writeValue(out, res); 
+   	     out.close();
          return;
       }
      
@@ -74,9 +79,14 @@ public class UploadServlet extends HttpServlet {
 
          Iterator<FileItem> it = fields.iterator();
          if (!it.hasNext()) {
-            out.println("No fields found");
+            res.setStatus("FAIL");
+            res.setMessage("No fields found");
+            mapper.writeValue(out, res); 
+      	  	out.close();
             return;
          }
+         
+         List<String> uploadedFiles= new ArrayList<String>();
          
          for (FileItem diskFileItem : fields) {
        	   // Exclude the form fields
@@ -103,14 +113,23 @@ public class UploadServlet extends HttpServlet {
            	   fileOutputStream.flush();
            	   fileOutputStream.close();
            } catch (FileNotFoundException e) {
-             e.printStackTrace(System.err);
+        	   res.setStatus("FAIL");
+               res.setMessage(e.getMessage());
+               return;
            }  
            
-           out.println("Successfuly uploaded "+seshdir + File.separator+ diskFileItem.getName());
+           uploadedFiles.add(file.getName());
          }
+         res.setResult(uploadedFiles);
+         res.setStatus("SUCESS");
+         res.setMessage("Successfuly uploaded");
          
       } catch (FileUploadException e) {
-         e.printStackTrace();
+    	  res.setStatus("FAIL");
+          res.setMessage(e.getMessage());
       }
+      
+	  mapper.writeValue(out, res); 
+	  out.close();
    }
 }

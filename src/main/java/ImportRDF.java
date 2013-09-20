@@ -1,4 +1,5 @@
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 
@@ -19,10 +20,11 @@ public class ImportRDF extends HttpServlet {
 	 */
 	private static final long serialVersionUID = 1L;
 	private String rdfUrl;
-	private String rdfFile;
+	private String rdfFiles;
 	private String endpoint;
 	private String graph;
-	
+	private String rdfQuery;
+	private String rdfQueryEndpoint;
 
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 	      doPost(request, response);
@@ -35,22 +37,32 @@ public class ImportRDF extends HttpServlet {
 	    
 		PrintWriter out = response.getWriter();
 		
-		rdfUrl = request.getParameter("url");
-	    rdfFile = request.getParameter("file-location");
-	    endpoint = request.getParameter("endpoint");
-	    graph = request.getParameter("graph");
-	    
-	    JsonResponse res = new JsonResponse();
-	    
+		// get the paht where files were uploaded 
+		String filePath = getServletContext().getRealPath("/") + getServletContext().getInitParameter("file-upload").replaceFirst(File.separator,""); 
+		JsonResponse res = new JsonResponse();
 	    ObjectMapper mapper = new ObjectMapper();
 	 
-	    String source = ((rdfFile == null) ? rdfUrl : rdfFile);
+		rdfUrl   = request.getParameter("rdfUrl");
+		endpoint = request.getParameter("endpoint");
+	    graph    = request.getParameter("graph");
+	    rdfFiles = request.getParameter("rdfFiles");
+	    rdfQuery    = request.getParameter("rdfQuery");
+	    rdfQueryEndpoint = request.getParameter("rdfQueryEndpoint");
+	    
+	    System.out.println("rdfUrl   " +rdfUrl);
+	    System.out.println("rdfFiles " +rdfFiles);
+	    System.out.println("endpoint " +endpoint);
+	    System.out.println("graph    " +graph);
+	    	    
+	    String source = ((rdfFiles == null) ? rdfUrl : filePath+rdfFiles);
 	    
 		if(source != null){
 			try {
-				httpUpdate(endpoint, graph, rdfFile);
+				String file = source;
+				System.out.println("import    " +file);
+				httpUpdate(endpoint, graph, file);
 				res.setStatus("SUCESS");
-				res.setMessage("Nothing to import");
+				res.setMessage("File Imported");
 				   
 			} catch (Exception e) {
 				res.setStatus("FAIL");
@@ -74,23 +86,20 @@ public class ImportRDF extends HttpServlet {
 		
 		Model model = ModelFactory.createDefaultModel() ; 
 		model.read(source) ;
-		     
+	
 		String queryString="INSERT {  ";
 		
 		ByteArrayOutputStream os = new ByteArrayOutputStream();
 		model.write(os, "N-TRIPLES");
 		queryString += os.toString();
 		os.close();
-		model.close();
-		   
+		
 		queryString += "}";
 		
 		HttpSPARQLUpdate p = new HttpSPARQLUpdate();
         p.setEndpoint(endpoint);
         p.setGraph(graph);
         p.setUpdateString(queryString);
-        
-     
         
         boolean response = p.execute();
         if (!response)  throw new Exception("UPDATE/SPARQL failed: " + queryString);

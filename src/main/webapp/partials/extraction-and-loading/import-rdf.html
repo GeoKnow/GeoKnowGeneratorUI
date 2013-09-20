@@ -1,5 +1,12 @@
 <h3 class="green bold">Import RDF Data</h3>
 
+
+<!-- Subscribe to all flash messages. -->
+<div flash-alert active-class="in" class="alert fade" duration="10000">
+	<button type="button" class="close" ng-click="hide()">&times;</button>
+  <span class="alert-message">{{flash.message}}</span>
+</div>
+
 <div ng-controller="ImportFormCtrl">
 
 	<form class="form-horizontal" role="form">
@@ -27,14 +34,18 @@
 			<div class="form-group">
 	    	<label for="inputFile" class="col-lg-2 control-label">File input</label>
 	    	<div class="col-lg-10">
-			    <!-- <input type="text" ng-model="myModelObj"> -->
 				  <!-- <input type="file" class="form-control" ng-file-select="onFileSelect($files)" > -->
-				  <input type="file" class="form-control" ng-file-select="onFileSelect($files)" multiple>
+				  <input type="file" class="form-control" ng-file-select="onFileSelect($files)" multiple name="fileName"
+				  				accept=".nt, .n3, .ttl, .rdf">
+				  <div class="error" ng-show="uploadedError()">Invalid:
+          	<span>{{uploadMessage}}</span>
+        	</div>
 	  		</div>
 	  	</div>
 	  	<div class="form-group">
     		<div class="col-lg-offset-2 col-lg-10">
-      		<button class="btn btn-default" ng-click="import()" ng-disabled="isValid()">Import</button>
+      		<button class="btn btn-default" ng-click="import()" ng-disabled="isInvalid()||isImporting()">Import</button>
+      		<span ng-show="isImporting()"> Importing ...</span>
     		</div>
   	</div>
 	  </form>
@@ -63,7 +74,8 @@
 	  	</div>
 	  	<div class="form-group">
     		<div class="col-lg-offset-2 col-lg-10">
-      		<button class="btn btn-default" ng-click="import()" ng-disabled="urlForm.$invalid || isUnchanged(importUrl)">Import</button>
+      		<button class="btn btn-default" ng-click="import()" ng-disabled="urlForm.$invalid || isUnchanged(importUrl) || isImporting()">Import</button>
+      		<span ng-show="isImporting()"> Importing ...</span>
     		</div>
   		</div>
 		</form>
@@ -101,10 +113,12 @@
 	  	</div>
 	  	<div class="form-group">
     		<div class="col-lg-offset-2 col-lg-10">
-      		<button class="btn btn-default" ng-click="import()" ng-disabled="sparqlForm.$invalid || isUnchanged(importSparql)">Import</button>
+      		<button class="btn btn-default" ng-click="import()" ng-disabled="sparqlForm.$invalid || isUnchanged(importSparql) || isImporting()">Import</button>
+      		<span ng-show="isImporting()"> Importing ...</span>
     		</div>
   		</div>	
 	  </form>
 	</div>
+
 
 </div>

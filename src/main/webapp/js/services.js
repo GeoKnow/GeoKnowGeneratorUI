@@ -6,10 +6,11 @@ var module = angular.module('app.services', []);
 module.factory('SettingsServiceStatic', function($http) {
 
   var NamedGraphsStatic= { namedgraphs: [
-        { name: "<http://localhost:8890/DAV>", graph: {label: "Defautl Graph", description:"", created:"2013-09-12", modified:"" }},
-        { name: "<http://generator.geoknow.eu/settingsGraph>", graph: {label: "Generator Settings", description:"", created:"2013-09-12",modified:""}},
-        { name: "<http://generator.geoknow.eu/schemaGraph>", graph: {label: "LDS Schema", description:"", created:"2013-09-12",modified:""}},
-        { name: "<http://generator.geoknow.eu/serviceDescription>", graph: {label: "Service Description", description:"", created:"2013-09-12",modified:""}}]};
+        { name: "http://localhost:8890/DAV", graph: {label: "Defautl Graph", description:"", created:"2013-09-12", modified:"" }},
+        { name: "http://generator.geoknow.eu/tests", graph: {label: "Testing Graph", description:"", created:"2013-09-12", modified:"" }},
+        { name: "http://generator.geoknow.eu/settingsGraph", graph: {label: "Generator Settings", description:"", created:"2013-09-12",modified:""}},
+        { name: "http://generator.geoknow.eu/schemaGraph", graph: {label: "LDS Schema", description:"", created:"2013-09-12",modified:""}},
+        { name: "http://generator.geoknow.eu/serviceDescription", graph: {label: "Service Description", description:"", created:"2013-09-12",modified:""}}]};
 
   var SettingsService = {
 
@@ -37,11 +38,7 @@ module.factory('SettingsServiceStatic', function($http) {
     },
 
     getEndpoint: function() {
-      return "http://localhost:8890/sparql" ;      
-    },
-
-    getDefaultDataset: function() {
-      return "<http://generator.geoknow.eu/default-datase>" ;      
+      return "http://10.0.0.64:8890/sparql" ;      
     },
 
     getDefaultGraph: function() {
