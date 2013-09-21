@@ -6,10 +6,10 @@ var module = angular.module('app.services', []);
 module.factory('SettingsServiceStatic', function($http) {
 
   var NamedGraphsStatic= { namedgraphs: [
-        { name: "<http://localhost:8890/DAV>", graph: {label: "Defautl Graph", description:"", created:"2013-09-12", modified:"" }},
-        { name: "<http://generator.geoknow.eu/settingsGraph>", graph: {label: "Generator Settings", description:"", created:"2013-09-12",modified:""}},
-        { name: "<http://generator.geoknow.eu/schemaGraph>", graph: {label: "LDS Schema", description:"", created:"2013-09-12",modified:""}},
-        { name: "<http://generator.geoknow.eu/serviceDescription>", graph: {label: "Service Description", description:"", created:"2013-09-12",modified:""}}]};
+        { name: "<http://localhost:8890/DAV>", uri: "http://localhost:8890/DAV", graph: {label: "Defautl Graph", description:"", created:"2013-09-12", modified:"" }},
+        { name: "<http://generator.geoknow.eu/settingsGraph>", uri: "http://generator.geoknow.eu/settingsGraph", graph: {label: "Generator Settings", description:"", created:"2013-09-12",modified:""}},
+        { name: "<http://generator.geoknow.eu/schemaGraph>", uri: "http://generator.geoknow.eu/schemaGraph", graph: {label: "LDS Schema", description:"", created:"2013-09-12",modified:""}},
+        { name: "<http://generator.geoknow.eu/serviceDescription>", uri: "http://generator.geoknow.eu/serviceDescription", graph: {label: "Service Description", description:"", created:"2013-09-12",modified:""}}]};
 
   var SettingsService = {
 

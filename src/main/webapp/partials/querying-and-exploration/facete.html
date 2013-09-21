@@ -1,10 +1,31 @@
 <div ng-controller="ModalWindow">
+	
+    
+    <div class="col-lg-8">
 	<h3 class="green bold">Facete</h3>
 	
-    <h4 >A tool for exploring (geographical) Linked Data datasets on the Web.</h4>
-          
+    <b>A tool for exploring (geographical) Linked Data datasets on the Web.</b>
+    <br>
+    <br>
+    <p>To get started select a data set from the drop down menu.</p>
+	<form class="form-horizontal InputForm" role="form">
+	  <div class="form-group">
+	    <label for="ServiceURI">Service URI</label>
+	    <input type="url" class="form-control" id="ServiceURI" disabled="disabled" ng-model="facete.service"></input>
+	  </div>
 	
-    <a class="btn btn-primary btn-large" ng-click="OpenFullWindow()">Launch Facete</a>
+	<div class="form-group">
+	    <label for="DataSet">DataSet</label>
+			<select id="DataSet" class="selectpicker" ng-model="faceteds.dataset" 
+			ng-options="namedgraph.uri as namedgraph.uri for namedgraph in namedGraphs">
+			</select>
+	</div>
+
+	  <div class="form-group">
+	  <a class="btn btn-primary btn-large" ng-click="OpenFullWindow()">Launch Facete</a>
+	  </div>
+	</form>
+	</div>
 
   <!-- Modal -->
   <div class="modal fade" id="modalWindow">
@@ -14,7 +35,7 @@
           <h5 class="modal-title green bold">Facete</h5>
         </div>
         <div class="modal-body">
-        <iframe id="mod-frame" src="http://[2001:638:902:2010:0:168:35:114]:8080/facete/?service-uri=http://localhost:8890/sparql&default-graph-uri=http://localhost/lod2democonfiguration"></iframe>
+        <iframe id="mod-frame" src="http://[2001:638:902:2010:0:168:35:114]:8080/facete/?service-uri={{facete.service}}&default-graph-uri={{faceteds.dataset}}"></iframe>
         <!-- http://localhost:8080/facete/?service-uri=http://localhost:8890/sparql&default-graph-uri=http://localhost/lod2democonfiguration -->
         <!--  http://[2001:638:902:2010:0:168:35:114]:8080/facete/?service-uri=http://localhost:8890/sparql&default-graph-uri=http://localhost/lod2democonfiguration -->
         </div>

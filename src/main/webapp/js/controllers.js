@@ -57,7 +57,7 @@ function LoginCtrl() {}
 LoginCtrl.$inject = [];
 
 
-function ModalWindow($scope) {
+var ModalWindow = function ($scope, SettingsServiceStatic) {
 
   $scope.OpenFullWindow = function () {
     $("#modalWindow").modal({
@@ -86,6 +86,12 @@ function ModalWindow($scope) {
 	  $('.modal-backdrop').slideUp();
 	  $('.modal-scrollable').slideUp();
   };
+  
+  //Settings for Facete
+  $scope.namedGraphs = SettingsServiceStatic.getNamedGraphs().namedgraphs;
+  $scope.facete = {service : 'http://localhost:8890/sparql'};
+  $scope.faceteds = {dataset : $scope.namedGraphs[0].uri};
+  $(".alert").alert();
   
 };
 	

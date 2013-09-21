@@ -162,3 +162,32 @@ a.accordion-toggle:hover{
 	  height: 100%;
 	  width: 97%;
 }
+
+/* Forms */
+
+.InputForm{
+	  	margin-left: 0;
+		margin-right: 0;
+		border: 1px solid #ddd;
+		border-radius: 4px 4px 0 0;
+		box-shadow: none;
+		padding:20px 40px 20px 40px;
+}
+
+/* Selects */
+
+#DataSet {
+   background-color: #FFFFFF;
+    border: 1px solid #CCCCCC;
+    border-radius: 4px 4px 4px 4px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;
+    color: #666666;
+    display: block;
+    font-size: 14px;
+    height: 38px;
+    line-height: 1.42857;
+    padding: 8px 12px;
+    transition: border-color 0.15s ease-in-out 0s, box-shadow 0.15s ease-in-out 0s;
+    vertical-align: middle;
+    width: 100%;
+}
