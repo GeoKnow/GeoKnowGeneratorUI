@@ -1,10 +1,8 @@
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLConnection;
 import java.net.URLEncoder;
 
 /**
@@ -40,6 +38,7 @@ public class HttpSPARQLUpdate {
         String urlParameters = "query=" + URLEncoder.encode(this.getUpdateString(), "UTF-8") + "&"+
                 	  "default-graph-uri="+ URLEncoder.encode(this.getGraph(), "UTF-8");
        
+        
         URL url = new URL(endpoint); 
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();           
         connection.setDoOutput(true);
@@ -54,22 +53,24 @@ public class HttpSPARQLUpdate {
         DataOutputStream wr = new DataOutputStream(connection.getOutputStream ());
         wr.writeBytes(urlParameters);
         wr.flush();
-
+		wr.close();
+ 
+		int responseCode = connection.getResponseCode();
+		System.out.println("\nSending 'POST' request to URL : " + url);
+		System.out.println("Response Code : " + responseCode);
+		System.out.println("Response Message : " + connection.getResponseMessage());
+		
+ 		BufferedReader in = new BufferedReader(
+		        new InputStreamReader(connection.getInputStream()));
+		String inputLine;
+		StringBuffer response = new StringBuffer();
+ 
+		while ((inputLine = in.readLine()) != null) {
+			response.append(inputLine);
+		}
+		in.close();
         
-        // Get the response
-        BufferedReader rd = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-        String response = "";
-        String line;
-        while ((line = rd.readLine()) != null) {
-            response += line;
-        }
-        
-        wr.close();
-        rd.close();
-        
-        boolean res = false;
-        if (response.contains("done")) res=true;
-        
+        boolean res = true;      
         return res;
     }
 

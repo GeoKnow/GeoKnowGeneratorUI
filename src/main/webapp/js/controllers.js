@@ -90,8 +90,7 @@ var ModalWindow = function ($scope, SettingsServiceStatic) {
   //Settings for Facete
   $scope.namedGraphs = SettingsServiceStatic.getNamedGraphs().namedgraphs;
   $scope.facete = {service : 'http://localhost:8890/sparql'};
-  $scope.faceteds = {dataset : $scope.namedGraphs[0].uri};
-  $(".alert").alert();
+  $scope.faceteds = {dataset : $scope.namedGraphs[0].name};
   
 };
 	
@@ -166,9 +165,14 @@ var GoogleMapWindow = function ($scope, $timeout, $log) {
 
 };
 
-var ImportFormCtrl = function($scope, $http, SettingsServiceStatic) {
+var ImportFormCtrl = function($scope, $http, SettingsServiceStatic, flash) {
 
   $scope.namedGraphs = SettingsServiceStatic.getNamedGraphs().namedgraphs;
+  $scope.uploadMessage = '';
+  
+  var uploadError = false;
+  var importing = false;
+  var uploadedFiles = null;
 
   $scope.sourceTypes = [
     {value:'file', label:'File'},
@@ -198,51 +202,109 @@ var ImportFormCtrl = function($scope, $http, SettingsServiceStatic) {
   $scope.fileElements = false;
   $scope.urlElements = false;
   $scope.queryElements = false;
-
-  var fileUploaded= false;
-
+  
   $scope.onFileSelect = function($files) {
     //$files: an array of files selected, each file has name, size, and type.
     for (var i = 0; i < $files.length; i++) {
       var $file = $files[i];
       $http.uploadFile({
         url: 'UploadServlet', //upload.php script, node.js route, or servlet uplaod url)
-        data: {myObj: $scope.myModelObj},
         file: $file
-      }).then(function(data, status, headers, config) {
+      }).then(function(response, status, headers, config) {
         // file is uploaded successfully
-        console.log(data);
-        fileUploaded=true;
+        if(response.data.status=="FAIL"){
+          uploadError = true;
+          $scope.uploadMessage=response.data.message;
+        }
+        else {
+          uploadError = false;
+          uploadedFiles = $file.name;
+        }
       }); 
     }
   };
 
-  $scope.isValid= function(){
-    var valid=true;
-    if(type == 'file' && !$scope.fileForm.$invalid){
-        if(fileUploaded){
-          valid = false;
+  $scope.uploadedError =  function(){
+    return uploadError;
+  };
+
+  $scope.isImporting =  function(){
+    return importing;
+  };
+  $scope.isInvalid = function(){
+    var invalid =true;
+    if(!$scope.fileForm.$invalid){
+        if(uploadedFiles!= null){
+          invalid = false;
         }
     }
-    
-    return valid;
+    return invalid;
   };
 
   $scope.import = function(){
     // validate the input fields accoding to the import type
+    var parameters;
+    importing = true;
     if(type == 'file'){
-      if(fileUploaded){
-        alert("import file in graph");
-      }
+      parameters ={
+        rdfFiles: uploadedFiles, 
+        endpoint: SettingsServiceStatic.getEndpoint(), 
+        graph: $scope.importFile.graph 
+      };
+      
     }
     else if(type == 'url'){
-      alert("import url in graph");
+      parameters ={
+        rdfUrl: $scope.importUrl.inputUrl, 
+        endpoint: SettingsServiceStatic.getEndpoint(), 
+        graph: $scope.importUrl.graph 
+      };
+
     }
     else if(type == 'query'){
-      alert("import results in graph");
+      parameters ={
+        rdfQuery: $scope.importSparql.sparqlQuery,
+        rdfQueryEndpoint: $scope.importSparql.endPoint, 
+        endpoint: SettingsServiceStatic.getEndpoint(), 
+        graph: $scope.importSparql.graph 
+      };
     }
+    $http({
+        url: 'ImportRDF', 
+        method: "POST",
+        params: parameters,
+        dataType: "json",
+        contentType: "application/json; charset=utf-8"
+      })
+      .success(function (data, status, headers, config){
+        if(data.status=="FAIL"){
+          flash.error = data.message;
+          importing = false;
+        }
+        else{
+          flash.success = data.message;
+          $scope.resetValues();
+        }
+      })
+      .error(function(data, status, headers, config) {
+          flash.error = data;
+          $scope.resetValues();
+      });
   };
-  
+
+  $scope.resetValues = function(){
+    uploadError = false;
+    uploadedFiles = null;
+    importing = false;
+
+    $scope.urlForm.$setPristine();
+    $scope.fileForm.$setPristine();
+    $scope.sparqlForm.$setPristine();
+
+    $scope.importFile = {file:"", graph:"?"};
+    $scope.importUrl = {url:"", graph:"?"};
+    $scope.importSparql = {endpoint:"", sparqlQuery:"", graph:"?"};
+  }
 };
 
 
@@ -256,7 +318,6 @@ var DataSourceTabCtrl = function($scope, $window, $location) {
     }
   
 };
-
 
 var OpenModalCtrl = function($scope, $modal) {
 
@@ -275,4 +336,3 @@ var OpenModalCtrl = function($scope, $modal) {
     dismiss();
   }
 };
-
