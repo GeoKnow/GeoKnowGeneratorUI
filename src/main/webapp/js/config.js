@@ -9,7 +9,7 @@
  *   GRANT EXECUTE ON DB.DBA.L_O_LOOK TO "SPARQL"
  *
  * usage:
- *   CONFIG_SPARQL_ENDPOINT           - must be set to your server
+ *   ENDPOINT                         - must be set to your server
  *   CONFIG.read([success(settings)]) - load settings
  *   CONFIG.write()                   - save settings
  *   CONFIG.select(property, value)   - select settings
@@ -19,9 +19,9 @@
 
 var CONFIG = CONFIG || (function()
 {
-	var CONFIG_SPARQL_ENDPOINT = "http://localhost:8890/sparql"
-	,	GRAPH_URI              = "http://generator.geoknow.eu"
-	,	NS                     = GRAPH_URI + "#";
+	var ENDPOINT  = "http://localhost:8890/sparql"
+	,	GRAPH_URI = "http://generator.geoknow.eu"
+	,	NS        = GRAPH_URI + "#";
 
 	var namespaces =
 	{
@@ -75,7 +75,17 @@ var CONFIG = CONFIG || (function()
 	var isLoaded = false;
 
 	return {
-		select: function(property, value)
+		getEndpoint: function()
+		{
+			return ENDPOINT;
+		}
+
+	,	getGraph: function()
+		{
+			return GRAPH;
+		}
+
+	,	select: function(property, value)
 		{
 			var elements = {};
 
@@ -111,7 +121,7 @@ var CONFIG = CONFIG || (function()
 				return;
 			}
 
-			$.getJSON(CONFIG_SPARQL_ENDPOINT + "?callback=?",
+			$.getJSON(ENDPOINT + "?callback=?",
 				{
 					format: FORMAT
 				,	query: "SELECT * FROM " + GRAPH + EOL
@@ -198,7 +208,7 @@ var CONFIG = CONFIG || (function()
 				data += uri(s) + " " + uri(p) + " " + (p == "rdf:type" ? uri(o) : str(o)) + " ." + EOL;
 			}
 
-			$.getJSON(CONFIG_SPARQL_ENDPOINT + "?callback=?",
+			$.getJSON(ENDPOINT + "?callback=?",
 				{
 					format: FORMAT
 				,	query: NAMESPACES + EOL
@@ -208,6 +218,48 @@ var CONFIG = CONFIG || (function()
 					+	"{" + EOL
 					+	data
 					+	"}"
+				}
+			,	function(data)
+				{
+					try
+					{
+						console.log(data.results.bindings[0]["callret-0"].value);
+					}
+					catch (e)
+					{
+						console.error(e);
+					}
+				}
+			);
+		}
+
+	,	createGraph: function(name)
+		{
+			$.getJSON(ENDPOINT + "?callback=?",
+				{
+					format: FORMAT
+				,	query: "CREATE SILENT GRAPH " + name
+				}
+			,	function(data)
+				{
+					try
+					{
+						console.log(data.results.bindings[0]["callret-0"].value);
+					}
+					catch (e)
+					{
+						console.error(e);
+					}
+				}
+			);
+		}
+
+	,	dropGraph: function(name)
+		{
+			$.getJSON(ENDPOINT + "?callback=?",
+				{
+					format: FORMAT
+				,	query: "DROP SILENT GRAPH " + name
 				}
 			,	function(data)
 				{

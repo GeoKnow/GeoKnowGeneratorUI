@@ -25,13 +25,13 @@ module.factory('SettingsServiceStatic', function($http) {
 
 	getComponents: function() {
 /*
-		var components = [];
+		var results = [];
 
 		var elements = CONFIG.select("rdf:type", ":component");
 		for (var resource in elements)
 		{
 			var element = elements[resource];
-			components.push(
+			results.push(
 			{
 				uri      : "<" + resource + ">"
 			,	url      : resource
@@ -42,7 +42,7 @@ module.factory('SettingsServiceStatic', function($http) {
 			});
 		}
 
-		return { components: components };
+		return { components: results };
 */
       return { components:
         [ { uri: "<http://geoknow.eu/resource/Virtuoso>", label: "Virtuoso", version:"6", category:"storage-querying", 
@@ -56,11 +56,17 @@ module.factory('SettingsServiceStatic', function($http) {
       };      
     },
 
-    getEndpoint: function() {
+	getEndpoint: function() {
+/*
+		return CONFIG.getEndpoint();
+*/
       return "http://10.0.0.64:8890/sparql" ;      
     },
 
     getDefaultGraph: function() {
+/*
+		return CONFIG.getGraph();
+*/
       return "<http://localhost:8890/DAV>";      
     },
 
@@ -72,6 +78,23 @@ module.factory('SettingsServiceStatic', function($http) {
 // ?namedGraph sd:graph ?graph .
 // }
     getNamedGraphs: function() {
+/*
+		var results = [];
+
+		var elements = CONFIG.select("rdf:type", "sd:NamedGraph");
+		for (var resource in elements)
+		{
+			var element = elements[resource];
+			results.push(
+			{
+				graph : resource
+			,	label : element["rdfs:label"][0]
+			,	name  : element["sd:name"][0]
+			});
+		}
+
+		return { namedgraphs: results };
+*/
       return NamedGraphsStatic;      
     },
 
@@ -87,6 +110,9 @@ module.factory('SettingsServiceStatic', function($http) {
 
     // add a named graph in the store
     createGraph: function(namedGraph) {
+/*
+		CONFIG.createGraph(namedGraph);
+*/
       alert("insert graph");
       return true;
     },
@@ -99,6 +125,9 @@ module.factory('SettingsServiceStatic', function($http) {
 
     // saves a named graph in the store
     deleteGraph: function(namedGraph) {
+/*
+		CONFIG.dropGraph(namedGraph);
+*/
       alert("delete graph");
       return true;
     }
