@@ -22,10 +22,7 @@ module.factory('SettingsServiceStatic', function($http) {
           { name: "Enriching and Data Cleaning", id:"enriching-and-cleaning" }]
       }
     },
-    
-<<<<<<< HEAD
-    getComponents: function() {
-=======
+
 	getComponents: function() {
 /*
 		var components = [];
@@ -47,7 +44,6 @@ module.factory('SettingsServiceStatic', function($http) {
 
 		return { components: components };
 */
->>>>>>> Configuration management updated.
       return { components:
         [ { uri: "<http://geoknow.eu/resource/Virtuoso>", label: "Virtuoso", version:"6", category:"storage-querying", 
             url: "http://192.168.43.209:8890/conductor", route:"/authoring/ontowiki"},
