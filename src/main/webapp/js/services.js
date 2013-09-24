@@ -23,7 +23,31 @@ module.factory('SettingsServiceStatic', function($http) {
       }
     },
     
+<<<<<<< HEAD
     getComponents: function() {
+=======
+	getComponents: function() {
+/*
+		var components = [];
+
+		var elements = CONFIG.select("rdf:type", ":component");
+		for (var resource in elements)
+		{
+			var element = elements[resource];
+			components.push(
+			{
+				uri      : "<" + resource + ">"
+			,	url      : resource
+			,	label    : element["rdfs:label"][0]
+			,	version  : element[":version"][0]
+			,	category : element[":category"][0]
+			,	route    : element[":route"][0]
+			});
+		}
+
+		return { components: components };
+*/
+>>>>>>> Configuration management updated.
       return { components:
         [ { uri: "<http://geoknow.eu/resource/Virtuoso>", label: "Virtuoso", version:"6", category:"storage-querying", 
             url: "http://192.168.43.209:8890/conductor", route:"/authoring/ontowiki"},
