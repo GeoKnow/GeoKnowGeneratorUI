@@ -169,7 +169,7 @@ a.accordion-toggle:hover{
 	  	margin-left: 0;
 		margin-right: 0;
 		border: 1px solid #ddd;
-		border-radius: 4px 4px 0 0;
+		border-radius: 4px 4px 4px 4px;
 		box-shadow: none;
 		padding:20px 40px 20px 40px;
 }
