@@ -53,6 +53,12 @@
       <type>pom</type>
       <version>2.10.1</version>
     </dependency>
+
+ 		<dependency>
+		  <groupId>virtuoso</groupId>
+		  <artifactId>jdbc</artifactId>
+		  <version>3.0</version>
+		</dependency>
   </dependencies>
 
   <build>
@@ -83,9 +89,7 @@
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>tomcat-maven-plugin</artifactId>
         <configuration>
-          <url>http://localhost:8080/manager</url>
-          <!-- <url>http://192.168.2.29:8080/manager</url> -->
-          <!-- <url>http://10.0.0.62:8080/manager</url> -->
+          <url>http://10.0.0.64:8080/manager</url>
           <server>tomcat</server>
           <path>/${project.build.finalName}</path>
           <keystorePass>tomcat</keystorePass>
