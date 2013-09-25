@@ -90,7 +90,6 @@ var ModalWindow = function ($scope) {
 };
 
 app.controller('FaceteFormCtrl', function($scope, SettingsServiceStatic) {
-console.log($scope);
 	//Settings for Facete
 	  $scope.namedGraphs = SettingsServiceStatic.getNamedGraphs().namedgraphs;
 	  $scope.service = 'http://localhost:8890/sparql';
@@ -341,6 +340,12 @@ var OpenModalCtrl = function($scope, $modal) {
   }
 };
 
-var LimesController = function($scope){
-	
+var LimesCtrl = function($scope){
+	function StartLimes($scope){
+	var params = {
+			 SourceServiceURI: $scope.SourceServiceURI,
+			 TargetServiceURI: $scope.TargetServiceURI
+	}
+	console.log(params);
+	};
 }
