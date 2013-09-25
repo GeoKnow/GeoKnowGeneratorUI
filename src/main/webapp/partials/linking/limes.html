@@ -1,4 +1,4 @@
-<div class="contents" ng-controller="LimesController">
+<div class="contents" ng-controller="LimesCtrl">
 	<h3 class="green bold">LIMES</h3>
 	<form class="form-inline InputForm col-xs-10" role="form">
 	<div class="row">
@@ -15,13 +15,13 @@
 	    <label for="SourceServiceURI">Endpoint URL</label>
 	    </div>
 	    <div class="col-lg-5">
-	    <input class="form-control input-sm" id="SourceServiceURI" ng-model="facete.service" data-toggle="tooltip" title="first tooltip"></input>
+	    <input class="form-control input-sm" id="SourceServiceURI" ng-model="SourceServiceURI"></input>
 	    </div>
 	    <div class="col-lg-1">
 	    <label for="TargetServiceURI">Endpoint URL</label>
 	    </div>
 	    <div class="col-lg-5">
-	    <input class="form-control input-sm" id="TargetServiceURI" ng-model="facete.service"></input>
+	    <input class="form-control input-sm" id="TargetServiceURI" ng-model="TargetServiceURI"></input>
 	    </div>
 	</div>
 	<br>
@@ -30,73 +30,73 @@
 	    <label for="SourceGraph">Graph</label>
 	    </div>
 	    <div class="col-lg-5">
-	    <input class="form-control input-sm" id="SourceGraph" ng-model="facete.service"></input>
+	    <input class="form-control input-sm" id="SourceGraph" ng-model="SourceGraph"></input>
 	    </div>
 	    <div class="col-lg-1">
 	    <label for="TargetGraph">Graph</label>
 	    </div>
 	    <div class="col-lg-5">
-	    <input class="form-control input-sm" id="TargetGraph" ng-model="facete.service"></input>
+	    <input class="form-control input-sm" id="TargetGraph" ng-model="TargetGraph"></input>
 	    </div>
 	</div>
 	<br>
 	<div class="row">
 		<div class="col-lg-1">
-	    <label for="SourceGraph">Variable</label>
+	    <label for="SourceVar">Variable</label>
 	    </div>
 	    <div class="col-lg-5">
-	    <input class="form-control input-sm" id="SourceVar" ng-model="facete.service"></input>
+	    <input class="form-control input-sm" id="SourceVar" ng-model="SourceVar"></input>
 	    </div>
 	    <div class="col-lg-1">
-	    <label for="TargetGraph">Variable</label>
+	    <label for="TargetVar">Variable</label>
 	    </div>
 	    <div class="col-lg-5">
-	    <input class="form-control input-sm" id="TargetVar" ng-model="facete.service"></input>
+	    <input class="form-control input-sm" id="TargetVar" ng-model="TargetVar"></input>
 	    </div>
 	</div>
 	<br>
 	<div class="row">
 		<div class="col-lg-1">
-	    <label for="SourceGraph">Pagesize</label>
+	    <label for="SourceSize">Pagesize</label>
 	    </div>
 	    <div class="col-lg-5">
-	    <input class="form-control input-sm" id="SourceSize" ng-model="facete.service"></input>
+	    <input class="form-control input-sm" id="SourceSize" ng-model="SourceSize"></input>
 	    </div>
 	    <div class="col-lg-1">
-	    <label for="TargetGraph">Pagesize</label>
+	    <label for="TargetSize">Pagesize</label>
 	    </div>
 	    <div class="col-lg-5">
-	    <input class="form-control input-sm" id="TargetSize" ng-model="facete.service"></input>
+	    <input class="form-control input-sm" id="TargetSize" ng-model="TargetSize"></input>
 	    </div>
 	</div>
 	<br>
 	<div class="row">
 		<div class="col-lg-1">
-	    <label for="SourceGraph">Restriction</label>
+	    <label for="SourceRestr">Restriction</label>
 	    </div>
 	    <div class="col-lg-5">
-	    <input class="form-control input-sm" id="SourceRestr" ng-model="facete.service"></input>
+	    <input class="form-control input-sm" id="SourceRestr" ng-model="SourceRestr"></input>
 	    </div>
 	    <div class="col-lg-1">
-	    <label for="TargetGraph">Restriction</label>
+	    <label for="TargetRestr">Restriction</label>
 	    </div>
 	    <div class="col-lg-5">
-	    <input class="form-control input-sm" id="TargetRestr" ng-model="facete.service"></input>
+	    <input class="form-control input-sm" id="TargetRestr" ng-model="TargetRestr"></input>
 	    </div>
 	</div>
 	<br>
 	<div class="row">
 		<div class="col-lg-1">
-	    <label for="SourceGraph">Property</label>
+	    <label for="SourceProp">Property</label>
 	    </div>
 	    <div class="col-lg-5">
-	    <input class="form-control input-sm" id="SourceProp" ng-model="facete.service"></input>
+	    <input class="form-control input-sm" id="SourceProp" ng-model="SourceProp"></input>
 	    </div>
 	    <div class="col-lg-1">
-	    <label for="TargetGraph">Property</label>
+	    <label for="TargetProp">Property</label>
 	    </div>
 	    <div class="col-lg-5">
-	    <input class="form-control input-sm" id="TargetProp" ng-model="facete.service"></input>
+	    <input class="form-control input-sm" id="TargetProp" ng-model="TargetProp"></input>
 	    </div>
 	</div>
 	<br>
@@ -228,7 +228,7 @@
 	<br>
 	<form class="pull-left col-xs-6" role="form">
 	  <div class="form-group">
-	  <a class="btn btn-primary btn-large" ng-click="OpenFullWindow()">Start LIMES</a>
+	  <a class="btn btn-primary btn-large" ng-click="StartLimes">Start LIMES</a>
 	  </div>
 	  </div>
 	</div>
