@@ -8,16 +8,16 @@
     <br>
     <br>
     <p>To get started select a data set from the drop down menu.</p>
-	<form class="form-horizontal InputForm" role="form">
+	<form class="form-horizontal InputForm" role="form" ng-controller="FaceteFormCtrl">
 	  <div class="form-group">
 	    <label for="ServiceURI">Service URI</label>
-	    <input type="url" class="form-control" id="ServiceURI" disabled="disabled" ng-model="facete.service"></input>
+	    <input type="url" class="form-control" id="ServiceURI" disabled="disabled" ng-model="service"></input>
 	  </div>
 	
 	<div class="form-group">
 	    <label for="DataSet">DataSet</label>
-			<select id="DataSet" class="selectpicker" ng-model="faceteds.dataset" 
-			ng-options="namedgraph.name as namedgraph.name for namedgraph in namedGraphs">
+			<select id="DataSet" class="form-control" ng-model="dataset" 
+			ng-options="namedgraph.name as namedgraph.name for namedgraph in namedGraphs" required>
 			</select>
 	</div>
 

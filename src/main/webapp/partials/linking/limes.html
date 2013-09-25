@@ -1,27 +1,237 @@
-<div class="col-lg-8">
+<div class="contents" ng-controller="LimesController">
 	<h3 class="green bold">LIMES</h3>
-	<form class="form-inline InputForm" role="form">
+	<form class="form-inline InputForm col-xs-10" role="form">
+	<div class="row">
+	<div class="col-lg-6">
+		<h5 class="green bold">Source Data</h5>
+	</div>
+	<div class="col-lg-6">
+		<h5 class="green bold">Target Data</h5>
+	</div>
+	</div>
+	<br>
+	<div class="row">
+		<div class="col-lg-1">
+	    <label for="SourceServiceURI">Endpoint URL</label>
+	    </div>
+	    <div class="col-lg-5">
+	    <input class="form-control input-sm" id="SourceServiceURI" ng-model="facete.service" data-toggle="tooltip" title="first tooltip"></input>
+	    </div>
+	    <div class="col-lg-1">
+	    <label for="TargetServiceURI">Endpoint URL</label>
+	    </div>
+	    <div class="col-lg-5">
+	    <input class="form-control input-sm" id="TargetServiceURI" ng-model="facete.service"></input>
+	    </div>
+	</div>
+	<br>
+	<div class="row">
+		<div class="col-lg-1">
+	    <label for="SourceGraph">Graph</label>
+	    </div>
+	    <div class="col-lg-5">
+	    <input class="form-control input-sm" id="SourceGraph" ng-model="facete.service"></input>
+	    </div>
+	    <div class="col-lg-1">
+	    <label for="TargetGraph">Graph</label>
+	    </div>
+	    <div class="col-lg-5">
+	    <input class="form-control input-sm" id="TargetGraph" ng-model="facete.service"></input>
+	    </div>
+	</div>
+	<br>
+	<div class="row">
+		<div class="col-lg-1">
+	    <label for="SourceGraph">Variable</label>
+	    </div>
+	    <div class="col-lg-5">
+	    <input class="form-control input-sm" id="SourceVar" ng-model="facete.service"></input>
+	    </div>
+	    <div class="col-lg-1">
+	    <label for="TargetGraph">Variable</label>
+	    </div>
+	    <div class="col-lg-5">
+	    <input class="form-control input-sm" id="TargetVar" ng-model="facete.service"></input>
+	    </div>
+	</div>
+	<br>
+	<div class="row">
+		<div class="col-lg-1">
+	    <label for="SourceGraph">Pagesize</label>
+	    </div>
+	    <div class="col-lg-5">
+	    <input class="form-control input-sm" id="SourceSize" ng-model="facete.service"></input>
+	    </div>
+	    <div class="col-lg-1">
+	    <label for="TargetGraph">Pagesize</label>
+	    </div>
+	    <div class="col-lg-5">
+	    <input class="form-control input-sm" id="TargetSize" ng-model="facete.service"></input>
+	    </div>
+	</div>
+	<br>
+	<div class="row">
+		<div class="col-lg-1">
+	    <label for="SourceGraph">Restriction</label>
+	    </div>
+	    <div class="col-lg-5">
+	    <input class="form-control input-sm" id="SourceRestr" ng-model="facete.service"></input>
+	    </div>
+	    <div class="col-lg-1">
+	    <label for="TargetGraph">Restriction</label>
+	    </div>
+	    <div class="col-lg-5">
+	    <input class="form-control input-sm" id="TargetRestr" ng-model="facete.service"></input>
+	    </div>
+	</div>
+	<br>
+	<div class="row">
+		<div class="col-lg-1">
+	    <label for="SourceGraph">Property</label>
+	    </div>
+	    <div class="col-lg-5">
+	    <input class="form-control input-sm" id="SourceProp" ng-model="facete.service"></input>
+	    </div>
+	    <div class="col-lg-1">
+	    <label for="TargetGraph">Property</label>
+	    </div>
+	    <div class="col-lg-5">
+	    <input class="form-control input-sm" id="TargetProp" ng-model="facete.service"></input>
+	    </div>
+	</div>
+	<br>
+	<div class="row">
+		<div class="col-lg-1">
+	    <label for="SourceGraph">Metric</label>
+	    </div>
+	    <div class="col-lg-11">
+	    <input class="form-control input-sm" id="SourceRelation" ng-model="facete.service"></input>
+	    </div>
+	</div>
+	<br>
+	<div class="row">
+		<div class="col-lg-1">
+	    <label for="SourceGraph">Output</label>
+	    </div>
+	    <div class="col-lg-11">
+	    <select class="form-control input-sm" id="SourceRelation" ng-model="facete.service"></select>
+	    </div>
+	</div>
+	<br>
+	<div class="row">
+		<div class="col-lg-1">
+	    <label for="SourceGraph">Execution</label>
+	    </div>
+	    <div class="col-lg-11">
+	    <select class="form-control input-sm" id="SourceRelation" ng-model="facete.service"></select>
+	    </div>
+	</div>
+	<br>
+	<div class="row">
+	<div class="col-lg-6">
+		<h5 class="green bold">Acceptance Settings</h5>
+	</div>
+	<div class="col-lg-6">
+		<h5 class="green bold">Review Settings</h5>
+	</div>
+	</div>
+	<br>
+	<div class="row">
+		<div class="col-lg-1">
+	    <label for="SourceGraph">Threshold</label>
+	    </div>
+	    <div class="col-lg-5">
+	    <input class="form-control input-sm" id="SourceThresh" ng-model="facete.service"></input>
+	    </div>
+	    <div class="col-lg-1">
+	    <label for="TargetGraph">Threshold</label>
+	    </div>
+	    <div class="col-lg-5">
+	    <input class="form-control input-sm" id="TargetThresh" ng-model="facete.service"></input>
+	    </div>
+	</div>
+	<br>
+	<div class="row">
+		<div class="col-lg-1">
+	    <label for="SourceGraph">Relation</label>
+	    </div>
+	    <div class="col-lg-5">
+	    <input class="form-control input-sm" id="SourceRelation" ng-model="facete.service"></input>
+	    </div>
+	    <div class="col-lg-1">
+	    <label for="TargetGraph">Relation</label>
+	    </div>
+	    <div class="col-lg-5">
+	    <input class="form-control input-sm" id="TargetRelation" ng-model="facete.service"></input>
+	    </div>
+	</div>
+	<br>
+	<div class="row">
+	<div class="col-lg-6">
+		<h5 class="green bold">Prefixes</h5>
+	</div>
+	</div>
+	<br>
+	<div class="row">
+		<div class="col-lg-1">
+	    <label for="prefix-1">rdf:</label>
+	    </div>
+	    <div class="col-lg-11">
+	    <input class="form-control input-sm" id="prefix-1" ng-model="facete.service"></input>
+	    </div>
+	</div>
+	<br>
+	<div class="row">
+		<div class="col-lg-1">
+	    <label for="prefix-1">rdfs:</label>
+	    </div>
+	    <div class="col-lg-11">
+	    <input class="form-control input-sm" id="prefix-2" ng-model="facete.service"></input>
+	    </div>
+	</div>
+	<br>
+	<div class="row">
+		<div class="col-lg-1">
+	    <label for="prefix-1">owl:</label>
+	    </div>
+	    <div class="col-lg-11">
+	    <input class="form-control input-sm" id="prefix-3" ng-model="facete.service"></input>
+	    </div>
+	</div>
+	<br>
+	<div class="row">
+		<div class="col-lg-1">
+	    <label for="prefix-1">dc-terms:</label>
+	    </div>
+	    <div class="col-lg-11">
+	    <input class="form-control input-sm" id="prefix-4" ng-model="facete.service"></input>
+	    </div>
+	</div>
+	<br>
+	<div class="row">
+		<div class="col-lg-1">
+	    <label for="prefix-1">dbpedia-o:</label>
+	    </div>
+	    <div class="col-lg-11">
+	    <input class="form-control input-sm" id="prefix-5" ng-model="facete.service"></input>
+	    </div>
+	</div>
+	<br>
+	<div class="row">
+		<div class="col-lg-1">
+	    <label for="prefix-1">dbpedia-p:</label>
+	    </div>
+	    <div class="col-lg-11">
+	    <input class="form-control input-sm" id="prefix-6" ng-model="facete.service"></input>
+	    </div>
+	</div>
+	<br>
+	<form class="pull-left col-xs-6" role="form">
 	  <div class="form-group">
-	    <label for="exampleInputEmail1">Email address</label>
-	    <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Enter email">
+	  <a class="btn btn-primary btn-large" ng-click="OpenFullWindow()">Start LIMES</a>
 	  </div>
-	  <div class="form-group">
-	    <label for="exampleInputPassword1">Password</label>
-	    <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
 	  </div>
-	  <br>
-	  <div class="form-group">
-	    <label for="ConfigFile">Upload your own configuration</label>
-	    <input type="file" id="ConfigFile">
-	    <p class="help-block">Example block-level help text here.</p>
-	  </div>
-	  <div class="checkbox">
-	    <label>
-	      <input type="checkbox"> Check me out
-	    </label>
-	  </div>
-	  <br>
-	  <button type="submit" class="btn btn-default">Submit</button>
+	</div>
 	</form>
 </div>
 

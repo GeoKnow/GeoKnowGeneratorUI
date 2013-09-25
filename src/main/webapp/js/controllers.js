@@ -57,7 +57,7 @@ function LoginCtrl() {}
 LoginCtrl.$inject = [];
 
 
-var ModalWindow = function ($scope, SettingsServiceStatic) {
+var ModalWindow = function ($scope) {
 
   $scope.OpenFullWindow = function () {
     $("#modalWindow").modal({
@@ -87,12 +87,16 @@ var ModalWindow = function ($scope, SettingsServiceStatic) {
 	  $('.modal-scrollable').slideUp();
   };
   
-  //Settings for Facete
-  $scope.namedGraphs = SettingsServiceStatic.getNamedGraphs().namedgraphs;
-  $scope.facete = {service : 'http://localhost:8890/sparql'};
-  $scope.faceteds = {dataset : $scope.namedGraphs[0].name};
-  
 };
+
+app.controller('FaceteFormCtrl', function($scope, SettingsServiceStatic) {
+console.log($scope);
+	//Settings for Facete
+	  $scope.namedGraphs = SettingsServiceStatic.getNamedGraphs().namedgraphs;
+	  $scope.service = 'http://localhost:8890/sparql';
+	  $scope.dataset = $scope.namedGraphs[0].name;
+	  
+});
 	
 app.controller('NavbarCtrl', function($scope, $location) {
 		//if($location.path === "/"){
@@ -336,3 +340,7 @@ var OpenModalCtrl = function($scope, $modal) {
     dismiss();
   }
 };
+
+var LimesController = function($scope){
+	
+}
