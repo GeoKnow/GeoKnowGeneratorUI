@@ -6,6 +6,7 @@ function SettingsMenuCtrl($scope) {
   $scope.items = [
   	{ name: "Data Sources", route:'#/settings/data-sources', url:'/settings/data-sources' },
   	{ name: "Datasets", route:'#/settings/datasets', url:'/settings/datasets' },
+    { name: "Namespaces", route:'#/settings/namespaces', url:'/settings/namespaces' },
   	{ name: "Components", route:'#/settings/components', url:'/settings/components' },
     { name: "User Preferences",   route:'#/settings/preferences', url:'/settings/preferences' }];
 }
@@ -89,9 +90,9 @@ var ModalWindow = function ($scope) {
   
 };
 
-app.controller('FaceteFormCtrl', function($scope, SettingsServiceStatic) {
+app.controller('FaceteFormCtrl', function($scope, ConfiurationService) {
 	//Settings for Facete
-	  $scope.namedGraphs = SettingsServiceStatic.getNamedGraphs().namedgraphs;
+	  $scope.namedGraphs = ConfiurationService.getNamedGraphs().namedgraphs;
 	  $scope.service = 'http://localhost:8890/sparql';
 	  $scope.dataset = $scope.namedGraphs[0].name;
 	  
@@ -168,9 +169,9 @@ var GoogleMapWindow = function ($scope, $timeout, $log) {
 
 };
 
-var ImportFormCtrl = function($scope, $http, SettingsServiceStatic, flash) {
+var ImportFormCtrl = function($scope, $http, ConfiurationService, flash) {
 
-  $scope.namedGraphs = SettingsServiceStatic.getNamedGraphs().namedgraphs;
+  $scope.namedGraphs = ConfiurationService.getNamedGraphs();
   $scope.uploadMessage = '';
   
   var uploadError = false;
@@ -251,16 +252,18 @@ var ImportFormCtrl = function($scope, $http, SettingsServiceStatic, flash) {
     if(type == 'file'){
       parameters ={
         rdfFiles: uploadedFiles, 
-        endpoint: SettingsServiceStatic.getEndpoint(), 
-        graph: $scope.importFile.graph 
+        endpoint: ConfiurationService.getEndpoint(), 
+        graph: $scope.importFile.graph, 
+        uriBase : ConfiurationService.getUriBase()
       };
       
     }
     else if(type == 'url'){
       parameters ={
         rdfUrl: $scope.importUrl.inputUrl, 
-        endpoint: SettingsServiceStatic.getEndpoint(), 
-        graph: $scope.importUrl.graph 
+        endpoint: ConfiurationService.getEndpoint(), 
+        graph: $scope.importUrl.graph, 
+        uriBase : ConfiurationService.getUriBase() 
       };
 
     }
@@ -268,8 +271,9 @@ var ImportFormCtrl = function($scope, $http, SettingsServiceStatic, flash) {
       parameters ={
         rdfQuery: $scope.importSparql.sparqlQuery,
         rdfQueryEndpoint: $scope.importSparql.endPoint, 
-        endpoint: SettingsServiceStatic.getEndpoint(), 
-        graph: $scope.importSparql.graph 
+        endpoint: ConfiurationService.getEndpoint(), 
+        graph: $scope.importSparql.graph, 
+        uriBase : ConfiurationService.getUriBase() 
       };
     }
     $http({

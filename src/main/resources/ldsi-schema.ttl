@@ -14,7 +14,6 @@
 @prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
 
 
-
 lds:  rdf:type owl:Ontology ;
       dcterms:contributor "Alejandra Garcia Rojas"^^xsd:string ;
       dcterms:descripton "Schema for integrating Software components from the Linked Data Stack"^^xsd:string ;
@@ -44,12 +43,29 @@ lds:Namespace
 lds:SoftwareComponent
       rdf:type owl:Class ;
       rdfs:label "Service URL"^^xsd:string ;
+      lds:versuib
       rdfs:subClassOf owl:Thing .
+
+lds:version
+      a       owl:DatatypeProperty ;
+      rdfs:domain lds:SoftwareComponent ;
+      rdfs:comment "Software component version"^^xsd:string ;
+      rdfs:label "Version"^^xsd:string .
 
 lds:StackComponent
       rdf:type owl:Class ;
       rdfs:label "Software Component      "^^xsd:string ;
       rdfs:subClassOf lds:SoftwareComponent .
+
+lds:category
+      a       owl:ObjectProperty ;
+      rdfs:label "Version"^^xsd:string ;
+      rdfs:range lds:ComponentCategory .
+
+lds:ComponentCategory
+      a       rdfs:Class ;
+      rdfs:comment "A initial categroization of components inside the LD lifecycle"^^xsd:string ;
+      rdfs:label "Version"^^xsd:string .
 
 lds:identifier
       rdf:type owl:DatatypeProperty ;

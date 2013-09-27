@@ -1,39 +1,57 @@
 'use strict';
 
-function SettingsComponentCtrl(scope, service){
-	scope.components = service.getComponents().components;
-}
-SettingsComponentCtrl.$inject = ['$scope', 'SettingsServiceStatic'];
+function NamespacesCtrl($scope, ConfiurationService) {
 
+	$scope.namespaces = ConfiurationService.getNamespaces();
 
-function GraphManagement(scope, service){
-
-	scope.namedgraphs = service.getNamedGraphs().namedgraphs;
-	scope.namedgraph = {};
 	var newGraph=true;
-	scope.new = function(){
-		// default values
-		newGraph=true;
-		var defaultEndpoint = service.getEndpoint();
-		var newGraph = { graph:{ created:"now", endpoint: defaultEndpoint }};
-		scope.namedgraph = angular.copy(newGraph);
+	$scope.new = function(){
 	};
 
-	scope.edit = function(graphName){
-		var namedg = service.getNamedGraph(graphName);
-		scope.namedgraph = angular.copy(namedg);
+	$scope.edit = function(graphName){
+	};
+
+	$scope.save = function(){
+	};
+
+	$scope.delete = function(graphName){
+	};
+}
+
+function ComponentCtrl($scope, ConfiurationService){
+
+	$scope.components = ConfiurationService.getComponents().components;
+
+}
+
+
+function GraphCtrl($scope, ConfiurationService){
+
+	$scope.namedgraphs = ConfiurationService.getNamedGraphs();
+	$scope.namedgraph = {};
+	var newGraph=true;
+	$scope.new = function(){
+		// default values
+		newGraph=true;
+		var defaultEndpoint = ConfiurationService.getEndpoint();
+		var newGraph = { graph:{ created:"now", endpoint: defaultEndpoint }};
+		$scope.namedgraph = angular.copy(newGraph);
+	};
+
+	$scope.edit = function(graphName){
+		var namedg = ConfiurationService.getNamedGraph(graphName);
+		$scope.namedgraph = angular.copy(namedg);
 		newGraph=false;
 	};
 
-	scope.save = function(){
+	$scope.save = function(){
 		if(newGraph)
-			service.createGraph(scope.namedgraph);
+			ConfiurationService.addGraph($scope.namedgraph);
 		else
-			service.updateGraph(scope.namedgraph);
+			ConfiurationService.updateGraph($scope.namedgraph);
 	};
 
-	scope.delete = function(graphName){
-		service.deleteGraph(graphName);
+	$scope.delete = function(graphName){
+		ConfiurationService.deleteGraph(graphName);
 	};
 }
-GraphManagement.$inject = ['$scope', 'SettingsServiceStatic'];

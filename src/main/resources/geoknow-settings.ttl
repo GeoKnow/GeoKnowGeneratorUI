@@ -16,14 +16,36 @@
       rdf:type lds:StackComponent ;
       rdfs:comment "This resource contains all the configuration required by the application"^^xsd:string ;
       rdfs:label "GeoKnowGeneator"^^xsd:string ;
+      lds:version "0.1"^^xsd:string ;
       lds:integrates :Virtuoso ;
       lds:outputGraph :SettingsGraph ;
       lds:serviceURL "http://localhost"^^xsd:string ;
-      lds:useService :GeoKnowGeneratorService .
-
+      lds:useService :GeoKnowGeneratorService 
+.
 :Virtuoso
       rdf:type lds:StackComponent ;
-      rdfs:label "Service URL"^^xsd:string ;
+      rdfs:label "Virtuoso RDF store"^^xsd:string ;
       lds:servicePassword "dba"^^xsd:string ;
       lds:serviceURL "http://localhost:8890/sparql"^^xsd:string ;
-      lds:serviceUser "dba"^^xsd:string .
+      lds:serviceUser "dba"^^xsd:string ;
+      lds:version "7.0.1"^^xsd:string ;
+      lds:category "storage-querying"^^xsd:string 
+.
+:Facete
+      rdf:type lds:StackComponent ;
+      rdfs:label "Facete Visualization Tool"^^xsd:string ;
+      lds:servicePassword "dba"^^xsd:string ;
+      lds:serviceURL "http://localhost:8080/facete"^^xsd:string ;
+      lds:serviceUser "dba"^^xsd:string ;
+      lds:version "0.1-SNAPSHOT"^^xsd:string ;
+      lds:category "querying-and-exploration"^^xsd:string 
+.
+:Limes
+      rdf:type lds:StackComponent ;
+      rdfs:label "Limes Linking Service"^^xsd:string ;
+      lds:servicePassword "dba"^^xsd:string ;
+      lds:serviceURL "http://localhost:8080/limes"^^xsd:string ;
+      lds:serviceUser "dba"^^xsd:string ;
+      lds:version "0.6.4"^^xsd:string ;
+      lds:category "linking"^^xsd:string 
+.

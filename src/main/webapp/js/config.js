@@ -20,7 +20,8 @@
 var CONFIG = CONFIG || (function()
 {
 	var ENDPOINT  = "http://localhost:8890/sparql"
-	,	GRAPH_URI = "http://generator.geoknow.eu"
+	,	GRAPH_URI = "http://generator.geoknow.eu/settingsGraph"
+	,	URI_BASE = "http://generator.geoknow.eu/"
 	,	NS        = GRAPH_URI + "#";
 
 	var namespaces =
@@ -31,6 +32,7 @@ var CONFIG = CONFIG || (function()
 	,	"http://www.w3.org/1999/02/22-rdf-syntax-ns#"      : "rdf:"
 	,	"http://www.w3.org/2000/01/rdf-schema#"            : "rdfs:"
 	,	"http://www.w3.org/ns/sparql-service-description#" : "sd:"
+	,	"http://linkeddata.org/integrated-stack-schema/"   : "lds:"
 	};
 
 	namespaces[NS] = ":";
@@ -83,6 +85,11 @@ var CONFIG = CONFIG || (function()
 	,	getGraph: function()
 		{
 			return GRAPH;
+		}
+
+	,	getUriBase: function()
+		{
+			return URI_BASE;
 		}
 
 	,	select: function(property, value)
@@ -276,3 +283,6 @@ var CONFIG = CONFIG || (function()
 		}
 	};
 })();
+
+
+

@@ -23,7 +23,7 @@ public class UploadServlet extends HttpServlet {
    private static final long serialVersionUID = 1L;
    private String filePath;
    private String tempData;
-   private int maxFileSize = 50 * 1024;
+   private int maxFileSize = 1024 * 1024;
    private int maxMemSize = 4 * 1024;
    
 
@@ -54,16 +54,16 @@ public class UploadServlet extends HttpServlet {
      
       // Directory where files will be saved
       ServletContext servletContext = getServletContext();
-      File seshdir = new File(servletContext.getRealPath(File.separator) + filePath);
       
-      if (!seshdir.exists()) {
-       seshdir.mkdirs();
-      }
-      
-      File tmpDataDir = new File(tempData);
+      File tmpDataDir = new File(servletContext.getRealPath(File.separator) + tempData);
       if (!tmpDataDir.exists()) {
     	  tmpDataDir.mkdirs();
       }
+      
+      File seshdir = new File(servletContext.getRealPath(File.separator) + filePath);
+      if (!seshdir.exists()) {
+       seshdir.mkdirs();
+      }  
       
       DiskFileItemFactory factory = new DiskFileItemFactory();
       // maximum size that will be stored in memory

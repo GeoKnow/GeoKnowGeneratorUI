@@ -54,13 +54,7 @@
       <version>2.10.1</version>
     </dependency>
 
- 		<dependency>
-		  <groupId>virtuoso</groupId>
-		  <artifactId>jdbc</artifactId>
-		  <version>3.0</version>
-		</dependency>
-  </dependencies>
-
+  </dependencies> 
   <build>
     <finalName>generator</finalName>
     <plugins>
@@ -89,7 +83,7 @@
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>tomcat-maven-plugin</artifactId>
         <configuration>
-          <url>http://10.0.0.64:8080/manager</url>
+          <url>http://localhost:8080/manager</url>
           <server>tomcat</server>
           <path>/${project.build.finalName}</path>
           <keystorePass>tomcat</keystorePass>
