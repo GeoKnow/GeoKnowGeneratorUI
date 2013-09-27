@@ -25,8 +25,8 @@ function StackMenuCtrl($scope) {
 	      title: "Querying and Exploration",
 	      id:"querying-exploration",
 	      items: [
-	       {name: 'Geospatial Exploration', route:'#/home/querying-and-exploration/geospatial', url:'/home/querying-and-exploration/geospatial' },
-	       {name: 'Google Maps', route:'#/home/querying-and-exploration/googlemap', url:'/home/querying-and-exploration/googlemap' },
+	   //    {name: 'Geospatial Exploration', route:'#/home/querying-and-exploration/geospatial', url:'/home/querying-and-exploration/geospatial' },
+	   //    {name: 'Google Maps', route:'#/home/querying-and-exploration/googlemap', url:'/home/querying-and-exploration/googlemap' },
 	       {name: 'Facete', route:'#/home/querying-and-exploration/facete', url:'/home/querying-and-exploration/facete' }]
 	    },
 	    {
@@ -56,6 +56,24 @@ function StackMenuCtrl($scope) {
 function LoginCtrl() {}
 LoginCtrl.$inject = [];
 
+app.controller('NavbarCtrl', function($scope, $location) {
+		//if($location.path === "/"){
+		//	$location.path('/home')
+		//}
+		$scope.getClass = function(path) {
+			if ($location.path().substr(0, path.length) === path) {
+			      return "active"
+			    } else {
+			      return ""
+			    }
+			}
+	});
+
+app.controller('SidebarCtrl', function($scope, $location) {
+	    $scope.isSelected = function(route) {
+	        return route === $location.path();
+	    }
+});
 
 var ModalWindow = function ($scope) {
 
@@ -92,29 +110,113 @@ var ModalWindow = function ($scope) {
 app.controller('FaceteFormCtrl', function($scope, SettingsServiceStatic) {
 	//Settings for Facete
 	  $scope.namedGraphs = SettingsServiceStatic.getNamedGraphs().namedgraphs;
-	  $scope.service = 'http://localhost:8890/sparql';
-	  $scope.dataset = $scope.namedGraphs[0].name;
-	  
-});
-	
-app.controller('NavbarCtrl', function($scope, $location) {
-		//if($location.path === "/"){
-		//	$location.path('/home')
-		//}
-		$scope.getClass = function(path) {
-			if ($location.path().substr(0, path.length) === path) {
-			      return "active"
-			    } else {
-			      return ""
-			    }
-			}
-	});
+	  $scope.facete = { service : "http://localhost:8890/sparql",
+	  					dataset :  $scope.namedGraphs[0].name
+					  }
+				});
 
-app.controller('SidebarCtrl', function($scope, $location) {
-	    $scope.isSelected = function(route) {
-	        return route === $location.path();
-	    }
-});
+var LimesCtrl = function($scope, $http){
+	
+	$scope.examples = [
+	                { name : "Duplicate Dbpedia entries for the CET time zone" },
+	                { name : "Geo Data" }
+	];
+	
+	$scope.options = [{ 	output: [
+			                { output : "N3" },
+			                { output : "TAB" }]
+							},
+					  { 	execType: [
+			                { execType : "SIMPLE" },
+			                { execType : "FILTER" }]
+						  },
+				     ];
+	
+	$scope.limes = { OutputFormat :    $scope.options[0].output[0],
+					 ExecType :        $scope.options[1].execType[0]
+	}
+	
+	$scope.FillForm = function(example){
+		
+		var params = {};
+		
+		if(example === "Duplicate Dbpedia entries for the CET time zone"){
+			
+		$scope.limes = { SourceServiceURI : "http://dbpedia.org/sparql",
+						 TargetServiceURI  : "http://dbpedia.org/sparql",
+						 SourceVar: "?x",
+						 TargetVar: "?y",
+						 SourceSize: "1000",
+						 TargetSize: "1000",
+						 SourceRestr: "?x dbpedia:timeZone dbresource:Central_European_Time",
+						 TargetRestr: "?y dbpedia:timeZone dbresource:Central_European_Time",
+						 SourceProp: "rdfs:label",
+						 TargetProp: "rdfs:label",
+						 Metric: "levenshtein(y.rdfs:label, x.rdfs:label)",
+						 OutputFormat: $scope.options[0].output[0],
+						 ExecType: $scope.options[1].execType[0],
+						 AcceptThresh: "1",
+						 ReviewThresh: "0.95",
+						 AcceptRelation: "owl:sameAs",
+						 ReviewRelation: "owl:sameAs" 
+				};
+		}
+		
+		if(example === "Geo Data"){
+			
+			$scope.limes = { SourceServiceURI : "http://linkedgeodata.org/sparql",
+							 TargetServiceURI  : "http://linkedgeodata.org/sparql",
+							 SourceVar: "?x",
+							 TargetVar: "?y",
+							 SourceSize: "2000",
+							 TargetSize: "2000",
+							 SourceRestr: "?x a lgdo:RelayBox",
+							 TargetRestr: "?y a lgdo:RelayBox",
+							 SourceProp: "geom:geometry/geos:asWKT RENAME polygon",
+							 TargetProp: "geom:geometry/geos:asWKT RENAME polygon",
+							 Metric: "hausdorff(x.polygon, y.polygon)",
+							 OutputFormat: $scope.options[0].output[0],
+							 ExecType: $scope.options[1].execType[0],
+							 AcceptThresh: "0.9",
+							 ReviewThresh: "0.5",
+							 AcceptRelation: "lgdo:near",
+							 ReviewRelation: "lgdo:near" 
+					};
+			}
+		
+	}
+		
+	$scope.StartLimes = function(){
+		
+		var params = { 
+					 SourceServiceURI: $scope.limes.SourceServiceURI,
+					 TargetServiceURI: $scope.limes.TargetServiceURI,
+					 SourceVar: $scope.limes.SourceVar,
+					 TargetVar: $scope.limes.TargetVar,
+					 SourceSize: $scope.limes.SourceSize,
+					 TargetSize: $scope.limes.TargetSize,
+					 SourceRestr: $scope.limes.SourceRestr,
+					 TargetRestr: $scope.limes.TargetRestr,
+					 SourceProp: $scope.limes.SourceProp,
+					 TargetProp: $scope.limes.TargetProp,
+					 Metric: $scope.limes.Metric,
+					 OutputFormat: $scope.limes.OutputFormat.output,
+					 ExecType: $scope.limes.ExecType.execType,
+					 AcceptThresh: $scope.limes.AcceptThresh,
+					 ReviewThresh: $scope.limes.ReviewThresh,
+					 AcceptRelation: $scope.limes.AcceptRelation,
+					 ReviewRelation: $scope.limes.ReviewRelation
+					 };
+		
+		$http({
+			url: "http://localhost:8080/LimeServlet/",
+	        method: "POST",
+	        params: params,
+	        dataType: "json",
+	        contentType: "application/json; charset=utf-8"
+	      });
+	}
+}
 
 app.controller('OpenMap', function OpenMap($scope, $timeout, $log){
 
@@ -339,13 +441,3 @@ var OpenModalCtrl = function($scope, $modal) {
     dismiss();
   }
 };
-
-var LimesCtrl = function($scope){
-	function StartLimes($scope){
-	var params = {
-			 SourceServiceURI: $scope.SourceServiceURI,
-			 TargetServiceURI: $scope.TargetServiceURI
-	}
-	console.log(params);
-	};
-}

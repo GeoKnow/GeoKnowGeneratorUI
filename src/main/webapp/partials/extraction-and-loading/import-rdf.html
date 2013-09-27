@@ -34,8 +34,8 @@
 			<div class="form-group">
 	    	<label for="inputFile" class="col-lg-2 control-label">File input</label>
 	    	<div class="col-lg-10">
-				  <!-- <input type="file" class="form-control" ng-file-select="onFileSelect($files)" > -->
-				  <input type="file" class="form-control" ng-file-select="onFileSelect($files)" multiple name="fileName"
+				  <!-- <input type="file" ng-file-select="onFileSelect($files)" > -->
+				  <input type="file" ng-file-select="onFileSelect($files)" multiple name="fileName"
 				  				accept=".nt, .n3, .ttl, .rdf">
 				  <div class="error" ng-show="uploadedError()">Invalid:
           	<span>{{uploadMessage}}</span>
