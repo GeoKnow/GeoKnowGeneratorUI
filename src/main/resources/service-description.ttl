@@ -30,6 +30,7 @@
     sd:namedGraph :serviceDescription;
     sd:namedGraph :settingsGraph;
     sd:namedGraph :schemaGraph;
+    sd:namedGraph :testing;
 .
 <http://localhost:8890/DAV> a sd:Graph, void:Dataset;
 		rdfs:label "Default Graph";
@@ -69,4 +70,15 @@
             dcterms:created "2013-09-12"^^xsd:date;
             void:sparqlEndpoint <http://localhost:8890/sparql>; 
     	];
+.
+:testing a sd:NamedGraph;
+      sd:name :testing;
+      sd:graph [
+            a sd:Graph, void:Dataset;
+            rdfs:label "Just to test loading data"^^xsd:string;
+            dcterms:description "This is a graph to tes loading data"^^xsd:string;
+            dcterms:modified "2013-09-12"^^xsd:date;
+            dcterms:created "2013-09-12"^^xsd:date;
+            void:sparqlEndpoint <http://localhost:8890/sparql>; 
+      ];
 .

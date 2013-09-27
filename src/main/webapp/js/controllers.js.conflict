@@ -108,8 +108,9 @@ var ModalWindow = function ($scope) {
   
 };
 
-app.controller('FaceteFormCtrl', function($scope, SettingsServiceStatic) {
+app.controller('FaceteFormCtrl', function($scope, ConfiurationService) {
 	//Settings for Facete
+<<<<<<< HEAD
 	  $scope.namedGraphs = SettingsServiceStatic.getNamedGraphs().namedgraphs;
 	  $scope.facete = { service : "http://localhost:8890/sparql",
 	  					dataset :  $scope.namedGraphs[0].name
@@ -117,6 +118,13 @@ app.controller('FaceteFormCtrl', function($scope, SettingsServiceStatic) {
 				});
 
 var LimesCtrl = function($scope, $http){
+=======
+	  $scope.namedGraphs = ConfiurationService.getNamedGraphs().namedgraphs;
+	  $scope.service = 'http://localhost:8890/sparql';
+	  $scope.dataset = $scope.namedGraphs[0].name;
+	  
+});
+>>>>>>> 8bf28beddc9a6edf3434bdd050c405ddd2be6292
 	
 	$scope.examples = [
 	                { name : "Duplicate Dbpedia entries for the CET time zone" },

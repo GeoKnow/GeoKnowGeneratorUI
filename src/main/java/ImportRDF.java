@@ -2,6 +2,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.URLEncoder;
+import java.util.HashMap;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -9,8 +12,13 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.codehaus.jackson.map.ObjectMapper;
 
+import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.rdf.model.RDFNode;
+import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.rdf.model.Statement;
+import com.hp.hpl.jena.rdf.model.StmtIterator;
 
 
 public class ImportRDF extends HttpServlet {
@@ -22,13 +30,16 @@ public class ImportRDF extends HttpServlet {
 	private String rdfUrl;
 	private String rdfFiles;
 	private String endpoint;
+	private static String uriBase;
 	private String graph;
 	private String rdfQuery;
 	private String rdfQueryEndpoint;
-
+	private static String jdbcConnection;
+	private static String jdbcUser;
+	private static String jdbcPassword;
+	
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 	      doPost(request, response);
-	
 	}
 
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -42,6 +53,11 @@ public class ImportRDF extends HttpServlet {
 		JsonResponse res = new JsonResponse();
 	    ObjectMapper mapper = new ObjectMapper();
 	 
+//	    jdbcConnection = getServletContext().getInitParameter("virtuoso-jdbc");
+//	    jdbcUser = getServletContext().getInitParameter("virtuoso-user");
+//	    jdbcPassword = getServletContext().getInitParameter("virtuoso-password");
+	    
+	    uriBase   = request.getParameter("uriBase");
 		rdfUrl   = request.getParameter("rdfUrl");
 		endpoint = request.getParameter("endpoint");
 	    graph    = request.getParameter("graph");
@@ -49,60 +65,156 @@ public class ImportRDF extends HttpServlet {
 	    rdfQuery    = request.getParameter("rdfQuery");
 	    rdfQueryEndpoint = request.getParameter("rdfQueryEndpoint");
 	    
-	    System.out.println("rdfUrl   " +rdfUrl);
-	    System.out.println("rdfFiles " +rdfFiles);
-	    System.out.println("endpoint " +endpoint);
-	    System.out.println("graph    " +graph);
-	    	    
-	    String source = ((rdfFiles == null) ? rdfUrl : filePath+rdfFiles);
+//	    boolean useJDBC= false;
+//	    System.out.println("rdfUrl   " +rdfUrl);
+//	    System.out.println("rdfFiles " +rdfFiles);
+//	    System.out.println("endpoint " +endpoint);
+//	    System.out.println("graph    " +graph);
+   	    
 	    
-		if(source != null){
-			try {
-				String file = source;
-				System.out.println("import    " +file);
-				httpUpdate(endpoint, graph, file);
-				res.setStatus("SUCESS");
-				res.setMessage("File Imported");
-				   
-			} catch (Exception e) {
-				res.setStatus("FAIL");
-				res.setMessage(e.getMessage());
-				e.printStackTrace();
-			}    	
-	    }
-		// else try the sparql query 
-	    // there is nothing to import
-	    else{
-	    	res.setStatus("SUCESS");
-	    	res.setMessage("Nothing to import");
-	    }
-	    	
-	    mapper.writeValue(out, res); 
+//	    if(useJDBC){
+//	    	// this solution is much faster but not working yet in java
+//	    	if(rdfFiles!= null){
+//	    		try {
+//					jdbcUpdate(filePath+rdfFiles, graph);
+//		    		res.setStatus("SUCESS");
+//		 	    	res.setMessage("Nothing to import");
+//				} catch (ClassNotFoundException e) {
+//	 				res.setStatus("FAIL");
+//	 				res.setMessage(e.getMessage());
+//					e.printStackTrace();
+//				} catch (SQLException e) {
+//	 				res.setStatus("FAIL");
+//	 				res.setMessage(e.getMessage());
+//	 				e.printStackTrace();
+//				}
+//	    	}
+//	    }
+	    
+    	String source = ((rdfFiles == null) ? rdfUrl : filePath+rdfFiles);
+    	if(source != null){
+    		try {
+ 				String file = source;
+ 				System.out.println("import    " +file);
+ 				httpUpdate(endpoint, graph, file);
+ 				res.setStatus("SUCESS");
+ 				res.setMessage("File Imported");
+ 				   
+ 			} catch (Exception e) {
+ 				res.setStatus("FAIL");
+ 				res.setMessage(e.getMessage());
+ 				e.printStackTrace();
+ 			}    	
+ 	    }
+ 		// else try the sparql query 
+ 	    // there is nothing to import
+ 	    else{
+ 	    	res.setStatus("SUCESS");
+ 	    	res.setMessage("Nothing to import");
+ 	    }
+        	
+    mapper.writeValue(out, res); 
 	    out.close();
 	 }
 
-	
+//	private static void jdbcUpdate(String file, String graph) throws ClassNotFoundException, SQLException{
+//		UpdateJDBC ujdbc = new UpdateJDBC(jdbcConnection, jdbcUser, jdbcPassword);
+//		ujdbc.loadLocalFile(file, graph);
+//	}
+
 	private static void httpUpdate(String endpoint, String graph, String source) throws Exception{
 		
 		Model model = ModelFactory.createDefaultModel() ; 
 		model.read(source) ;
 	
-		String queryString="INSERT {  ";
+		// generate queries of 100 lines each
+		StmtIterator stmts = model.listStatements();
+		int linesLimit=100, linesCount=0;
+		HashMap<String, String> blancNodes = new HashMap<String,String>();
 		
-		ByteArrayOutputStream os = new ByteArrayOutputStream();
-		model.write(os, "N-TRIPLES");
-		queryString += os.toString();
-		os.close();
+		Model tmpModel = ModelFactory.createDefaultModel();
 		
-		queryString += "}";
+		while (stmts.hasNext()){
 		
-		HttpSPARQLUpdate p = new HttpSPARQLUpdate();
-        p.setEndpoint(endpoint);
-        p.setGraph(graph);
-        p.setUpdateString(queryString);
-        
-        boolean response = p.execute();
-        if (!response)  throw new Exception("UPDATE/SPARQL failed: " + queryString);
+			if(linesCount < linesLimit){
+				
+				Statement stmt = stmts.next();
+				Resource subject = null;
+				RDFNode object = null;
+				// find bnodes to skolemise them
+				if(stmt.getSubject().isAnon()){
+					String oldBN = stmt.getSubject().asNode().getBlankNodeLabel();
+					if(blancNodes.containsKey(oldBN)){
+						subject = tmpModel.getResource(blancNodes.get(oldBN));
+					}
+					else{
+						String newBN = uriBase+"bnode#"+UUID.randomUUID();
+						blancNodes.put(oldBN, newBN);
+						subject = tmpModel.createResource(newBN);
+					}
+				}
+				else
+					subject =  stmt.getSubject();
+				
+				
+				if(stmt.getObject().isAnon()){
+					String oldBN = stmt.getObject().asNode().getBlankNodeLabel();
+					if(blancNodes.containsKey(oldBN)){
+						object =  tmpModel.getResource(blancNodes.get(oldBN));
+					}
+					else{
+						String newBN = uriBase+"bnode#"+UUID.randomUUID();
+						blancNodes.put(oldBN, newBN);
+						object = tmpModel.createResource(newBN);
+					}
+				}
+				else
+					object =  stmt.getObject();
+				
+				tmpModel.add(subject, stmt.getPredicate(), object);
+				linesCount++;
+			}
+			else{
+				
+				ByteArrayOutputStream os = new ByteArrayOutputStream();
+				tmpModel.write(os, "N-TRIPLES");
+				String queryString = "INSERT {  " + os.toString() + "}";
+				os.close();
+				
+				HttpSPARQLUpdate p = new HttpSPARQLUpdate();
+		        p.setEndpoint(endpoint);
+		        p.setGraph(graph);
+		        p.setUpdateString(queryString);
+		        
+		        if (! p.execute())  throw new Exception("UPDATE/SPARQL failed: " + queryString);
+				
+				System.out.println("\n DONE " + linesCount + " = "+linesLimit);
+				System.out.println("\n Generated blanc nodes: " +blancNodes.size());
+				linesCount = 0;			
+				tmpModel.removeAll();
+			}
+		
+		}
+		
+		if(!tmpModel.isEmpty()){
+		
+			ByteArrayOutputStream os = new ByteArrayOutputStream();
+			tmpModel.write(os, "N-TRIPLES");
+			String queryString = "INSERT {  " + os.toString() + "}";
+			os.close();			
+
+			HttpSPARQLUpdate p = new HttpSPARQLUpdate();
+	        p.setEndpoint(endpoint);
+	        p.setGraph(graph);
+	        p.setUpdateString(queryString);
+	        
+	        if (!p.execute())  throw new Exception("UPDATE/SPARQL failed: " + queryString);
+			
+			System.out.println("\n DONE " + linesCount + " = "+linesLimit);
+			System.out.println("\n Generated blanc nodes: " +blancNodes.size());
+			
+		}
+       
      
 	}
 

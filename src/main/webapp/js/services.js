@@ -2,7 +2,7 @@
 
 var module = angular.module('app.services', []);
 
-module.factory('SettingsServiceStatic', function($http) {
+module.factory('ConfiurationService', function() {
 
   var NamedGraphsStatic= { namedgraphs: [
         { name: "http://localhost:8890/DAV", graph: {label: "Default Graph", description:"", created:"2013-09-12", modified:"" }},
@@ -13,6 +13,41 @@ module.factory('SettingsServiceStatic', function($http) {
 
   var SettingsService = {
 
+    getEndpoint: function() {
+      return CONFIG.getEndpoint();
+    },
+
+    getDefaultGraph: function() {
+      return CONFIG.getGraph();
+    },
+
+    getUriBase: function() {
+      return CONFIG.getUriBase();
+    },
+
+    /**
+    * NAMESPACES functions
+    */
+    getNamespaces: function(){
+
+    },
+
+    addNamespace: function(){
+
+    },
+
+    deleteNamespace: function(){
+
+    },
+
+    updateNamespace: function(){
+
+    },
+
+    /**
+    * COMPONENTS functions
+    */
+    // TODO: @Alejandra add categories to the ontology and get them with the config service
     getComponentCategories: function() {
       return { categories:
         [ { name: "Extraction and Loading", id:"extraction-and-loading" },
@@ -22,113 +57,77 @@ module.factory('SettingsServiceStatic', function($http) {
           { name: "Enriching and Data Cleaning", id:"enriching-and-cleaning" }]
       }
     },
-
-	getComponents: function() {
-/*
-		var results = [];
-
-		var elements = CONFIG.select("rdf:type", ":component");
-		for (var resource in elements)
-		{
-			var element = elements[resource];
-			results.push(
-			{
-				uri      : "<" + resource + ">"
-			,	url      : resource
-			,	label    : element["rdfs:label"][0]
-			,	version  : element[":version"][0]
-			,	category : element[":category"][0]
-			,	route    : element[":route"][0]
-			});
-		}
-
-		return { components: results };
-*/
-      return { components:
-        [ { uri: "<http://geoknow.eu/resource/Virtuoso>", label: "Virtuoso", version:"6", category:"storage-querying", 
-            url: "http://192.168.43.209:8890/conductor", route:"/authoring/ontowiki"},
-          { uri: "<http://geoknow.eu/resource/ontowiki>", label: "OntoWiki", version:"0.9.7", category:"authoring", 
-            url: "http://10.0.0.90/ontowiki", route:"/authoring/ontowiki"},
-          { uri: "<http://geoknow.eu/resource/Facete>", label: "Facete", version:"0.1-SNAPSHOT", category:"querying-and-exploration", 
-            url: "http://10.0.0.90/facete", route:"/querying-and-exploration/facete"},
-          { uri: "<http://geoknow.eu/resource/geoknow-workbench>", label: "GeoKnow Workbench", version:"0.1.0", 
-            url: "http://localhost/geoknow-workbench" } ] 
-      };      
+  	getComponents: function() {
+  		var results = [];
+      var elements = CONFIG.select("rdf:type", "lds:StackComponent");
+  		for (var resource in elements)
+  		{
+  			var element = elements[resource];
+  			results.push(
+  			{
+  				uri      : "<" + resource + ">"
+  			,	url      : resource
+  			,	label    : element["rdfs:label"][0]
+  			,	version  : element[":version"]
+  			,	category : element[":category"]
+  			});
+  		}
+		  return { components: results };     
     },
 
-	getEndpoint: function() {
-/*
-		return CONFIG.getEndpoint();
-*/
-      return "http://10.0.0.64:8890/sparql" ;      
-    },
-
-    getDefaultGraph: function() {
-/*
-		return CONFIG.getGraph();
-*/
-      return "<http://localhost:8890/DAV>";      
-    },
-
-    // get all named graphs described in the service description graph
-//     SELECT ?namedGraph ?name ?graph
-// WHERE {
-// ?namedGraph a sd:NamedGraph .
-// ?namedGraph sd:name ?name .
-// ?namedGraph sd:graph ?graph .
-// }
+    /**
+    * NAMEDGRAPH functions
+    *
+    * for each named graph the rdf would be
+    * :settingsGraph a sd:NamedGraph;
+    *     sd:name :settingsGraph;
+    *     sd:graph [
+    *               a sd:Graph, void:Dataset;
+    *               rdfs:label "Generator Settings";
+    *               dcterms:description "GeoKnow Generator settings and configurations";
+    *               foaf:homepage <http://localhost/#/settings/>; 
+    *               dcterms:modified "2013-09-12"^^xsd:date;
+    *               dcterms:created "2013-09-12"^^xsd:date;
+    *               void:sparqlEndpoint <http://localhost:8890/sparql>;
+    *           ];
+    */
+    // TODO @Vadim: implement a CONFIG.select(uri), to get the graph properties
     getNamedGraphs: function() {
-/*
-		var results = [];
-
-		var elements = CONFIG.select("rdf:type", "sd:NamedGraph");
-		for (var resource in elements)
-		{
-			var element = elements[resource];
-			results.push(
-			{
-				graph : resource
-			,	label : element["rdfs:label"][0]
-			,	name  : element["sd:name"][0]
-			});
-		}
-
-		return { namedgraphs: results };
-*/
-      return NamedGraphsStatic;      
+      var results = [];
+  		var elements = CONFIG.select("rdf:type", "sd:NamedGraph");
+  		for (var resource in elements)
+  		{
+  			var element = elements[resource];
+        // TODO: to read the sd:graph properties and add to the results
+        results.push(
+  			{
+  				name  : element["sd:name"][0] // name is the URI
+        , graph : { label : element["sd:name"][0] }// to be replaced with the graph description
+  			});  
+  		}
+  		return results;      
     },
 
-  // get all named graphs described in the service description graph
-//   SELECT ?s ?p
-// WHERE {
-// <http://generator.geoknow.eu/serviceDescription> sd:graph ?graph .
-// ?graph ?s ?p
-// }
     getNamedGraph: function(name) {
       return NamedGraphsStatic.namedgraphs[1];  // dummy allways return the same to test
     },
 
     // add a named graph in the store
-    createGraph: function(namedGraph) {
-/*
-		CONFIG.createGraph(namedGraph);
-*/
-      alert("insert graph");
+    addGraph: function(namedGraph) {
+  		CONFIG.createGraph(namedGraph);
+
       return true;
     },
 
     // saves a named graph in the store
     updateGraph: function(namedGraph) {
-      alert("save graph");
+      alert(" to implement update graph");
       return true;
     },
 
     // saves a named graph in the store
     deleteGraph: function(namedGraph) {
-/*
-		CONFIG.dropGraph(namedGraph);
-*/
-      alert("delete graph");
+  		CONFIG.dropGraph(namedGraph);
       return true;
     }
 

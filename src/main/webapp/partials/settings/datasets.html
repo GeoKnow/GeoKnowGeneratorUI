@@ -1,7 +1,7 @@
 
 <h2>Named Graphs Management</h2>
 
-<div ng-controller="GraphManagement">
+<div ng-controller="GraphCtrl">
 
 <div ng-controller="ModalWindow">
   <button type="button" class="btn btn-large btn-primary" ng-click="OpenWindow(); new()">Add new dataset</button>
@@ -58,23 +58,6 @@
       </div>      
     </form>
  	</div>
-
-
-<!-- 
-for each named graph the rdf would be
-:settingsGraph a sd:NamedGraph;
-    sd:name :settingsGraph;
-    sd:graph [
-              a sd:Graph, void:Dataset;
-              rdfs:label "Generator Settings";
-              dcterms:description "GeoKnow Generator settings and configurations";
-              foaf:homepage <http://localhost/#/settings/>; 
-              dcterms:modified "2013-09-12"^^xsd:date;
-              dcterms:created "2013-09-12"^^xsd:date;
-              void:sparqlEndpoint <http://localhost:8890/sparql>;
-          ];
-
- -->
 
 <h3>Existing Graphs</h3>
 

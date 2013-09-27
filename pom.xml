@@ -53,8 +53,8 @@
       <type>pom</type>
       <version>2.10.1</version>
     </dependency>
-  </dependencies>
 
+  </dependencies> 
   <build>
     <finalName>generator</finalName>
     <plugins>
@@ -84,8 +84,6 @@
         <artifactId>tomcat-maven-plugin</artifactId>
         <configuration>
           <url>http://localhost:8080/manager</url>
-          <!-- <url>http://192.168.2.29:8080/manager</url> -->
-          <!-- <url>http://10.0.0.62:8080/manager</url> -->
           <server>tomcat</server>
           <path>/${project.build.finalName}</path>
           <keystorePass>tomcat</keystorePass>

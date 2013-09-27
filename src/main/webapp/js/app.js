@@ -1,5 +1,10 @@
 'use strict';
 
+//TODO: this async call has to be called aspromise and resolve
+CONFIG.read();
+//http://stackoverflow.com/questions/17623591/angular-app-resolve-not-controller-for-async-pre-loaded-data
+
+
 var app = angular.module('app', ['app.services', 
                                  'app.directives', 
                                  'ui.bootstrap',
@@ -8,6 +13,7 @@ var app = angular.module('app', ['app.services',
                                  'angularFileUpload',
                                  'angular-flash.service', 
                                  'angular-flash.flash-alert-directive']);
+
 
 app.config(function($routeSegmentProvider, $routeProvider) {
 
@@ -19,6 +25,7 @@ app.config(function($routeSegmentProvider, $routeProvider) {
         .when('/settings', 'settings')
         .when('/settings/data-sources', 'settings.data-sources')
         .when('/settings/datasets', 'settings.datasets')
+        .when('/settings/namespaces', 'settings.namespaces')
         .when('/settings/components', 'settings.components')
         .when('/settings/preferences', 'settings.preferences')
         .when('/home/extraction-and-loading/import-rdf', 'default.import-rdf')
@@ -31,7 +38,7 @@ app.config(function($routeSegmentProvider, $routeProvider) {
         .when('/home/enriching-and-cleaning/geolift', 'default.geolift')
 
         .segment('default', {
-            templateUrl:'partials/default.html'})
+                templateUrl :'partials/default.html'})
             .within()
                 .segment('import-rdf', {
                     templateUrl: 'partials/extraction-and-loading/import-rdf.html' })
@@ -52,12 +59,28 @@ app.config(function($routeSegmentProvider, $routeProvider) {
             .up()
 
         .segment('settings', {
-            templateUrl:'partials/settings.html' })
+                templateUrl:'partials/settings.html'})
+                // we could implement here the resolve here for each route
+                // the disadantage is that is the same for all routes,
+                // the advantage is that in theory if the resolve do not succeed the
+                // route is not followed. I couldn make it work 
+                // resolve : function (){
+                //     var deferred = $q.defer();
+                //     console.log("LoadConfig");
+                //      if (CONFIG.read()) {
+                //         deferred.resolve('Configuration loaded!');
+                //       } else {
+                //         deferred.reject('Configuration is not available');
+                //       }
+                //       return deferred.promise;
+                // } })
             .within()
                 .segment('datasets', {
                     templateUrl: 'partials/settings/datasets.html'})
                 .segment('data-sources', {
                     templateUrl: 'partials/settings/data-sources.html'})
+                .segment('namespaces', {
+                    templateUrl: 'partials/settings/namespaces.html'})
                 .segment('components', {
                     templateUrl: 'partials/settings/components.html'})
                 .segment('preferences', {

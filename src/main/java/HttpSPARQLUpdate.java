@@ -56,9 +56,9 @@ public class HttpSPARQLUpdate {
 		wr.close();
  
 		int responseCode = connection.getResponseCode();
-		System.out.println("\nSending 'POST' request to URL : " + url);
-		System.out.println("Response Code : " + responseCode);
-		System.out.println("Response Message : " + connection.getResponseMessage());
+//		System.out.println("\nSending 'POST' request to URL : " + url);
+//		System.out.println("Response Code : " + responseCode);
+//		System.out.println("Response Message : " + connection.getResponseMessage());
 		
  		BufferedReader in = new BufferedReader(
 		        new InputStreamReader(connection.getInputStream()));
