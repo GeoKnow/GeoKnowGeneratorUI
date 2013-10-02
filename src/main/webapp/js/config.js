@@ -11,7 +11,7 @@
  * usage:
  *   CONFIG.setEndpoint(url)          - set SPARQL endpoint, should be called initially
  *   CONFIG.getEndpoint()             - get SPARQL endpoint
- *   CONFIG.getBase()                 - get base URL
+ *   CONFIG.getNS()                   - get base namespace
  *   CONFIG.getGraph()                - get graph name
  *   CONFIG.read([success(settings)]) - load settings
  *   CONFIG.getSettings()             - get loaded settings
@@ -26,9 +26,8 @@
 var CONFIG = CONFIG || (function()
 {
 	var endpoint  = "http://localhost:8890/sparql"
-	,	BASE      = "http://generator.geoknow.eu/"
-	,	GRAPH_URI = BASE + "settingsGraph"
-	,	NS        = GRAPH_URI + "#";
+	,	NS        = "http://generator.geoknow.eu/"
+	,	GRAPH_URI = NS + "settingsGraph";
 
 	var namespaces =
 	{
@@ -80,9 +79,9 @@ var CONFIG = CONFIG || (function()
 			return endpoint;
 		}
 
-	,	getBase: function()
+	,	getNS: function()
 		{
-			return BASE;
+			return NS;
 		}
 
 	,	getGraph: function()
