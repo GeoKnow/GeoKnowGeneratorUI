@@ -15,7 +15,7 @@
 	
 	<div class="row">
 			<label for="inputFile" class="col-xs-2 control-label">Upload a File</label>
-		    	<div class="col-xs-6">
+		    	<div class="col-xs-8">
 					  <!-- <input type="file" class="form-control" ng-file-select="onFileSelect($files)" > -->
 					    <input id="lefile" class="form-control" type="file" ng-file-select="onFileSelect($files)" multiple name="fileName"
 					  				accept=".xml" style="display:none">
@@ -41,7 +41,7 @@
 			<div class="col-xs-2">
 			<label for="Example">Examples</label>
 			</div>
-			<div class="col-xs-6">
+			<div class="col-xs-8">
 			<select id="Example" class="form-control" ng-model="Example" 
 			ng-options="example.name for example in examples" ng-change="FillForm(Example.name); enterConfig = true">
 			 <option value="">Choose an example</option>

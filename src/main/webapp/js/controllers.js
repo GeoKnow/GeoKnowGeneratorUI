@@ -108,12 +108,26 @@ var ModalWindow = function ($scope) {
   
 };
 
-app.controller('FaceteFormCtrl', function($scope, SettingsServiceStatic) {
-	//Settings for Facete
-	  $scope.namedGraphs = SettingsServiceStatic.getNamedGraphs().namedgraphs;
-	  $scope.facete = { service : "http://localhost:8890/sparql",
+app.controller('FaceteFormCtrl', function($scope, ConfigurationService) {
+	  //Settings for Facete
+	  $scope.namedGraphs = ConfigurationService.getNamedGraphs();
+	  
+	  $scope.facete = { service : "http://10.0.0.75:8890/sparql",
 	  					dataset :  $scope.namedGraphs[0].name
 					  }
+	  
+				}).directive("ngPortlet", function ($compile) {
+					return {
+					    template: '<iframe  id="mod-frame" '+
+					    	'src="http://[2001:638:902:2010:0:168:35:114]:8080/facete/?service-uri={{facete.service}}'+
+					    	'&default-graph-uri={{facete.dataset}}"></iframe>',
+					    	restrict: 'E',
+					    link: function (scope, elm) {
+					        scope.OpenFullWindow = function(){
+					           elm.after($compile('<ng-portlet></ng-portlet>')(scope));
+					        }
+					    }
+					};
 				});
 
 var LimesCtrl = function($scope, $http){
@@ -271,9 +285,9 @@ var GoogleMapWindow = function ($scope, $timeout, $log) {
 
 };
 
-var ImportFormCtrl = function($scope, $http, ConfiurationService, flash) {
+var ImportFormCtrl = function($scope, $http, ConfigurationService, flash) {
 
-  $scope.namedGraphs = ConfiurationService.getNamedGraphs();
+  $scope.namedGraphs = ConfigurationService.getNamedGraphs();
   $scope.uploadMessage = '';
   
   var uploadError = false;
@@ -354,18 +368,18 @@ var ImportFormCtrl = function($scope, $http, ConfiurationService, flash) {
     if(type == 'file'){
       parameters ={
         rdfFiles: uploadedFiles, 
-        endpoint: ConfiurationService.getEndpoint(), 
+        endpoint: ConfigurationService.getEndpoint(), 
         graph: $scope.importFile.graph, 
-        uriBase : ConfiurationService.getUriBase()
+        uriBase : ConfigurationService.getUriBase()
       };
       
     }
     else if(type == 'url'){
       parameters ={
         rdfUrl: $scope.importUrl.inputUrl, 
-        endpoint: ConfiurationService.getEndpoint(), 
+        endpoint: ConfigurationService.getEndpoint(), 
         graph: $scope.importUrl.graph, 
-        uriBase : ConfiurationService.getUriBase() 
+        uriBase : ConfigurationService.getUriBase() 
       };
 
     }
@@ -373,9 +387,9 @@ var ImportFormCtrl = function($scope, $http, ConfiurationService, flash) {
       parameters ={
         rdfQuery: $scope.importSparql.sparqlQuery,
         rdfQueryEndpoint: $scope.importSparql.endPoint, 
-        endpoint: ConfiurationService.getEndpoint(), 
+        endpoint: ConfigurationService.getEndpoint(), 
         graph: $scope.importSparql.graph, 
-        uriBase : ConfiurationService.getUriBase() 
+        uriBase : ConfigurationService.getUriBase() 
       };
     }
     $http({
