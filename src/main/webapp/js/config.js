@@ -9,19 +9,25 @@
  *   GRANT EXECUTE ON DB.DBA.L_O_LOOK TO "SPARQL"
  *
  * usage:
- *   ENDPOINT                         - must be set to your server
+ *   CONFIG.setEndpoint(url)          - set SPARQL endpoint, should be called initially
+ *   CONFIG.getEndpoint()             - get SPARQL endpoint
+ *   CONFIG.getBase()                 - get base URL
+ *   CONFIG.getGraph()                - get graph name
  *   CONFIG.read([success(settings)]) - load settings
- *   CONFIG.write()                   - save settings
- *   CONFIG.select(property, value)   - select settings
+ *   CONFIG.getSettings()             - get loaded settings
+ *   CONFIG.write()                   - save settings after editing CONFIG.getSettings() result
+ *   CONFIG.select(property, value)   - select settings, e.g.: CONFIG.select("rdf:type", "lds:StackComponent")
+ *   CONFIG.createGraph(name)         - create graph
+ *   CONFIG.dropGraph(name)           - delete graph
  */
 
 "use strict";
 
 var CONFIG = CONFIG || (function()
 {
-	var ENDPOINT  = "http://10.0.0.75:8890/sparql"
-	,	GRAPH_URI = "http://generator.geoknow.eu/settingsGraph"
-	,	URI_BASE = "http://generator.geoknow.eu/"
+	var endpoint  = "http://localhost:8890/sparql"
+	,	BASE      = "http://generator.geoknow.eu/"
+	,	GRAPH_URI = BASE + "settingsGraph"
 	,	NS        = GRAPH_URI + "#";
 
 	var namespaces =
@@ -29,12 +35,11 @@ var CONFIG = CONFIG || (function()
 		"http://dbpedia.org/resource/"                     : "dbpedia:"
 	,	"http://purl.org/dc/elements/1.1/"                 : "dc:"
 	,	"http://xmlns.com/foaf/0.1/"                       : "foaf:"
+	,	"http://linkeddata.org/integrated-stack-schema/"   : "lds:"
 	,	"http://www.w3.org/1999/02/22-rdf-syntax-ns#"      : "rdf:"
 	,	"http://www.w3.org/2000/01/rdf-schema#"            : "rdfs:"
 	,	"http://www.w3.org/ns/sparql-service-description#" : "sd:"
-	,	"http://linkeddata.org/integrated-stack-schema/"   : "lds:"
 	};
-
 	namespaces[NS] = ":";
 
 	var NAMESPACES = "PREFIX : <" + NS + ">"
@@ -42,44 +47,42 @@ var CONFIG = CONFIG || (function()
 	,	FORMAT     = "application/sparql-results+json"
 	,	EOL        = "\r\n";
 
-	var triples =
-	[	// defaults
-		[ "http://dbpedia.org/sparql", "rdf:type", ":endpoint" ]
-	,	[ "http://dbpedia.org/sparql", "rdfs:label", "DBpedia" ]
-
-	,	[ "http://www.openstreetmap.org", "rdf:type", ":mapService" ]
-	,	[ "http://www.openstreetmap.org", "rdfs:label", "OpenStreetMap" ]
-
-	,	[ "http://maps.google.com", "rdf:type", ":mapService" ]
-	,	[ "http://maps.google.com", "rdfs:label", "Google Maps" ]
-
-	,	[ "http://192.168.43.209:8890", "rdf:type", ":component" ]
-	,	[ "http://192.168.43.209:8890", "rdfs:label", "Virtuoso" ]
-	,	[ "http://192.168.43.209:8890", ":version", "7" ]
-	,	[ "http://192.168.43.209:8890", ":category", "storage-querying" ]
-	,	[ "http://192.168.43.209:8890", ":route", "/authoring/ontowiki" ]
-
-	,	[ "http://10.0.0.90/ontowiki", "rdf:type", ":component" ]
-	,	[ "http://10.0.0.90/ontowiki", "rdfs:label", "OntoWiki" ]
-	,	[ "http://10.0.0.90/ontowiki", ":version", "0.9.7" ]
-	,	[ "http://10.0.0.90/ontowiki", ":category", "authoring" ]
-	,	[ "http://10.0.0.90/ontowiki", ":route", "/authoring/ontowiki" ]
-
-	,	[ "http://10.0.0.90/facete", "rdf:type", ":component" ]
-	,	[ "http://10.0.0.90/facete", "rdfs:label", "Facete" ]
-	,	[ "http://10.0.0.90/facete", ":version", "0.1" ]
-	,	[ "http://10.0.0.90/facete", ":category", "querying-and-exploration" ]
-	,	[ "http://10.0.0.90/facete", ":route", "/querying-and-exploration/facete" ]
-	];
-
 	var settings = {};
 
 	var isLoaded = false;
 
+	var ns = function(v)
+	{
+		var value = v.value || v;
+
+		if (!v.type || v.type == "uri")
+		{
+			var namespace = /.*[#\/]/.exec(value);
+			if (namespace)
+			{
+				var prefix = namespaces[namespace = namespace[0]];
+				if (prefix)
+					return prefix + value.slice(namespace.length);
+			}
+		}
+
+		return value;
+	}
+
 	return {
+		setEndpoint: function(url)
+		{
+			endpoint = url;
+		}
+
 		getEndpoint: function()
 		{
-			return ENDPOINT;
+			return endpoint;
+		}
+
+	,	getBase: function()
+		{
+			return BASE;
 		}
 
 	,	getGraph: function()
@@ -87,13 +90,16 @@ var CONFIG = CONFIG || (function()
 			return GRAPH;
 		}
 
-	,	getUriBase: function()
+	,	getSettings: function()
 		{
-			return URI_BASE;
+			return settings;
 		}
 
 	,	select: function(property, value)
 		{
+			property = ns(property);
+			value    = ns(value);
+
 			var elements = {};
 
 			for (var resource in settings)
@@ -128,7 +134,7 @@ var CONFIG = CONFIG || (function()
 				return;
 			}
 
-			$.getJSON(ENDPOINT + "?callback=?",
+			$.getJSON(endpoint + "?callback=?",
 				{
 					format: FORMAT
 				,	query: "SELECT * FROM " + GRAPH + EOL
@@ -137,36 +143,20 @@ var CONFIG = CONFIG || (function()
 				}
 			,	function(data)
 				{
-					function ns(v)
-					{
-						var value = v.value;
-
-						if (v.type == "uri")
-						{
-							var namespace = /.*[#\/]/.exec(value);
-							if (namespace)
-							{
-								var prefix = namespaces[namespace = namespace[0]];
-								if (prefix)
-									return prefix + value.slice(namespace.length);
-							}
-						}
-
-						return value;
-					}
-
 					try
 					{
-						var bindings = data.results.bindings;
-
-						triples  = [];
-						settings = {};
+						var bindings = data.results.bindings
+						,	triples  = [];
 
 						for (var i in bindings)
 						{
 							var binding = bindings[i];
 							triples.push([ ns(binding.s), ns(binding.p), ns(binding.o) ]);
 						}
+
+						settings = {};
+
+						var bnodes = {};
 
 						for (var i in triples)
 						{
@@ -175,7 +165,22 @@ var CONFIG = CONFIG || (function()
 							,	p = triple[1]
 							,	o = triple[2];
 
-							var map = settings[s] || (settings[s] = {});
+							if (/^nodeID:\/\//.test(s))
+							{
+								var id = s.slice(9);
+								var map = bnodes[id] = bnodes[id] || {};
+							}
+							else
+							{
+								var map = settings[s] || (settings[s] = {});
+
+								if (/^nodeID:\/\//.test(o))
+								{
+									var id = o.slice(9);
+									o = bnodes[id] = bnodes[id] || {};
+								}
+							}
+
 							(map[p] || (map[p] = [])).push(o);
 						}
 
@@ -194,34 +199,44 @@ var CONFIG = CONFIG || (function()
 
 	,	write: function()
 		{
-			function uri(s)
+			var wrap = function(s)
 			{
-				return s.slice(0, 7) == "http://" ? "<" + s + ">" : s;
+				return /^http:\/\//.test(s) ? "<" + s + ">" : !/^\w*:/.test(s) ? '"' + s + '"' : s;
 			}
 
-			function str(s)
+			var data = "",
+				bnodeIndex = 0;
+
+			var walk = function(s, map)
 			{
-				return '"' + s + '"';
+				for (var p in map)
+				{
+					var arr = map[p];
+					for (var i in arr)
+					{
+						var o = arr[i];
+						if (typeof o === "string")
+							data += wrap(s) + " " + wrap(p) + " " + wrap(o) + " ." + EOL;
+						else
+						{
+							var bnode = "_:b" + ++bnodeIndex;
+							data += wrap(s) + " " + wrap(p) + " " + bnode + " ." + EOL;
+							walk(bnode, o);
+						}
+					}
+				}
 			}
 
-			var data = "";
+			for (var s in settings)
+				walk(s, settings[s]);
 
-			for (var i in triples)
-			{
-				var triple = triples[i]
-				,	s = triple[0]
-				,	p = triple[1]
-				,	o = triple[2];
-				data += uri(s) + " " + uri(p) + " " + (p == "rdf:type" ? uri(o) : str(o)) + " ." + EOL;
-			}
-
-			$.getJSON(ENDPOINT + "?callback=?",
+			$.getJSON(endpoint + "?callback=?",
 				{
 					format: FORMAT
 				,	query: NAMESPACES + EOL
 					+	"DROP SILENT GRAPH "   + GRAPH + EOL
 					+	"CREATE SILENT GRAPH " + GRAPH + EOL
-					+	"INSERT DATA INTO "    + GRAPH + EOL
+					+	"INSERT INTO "         + GRAPH + EOL
 					+	"{" + EOL
 					+	data
 					+	"}"
@@ -242,7 +257,7 @@ var CONFIG = CONFIG || (function()
 
 	,	createGraph: function(name)
 		{
-			$.getJSON(ENDPOINT + "?callback=?",
+			$.getJSON(endpoint + "?callback=?",
 				{
 					format: FORMAT
 				,	query: "CREATE SILENT GRAPH " + name
@@ -263,7 +278,7 @@ var CONFIG = CONFIG || (function()
 
 	,	dropGraph: function(name)
 		{
-			$.getJSON(ENDPOINT + "?callback=?",
+			$.getJSON(endpoint + "?callback=?",
 				{
 					format: FORMAT
 				,	query: "DROP SILENT GRAPH " + name
@@ -283,6 +298,3 @@ var CONFIG = CONFIG || (function()
 		}
 	};
 })();
-
-
-
