@@ -177,6 +177,7 @@ var ImportFormCtrl = function($scope, $http, ConfiurationService, flash) {
   var uploadError = false;
   var importing = false;
   var uploadedFiles = null;
+  $scope.importSparql = { sparqlQuery : "CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o } LIMIT 10"};
 
   $scope.sourceTypes = [
     {value:'file', label:'File'},
@@ -200,6 +201,7 @@ var ImportFormCtrl = function($scope, $http, ConfiurationService, flash) {
     	$scope.fileElements = false;	
 		  $scope.urlElements = false;
   		$scope.queryElements = true;
+
     }
     type = $scope.sourceType.value;
   };
@@ -223,6 +225,7 @@ var ImportFormCtrl = function($scope, $http, ConfiurationService, flash) {
         else {
           uploadError = false;
           uploadedFiles = $file.name;
+          //Use response.data.results to get the file location;
         }
       }); 
     }

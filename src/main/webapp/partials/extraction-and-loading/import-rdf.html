@@ -105,7 +105,7 @@
 			<div class="form-group">
 	    	<label for="sparqlQuery" class="col-lg-2 control-label">Query</label>
 		    <div class="col-lg-10">
-		    	<textarea class="form-control" rows="3" id="sparqlQuery" name="sparqlQuery" ng-model="importSparql.sparqlQuery" required></textarea>
+		    	<textarea class="form-control" rows="3" id="sparqlQuery" name="sparqlQuery" ng-model="importSparql.sparqlQuery" required>{{scope.importSparql.sparqlQuery}}</textarea>
 		    	<div class="error" ng-show="sparqlForm.sparqlQuery.$dirty && sparqlForm.sparqlQuery.$invalid">Invalid:
           	<span ng-show="sparqlForm.sparqlQuery.$error.required">Specify the EndPoint</span>
         	</div>

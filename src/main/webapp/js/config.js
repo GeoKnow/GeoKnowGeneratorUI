@@ -19,7 +19,7 @@
 
 var CONFIG = CONFIG || (function()
 {
-	var ENDPOINT  = "http://localhost:8890/sparql"
+	var ENDPOINT  = "http://144.76.166.111:8890/sparql"
 	,	GRAPH_URI = "http://generator.geoknow.eu/settingsGraph"
 	,	URI_BASE = "http://generator.geoknow.eu/"
 	,	NS        = GRAPH_URI + "#";

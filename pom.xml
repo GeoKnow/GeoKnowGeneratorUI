@@ -83,11 +83,11 @@
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>tomcat-maven-plugin</artifactId>
         <configuration>
-          <url>http://localhost:8080/manager</url>
+         <!--  <url>http://144.76.166.111:8080/manager/text</url>
+          <server>generator</server> -->
+          <url>http://localhost:8080/manager/text</url>
           <server>tomcat</server>
           <path>/${project.build.finalName}</path>
-          <keystorePass>tomcat</keystorePass>
-          <!-- <httpsPort>8443</httpsPort> -->
         </configuration>
       </plugin>
     </plugins>

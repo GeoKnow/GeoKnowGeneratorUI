@@ -19,9 +19,7 @@ function NamespacesCtrl($scope, ConfiurationService) {
 }
 
 function ComponentCtrl($scope, ConfiurationService){
-
-	$scope.components = ConfiurationService.getComponents().components;
-
+	$scope.components = ConfiurationService.getComponents();
 }
 
 
