@@ -25,7 +25,7 @@
 
 var CONFIG = CONFIG || (function()
 {
-	var endpoint  = "http://10.0.0.80:8890/sparql"
+	var endpoint  = "http://http://144.76.166.111:8890/sparql"
 	,	NS        = "http://generator.geoknow.eu/"
 	,	GRAPH_URI = NS + "settingsGraph";
 
