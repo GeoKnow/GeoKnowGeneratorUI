@@ -41,10 +41,11 @@ var CONFIG = CONFIG || (function()
 	};
 	namespaces[NS] = ":";
 
-	var NAMESPACES = "PREFIX : <" + NS + ">"
-	,	GRAPH      = "<" + GRAPH_URI + ">"
+	var GRAPH      = "<" + GRAPH_URI + ">"
 	,	FORMAT     = "application/sparql-results+json"
-	,	EOL        = "\r\n";
+	,	EOL        = "\r\n"
+	,	NAMESPACES = "PREFIX : <" + NS + ">" + EOL
+				   + "PREFIX lds: <http://linkeddata.org/integrated-stack-schema/>";
 
 	var settings = {};
 
