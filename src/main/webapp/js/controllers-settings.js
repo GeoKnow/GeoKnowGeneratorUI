@@ -18,12 +18,9 @@ function NamespacesCtrl($scope, ConfigurationService) {
 	};
 }
 
-function ComponentCtrl($scope, ConfigurationService){
-
-	$scope.components = ConfigurationService.getComponents().components;
-
+function ComponentCtrl($scope, ConfiurationService){
+	$scope.components = ConfiurationService.getComponents();
 }
-
 
 function GraphCtrl($scope, ConfigurationService){
 

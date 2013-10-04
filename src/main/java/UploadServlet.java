@@ -86,7 +86,6 @@ public class UploadServlet extends HttpServlet {
             return;
          }
          
-         List<String> uploadedFiles= new ArrayList<String>();
          
          for (FileItem diskFileItem : fields) {
        	   // Exclude the form fields
@@ -94,14 +93,6 @@ public class UploadServlet extends HttpServlet {
        	    continue;
        	   }
        	   
-//       	   out.println("<td>file form field</td><td>FIELD NAME: " + diskFileItem.getFieldName() +
-//                "<br/>STRING: " + diskFileItem.getString() +
-//                "<br/>NAME: " + diskFileItem.getName() +
-//                "<br/>CONTENT TYPE: " + diskFileItem.getContentType() +
-//                "<br/>SIZE (BYTES): " + diskFileItem.getSize() +
-//                "<br/>TO STRING: " + diskFileItem.toString()
-//                );
-
        	   byte[] fileBytes = diskFileItem.get();
        	   File file = new File(seshdir, diskFileItem.getName());
        	   if(!file.exists()) 
@@ -112,15 +103,16 @@ public class UploadServlet extends HttpServlet {
            	   fileOutputStream.write(fileBytes);
            	   fileOutputStream.flush();
            	   fileOutputStream.close();
+           	   
+           	   
            } catch (FileNotFoundException e) {
         	   res.setStatus("FAIL");
                res.setMessage(e.getMessage());
                return;
            }  
            
-           uploadedFiles.add(file.getName());
+           res.addResult(file.getAbsolutePath()+file.getName());
          }
-         res.setResult(uploadedFiles);
          res.setStatus("SUCESS");
          res.setMessage("Successfuly uploaded");
          

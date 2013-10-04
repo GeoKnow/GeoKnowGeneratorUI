@@ -22,7 +22,7 @@ module.factory('ConfigurationService', function() {
     },
 
     getUriBase: function() {
-      return CONFIG.getUriBase();
+      return CONFIG.getNS();
     },
 
     /**
@@ -57,9 +57,11 @@ module.factory('ConfigurationService', function() {
           { name: "Enriching and Data Cleaning", id:"enriching-and-cleaning" }]
       }
     },
+    
   	getComponents: function() {
   		var results = [];
       var elements = CONFIG.select("rdf:type", "lds:StackComponent");
+      console.log(elements);
   		for (var resource in elements)
   		{
   			var element = elements[resource];
@@ -68,11 +70,11 @@ module.factory('ConfigurationService', function() {
   				uri      : "<" + resource + ">"
   			,	url      : resource
   			,	label    : element["rdfs:label"][0]
-  			,	version  : element[":version"]
-  			,	category : element[":category"]
+  			,	version  : element["lds:version"]
+  			,	category : element["lds:category"]
   			});
   		}
-		  return { components: results };     
+		  return results;     
     },
 
     /**

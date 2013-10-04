@@ -247,7 +247,6 @@ var LimesCtrl = function($scope, $http){
 	}
 }
 
-
 app.controller('OpenMap', function OpenMap($scope, $timeout, $log){
 
   var map = new OpenLayers.Map( 'map', {controls:[
@@ -335,6 +334,24 @@ var ImportFormCtrl = function($scope, $http, ConfigurationService, flash) {
 		    type = $scope.sourceType.value;
 		  };
 		  $scope.fileElements = false;
+  $scope.namedGraphs = ConfigurationService.getNamedGraphs();
+  $scope.uploadMessage = '';
+  
+  var uploadError = false;
+  var importing = false;
+  var uploadedFiles = null;
+  $scope.importSparql = { sparqlQuery : "CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o } LIMIT 10"};
+
+  $scope.sourceTypes = [
+    {value:'file', label:'File'},
+    {value:'url', label:'URL'},
+    {value:'query', label:'SPARQL Query'}
+  ];
+  var type = '';
+
+  $scope.updateForm = function() {
+    if($scope.sourceType.value == 'file'){
+    	$scope.fileElements = true;	
 		  $scope.urlElements = false;
 		  $scope.queryElements = false;
 		  
@@ -376,9 +393,65 @@ var ImportFormCtrl = function($scope, $http, ConfigurationService, flash) {
 		    }
 		    return invalid;
 		    
+  		$scope.queryElements = false;
+    }
+    else if($scope.sourceType.value == 'url'){
+    	$scope.fileElements = false;	
+		  $scope.urlElements = true;
+  		$scope.queryElements = false;
+    }
+    else if($scope.sourceType.value == 'query'){
+    	$scope.fileElements = false;	
+		  $scope.urlElements = false;
+  		$scope.queryElements = true;
+
+    }
+    type = $scope.sourceType.value;
   };
-  
-$scope.import = function(){
+  $scope.fileElements = false;
+  $scope.urlElements = false;
+  $scope.queryElements = false;
+
+  $scope.onFileSelect = function($files) {
+    //$files: an array of files selected, each file has name, size, and type.
+    for (var i = 0; i < $files.length; i++) {
+      var $file = $files[i];
+      $http.uploadFile({
+        url: 'UploadServlet', //upload.php script, node.js route, or servlet uplaod url)
+        file: $file
+      }).then(function(response, status, headers, config) {
+        // file is uploaded successfully
+        if(response.data.status=="FAIL"){
+          uploadError = true;
+          $scope.uploadMessage=response.data.message;
+        }
+        else {
+          uploadError = false;
+          uploadedFiles = $file.name;
+          //Use response.data.results to get the file location;
+        }
+      }); 
+    }
+  };
+
+  $scope.uploadedError =  function(){
+    return uploadError;
+  };
+
+  $scope.isImporting =  function(){
+    return importing;
+  };
+  $scope.isInvalid = function(){
+    var invalid =true;
+    if(!$scope.fileForm.$invalid){
+        if(uploadedFiles!= null){
+          invalid = false;
+        }
+    }
+    return invalid;
+  };
+
+  $scope.import = function(){
     // validate the input fields accoding to the import type
     var parameters;
     importing = true;
