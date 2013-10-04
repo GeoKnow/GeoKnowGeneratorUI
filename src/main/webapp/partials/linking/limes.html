@@ -13,12 +13,14 @@
 	</div>
 	<br>
 	
-	<div class="row">
+	<div class="row" ng-controller="ImportFormCtrl">
 			<label for="inputFile" class="col-xs-2 control-label">Upload a File</label>
 		    	<div class="col-xs-8">
 					  <!-- <input type="file" class="form-control" ng-file-select="onFileSelect($files)" > -->
-					    <input id="lefile" class="form-control" type="file" ng-file-select="onFileSelect($files)" multiple name="fileName"
+					    <input id="lefile" class="form-control" type="file" ng-file-select="onFileSelect($files); loadLimesXML($files)" multiple name="fileName"
 					  				accept=".xml" style="display:none">
+					  	<div class="error" ng-show="uploadedError()">Invalid:
+					  	<span>{{uploadMessage}}</span></div>
 						<div class="input-append">
 						<input id="dummyInput" class="input-large pull-left col-xs-10" type="text">
 						<a class="btn btn-success btn-large pull-left col-xs-2" onclick="$('input[id=lefile]').click();">Browse</a>
@@ -43,7 +45,7 @@
 			</div>
 			<div class="col-xs-8">
 			<select id="Example" class="form-control" ng-model="Example" 
-			ng-options="example.name for example in examples" ng-change="FillForm(Example.name); enterConfig = true">
+			ng-options="example.name for example in examples" ng-change="FillForm(Example.name); enterConfig = true; startReview = false">
 			 <option value="">Choose an example</option>
 			</select>
 			</div>
@@ -239,7 +241,13 @@
 	<div class="row">
 		<div class="col-xs-2"></div>
 		<div class="col-xs-2">
-		  <a class="btn btn-success btn-block" ng-click="StartLimes()">Start LIMES</a>
+		  <a class="btn btn-primary btn-block" id="startLimes" ng-show="enterConfig" ng-click="StartLimes()">Start LIMES</a>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-xs-2"></div>
+		<div class="col-xs-2">
+		  <a class="btn btn-success btn-block" id="reviewLimes" ng-show="startReview" ng-click="ReviewLimes()">Review Results</a>
 		</div>
 	</div>
 	<!-- 

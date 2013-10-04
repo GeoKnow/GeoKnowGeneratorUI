@@ -133,7 +133,7 @@ app.controller('FaceteFormCtrl', function($scope, ConfigurationService) {
 var LimesCtrl = function($scope, $http){
 	
 	$scope.examples = [
-	                { name : "Duplicate Dbpedia entries for the CET time zone" },
+	                { name : "Duplicate Dbpedia country entries for the CET time zone" },
 	                { name : "Geo Data" }
 	];
 	
@@ -155,7 +155,7 @@ var LimesCtrl = function($scope, $http){
 		
 		var params = {};
 		
-		if(example === "Duplicate Dbpedia entries for the CET time zone"){
+		if(example === "Duplicate Dbpedia country entries for the CET time zone"){
 			
 		$scope.limes = { SourceServiceURI : "http://dbpedia.org/sparql",
 						 TargetServiceURI  : "http://dbpedia.org/sparql",
@@ -163,8 +163,10 @@ var LimesCtrl = function($scope, $http){
 						 TargetVar: "?y",
 						 SourceSize: "1000",
 						 TargetSize: "1000",
-						 SourceRestr: "?x dbpedia:timeZone dbresource:Central_European_Time",
-						 TargetRestr: "?y dbpedia:timeZone dbresource:Central_European_Time",
+						 SourceRestr: "?x dbpedia:timeZone dbresource:Central_European_Time. " +
+						 		"?x dbpedia2:country ?z",
+						 TargetRestr: "?y dbpedia:timeZone dbresource:Central_European_Time. " +
+						 		"?y dbpedia2:country ?z",
 						 SourceProp: "rdfs:label",
 						 TargetProp: "rdfs:label",
 						 Metric: "levenshtein(y.rdfs:label, x.rdfs:label)",
@@ -224,14 +226,27 @@ var LimesCtrl = function($scope, $http){
 					 };
 		
 		$http({
-			url: "http://localhost:8080/LimeServlet/",
+			url: "http://localhost:8080/LimeServlet/LimesRun",
 	        method: "POST",
 	        params: params,
+	        dataType: "json",
+	        contentType: "application/json; charset=utf-8"
+	      }).then(function() {
+	    	$("#startLimes").toggle();
+	  		$("#reviewLimes").toggle();
+	      });
+	}
+	
+	$scope.ReviewLimes = function(){
+		$http({
+			url: "http://localhost:8080/LimeServlet/LimesReview",
+	        method: "POST",
 	        dataType: "json",
 	        contentType: "application/json; charset=utf-8"
 	      });
 	}
 }
+
 
 app.controller('OpenMap', function OpenMap($scope, $timeout, $log){
 
@@ -287,81 +302,83 @@ var GoogleMapWindow = function ($scope, $timeout, $log) {
 
 var ImportFormCtrl = function($scope, $http, ConfigurationService, flash) {
 
-  $scope.namedGraphs = ConfigurationService.getNamedGraphs();
-  $scope.uploadMessage = '';
-  
-  var uploadError = false;
-  var importing = false;
-  var uploadedFiles = null;
-
-  $scope.sourceTypes = [
-    {value:'file', label:'File'},
-    {value:'url', label:'URL'},
-    {value:'query', label:'SPARQL Query'}
-  ];
-  var type = '';
-
-  $scope.updateForm = function() {
-    if($scope.sourceType.value == 'file'){
-    	$scope.fileElements = true;	
+		  $scope.namedGraphs = ConfigurationService.getNamedGraphs();
+		  $scope.uploadMessage = '';
+		  
+		  var uploadError = false;
+		  var importing = false;
+		  var uploadedFiles = null;
+		
+		  $scope.sourceTypes = [
+		    {value:'file', label:'File'},
+		    {value:'url', label:'URL'},
+		    {value:'query', label:'SPARQL Query'}
+		  ];
+		  var type = '';
+		
+		  $scope.updateForm = function() {
+		    if($scope.sourceType.value == 'file'){
+		    	$scope.fileElements = true;	
+				  $scope.urlElements = false;
+		  		$scope.queryElements = false;
+		    }
+		    else if($scope.sourceType.value == 'url'){
+		    	$scope.fileElements = false;	
+				  $scope.urlElements = true;
+		  		$scope.queryElements = false;
+		    }
+		    else if($scope.sourceType.value == 'query'){
+		    	$scope.fileElements = false;	
+				  $scope.urlElements = false;
+		  		$scope.queryElements = true;
+		    }
+		    type = $scope.sourceType.value;
+		  };
+		  $scope.fileElements = false;
 		  $scope.urlElements = false;
-  		$scope.queryElements = false;
-    }
-    else if($scope.sourceType.value == 'url'){
-    	$scope.fileElements = false;	
-		  $scope.urlElements = true;
-  		$scope.queryElements = false;
-    }
-    else if($scope.sourceType.value == 'query'){
-    	$scope.fileElements = false;	
-		  $scope.urlElements = false;
-  		$scope.queryElements = true;
-    }
-    type = $scope.sourceType.value;
+		  $scope.queryElements = false;
+		  
+		$scope.onFileSelect = function($files) {
+		    //$files: an array of files selected, each file has name, size, and type.
+		    for (var i = 0; i < $files.length; i++) {
+		      var $file = $files[i];
+		      $http.uploadFile({
+		        url: 'UploadServlet', //upload.php script, node.js route, or servlet uplaod url)
+		        file: $file
+		      }).then(function(response, status, headers, config) {
+		        // file is uploaded successfully
+		        if(response.data.status=="FAIL"){
+		          uploadError = true;
+		          $scope.uploadMessage=response.data.message;
+		        }
+		        else {
+		          uploadError = false;
+		          uploadedFiles = $file.name;
+		        }
+		      }); 
+		    }
+		  };
+		
+		  $scope.uploadedError =  function(){
+		    return uploadError;
+		  };
+		
+		  $scope.isImporting =  function(){
+		    return importing;
+		  };
+		  
+		  $scope.isInvalid = function(){
+		    var invalid =true;
+		    if(!$scope.fileForm.$invalid){
+		        if(uploadedFiles!= null){
+		          invalid = false;
+		        }
+		    }
+		    return invalid;
+		    
   };
-  $scope.fileElements = false;
-  $scope.urlElements = false;
-  $scope.queryElements = false;
   
-  $scope.onFileSelect = function($files) {
-    //$files: an array of files selected, each file has name, size, and type.
-    for (var i = 0; i < $files.length; i++) {
-      var $file = $files[i];
-      $http.uploadFile({
-        url: 'UploadServlet', //upload.php script, node.js route, or servlet uplaod url)
-        file: $file
-      }).then(function(response, status, headers, config) {
-        // file is uploaded successfully
-        if(response.data.status=="FAIL"){
-          uploadError = true;
-          $scope.uploadMessage=response.data.message;
-        }
-        else {
-          uploadError = false;
-          uploadedFiles = $file.name;
-        }
-      }); 
-    }
-  };
-
-  $scope.uploadedError =  function(){
-    return uploadError;
-  };
-
-  $scope.isImporting =  function(){
-    return importing;
-  };
-  $scope.isInvalid = function(){
-    var invalid =true;
-    if(!$scope.fileForm.$invalid){
-        if(uploadedFiles!= null){
-          invalid = false;
-        }
-    }
-    return invalid;
-  };
-
-  $scope.import = function(){
+$scope.import = function(){
     // validate the input fields accoding to the import type
     var parameters;
     importing = true;
