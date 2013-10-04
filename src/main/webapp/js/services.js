@@ -2,7 +2,7 @@
 
 var module = angular.module('app.services', []);
 
-module.factory('ConfiurationService', function() {
+module.factory('ConfigurationService', function() {
 
   var NamedGraphsStatic= { namedgraphs: [
         { name: "http://localhost:8890/DAV", graph: {label: "Default Graph", description:"", created:"2013-09-12", modified:"" }},
@@ -22,7 +22,7 @@ module.factory('ConfiurationService', function() {
     },
 
     getUriBase: function() {
-      return CONFIG.getUriBase();
+      return CONFIG.getNS();
     },
 
     /**

@@ -1,238 +1,303 @@
 <div class="contents" ng-controller="LimesCtrl">
 	<h3 class="green bold">LIMES</h3>
-	<form class="form-inline InputForm col-xs-10" role="form">
+	<b>Link Discovery Framework for Metric Spaces</b>
+	<br>
+	<br>
+	<p>To get started either upload a configuration file, choose an example, or fill in the options form.</p>
+	
+	<form class="form-inline InputForm col-xs-11" role="form">
 	<div class="row">
-	<div class="col-lg-6">
+		<div class="col-xs-12">
+		<h5 class="green bold">Options</h5>
+		</div>
+	</div>
+	<br>
+	
+	<div class="row">
+			<label for="inputFile" class="col-xs-2 control-label">Upload a File</label>
+		    	<div class="col-xs-8">
+					  <!-- <input type="file" class="form-control" ng-file-select="onFileSelect($files)" > -->
+					    <input id="lefile" class="form-control" type="file" ng-file-select="onFileSelect($files)" multiple name="fileName"
+					  				accept=".xml" style="display:none">
+						<div class="input-append">
+						<input id="dummyInput" class="input-large pull-left col-xs-10" type="text">
+						<a class="btn btn-success btn-large pull-left col-xs-2" onclick="$('input[id=lefile]').click();">Browse</a>
+						</div>
+			    </div>
+    </div>
+	<div class="row">
+						<script type="text/javascript">
+						$('input[id=lefile]').change(function() {
+						$('#dummyInput').val($(this).val());
+						});
+					  </script>
+					  <div class="error" ng-show="uploadedError()">Invalid:
+	          	      <span>{{uploadMessage}}</span>
+		  		      </div>
+	  </div>
+	  <br>
+	
+	<div class="row">
+			<div class="col-xs-2">
+			<label for="Example">Examples</label>
+			</div>
+			<div class="col-xs-8">
+			<select id="Example" class="form-control" ng-model="Example" 
+			ng-options="example.name for example in examples" ng-change="FillForm(Example.name); enterConfig = true">
+			 <option value="">Choose an example</option>
+			</select>
+			</div>
+	  </div>
+	  <br>
+
+	<div class="row">
+			<div class="col-xs-2">
+				<label for="showConfig">Options Form</label>
+		    </div>
+		    <div class="col-xs-2">
+				<a class="btn btn-success btn-block" id="showConfig" ng-model="limes.showConfig" ng-click="enterConfig = !enterConfig">Show Form</a>
+	  		</div>
+	</div>
+	<br>
+	<br>
+	<div id="limesOptions" ng-model="limes.Options" ng-show="enterConfig">
+	<div class="row">
+		<div class="col-xs-12">
+		<h5 class="green bold">LIMES Configuration</h5>
+		</div>
+	</div>
+	<br>
+	<div class="row">
+	<div class="col-xs-6">
 		<h5 class="green bold">Source Data</h5>
 	</div>
-	<div class="col-lg-6">
+	<div class="col-xs-6">
 		<h5 class="green bold">Target Data</h5>
 	</div>
 	</div>
 	<br>
 	<div class="row">
-		<div class="col-lg-1">
+		<div class="col-xs-2">
 	    <label for="SourceServiceURI">Endpoint URL</label>
 	    </div>
-	    <div class="col-lg-5">
-	    <input class="form-control input-sm" id="SourceServiceURI" ng-model="SourceServiceURI"></input>
+	    <div class="col-xs-4">
+	    <input class="form-control input-sm" id="SourceServiceURI" ng-model="limes.SourceServiceURI"></input>
 	    </div>
-	    <div class="col-lg-1">
+	    <div class="col-xs-2">
 	    <label for="TargetServiceURI">Endpoint URL</label>
 	    </div>
-	    <div class="col-lg-5">
-	    <input class="form-control input-sm" id="TargetServiceURI" ng-model="TargetServiceURI"></input>
+	    <div class="col-xs-4">
+	    <input class="form-control input-sm" id="TargetServiceURI" ng-model="limes.TargetServiceURI"></input>
 	    </div>
 	</div>
 	<br>
+	<!-- 
 	<div class="row">
-		<div class="col-lg-1">
+		<div class="col-xs-2">
 	    <label for="SourceGraph">Graph</label>
 	    </div>
-	    <div class="col-lg-5">
+	    <div class="col-xs-4">
 	    <input class="form-control input-sm" id="SourceGraph" ng-model="SourceGraph"></input>
 	    </div>
-	    <div class="col-lg-1">
+	    <div class="col-xs-2">
 	    <label for="TargetGraph">Graph</label>
 	    </div>
-	    <div class="col-lg-5">
+	    <div class="col-xs-4">
 	    <input class="form-control input-sm" id="TargetGraph" ng-model="TargetGraph"></input>
 	    </div>
 	</div>
 	<br>
+	 -->
 	<div class="row">
-		<div class="col-lg-1">
+		<div class="col-xs-2">
 	    <label for="SourceVar">Variable</label>
 	    </div>
-	    <div class="col-lg-5">
-	    <input class="form-control input-sm" id="SourceVar" ng-model="SourceVar"></input>
+	    <div class="col-xs-4">
+	    <input class="form-control input-sm" id="SourceVar" ng-model="limes.SourceVar"></input>
 	    </div>
-	    <div class="col-lg-1">
+	    <div class="col-xs-2">
 	    <label for="TargetVar">Variable</label>
 	    </div>
-	    <div class="col-lg-5">
-	    <input class="form-control input-sm" id="TargetVar" ng-model="TargetVar"></input>
+	    <div class="col-xs-4">
+	    <input class="form-control input-sm" id="TargetVar" ng-model="limes.TargetVar"></input>
 	    </div>
 	</div>
 	<br>
 	<div class="row">
-		<div class="col-lg-1">
+		<div class="col-xs-2">
 	    <label for="SourceSize">Pagesize</label>
 	    </div>
-	    <div class="col-lg-5">
-	    <input class="form-control input-sm" id="SourceSize" ng-model="SourceSize"></input>
+	    <div class="col-xs-4">
+	    <input class="form-control input-sm" id="SourceSize" ng-model="limes.SourceSize"></input>
 	    </div>
-	    <div class="col-lg-1">
+	    <div class="col-xs-2">
 	    <label for="TargetSize">Pagesize</label>
 	    </div>
-	    <div class="col-lg-5">
-	    <input class="form-control input-sm" id="TargetSize" ng-model="TargetSize"></input>
+	    <div class="col-xs-4">
+	    <input class="form-control input-sm" id="TargetSize" ng-model="limes.TargetSize"></input>
 	    </div>
 	</div>
 	<br>
 	<div class="row">
-		<div class="col-lg-1">
+		<div class="col-xs-2">
 	    <label for="SourceRestr">Restriction</label>
 	    </div>
-	    <div class="col-lg-5">
-	    <input class="form-control input-sm" id="SourceRestr" ng-model="SourceRestr"></input>
+	    <div class="col-xs-4">
+	    <textarea class="form-control input-sm" id="SourceRestr" ng-model="limes.SourceRestr"></textarea>
 	    </div>
-	    <div class="col-lg-1">
+	    <div class="col-xs-2">
 	    <label for="TargetRestr">Restriction</label>
 	    </div>
-	    <div class="col-lg-5">
-	    <input class="form-control input-sm" id="TargetRestr" ng-model="TargetRestr"></input>
+	    <div class="col-xs-4">
+	    <textarea class="form-control input-sm" id="TargetRestr" ng-model="limes.TargetRestr"></textarea>
 	    </div>
 	</div>
 	<br>
 	<div class="row">
-		<div class="col-lg-1">
+		<div class="col-xs-2">
 	    <label for="SourceProp">Property</label>
 	    </div>
-	    <div class="col-lg-5">
-	    <input class="form-control input-sm" id="SourceProp" ng-model="SourceProp"></input>
+	    <div class="col-xs-4">
+	    <input class="form-control input-sm" id="SourceProp" ng-model="limes.SourceProp"></input>
 	    </div>
-	    <div class="col-lg-1">
+	    <div class="col-xs-2">
 	    <label for="TargetProp">Property</label>
 	    </div>
-	    <div class="col-lg-5">
-	    <input class="form-control input-sm" id="TargetProp" ng-model="TargetProp"></input>
+	    <div class="col-xs-4">
+	    <input class="form-control input-sm" id="TargetProp" ng-model="limes.TargetProp"></input>
 	    </div>
 	</div>
 	<br>
 	<div class="row">
-		<div class="col-lg-1">
-	    <label for="SourceGraph">Metric</label>
+		<div class="col-xs-2">
+	    <label for="Metric">Metric</label>
 	    </div>
-	    <div class="col-lg-11">
-	    <input class="form-control input-sm" id="SourceRelation" ng-model="facete.service"></input>
-	    </div>
-	</div>
-	<br>
-	<div class="row">
-		<div class="col-lg-1">
-	    <label for="SourceGraph">Output</label>
-	    </div>
-	    <div class="col-lg-11">
-	    <select class="form-control input-sm" id="SourceRelation" ng-model="facete.service"></select>
+	    <div class="col-xs-10">
+	    <input class="form-control input-sm" id="Metric" ng-model="limes.Metric"></input>
 	    </div>
 	</div>
 	<br>
 	<div class="row">
-		<div class="col-lg-1">
-	    <label for="SourceGraph">Execution</label>
+		<div class="col-xs-2">
+	    <label for="OutputFormat">Output Format</label>
 	    </div>
-	    <div class="col-lg-11">
-	    <select class="form-control input-sm" id="SourceRelation" ng-model="facete.service"></select>
+	    <div class="col-xs-10">
+	    <select class="form-control input-sm" id="OutputFormat" ng-options="option as option.output for option in options[0].output" 
+	    ng-model="limes.OutputFormat"></select>
 	    </div>
 	</div>
 	<br>
 	<div class="row">
-	<div class="col-lg-6">
+		<div class="col-xs-2">
+	    <label for="ExecType">Execution</label>
+	    </div>
+	    <div class="col-xs-10">
+	    <select class="form-control input-sm" id="ExecType" ng-options="option as option.execType for option in options[1].execType"
+	    ng-model="limes.ExecType"></select>
+	    </div>
+	</div>
+	<br>
+	<div class="row">
+	<div class="col-xs-6">
 		<h5 class="green bold">Acceptance Settings</h5>
 	</div>
-	<div class="col-lg-6">
+	<div class="col-xs-6">
 		<h5 class="green bold">Review Settings</h5>
 	</div>
 	</div>
 	<br>
 	<div class="row">
-		<div class="col-lg-1">
-	    <label for="SourceGraph">Threshold</label>
+		<div class="col-xs-2">
+	    <label for="AcceptThresh">Threshold</label>
 	    </div>
-	    <div class="col-lg-5">
-	    <input class="form-control input-sm" id="SourceThresh" ng-model="facete.service"></input>
+	    <div class="col-xs-4">
+	    <input class="form-control input-sm" id="AcceptThresh" ng-model="limes.AcceptThresh"></input>
 	    </div>
-	    <div class="col-lg-1">
-	    <label for="TargetGraph">Threshold</label>
+	    <div class="col-xs-2">
+	    <label for="ReviewThresh">Threshold</label>
 	    </div>
-	    <div class="col-lg-5">
-	    <input class="form-control input-sm" id="TargetThresh" ng-model="facete.service"></input>
-	    </div>
-	</div>
-	<br>
-	<div class="row">
-		<div class="col-lg-1">
-	    <label for="SourceGraph">Relation</label>
-	    </div>
-	    <div class="col-lg-5">
-	    <input class="form-control input-sm" id="SourceRelation" ng-model="facete.service"></input>
-	    </div>
-	    <div class="col-lg-1">
-	    <label for="TargetGraph">Relation</label>
-	    </div>
-	    <div class="col-lg-5">
-	    <input class="form-control input-sm" id="TargetRelation" ng-model="facete.service"></input>
+	    <div class="col-xs-4">
+	    <input class="form-control input-sm" id="ReviewThresh" ng-model="limes.ReviewThresh"></input>
 	    </div>
 	</div>
 	<br>
 	<div class="row">
-	<div class="col-lg-6">
+		<div class="col-xs-2">
+	    <label for="AcceptRelation">Relation</label>
+	    </div>
+	    <div class="col-xs-4">
+	    <input class="form-control input-sm" id="AcceptRelation" ng-model="limes.AcceptRelation"></input>
+	    </div>
+	    <div class="col-xs-2">
+	    <label for="ReviewRelation">Relation</label>
+	    </div>
+	    <div class="col-xs-4">
+	    <input class="form-control input-sm" id="ReviewRelation" ng-model="limes.ReviewRelation"></input>
+	    </div>
+	</div>
+	<br>
+	<div class="row">
+		<div class="col-xs-2"></div>
+		<div class="col-xs-2">
+		  <a class="btn btn-success btn-block" ng-click="StartLimes()">Start LIMES</a>
+		</div>
+	</div>
+	<!-- 
+	<br>
+	<div class="row">
+	<div class="col-xs-6">
 		<h5 class="green bold">Prefixes</h5>
 	</div>
 	</div>
 	<br>
 	<div class="row">
-		<div class="col-lg-1">
-	    <label for="prefix-1">rdf:</label>
+		<div class="col-xs-2">
+	    <label for="prefix01">rdf:</label>
 	    </div>
-	    <div class="col-lg-11">
-	    <input class="form-control input-sm" id="prefix-1" ng-model="facete.service"></input>
+	    <div class="col-xs-4">
+	    <input class="form-control input-sm" id="prefix01" ng-model="prefix01"></input>
 	    </div>
-	</div>
-	<br>
-	<div class="row">
-		<div class="col-lg-1">
-	    <label for="prefix-1">rdfs:</label>
+		<div class="col-xs-2">
+	    <label for="prefix02">rdfs:</label>
 	    </div>
-	    <div class="col-lg-11">
-	    <input class="form-control input-sm" id="prefix-2" ng-model="facete.service"></input>
+	    <div class="col-xs-4">
+	    <input class="form-control input-sm" id="prefix02" ng-model="prefix02"></input>
 	    </div>
 	</div>
 	<br>
 	<div class="row">
-		<div class="col-lg-1">
+		<div class="col-xs-2">
 	    <label for="prefix-1">owl:</label>
 	    </div>
-	    <div class="col-lg-11">
-	    <input class="form-control input-sm" id="prefix-3" ng-model="facete.service"></input>
+	    <div class="col-xs-4">
+	    <input class="form-control input-sm" id="prefix03" ng-model="prefix04"></input>
+	    </div>
+		<div class="col-xs-2">
+	    <label for="prefix04">dc-terms:</label>
+	    </div>
+	    <div class="col-xs-4">
+	    <input class="form-control input-sm" id="prefix04" ng-model="prefix04"></input>
 	    </div>
 	</div>
 	<br>
 	<div class="row">
-		<div class="col-lg-1">
-	    <label for="prefix-1">dc-terms:</label>
+		<div class="col-xs-2">
+	    <label for="prefix05">dbpedia-o:</label>
 	    </div>
-	    <div class="col-lg-11">
-	    <input class="form-control input-sm" id="prefix-4" ng-model="facete.service"></input>
+	    <div class="col-xs-4">
+	    <input class="form-control input-sm" id="prefix05" ng-model="prefix05"></input>
 	    </div>
-	</div>
-	<br>
-	<div class="row">
-		<div class="col-lg-1">
-	    <label for="prefix-1">dbpedia-o:</label>
+		<div class="col-xs-2">
+	    <label for="prefix06">dbpedia-p:</label>
 	    </div>
-	    <div class="col-lg-11">
-	    <input class="form-control input-sm" id="prefix-5" ng-model="facete.service"></input>
+	    <div class="col-xs-4">
+	    <input class="form-control input-sm" id="prefix06" ng-model="prefix06"></input>
 	    </div>
 	</div>
-	<br>
-	<div class="row">
-		<div class="col-lg-1">
-	    <label for="prefix-1">dbpedia-p:</label>
-	    </div>
-	    <div class="col-lg-11">
-	    <input class="form-control input-sm" id="prefix-6" ng-model="facete.service"></input>
-	    </div>
-	</div>
-	<br>
-	<form class="pull-left col-xs-6" role="form">
-	  <div class="form-group">
-	  <a class="btn btn-primary btn-large" ng-click="StartLimes">Start LIMES</a>
-	  </div>
-	  </div>
+	 -->
 	</div>
 	</form>
+	</div>
 </div>
 
 <!-- 

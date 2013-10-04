@@ -119,8 +119,10 @@ a.accordion-toggle:hover{
 	color:#BC1B8B;
 }
 
-.panel-heading:hover{
-	background-color:white;
+.panel-default > .panel-heading {
+    background-color: #DDDADA;
+    border-color: #DDDEEE;
+    color: #333333;
 }
 	
 /* Typography */
@@ -172,6 +174,21 @@ a.accordion-toggle:hover{
 		border-radius: 4px 4px 4px 4px;
 		box-shadow: none;
 		padding:20px 40px 20px 40px;
+}
+
+#dummyInput {
+		background-color: #FFFFFF;
+	    border: 1px solid #CCCCCC;
+	    border-radius: 4px 4px 4px 4px;
+	    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;
+	    color: #666666;
+	    display: block;
+	    font-size: 14px;
+	    height: 38px;
+	    line-height: 1.42857;
+	    padding: 8px 12px;
+	    transition: border-color 0.15s ease-in-out 0s, box-shadow 0.15s ease-in-out 0s;
+	    vertical-align: middle;
 }
 
 /* Selects */

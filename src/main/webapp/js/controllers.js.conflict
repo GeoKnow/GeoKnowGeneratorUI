@@ -108,29 +108,23 @@ var ModalWindow = function ($scope) {
   
 };
 
-app.controller('FaceteFormCtrl', function($scope, ConfigurationService) {
-	  //Settings for Facete
-	  $scope.namedGraphs = ConfigurationService.getNamedGraphs();
-	  
-	  $scope.facete = { service : "http://10.0.0.75:8890/sparql",
+app.controller('FaceteFormCtrl', function($scope, ConfiurationService) {
+	//Settings for Facete
+<<<<<<< HEAD
+	  $scope.namedGraphs = SettingsServiceStatic.getNamedGraphs().namedgraphs;
+	  $scope.facete = { service : "http://localhost:8890/sparql",
 	  					dataset :  $scope.namedGraphs[0].name
 					  }
-	  
-				}).directive("ngPortlet", function ($compile) {
-					return {
-					    template: '<iframe  id="mod-frame" '+
-					    	'src="http://[2001:638:902:2010:0:168:35:114]:8080/facete/?service-uri={{facete.service}}'+
-					    	'&default-graph-uri={{facete.dataset}}"></iframe>',
-					    	restrict: 'E',
-					    link: function (scope, elm) {
-					        scope.OpenFullWindow = function(){
-					           elm.after($compile('<ng-portlet></ng-portlet>')(scope));
-					        }
-					    }
-					};
 				});
 
 var LimesCtrl = function($scope, $http){
+=======
+	  $scope.namedGraphs = ConfiurationService.getNamedGraphs().namedgraphs;
+	  $scope.service = 'http://localhost:8890/sparql';
+	  $scope.dataset = $scope.namedGraphs[0].name;
+	  
+});
+>>>>>>> 8bf28beddc9a6edf3434bdd050c405ddd2be6292
 	
 	$scope.examples = [
 	                { name : "Duplicate Dbpedia entries for the CET time zone" },
@@ -285,15 +279,14 @@ var GoogleMapWindow = function ($scope, $timeout, $log) {
 
 };
 
-var ImportFormCtrl = function($scope, $http, ConfigurationService, flash) {
+var ImportFormCtrl = function($scope, $http, ConfiurationService, flash) {
 
-  $scope.namedGraphs = ConfigurationService.getNamedGraphs();
+  $scope.namedGraphs = ConfiurationService.getNamedGraphs();
   $scope.uploadMessage = '';
   
   var uploadError = false;
   var importing = false;
   var uploadedFiles = null;
-  $scope.importSparql = { sparqlQuery : "CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o } LIMIT 10"};
 
   $scope.sourceTypes = [
     {value:'file', label:'File'},
@@ -317,7 +310,6 @@ var ImportFormCtrl = function($scope, $http, ConfigurationService, flash) {
     	$scope.fileElements = false;	
 		  $scope.urlElements = false;
   		$scope.queryElements = true;
-
     }
     type = $scope.sourceType.value;
   };
@@ -341,7 +333,6 @@ var ImportFormCtrl = function($scope, $http, ConfigurationService, flash) {
         else {
           uploadError = false;
           uploadedFiles = $file.name;
-          //Use response.data.results to get the file location;
         }
       }); 
     }
@@ -371,18 +362,18 @@ var ImportFormCtrl = function($scope, $http, ConfigurationService, flash) {
     if(type == 'file'){
       parameters ={
         rdfFiles: uploadedFiles, 
-        endpoint: ConfigurationService.getEndpoint(), 
+        endpoint: ConfiurationService.getEndpoint(), 
         graph: $scope.importFile.graph, 
-        uriBase : ConfigurationService.getUriBase()
+        uriBase : ConfiurationService.getUriBase()
       };
       
     }
     else if(type == 'url'){
       parameters ={
         rdfUrl: $scope.importUrl.inputUrl, 
-        endpoint: ConfigurationService.getEndpoint(), 
+        endpoint: ConfiurationService.getEndpoint(), 
         graph: $scope.importUrl.graph, 
-        uriBase : ConfigurationService.getUriBase() 
+        uriBase : ConfiurationService.getUriBase() 
       };
 
     }
@@ -390,9 +381,9 @@ var ImportFormCtrl = function($scope, $http, ConfigurationService, flash) {
       parameters ={
         rdfQuery: $scope.importSparql.sparqlQuery,
         rdfQueryEndpoint: $scope.importSparql.endPoint, 
-        endpoint: ConfigurationService.getEndpoint(), 
+        endpoint: ConfiurationService.getEndpoint(), 
         graph: $scope.importSparql.graph, 
-        uriBase : ConfigurationService.getUriBase() 
+        uriBase : ConfiurationService.getUriBase() 
       };
     }
     $http({

@@ -1,8 +1,8 @@
 'use strict';
 
-function NamespacesCtrl($scope, ConfiurationService) {
+function NamespacesCtrl($scope, ConfigurationService) {
 
-	$scope.namespaces = ConfiurationService.getNamespaces();
+	$scope.namespaces = ConfigurationService.getNamespaces();
 
 	var newGraph=true;
 	$scope.new = function(){
@@ -22,34 +22,33 @@ function ComponentCtrl($scope, ConfiurationService){
 	$scope.components = ConfiurationService.getComponents();
 }
 
+function GraphCtrl($scope, ConfigurationService){
 
-function GraphCtrl($scope, ConfiurationService){
-
-	$scope.namedgraphs = ConfiurationService.getNamedGraphs();
+	$scope.namedgraphs = ConfigurationService.getNamedGraphs();
 	$scope.namedgraph = {};
 	var newGraph=true;
 	$scope.new = function(){
 		// default values
 		newGraph=true;
-		var defaultEndpoint = ConfiurationService.getEndpoint();
+		var defaultEndpoint = ConfigurationService.getEndpoint();
 		var newGraph = { graph:{ created:"now", endpoint: defaultEndpoint }};
 		$scope.namedgraph = angular.copy(newGraph);
 	};
 
 	$scope.edit = function(graphName){
-		var namedg = ConfiurationService.getNamedGraph(graphName);
+		var namedg = ConfigurationService.getNamedGraph(graphName);
 		$scope.namedgraph = angular.copy(namedg);
 		newGraph=false;
 	};
 
 	$scope.save = function(){
 		if(newGraph)
-			ConfiurationService.addGraph($scope.namedgraph);
+			ConfigurationService.addGraph($scope.namedgraph);
 		else
-			ConfiurationService.updateGraph($scope.namedgraph);
+			ConfigurationService.updateGraph($scope.namedgraph);
 	};
 
 	$scope.delete = function(graphName){
-		ConfiurationService.deleteGraph(graphName);
+		ConfigurationService.deleteGraph(graphName);
 	};
 }
