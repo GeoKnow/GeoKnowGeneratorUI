@@ -33,19 +33,24 @@ var CONFIG = CONFIG || (function()
 	{
 		"http://dbpedia.org/resource/"                     : "dbpedia:"
 	,	"http://purl.org/dc/elements/1.1/"                 : "dc:"
+	,	"http://purl.org/dc/terms/"                        : "dcterms:"
 	,	"http://xmlns.com/foaf/0.1/"                       : "foaf:"
 	,	"http://linkeddata.org/integrated-stack-schema/"   : "lds:"
 	,	"http://www.w3.org/1999/02/22-rdf-syntax-ns#"      : "rdf:"
 	,	"http://www.w3.org/2000/01/rdf-schema#"            : "rdfs:"
 	,	"http://www.w3.org/ns/sparql-service-description#" : "sd:"
+	,	"http://rdfs.org/ns/void#"                         : "void:"
 	};
 	namespaces[NS] = ":";
 
 	var GRAPH      = "<" + GRAPH_URI + ">"
 	,	FORMAT     = "application/sparql-results+json"
 	,	EOL        = "\r\n"
-	,	NAMESPACES = "PREFIX : <" + NS + ">" + EOL
-				   + "PREFIX lds: <http://linkeddata.org/integrated-stack-schema/>";
+	,	NAMESPACES = "";
+
+	for (var namespace in namespaces)
+		NAMESPACES += "PREFIX " + namespaces[namespace] + " <" + namespace + ">" + EOL;
+		
 
 	var settings = {};
 
@@ -233,7 +238,7 @@ var CONFIG = CONFIG || (function()
 			$.getJSON(endpoint + "?callback=?",
 				{
 					format: FORMAT
-				,	query: NAMESPACES + EOL
+				,	query: NAMESPACES
 					+	"DROP SILENT GRAPH "   + GRAPH + EOL
 					+	"CREATE SILENT GRAPH " + GRAPH + EOL
 					+	"INSERT INTO "         + GRAPH + EOL
