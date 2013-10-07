@@ -3,12 +3,12 @@
 <div ng-controller="NamespacesCtrl">
 
   <div ng-controller="ModalWindow">
-    <button type="button" class="btn btn-large btn-primary" ng-click="OpenWindow(); new()">Add new namespace</button>
+    <button type="button" class="btn btn-large btn-primary" ng-click="OpenWindow('modalNamespace'); new()">Add new namespace</button>
 
-    <div class="modal fade" id="modalWindow">
+    <div class="modal fade" id="modalNamespace">
       <form name="namespaceForm" class="form-horizontal" role="form" novalidate>
         <div class="modal-header">
-          <button type="button" class="close" ng-click="close()" aria-hidden="true">&times;</button>
+          <button type="button" class="close" ng-click="close('modalNamespace')" aria-hidden="true">&times;</button>
           <h5 class="modal-title green bold">Namespace</h5>
         </div>
 
@@ -33,9 +33,9 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn-sm btn-success" ng-click="close()" ng-click="save()"
+          <button type="button" class="btn-sm btn-success" ng-click="close('modalNamespace')" ng-click="save(); close('modalNamespace');"
           ng-disabled="namespaceForm.$invalid || isUnchanged(namedgraph)">Save</button>
-          <button type="button" class="btn-sm btn-default " ng-click="close()">Cancel</button>
+          <button type="button" class="btn-sm btn-default" ng-click="close('modalNamespace')">Cancel</button>
         </div>      
       </form>
     </div>

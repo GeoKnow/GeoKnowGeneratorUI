@@ -18,18 +18,29 @@
 	  	
 	  <h2>General Settings</h2>
 	   
-		<form class="form-horizontal">
 
-		  <div class="control-group">
-		    <label class="control-label" for="inputPassword">Export Current Settings</label>
-		    <div class="controls">
-		      <label class="radio ">
-					  <input type="radio" name="optionsRadios" id="optionsRadios1" value="xml/rdf">RDF/XML</label>
-					<label class="radio ">
-					  <input type="radio" name="optionsRadios" id="optionsRadios2" value="option2">NTriples</label>
-		      <button type="submit" class="btn">Export</button>
+		<form class="form-horizontal InputForm col-xs-11" ng-controller="GeneralSettingsCtrl">
+
+ 			<div class="form-group">
+		    <label class="col-xs-2" for="inputPassword">Uri base</label>
+		    <div class="col-xs-10">
+		       <input type="text" class="form-control" name="uriBase" id="uriBase" ng-model="settings.uribase">
+		  	</div>
+		  </div>
+
+		  <div class="form-group">
+		    <label class="col-xs-2" for="inputPassword">Export Current Settings</label>
+		    <div class="col-xs-10">
+		      <input type="radio" name="optionsRadios" id="optionsRadios1" value="xml/rdf">RDF/XML
+				  <input type="radio" name="optionsRadios" id="optionsRadios2" value="option2">NTriples
 		    </div>
 		  </div>
+
+		  <div class="form-group">
+    		<div class="col-lg-offset-2 col-xs-10">
+      		<button class="btn btn-success" ng-click="export()" >Export</button>
+    		</div>
+  		</div>	
 		</form>
 
 		</div>

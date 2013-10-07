@@ -9,10 +9,10 @@
 
 <div ng-controller="ImportFormCtrl">
 
-	<form class="form-horizontal" role="form">
+	<form class="form-horizontal col-xs-11" role="form">
 	<div class="form-group">
-		<label for="source-type" class="col-lg-2 control-label">Import from a </label>
-		<div class="col-lg-10">
+		<label for="source-type" class="col-xs-2 control-label">Import from a </label>
+		<div class="col-xs-10">
       <select id="source-type" class="form-control" ng-model="sourceType" 
       				ng-options="c.label for c in sourceTypes" ng-change="updateForm()" required>
       </select>
@@ -22,18 +22,18 @@
 
 	<!-- Import from file form -->
 	<div ng-show="fileElements" class="animate-show">
-		<form class="form-horizontal" role="form" name="fileForm" novalidate>
+		<form class="form-horizontal InputForm col-xs-11" role="form" name="fileForm" novalidate>
 			<div class="form-group">
-				<label for="graph" class="col-lg-2 control-label">To a dataset </label>
-				<div class="col-lg-10">
+				<label for="graph" class="col-xs-2 control-label">To a dataset </label>
+				<div class="col-xs-10">
 		      <select id="graph" name= "graph" class="form-control" ng-model="importFile.graph"
 		      				ng-options="c.name as c.graph.label for c in namedGraphs" required>
 		      </select>
 		    </div>
 	  	</div>
 			<div class="form-group">
-	    	<label for="inputFile" class="col-lg-2 control-label">File input</label>
-	    	<div class="col-lg-10">
+	    	<label for="inputFile" class="col-xs-2 control-label">File input</label>
+	    	<div class="col-xs-10">
 				  <!-- <input type="file" ng-file-select="onFileSelect($files)" > -->
 				  <input type="file" ng-file-select="onFileSelect($files)" multiple name="fileName"
 				  				accept=".nt, .n3, .ttl, .rdf">
@@ -43,8 +43,8 @@
 	  		</div>
 	  	</div>
 	  	<div class="form-group">
-    		<div class="col-lg-offset-2 col-lg-10">
-      		<button class="btn btn-default" ng-click="import()" ng-disabled="isInvalid()||isImporting()">Import</button>
+    		<div class="col-lg-offset-2 col-xs-10">
+      		<button class="btn btn-success" ng-click="import()" ng-disabled="isInvalid()||isImporting()">Import</button>
       		<span ng-show="isImporting()"> Importing ...</span>
     		</div>
   	</div>
@@ -53,18 +53,18 @@
 
 	<!-- Import from URL form  -->
 	<div ng-show="urlElements" class="animate-show">
-		<form class="form-horizontal" role="form" name="urlForm" novalidate>
+		<form class="form-horizontal InputForm col-xs-11" role="form" name="urlForm" novalidate>
 			<div class="form-group">
-				<label for="graph" class="col-lg-2 control-label">To a dataset </label>
-				<div class="col-lg-10">
+				<label for="graph" class="col-xs-2 control-label">To a dataset </label>
+				<div class="col-xs-10">
 		      <select id="graph" class="form-control" ng-model="importUrl.graph"
 		      				ng-options="c.name as c.graph.label for c in namedGraphs" required>
 		      </select>
 		    </div>
 	  	</div>
 			<div class="form-group">
-	    	<label for="inputUrl" class="col-lg-2 control-label">Url input</label>
-		    <div class="col-lg-10">
+	    	<label for="inputUrl" class="col-xs-2 control-label">Url input</label>
+		    <div class="col-xs-10">
 			    <input type="text" id="inputUrl" name="inputUrl" class="form-control" ng-model="importUrl.inputUrl" url required>
 			    <div class="error" ng-show="urlForm.inputUrl.$dirty && urlForm.inputUrl.$invalid">Invalid:
           	<span ng-show="urlForm.inputUrl.$error.required">Specify the URL</span>
@@ -73,8 +73,8 @@
 	  		</div>
 	  	</div>
 	  	<div class="form-group">
-    		<div class="col-lg-offset-2 col-lg-10">
-      		<button class="btn btn-default" ng-click="import()" ng-disabled="urlForm.$invalid || isUnchanged(importUrl) || isImporting()">Import</button>
+    		<div class="col-lg-offset-2 col-xs-10">
+      		<button class="btn btn-success" ng-click="import()" ng-disabled="urlForm.$invalid || isUnchanged(importUrl) || isImporting()">Import</button>
       		<span ng-show="isImporting()"> Importing ...</span>
     		</div>
   		</div>
@@ -83,18 +83,18 @@
 
 	<!-- Import from URL sparql  -->
 	<div ng-show="queryElements" class="animate-show">
-		<form class="form-horizontal" role="form" name="sparqlForm" novalidate>
+		<form class="form-horizontal InputForm col-xs-11" role="form" name="sparqlForm" novalidate>
 			<div class="form-group">
-				<label for="graph" class="col-lg-2 control-label">To a dataset </label>
-				<div class="col-lg-10">
+				<label for="graph" class="col-xs-2 control-label">To a dataset </label>
+				<div class="col-xs-10">
 		      <select id="graph" class="form-control" ng-model="importSparql.graph"
 		      				ng-options="c.name as c.graph.label for c in namedGraphs" required>
 		      </select>
 		    </div>
 	  	</div>
 			<div class="form-group">
-	    	<label for="endPoint" class="col-lg-2 control-label">SPARQL EndPoint</label>
-		    <div class="col-lg-10">
+	    	<label for="endPoint" class="col-xs-2 control-label">SPARQL EndPoint</label>
+		    <div class="col-xs-10">
 			    <input type="text" id="endPoint" class="form-control" name="endPoint" ng-model="importSparql.endPoint" url required>
 			    <div class="error"  ng-show="sparqlForm.endPoint.$dirty && sparqlForm.endPoint.$invalid">Invalid:
           	<span ng-show="sparqlForm.endPoint.$error.required">Specify the EndPoint</span>
@@ -103,8 +103,8 @@
 	  		</div>
 	  	</div>
 			<div class="form-group">
-	    	<label for="sparqlQuery" class="col-lg-2 control-label">Query</label>
-		    <div class="col-lg-10">
+	    	<label for="sparqlQuery" class="col-xs-2 control-label">Query</label>
+		    <div class="col-xs-10">
 		    	<textarea class="form-control" rows="3" id="sparqlQuery" name="sparqlQuery" ng-model="importSparql.sparqlQuery" required>{{scope.importSparql.sparqlQuery}}</textarea>
 		    	<div class="error" ng-show="sparqlForm.sparqlQuery.$dirty && sparqlForm.sparqlQuery.$invalid">Invalid:
           	<span ng-show="sparqlForm.sparqlQuery.$error.required">Specify the EndPoint</span>
@@ -112,8 +112,8 @@
 	  		</div>
 	  	</div>
 	  	<div class="form-group">
-    		<div class="col-lg-offset-2 col-lg-10">
-      		<button class="btn btn-default" ng-click="import()" ng-disabled="sparqlForm.$invalid || isUnchanged(importSparql) || isImporting()">Import</button>
+    		<div class="col-lg-offset-2 col-xs-10">
+      		<button class="btn btn-success" ng-click="import()" ng-disabled="sparqlForm.$invalid || isUnchanged(importSparql) || isImporting()">Import</button>
       		<span ng-show="isImporting()"> Importing ...</span>
     		</div>
   		</div>	
