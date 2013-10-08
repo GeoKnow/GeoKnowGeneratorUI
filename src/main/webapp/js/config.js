@@ -4,9 +4,12 @@
  *
  * @author Vadim Zaslawski
  *
+ * enable SPARQL Update
  * ISQL:
  *   GRANT SPARQL_UPDATE TO "SPARQL"
  *   GRANT EXECUTE ON DB.DBA.L_O_LOOK TO "SPARQL"
+ *
+ * enable CORS
  *
  * usage:
  *   CONFIG.setEndpoint(url)          - set SPARQL endpoint, should be called initially
@@ -45,9 +48,9 @@ var CONFIG = CONFIG || (function()
 
 	var GRAPH      = "<" + GRAPH_URI + ">"
 	,	FORMAT     = "application/sparql-results+json"
-	,	EOL        = "\r\n"
-	,	NAMESPACES = "";
+	,	EOL        = "\r\n";
 
+	var NAMESPACES = "";
 	for (var namespace in namespaces)
 		NAMESPACES += "PREFIX " + namespaces[namespace] + " <" + namespace + ">" + EOL;
 
@@ -234,8 +237,8 @@ var CONFIG = CONFIG || (function()
 			for (var s in settings)
 				walk(s, settings[s]);
 
-			$.getJSON(endpoint + "?callback=?",
-				{
+			$.post(endpoint
+			,	{
 					format: FORMAT
 				,	query: NAMESPACES
 					+	"DROP SILENT GRAPH "   + GRAPH + EOL
@@ -256,6 +259,7 @@ var CONFIG = CONFIG || (function()
 						console.error(e);
 					}
 				}
+			,	"json"
 			);
 		}
 
