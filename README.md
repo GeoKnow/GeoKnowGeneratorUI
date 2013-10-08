@@ -9,6 +9,7 @@ TODO: complete this
 Copy src/main/webapp contents to a server of your choice
 
 Enable SPARQL/Update on a Virtuoso SPARQL endpoint:
+
 	$ isql-vt
 		GRANT SPARQL_UPDATE TO "SPARQL"
 		GRANT EXECUTE ON DB.DBA.L_O_LOOK TO "SPARQL"
