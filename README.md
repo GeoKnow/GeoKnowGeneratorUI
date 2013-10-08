@@ -8,6 +8,10 @@ TODO: complete this
 
 Copy src/main/webapp contents to a server of your choice
 
+## Configuration
+
+### Using Virtuoso server
+
 Enable SPARQL Update on a Virtuoso SPARQL endpoint:
 
 	$ isql-vt
@@ -16,6 +20,10 @@ Enable SPARQL Update on a Virtuoso SPARQL endpoint:
 
 CORS enable a Virtuoso SPARQL endpoint:
 http://virtuoso.openlinksw.com/dataspace/dav/wiki/Main/VirtTipsAndTricksCORsEnableSPARQLURLs
+
+## Licence
+
+The source code of this repo is published under the Apache License Version 2.0
 
 ## Contact
 
