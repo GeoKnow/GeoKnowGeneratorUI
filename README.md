@@ -6,9 +6,11 @@ TODO: complete this
 
 ## Install
 
-Copy src/main/webapp contents to a server of your choice
+You can use maven to package the souces in a war file and deploy it on a servlet container.
 
 ## Configuration
+
+Edit the `src/webapp/js/config.js` to set the endpoint to use as a triple store.
 
 ### Using Virtuoso server
 
