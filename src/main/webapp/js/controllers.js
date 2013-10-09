@@ -132,6 +132,10 @@ app.controller('FaceteFormCtrl', function($scope, ConfigurationService) {
 
 var LimesCtrl = function($scope, $http){
 	
+	$scope.reviewForm = true;
+	$scope.configOptions = true;
+	$scope.inputForm = true;
+	
 	$scope.examples = [
 	                { name : "Duplicate Dbpedia country entries for the CET time zone" },
 	                { name : "Geo Data" }
@@ -154,6 +158,10 @@ var LimesCtrl = function($scope, $http){
 	$scope.FillForm = function(example){
 		
 		var params = {};
+		
+		$scope.enterConfig = true;
+		$scope.startLimes = true;
+		$scope.startReview = false;
 		
 		if(example === "Duplicate Dbpedia country entries for the CET time zone"){
 			
@@ -205,6 +213,11 @@ var LimesCtrl = function($scope, $http){
 		
 	$scope.StartLimes = function(){
 		
+		$scope.startLimes = false;
+		$scope.enterConfig = false;
+		$scope.configOptions = false;
+		$scope.showProgress = true;
+		
 		var params = { 
 					 SourceServiceURI: $scope.limes.SourceServiceURI,
 					 TargetServiceURI: $scope.limes.TargetServiceURI,
@@ -232,18 +245,33 @@ var LimesCtrl = function($scope, $http){
 	        dataType: "json",
 	        contentType: "application/json; charset=utf-8"
 	      }).then(function() {
-	    	$("#startLimes").toggle();
-	  		$("#reviewLimes").toggle();
+	    	$scope.startLimes = false;
+	    	$scope.showProgress = false;
+	    	$scope.startReview = true;
 	      });
 	}
 	
 	$scope.ReviewLimes = function(){
+
+		$scope.configOptions = false;
+	  	$scope.startReview = false;
+	  	$scope.showProgress = true;
+	  	
 		$http({
 			url: "http://localhost:8080/LimeServlet/LimesReview",
 	        method: "POST",
 	        dataType: "json",
 	        contentType: "application/json; charset=utf-8"
-	      });
+	      }).then(function(data){
+	    	  		var resultsArray = data.data.split(" .");
+	    	  		console.log(resultsArray);
+	    		  	$scope.limes.reviewResults = resultsArray;
+	    		  	$scope.enterConfig = false;
+	    		  	$scope.showProgress = false;
+	  	    		$scope.inputForm = false;
+	  	    		$scope.reviewForm = true;
+	      		}
+	      );
 	}
 }
 
@@ -394,6 +422,7 @@ var ImportFormCtrl = function($scope, $http, ConfigurationService, flash) {
 		    return invalid;
 		    
   		$scope.queryElements = false;
+		  }
     }
     else if($scope.sourceType.value == 'url'){
     	$scope.fileElements = false;	

@@ -5,30 +5,30 @@
 	<br>
 	<p>To get started either upload a configuration file, choose an example, or fill in the options form.</p>
 	
-	<form class="form-inline InputForm col-xs-11" role="form">
+<form class="form-inline InputForm col-xs-11" role="form" ng-show="inputForm">
 	<div class="row">
 		<div class="col-xs-12">
 		<h5 class="green bold">Options</h5>
 		</div>
 	</div>
 	<br>
-	
+	<div ng-show="configOptions">
 	<div class="row" ng-controller="ImportFormCtrl">
 			<label for="inputFile" class="col-xs-2 control-label">Upload a File</label>
 		    	<div class="col-xs-8">
 					  <!-- <input type="file" class="form-control" ng-file-select="onFileSelect($files)" > -->
-					    <input id="lefile" class="form-control" type="file" ng-file-select="onFileSelect($files); loadLimesXML($files)" multiple name="fileName"
+					    <input id="lefile" class="form-control input-sm" type="file" ng-file-select="onFileSelect($files); loadLimesXML($files)" multiple name="fileName"
 					  				accept=".xml" style="display:none">
 					  	<div class="error" ng-show="uploadedError()">Invalid:
 					  	<span>{{uploadMessage}}</span></div>
 						<div class="input-append">
-						<input id="dummyInput" class="input-large pull-left col-xs-10" type="text">
-						<a class="btn btn-success btn-large pull-left col-xs-2" onclick="$('input[id=lefile]').click();">Browse</a>
+						<input id="dummyInput" class="input-sm pull-left col-xs-9" type="text" onclick="$('input[id=lefile]').click();">
+						<a class="btn btn-sm btn-success btn-large pull-left col-xs-3" onclick="$('input[id=lefile]').click();">Browse</a>
 						</div>
 			    </div>
     </div>
 	<div class="row">
-						<script type="text/javascript">
+					  <script type="text/javascript">
 						$('input[id=lefile]').change(function() {
 						$('#dummyInput').val($(this).val());
 						});
@@ -44,8 +44,8 @@
 			<label for="Example">Examples</label>
 			</div>
 			<div class="col-xs-8">
-			<select id="Example" class="form-control" ng-model="Example" 
-			ng-options="example.name for example in examples" ng-change="FillForm(Example.name); enterConfig = true; startReview = false">
+			<select id="Example" class="form-control input-sm" ng-model="Example" 
+			ng-options="example.name for example in examples" ng-change="FillForm(Example.name)">
 			 <option value="">Choose an example</option>
 			</select>
 			</div>
@@ -57,8 +57,10 @@
 				<label for="showConfig">Options Form</label>
 		    </div>
 		    <div class="col-xs-2">
-				<a class="btn btn-success btn-block" id="showConfig" ng-model="limes.showConfig" ng-click="enterConfig = !enterConfig">Show Form</a>
+				<a class="btn btn-sm btn-success btn-block" id="showConfig" ng-model="limes.showConfig" ng-click="enterConfig = !enterConfig">Show Form</a>
+	  		<a class="btn btn-sm btn-success btn-block" id="reviewLimes" ng-click="ReviewLimes()">Review Results</a>
 	  		</div>
+	</div>
 	</div>
 	<br>
 	<br>
@@ -238,74 +240,48 @@
 	    </div>
 	</div>
 	<br>
+	</div>
 	<div class="row">
 		<div class="col-xs-2"></div>
 		<div class="col-xs-2">
-		  <a class="btn btn-primary btn-block" id="startLimes" ng-show="enterConfig" ng-click="StartLimes()">Start LIMES</a>
+		  <a class="btn btn-sm btn-primary btn-block" id="startLimes" ng-show="startLimes" ng-click="StartLimes()">Start LIMES</a>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-xs-2" ng-show="showProgress">
+		<b>This might take a while...</b>
+		</div>
+		<div class="col-xs-8">
+		<div class="progress progress-striped active" ng-show="showProgress">
+		<div class="progress-bar progress-bar-success"  role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+		</div>
+		</div>
 		</div>
 	</div>
 	<div class="row">
 		<div class="col-xs-2"></div>
 		<div class="col-xs-2">
-		  <a class="btn btn-success btn-block" id="reviewLimes" ng-show="startReview" ng-click="ReviewLimes()">Review Results</a>
+		  <a class="btn btn-sm btn-success btn-block" id="reviewLimes" ng-show="startReview" ng-click="ReviewLimes()">Review Results</a>
 		</div>
 	</div>
-	<!-- 
-	<br>
+</form>
+	
+<form class="form-horizontal InputForm col-xs-11" role="form" ng-show="reviewForm">
 	<div class="row">
-	<div class="col-xs-6">
-		<h5 class="green bold">Prefixes</h5>
-	</div>
-	</div>
-	<br>
-	<div class="row">
-		<div class="col-xs-2">
-	    <label for="prefix01">rdf:</label>
-	    </div>
-	    <div class="col-xs-4">
-	    <input class="form-control input-sm" id="prefix01" ng-model="prefix01"></input>
-	    </div>
-		<div class="col-xs-2">
-	    <label for="prefix02">rdfs:</label>
-	    </div>
-	    <div class="col-xs-4">
-	    <input class="form-control input-sm" id="prefix02" ng-model="prefix02"></input>
-	    </div>
+		<h5 class="green bold">Results</h5>
 	</div>
 	<br>
 	<div class="row">
-		<div class="col-xs-2">
-	    <label for="prefix-1">owl:</label>
-	    </div>
-	    <div class="col-xs-4">
-	    <input class="form-control input-sm" id="prefix03" ng-model="prefix04"></input>
-	    </div>
-		<div class="col-xs-2">
-	    <label for="prefix04">dc-terms:</label>
-	    </div>
-	    <div class="col-xs-4">
-	    <input class="form-control input-sm" id="prefix04" ng-model="prefix04"></input>
-	    </div>
+	    <label for="ReviewResults">Results for review</label>
+	    <textarea class="form-control" id="ReviewResults" ng-model="limes.reviewResults"></textarea>
 	</div>
 	<br>
 	<div class="row">
-		<div class="col-xs-2">
-	    <label for="prefix05">dbpedia-o:</label>
-	    </div>
-	    <div class="col-xs-4">
-	    <input class="form-control input-sm" id="prefix05" ng-model="prefix05"></input>
-	    </div>
-		<div class="col-xs-2">
-	    <label for="prefix06">dbpedia-p:</label>
-	    </div>
-	    <div class="col-xs-4">
-	    <input class="form-control input-sm" id="prefix06" ng-model="prefix06"></input>
-	    </div>
+	    <label for="AcceptedResults">Accepted Results</label>
+	    <textarea class="form-control" id="AcceptedResults" ng-model="limes.acceptedResults"></textarea>
 	</div>
-	 -->
-	</div>
-	</form>
-	</div>
+</form>
+	
 </div>
 
 <!-- 
