@@ -73,12 +73,6 @@ module.factory('ConfigurationService', function() {
     },
 
     updateEndpoint: function(pEndpoint){
-      // CONFIG.getSettings()[pEndpoint.uri] = { 
-      //               "rdfs:label" : [endpoint.label]
-      //             , "foaf:homepage" : [endpoint.homepage]
-      //             , "rdf:type": ["void:Dataset", "lds:SPARQLendpoint"] 
-      //             , "void:sparqlEndpoint" : [endpoint.endpoint]
-      //           };
       var endpoint = CONFIG.getSettings()[pEndpoint.uri];
       endpoint["rdfs:label"][0] = pEndpoint.label;
       endpoint["void:sparqlEndpoint"][0] = pEndpoint.endpoint;
@@ -126,7 +120,7 @@ module.factory('ConfigurationService', function() {
 
     addDatabase: function(database){
       var settings = CONFIG.getSettings();
-      settings[":" + database.uri] = { 
+      settings[database.uri] = { 
                     "rdfs:label"   : [database.label]
                   , "lds:serverIp" : [database.server]
                   , "rdf:type"     : ["void:Dataset", "lds:Database"] 
@@ -243,7 +237,7 @@ module.factory('ConfigurationService', function() {
     // add a named graph in the store
     addGraph: function(namedGraph) {
       // create the metadata for the graph
-      var graphName = ":" + namedGraph.name
+      var graphName = namedGraph.name
       var graph = { "rdf:type" : ["sd:NamedGraph"]
                   ,  "sd:name" : [graphName]
                   ,  "sd:graph" : [{ "rdfs:label" : [namedGraph.graph.label]

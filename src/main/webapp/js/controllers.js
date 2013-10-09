@@ -431,7 +431,6 @@ var ImportFormCtrl = function($scope, $http, ConfigurationService, flash) {
   		$scope.queryElements = false;
 		  }
     }
-  }
     else if($scope.sourceType.value == 'url'){
     	$scope.fileElements = false;	
 		  $scope.urlElements = true;
