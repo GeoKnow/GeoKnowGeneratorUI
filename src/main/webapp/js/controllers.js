@@ -154,7 +154,7 @@ var ModalWindow = function ($scope) {
 
 app.controller('FaceteFormCtrl', function($scope, ConfigurationService) {
 	  //Settings for Facete
-	  $scope.namedGraphs = ConfigurationService.getNamedGraphs();
+	  $scope.namedGraphs = ConfigurationService.getAllNamedGraphs();
 	  
 	  $scope.facete = { service : "http://10.0.0.75:8890/sparql",
 	  					dataset :  $scope.namedGraphs[0].name
@@ -345,7 +345,7 @@ var GoogleMapWindow = function ($scope, $timeout, $log) {
 
 var ImportFormCtrl = function($scope, $http, ConfigurationService, flash) {
 
-		  $scope.namedGraphs = ConfigurationService.getNamedGraphs();
+		  $scope.namedGraphs = ConfigurationService.getAllNamedGraphs();
 		  $scope.uploadMessage = '';
 		  
 		  var uploadError = false;
@@ -378,7 +378,7 @@ var ImportFormCtrl = function($scope, $http, ConfigurationService, flash) {
 		    type = $scope.sourceType.value;
 		  };
 		  $scope.fileElements = false;
-  $scope.namedGraphs = ConfigurationService.getNamedGraphs();
+  $scope.namedGraphs = ConfigurationService.getAllNamedGraphs();
   $scope.uploadMessage = '';
   
   var uploadError = false;
