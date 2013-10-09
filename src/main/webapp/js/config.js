@@ -4,9 +4,12 @@
  *
  * @author Vadim Zaslawski
  *
+ * enable SPARQL Update
  * ISQL:
  *   GRANT SPARQL_UPDATE TO "SPARQL"
  *   GRANT EXECUTE ON DB.DBA.L_O_LOOK TO "SPARQL"
+ *
+ * enable CORS
  *
  * usage:
  *   CONFIG.setEndpoint(url)          - set SPARQL endpoint, should be called initially
@@ -25,7 +28,7 @@
 
 var CONFIG = CONFIG || (function()
 {
-	var endpoint  = "http://10.0.0.80:8890/sparql"
+	var endpoint  = "http://144.76.166.111:8890/sparql"
 	,	NS        = "http://generator.geoknow.eu/"
 	,	GRAPH_URI = NS + "settingsGraph";
 
@@ -33,18 +36,23 @@ var CONFIG = CONFIG || (function()
 	{
 		"http://dbpedia.org/resource/"                     : "dbpedia:"
 	,	"http://purl.org/dc/elements/1.1/"                 : "dc:"
+	,	"http://purl.org/dc/terms/"                        : "dcterms:"
 	,	"http://xmlns.com/foaf/0.1/"                       : "foaf:"
 	,	"http://linkeddata.org/integrated-stack-schema/"   : "lds:"
 	,	"http://www.w3.org/1999/02/22-rdf-syntax-ns#"      : "rdf:"
 	,	"http://www.w3.org/2000/01/rdf-schema#"            : "rdfs:"
 	,	"http://www.w3.org/ns/sparql-service-description#" : "sd:"
+	,	"http://rdfs.org/ns/void#"                         : "void:"
 	};
 	namespaces[NS] = ":";
 
-	var NAMESPACES = "PREFIX : <" + NS + ">"
-	,	GRAPH      = "<" + GRAPH_URI + ">"
+	var GRAPH      = "<" + GRAPH_URI + ">"
 	,	FORMAT     = "application/sparql-results+json"
 	,	EOL        = "\r\n";
+
+	var NAMESPACES = "";
+	for (var namespace in namespaces)
+		NAMESPACES += "PREFIX " + namespaces[namespace] + " <" + namespace + ">" + EOL;
 
 	var settings = {};
 
@@ -229,10 +237,10 @@ var CONFIG = CONFIG || (function()
 			for (var s in settings)
 				walk(s, settings[s]);
 
-			$.getJSON(endpoint + "?callback=?",
-				{
+			$.post(endpoint
+			,	{
 					format: FORMAT
-				,	query: NAMESPACES + EOL
+				,	query: NAMESPACES
 					+	"DROP SILENT GRAPH "   + GRAPH + EOL
 					+	"CREATE SILENT GRAPH " + GRAPH + EOL
 					+	"INSERT INTO "         + GRAPH + EOL
@@ -251,6 +259,7 @@ var CONFIG = CONFIG || (function()
 						console.error(e);
 					}
 				}
+			,	"json"
 			);
 		}
 

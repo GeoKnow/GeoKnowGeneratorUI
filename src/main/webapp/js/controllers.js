@@ -76,41 +76,85 @@ app.controller('SidebarCtrl', function($scope, $location) {
 	    }
 });
 
-var ModalWindow = function ($scope) {
 
-  $scope.OpenFullWindow = function () {
-    $("#modalWindow").modal({
+app.controller('ModalWindow', function ($scope) {
+
+  $scope.OpenFullWindow = function (id) {
+    $("#" + id).modal({
     	height : $(window).height() - 165,
     	width : "100%",
         show: true
     });
   };
 
-  $scope.OpenWindow = function () {
-    $("#modalWindow").modal({
+  $scope.OpenWindow = function (id) {
+    $("#" + id).modal({
        show: true
     });
   }; 
 
-  $scope.OpenTemplateWindow = function (template) {
-    $("#modalWindow").modal({
+  $scope.OpenTemplateWindow = function (template, id) {
+    $("#" + id).modal({
        remote : template,
        show: true
     });
   };
   
-  $scope.close = function () {
-	  $("#modalWindow").modal('hide');
+  $scope.close = function (id) {
+	  $("#" + id).modal('hide');
 	  $('body').removeClass('modal-open');
 	  $('.modal-backdrop').slideUp();
 	  $('.modal-scrollable').slideUp();
   };
+
+  // for the parent controller to be able to close the modal window
+  $scope.$on('closeModal', function(event, args) {
+  	$scope.close(args.id);
+  })        
   
-};
+});
+
+/*
+var ModalWindow = function ($scope) {
+
+  $scope.OpenFullWindow = function (id) {
+    $("#" + id).modal({
+    	height : $(window).height() - 165,
+    	width : "100%",
+        show: true
+    });
+  };
+
+  $scope.OpenWindow = function (id) {
+    $("#" + id).modal({
+       show: true
+    });
+  }; 
+
+  $scope.OpenTemplateWindow = function (template, id) {
+    $("#" + id).modal({
+       remote : template,
+       show: true
+    });
+  };
+  
+  $scope.close = function (id) {
+	  $("#" + id).modal('hide');
+	  $('body').removeClass('modal-open');
+	  $('.modal-backdrop').slideUp();
+	  $('.modal-scrollable').slideUp();
+  };
+
+  // for the parent controller to be able to close the modal window
+  $scope.$on('closeModal', function(event, args) {
+  	close(args.id);
+  });        
+  
+};*/
 
 app.controller('FaceteFormCtrl', function($scope, ConfigurationService) {
 	  //Settings for Facete
-	  $scope.namedGraphs = ConfigurationService.getNamedGraphs();
+	  $scope.namedGraphs = ConfigurationService.getAllNamedGraphs();
 	  
 	  $scope.facete = { service : "http://10.0.0.75:8890/sparql",
 	  					dataset :  $scope.namedGraphs[0].name
@@ -329,7 +373,7 @@ var GoogleMapWindow = function ($scope, $timeout, $log) {
 
 var ImportFormCtrl = function($scope, $http, ConfigurationService, flash) {
 
-		  $scope.namedGraphs = ConfigurationService.getNamedGraphs();
+		  $scope.namedGraphs = ConfigurationService.getAllNamedGraphs();
 		  $scope.uploadMessage = '';
 		  
 		  var uploadError = false;
@@ -362,7 +406,7 @@ var ImportFormCtrl = function($scope, $http, ConfigurationService, flash) {
 		    type = $scope.sourceType.value;
 		  };
 		  $scope.fileElements = false;
-  $scope.namedGraphs = ConfigurationService.getNamedGraphs();
+  $scope.namedGraphs = ConfigurationService.getAllNamedGraphs();
   $scope.uploadMessage = '';
   
   var uploadError = false;
@@ -424,6 +468,7 @@ var ImportFormCtrl = function($scope, $http, ConfigurationService, flash) {
   		$scope.queryElements = false;
 		  }
     }
+  }
     else if($scope.sourceType.value == 'url'){
     	$scope.fileElements = false;	
 		  $scope.urlElements = true;
@@ -433,7 +478,6 @@ var ImportFormCtrl = function($scope, $http, ConfigurationService, flash) {
     	$scope.fileElements = false;	
 		  $scope.urlElements = false;
   		$scope.queryElements = true;
-
     }
     type = $scope.sourceType.value;
   };

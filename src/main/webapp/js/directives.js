@@ -3,6 +3,9 @@
 var module = angular.module('app.directives', []);
 
 var URL_REGEXP = /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/;
+var GRAPHNAME_REGEXP = /^[a-zA-Z0-9_]*$/;
+
+
 module.directive('url', function() {
   return {
     require: 'ngModel',
@@ -21,6 +24,26 @@ module.directive('url', function() {
     }
   };
 });
+
+module.directive('uriName', function() {
+  return {
+    require: 'ngModel',
+    link: function(scope, elm, attrs, ctrl) {
+      ctrl.$parsers.unshift(function(viewValue) {
+        if (GRAPHNAME_REGEXP.test(viewValue)) {
+          // it is valid
+          ctrl.$setValidity('graphName', true);
+          return viewValue;
+        } else {
+          // it is invalid, return undefined (no model update)
+          ctrl.$setValidity('graphName', false);
+          return undefined;
+        }
+      });
+    }
+  };
+});
+
 
 /* 
 return attributes of a directive: 
