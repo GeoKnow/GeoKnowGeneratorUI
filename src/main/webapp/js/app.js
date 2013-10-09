@@ -22,12 +22,12 @@ app.config(function($routeSegmentProvider, $routeProvider) {
         // TODO: these routes may have to be loaded from the configuration
         .when('/home', 'default')
         .when('/account','account')
+        .when('/account/preferences', 'account.preferences')
         .when('/settings', 'settings')
         .when('/settings/data-sources', 'settings.data-sources')
         .when('/settings/datasets', 'settings.datasets')
         .when('/settings/namespaces', 'settings.namespaces')
         .when('/settings/components', 'settings.components')
-        .when('/settings/preferences', 'settings.preferences')
         .when('/home/extraction-and-loading/import-rdf', 'default.import-rdf')
         .when('/home/extraction-and-loading/sparqlify', 'default.sparqlify')
         .when('/home/querying-and-exploration/geospatial', 'default.geospatial')
@@ -83,12 +83,15 @@ app.config(function($routeSegmentProvider, $routeProvider) {
                     templateUrl: 'partials/settings/namespaces.html'})
                 .segment('components', {
                     templateUrl: 'partials/settings/components.html'})
-                .segment('preferences', {
-                    templateUrl: 'partials/settings/preferences.html' })
             .up()
 
         .segment('account', {
             templateUrl:'partials/account.html' })
+            .within()
+                .segment('preferences', {
+                    templateUrl: 'partials/settings/preferences.html' })
+            .up()
+
         .segment('about', {
             templateUrl:'partials/about.html' })
         .segment('under-construction', {

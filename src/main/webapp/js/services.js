@@ -18,6 +18,17 @@ module.factory('ConfigurationService', function() {
       return CONFIG.getNS();
     },
 
+    deleteResource: function(uri){
+      var settings = CONFIG.getSettings();
+      delete settings[uri];
+      CONFIG.write();
+      return true;
+    },
+
+    getIdentifiers: function(){
+      return Object.keys(CONFIG.getSettings());
+    },
+
     /**
     * Data Sources Endpoint functions
     */
@@ -52,29 +63,26 @@ module.factory('ConfigurationService', function() {
     addEndpoint: function(endpoint){
       var settings = CONFIG.getSettings();
       settings[endpoint.uri] = { 
-                  "rdfs:label" : [endpoint.label]
-                  , "rdfs:homepage" : ["<" + endpoint.homepage + ">"]
+                    "rdfs:label" : [endpoint.label]
+                  , "foaf:homepage" : [endpoint.homepage]
                   , "rdf:type": ["void:Dataset", "lds:SPARQLendpoint"] 
-                  , "void:sparqlEndpoint" : ["<" + endpoint.endpoint + ">"]
+                  , "void:sparqlEndpoint" : [endpoint.endpoint]
                 };
-      console.log(settings);
-      CONFIG.write();
-      return true;
-    },
-
-    deleteEndpoint: function(uri){
-      var settings = CONFIG.getSettings();
-      delete settings[uri];
       CONFIG.write();
       return true;
     },
 
     updateEndpoint: function(pEndpoint){
-      console.log(pEndpoint);
+      // CONFIG.getSettings()[pEndpoint.uri] = { 
+      //               "rdfs:label" : [endpoint.label]
+      //             , "foaf:homepage" : [endpoint.homepage]
+      //             , "rdf:type": ["void:Dataset", "lds:SPARQLendpoint"] 
+      //             , "void:sparqlEndpoint" : [endpoint.endpoint]
+      //           };
       var endpoint = CONFIG.getSettings()[pEndpoint.uri];
       endpoint["rdfs:label"][0] = pEndpoint.label;
-      endpoint["void:sparqlEndpoint"][0] = "<" + pEndpoint.endpoint + ">";
-      endpoint["foaf:homepage"][0] = "<" + pEndpoint.homepage + ">";
+      endpoint["void:sparqlEndpoint"][0] = pEndpoint.endpoint;
+      endpoint["foaf:homepage"][0] = pEndpoint.homepage;
       CONFIG.write();
       return true;
     },
@@ -83,23 +91,64 @@ module.factory('ConfigurationService', function() {
     * Data Sources Database functions
     */
     getAllDatabases: function(){
-
+      var results = [];
+      var elements = CONFIG.select("rdf:type", "lds:Database");
+      for (var resource in elements)
+      {
+        var element = elements[resource];
+        results.push(
+        {
+          uri  : resource
+        , label       : element["rdfs:label"][0]
+        , server      : element["lds:serverIp"][0]
+        , database    : element["lds:database"][0]
+        , driver      : element["lds:driver"][0]
+        , user        : element["lds:user"][0]
+        , password    : element["lds:password"][0]
+        });
+      }
+      return results;     
     },
 
-    getDatabase: function(){
-
+    getDatabase: function(uri){
+      var settings = CONFIG.getSettings();
+      var results = {
+          uri      : uri
+        , label    : settings[uri]["rdfs:label"][0]
+        , server   : settings[uri]["lds:serverIp"][0]
+        , database : settings[uri]["lds:database"][0]
+        , driver   : settings[uri]["lds:driver"][0]
+        , user     : settings[uri]["lds:user"][0]
+        , password : settings[uri]["lds:password"][0]
+      };
+      return results; 
     },
 
-    addDatabase: function(){
-
+    addDatabase: function(database){
+      var settings = CONFIG.getSettings();
+      settings[":" + database.uri] = { 
+                    "rdfs:label"   : [database.label]
+                  , "lds:serverIp" : [database.server]
+                  , "rdf:type"     : ["void:Dataset", "lds:Database"] 
+                  , "lds:database" : [database.database]
+                  , "lds:driver"   : [database.driver]
+                  , "lds:user"     : [database.user]
+                  , "lds:password" : [database.password]
+                };
+      CONFIG.write();
+      return true;
     },
 
-    deleteDatabase: function(){
-
-    },
-
-    updateDatabase: function(){
-
+    updateDatabase: function(pDatabase){
+      var database = CONFIG.getSettings()[pDatabase.uri];
+      database["rdfs:label"][0]    = pDatabase.label;
+      database["lds:serverIp"][0]  = pDatabase.server;
+      database["lds:driver"][0]    = pDatabase.driver;
+      database["lds:database"][0]  = pDatabase.database;
+      database["lds:user"][0]      = pDatabase.user;
+      database["lds:password"][0]  = pDatabase.password;
+      CONFIG.write();
+      return true;
     },
 
     /**
@@ -218,11 +267,11 @@ module.factory('ConfigurationService', function() {
     // saves a named graph in the store
     updateGraph: function(namedGraph) {
       var graph = CONFIG.getSettings()[namedGraph.name];
-      graph["sd:graph"][0]["rdfs:label"][0] = namedGraph.graph.label;
-      graph["sd:graph"][0]["dcterms:description"][0]= namedGraph.graph.description;
-      graph["sd:graph"][0]["dcterms:modified"][0] = namedGraph.graph.modified;
-      graph["sd:graph"][0]["dcterms:created"][0] = namedGraph.graph.created;
-      graph["sd:graph"][0]["void:sparqlEndpoint"][0] = namedGraph.graph.endpoint;
+      // graph["sd:graph"][0]["rdfs:label"][0] = namedGraph.graph.label;
+      // graph["sd:graph"][0]["dcterms:description"][0]= namedGraph.graph.description;
+      // graph["sd:graph"][0]["dcterms:modified"][0] = namedGraph.graph.modified;
+      // graph["sd:graph"][0]["dcterms:created"][0] = namedGraph.graph.created;
+      // graph["sd:graph"][0]["void:sparqlEndpoint"][0] = namedGraph.graph.endpoint;
       CONFIG.write();
       return true;
     },

@@ -4,12 +4,12 @@
 <div ng-controller="GraphCtrl">
 
   <div ng-controller="ModalWindow">
-    <button type="button" class="btn btn-large btn-primary" ng-click="new(); OpenWindow('modelGraph');">Add new dataset</button>
+    <button type="button" class="btn btn-large btn-primary" ng-click="new(); OpenWindow('modalGraph');">Add new dataset</button>
 
-    <div class="modal fade" id="modelGraph">
+    <div class="modal fade" id="modalGraph">
       <form name="graphForm" class="form-horizontal InputForm" role="form" novalidate>
         <div class="modal-header">
-          <button type="button" class="close" ng-click="close('modelGraph')" aria-hidden="true">&times;</button>
+          <button type="button" class="close" ng-click="close('modalGraph')" aria-hidden="true">&times;</button>
           <h5 class="modal-title green bold">{{modaltitle}}</h5>
         </div>
 
@@ -17,9 +17,10 @@
            <div class="form-group">
             <label class="col-lg-2 control-label">Name</label>
             <div class="col-lg-10">
-              <input type="text" class="form-control" id="name" name="name" placeholder="Name" ng-model="namedgraph.name" required ng-disabled="!isNew()" uri-name />
+              <input type="text" class="form-control" id="name" name="name" placeholder="Name" ng-model="namedgraph.name" ng-disabled="!isNew()" required regex-validate="identifier" unique-identifier/>
               <div class="error"  ng-show="graphForm.name.$dirty && graphForm.name.$invalid">Invalid:
-                <span ng-show="graphForm.name.$error.required">Specify a valid name</span>
+                <span ng-show="graphForm.name.$error.required || graphForm.name.$error.regexValidate ">Specify a valid identifier (letters and or numbers)</span>
+                <span ng-show="graphForm.name.$error.uniqueIdentifier">This identifier already exist</span>
               </div>
             </div>
           </div>
@@ -35,7 +36,7 @@
           <div class="form-group">
             <label for="description" class="col-lg-2 control-label">Description</label>
             <div class="col-lg-10">
-              <input type="text" class="form-control" name="description" id="description" placeholder="Description" ng-model="namedgraph.graph.description" />
+              <input type="text" class="form-control" name="description" id="description" placeholder="Description" ng-model="namedgraph.graph.description" required />
               <div class="error"  ng-show="graphForm.description.$dirty && graphForm.description.$invalid">Invalid:
                 <span ng-show="graphForm.description.$error.required">Give a description</span>
               </div>
@@ -63,7 +64,7 @@
         <div class="modal-footer">
           <button type="button" class="btn-sm btn-success" ng-click="save();"
           ng-disabled="graphForm.$invalid || isUnchanged(namedgraph)">Save</button>
-          <button type="button" class="btn-sm btn-default" ng-click="close('modelGraph')">Cancel</button>
+          <button type="button" class="btn-sm btn-default" ng-click="close('modalGraph')">Cancel</button>
         </div>      
       </form>
    	</div>
@@ -84,8 +85,8 @@
   <tbody>
      <tr ng-repeat="namedgraph in namedgraphs">
       <td>
-        <button type="button" class="btn btn-default btn-xs" ng-click="edit('{{namedgraph.name}}'); OpenWindow('modelGraph');"><span class="glyphicon glyphicon-edit"></span></button>
         <button type="button" class="btn btn-default btn-xs" ng-click="delete('{{namedgraph.name}}')"><span class="glyphicon glyphicon-trash"></span></button>
+        <button type="button" class="btn btn-default btn-xs" ng-click="edit('{{namedgraph.name}}'); OpenWindow('modalGraph');"><span class="glyphicon glyphicon-edit"></span></button>
       </td>
       <td>{{namedgraph.name}}</td>
       <td>{{namedgraph.graph.label}}</td>

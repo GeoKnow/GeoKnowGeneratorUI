@@ -2,121 +2,42 @@
 
 var module = angular.module('app.directives', []);
 
-var URL_REGEXP = /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/;
-var GRAPHNAME_REGEXP = /^[a-zA-Z0-9_]*$/;
 
-
-module.directive('url', function() {
-  return {
-    require: 'ngModel',
-    link: function(scope, elm, attrs, ctrl) {
-      ctrl.$parsers.unshift(function(viewValue) {
-        if (URL_REGEXP.test(viewValue)) {
-          // it is valid
-          ctrl.$setValidity('url', true);
-          return viewValue;
-        } else {
-          // it is invalid, return undefined (no model update)
-          ctrl.$setValidity('url', false);
-          return undefined;
-        }
-      });
-    }
-  };
-});
-
-module.directive('uriName', function() {
-  return {
-    require: 'ngModel',
-    link: function(scope, elm, attrs, ctrl) {
-      ctrl.$parsers.unshift(function(viewValue) {
-        if (GRAPHNAME_REGEXP.test(viewValue)) {
-          // it is valid
-          ctrl.$setValidity('graphName', true);
-          return viewValue;
-        } else {
-          // it is invalid, return undefined (no model update)
-          ctrl.$setValidity('graphName', false);
-          return undefined;
-        }
-      });
-    }
-  };
-});
-
-
-/* 
-return attributes of a directive: 
-restrict:'E' // A=Attribute, C=Class Name, E=Element, M=HTML
-*/
-/*
-module.directive('navMenu', function($location) {
-	return {
+app.directive('regexValidate', function() {
+    var expressions = [];
+    expressions['url']            = /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/;
+    expressions['identifier']     =  /^[a-zA-Z0-9_]*$/ ;
+    expressions['sparqlEndpoint'] =  /^https?:\/\/[^\/]+\/sparql\/?$/;
+    return {
         restrict: 'A',
-        link: function(scope, element) {
-            var $ul = $(element);
-            // $ul.addClass("nav nav-tabs");
-
-            var $tabs = $ul.children();
-            var tabMap = {};
-            $tabs.each(function() {
-              var $li = $(this);
-              //Substring 1 to remove the # at the beginning (because location.path() below does not return the #)
-              tabMap[$li.find('a').attr('href').substring(1)] = $li;
+        require: 'ngModel',
+        link: function(scope, elem, attr, ctrl) {
+            var regex = expressions[attr.regexValidate];
+            ctrl.$parsers.unshift(function(value) {
+                var valid = regex.test(value);
+                ctrl.$setValidity('regexValidate', valid);
+                return valid ? value : undefined;
             });
-
-            scope.location = location;
-            scope.$watch('location.path()', function(newPath) {
-                $tabs.removeClass("active");
-                tabMap[newPath].addClass("active");
+            ctrl.$formatters.unshift(function(value) {
+                ctrl.$setValidity('regexValidate', regex.test(value));
+                return value;
             });
         }
-
     };
-});*/
-
-/*
-module.directive('autoComplete', function($timeout) {
-	return function(scope, iElement, iAttrs) {
-        iElement.autocomplete({
-            source: scope[iAttrs.uiItems],
-            select: function() {
-                $timeout(function() {
-                  iElement.trigger('input');
-                }, 0);
-            }
-        });
-	};
 });
 
-module.directive('inlineEdit', 
-	function(){
-		var editTemplate = '<input type="text" ng-model="title" ng-show="editMode" rows="1" cols="10"/><input ng-show="editMode" type="button" value="OK" ng-click="switchToPreview()" />';
-		var previewTemplate = '<h1 ng-hide="editMode" ng-click="switchToEdit()">preview</h1>';
 
-		return{
-			restrict:'E',
-			compile:function(tElement, tAttrs, transclude){
-				var title = tElement.text();
-				tElement.html(editTemplate);
+app.directive('uniqueIdentifier', ['$compile', 'ConfigurationService', function($compile, ConfigurationService){
+    return {
+        restrict: 'A',
+        require: 'ngModel',
+        link: function(scope, elem, attr, ngModel) {
+          var list = ConfigurationService.getIdentifiers();
+          ngModel.$parsers.unshift(function (value) {
+            ngModel.$setValidity('uniqueIdentifier', list.indexOf(':'+value) === -1);
+            return value;
+          });
+        }
+    }
+ }]);
 
-
-				var previewElement =  angular.element(previewTemplate);
-				tElement.append(previewElement);
-
-				return function(scope, element, attrs){
-					scope.editMode = true;
-					scope.title = title;
-
-					scope.switchToPreview = function(){
-						previewElement.html(scope.title);
-						scope.editMode = false;
-					}
-
-					scope.switchToEdit = function(){
-						scope.editMode = true;
-					}
-				}
-			}
-		}
-});*/

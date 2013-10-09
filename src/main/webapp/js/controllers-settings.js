@@ -6,7 +6,7 @@ function GeneralSettingsCtrl($scope, ConfigurationService) {
 
 function NamespacesCtrl($scope, ConfigurationService) {
 
-	$scope.namespaces = ConfigurationService.getNamespaces();
+	$scope.namespaces = ConfigurationService.getAllNamespaces();
 
 	var newGraph=true;
 	$scope.new = function(){
@@ -48,12 +48,13 @@ function EndpointCtrl($scope, ConfigurationService){
 
 	$scope.edit = function(uri){
 		$scope.endpoint = angular.copy(ConfigurationService.getEndpoint(uri));
+		$scope.endpoint.uri = $scope.endpoint.uri.replace(':',''); //for the validation to be accepted
 		newEndpoint=false;
 		$scope.modaltitle = "Edit Endopoint";
 	};
 
 	$scope.delete = function(uri){
-		ConfigurationService.deleteEndpoint(uri);
+		ConfigurationService.deleteResource(uri);
 		$scope.refreshTable();
 	};
 
@@ -63,13 +64,14 @@ function EndpointCtrl($scope, ConfigurationService){
 
 	$scope.save = function(){
 		var success =  false;
+		$scope.endpoint.uri =  ":" + $scope.endpoint.uri;
 		if(newEndpoint)
 			success = ConfigurationService.addEndpoint($scope.endpoint);
 		else
 			success = ConfigurationService.updateEndpoint($scope.endpoint);
 		
 		if(success){
-			$scope.$broadcast('closeModal', {id : 'modelEndpoint'}); 
+			$scope.$emit('closeModal', {id : 'modalEndpoint'}); 
 			$scope.refreshTable();
 		}
 	};
@@ -77,18 +79,69 @@ function EndpointCtrl($scope, ConfigurationService){
 }
 
 function DatabaseCtrl($scope, ConfigurationService){
+	
+	var emptyDatabase = { uri: "", label:"", server:"", database: "", driver: "", user: "", password: ""};
+	var newDatabase=true;
 	$scope.databases = ConfigurationService.getAllDatabases();
+	$scope.database = emptyDatabase;
+	$scope.uribase = ConfigurationService.getUriBase();
+	$scope.modaltitle = "";
+	$scope.identifiers = ConfigurationService.getIdentifiers();
+
+	$scope.isNew = function(){
+		return newDatabase;
+	};
+
+		$scope.new = function(){
+		// default values
+		newDatabase=true;
+		$scope.modaltitle = "New Database";
+		$scope.database = angular.copy(emptyDatabase);
+	};
+
+	$scope.edit = function(uri){
+		$scope.database = angular.copy(ConfigurationService.getDatabase(uri));
+		$scope.database.uri = $scope.database.uri.replace(':','');
+		newDatabase=false;
+		$scope.modaltitle = "Edit Database";
+	};
+
+	$scope.delete = function(uri){
+		ConfigurationService.deleteResource(uri);
+		$scope.refreshTable();
+	};
+
+	$scope.refreshTable = function(){
+		$scope.databases = ConfigurationService.getAllDatabases();
+	};
+
+	$scope.save = function(){
+		var success =  false;
+		$scope.database.uri =  ":" + $scope.database.uri;
+		if(newDatabase)
+			success = ConfigurationService.addDatabase($scope.database);
+		else
+			success = ConfigurationService.updateDatabase($scope.database);
+		
+		if(success){
+			$scope.$emit('closeModal', {id : 'modalDatabase'}); 
+			$scope.refreshTable();
+		}
+	};
 }
 
 function GraphCtrl($scope, ConfigurationService){
 
-	var emptyGraph = { name:"", 
-	                      graph: {created:"now", endpoint: "", description: "", modified:"", label:""}};
+	var emptyGraph = {  name:"", 
+										  graph: {
+										  	created:"now", endpoint: "", description: "", modified:"", label:"" 
+										}};
 	var newGraph=true;
 	
 	$scope.namedgraphs = ConfigurationService.getAllNamedGraphs();
 	$scope.namedgraph = emptyGraph;
 	$scope.modaltitle = "";
+
 	$scope.isNew = function(){
 		return newGraph;
 	};
@@ -114,6 +167,7 @@ function GraphCtrl($scope, ConfigurationService){
 
 	$scope.edit = function(graphName){
 		var namedg = ConfigurationService.getNamedGraph(graphName);
+		// namedg.name = namedg.name.replace(':','');
 		$scope.namedgraph = angular.copy(namedg);
 		newGraph=false;
 		$scope.modaltitle = "Edit Named Graph";
@@ -122,13 +176,14 @@ function GraphCtrl($scope, ConfigurationService){
 	$scope.save = function(){
 		// TODO: check if success then close the window or where to put error messages
 		var success =  false;
+		$scope.namedgraph.name =  ":" + $scope.namedgraph.name;
 		if(newGraph)
-			success = ConfigurationService.addEndpoint($scope.namedgraph);
+			success = ConfigurationService.addGraph($scope.namedgraph);
 		else
-			success = ConfigurationService.updateEndpoint($scope.namedgraph);
+			success = ConfigurationService.updateGraph($scope.namedgraph);
 			
 		if(success){
-			$scope.$broadcast('closeModal', {id : 'modelGraph'}); 
+			$scope.$broadcast('closeModal', {id : 'modalGraph'}); 
 			$scope.refreshTable();
 		}
 	};

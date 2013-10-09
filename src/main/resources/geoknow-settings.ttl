@@ -1,6 +1,4 @@
 @prefix :        <http://generator.geoknow.eu/> .
-@prefix ldsc:    <http://generator.geoknow.eu/component/> .
-@prefix ldsds:   <http://generator.geoknow.eu/datasource/> .
 @prefix d2rq:    <http://www.wiwiss.fu-berlin.de/suhl/bizer/D2RQ/0.1#> .
 @prefix dcmit:   <http://purl.org/dc/dcmitype/> .
 @prefix dcterms:  <http://purl.org/dc/terms/> .
@@ -14,17 +12,19 @@
 @prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
 @prefix foaf:    <http://xmlns.com/foaf/0.1/> .
 
-ldsc:GeoKnowGenerator
+:GeoKnowGenerator
       rdf:type lds:StackComponent ;
       rdfs:comment "This resource contains all the configuration required by the application"^^xsd:string ;
       rdfs:label "GeoKnowGeneator"^^xsd:string ;
       lds:version "0.1"^^xsd:string ;
       lds:integrates :Virtuoso ;
+      lds:integrates :Facete ;
+      lds:integrates :Limes ;
       lds:outputGraph :SettingsGraph ;
       lds:serviceURL "http://localhost"^^xsd:string ;
       lds:useService :GeoKnowGeneratorService .
 
-ldsc:Virtuoso
+:Virtuoso
       rdf:type lds:StackComponent ;
       rdfs:label "Virtuoso RDF store"^^xsd:string ;
       lds:servicePassword "dba"^^xsd:string ;
@@ -33,47 +33,52 @@ ldsc:Virtuoso
       lds:version "7.0.1"^^xsd:string ;
       lds:category "storage-querying"^^xsd:string .
 
-ldsc:Facete
+:Facete
       rdf:type lds:StackComponent ;
       rdfs:label "Facete Visualization Tool"^^xsd:string ;
-      lds:servicePassword "dba"^^xsd:string ;
       lds:serviceURL "http://localhost:8080/facete"^^xsd:string ;
-      lds:serviceUser "dba"^^xsd:string ;
       lds:version "0.1-SNAPSHOT"^^xsd:string ;
       lds:category "querying-and-exploration"^^xsd:string .
 
-ldsc:Limes
+:Limes
       rdf:type lds:StackComponent ;
       rdfs:label "Limes Linking Service"^^xsd:string ;
-      lds:servicePassword "dba"^^xsd:string ;
       lds:serviceURL "http://localhost:8080/limes"^^xsd:string ;
-      lds:serviceUser "dba"^^xsd:string ;
       lds:version "0.6.4"^^xsd:string ;   
       lds:category "linking"^^xsd:string .
 
-ldsds:Dbpedia
+:Dbpedia
       a       void:Dataset , lds:SPARQLendpoint ;
       rdfs:label "Dbpedia"^^xsd:string ;
       foaf:homepage <http://dbpedia.org/> ;
       void:sparqlEndpoint <http://dbpedia.org/sparql> .
 
-ldsds:GeoLinkedDataEs
+:GeoLinkedDataEs
       a       void:Dataset , lds:SPARQLendpoint ;
       rdfs:label "Spanish GeoLinkedData"^^xsd:string ;
       foaf:homepage <http://geo.linkeddata.es/> ;
       void:sparqlEndpoint <http://geo.linkeddata.es/sparql> .
 
-ldsds:osm-semantic-network
+:osm-semantic-network
       a       void:Dataset , lds:SPARQLendpoint ;
       rdfs:label "OSM Semantic Network"^^xsd:string ;
       foaf:homepage <http://wiki.openstreetmap.org/wiki/OSM_Semantic_Network> ;
       void:sparqlEndpoint <http://spatial.ucd.ie/lod/sparql> .
 
-ldsds:oxpoints
+:oxpoints
       a       void:Dataset , lds:SPARQLendpoint ;
       rdfs:label "OxPoints (University of Oxford)"^^xsd:string ;
       foaf:homepage <https://data.ox.ac.uk/doc/dataset/oxpoints> ;
       void:sparqlEndpoint <https://data.ox.ac.uk/sparql/> .
+
+:UHotels
+      a       void:Dataset, lds:Database ;
+      rdfs:label "Hotels database"^^xsd:string ;
+      lds:serverIp "127.0.0.1"^^xsd:string ;
+      lds:database "test"^^xsd:string ;
+      lds:driver "mysql"^^xsd:string ;
+      lds:password "1234"^^xsd:string ;
+      lds:user "root"^^xsd:string .
 
 
 
