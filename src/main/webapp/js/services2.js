@@ -2,31 +2,31 @@
 
 var module = angular.module('app.services', []);
 
-module.factory('ConfigurationService', function() {
+module.factory('ConfigurationService', function(configService) {
 
   var SettingsService = {
 
     getSPARQLEndpoint: function() {
-      return CONFIG.getEndpoint();
+      return configService.getEndpoint();
     },
 
     getDefaultGraph: function() {
-      return CONFIG.getGraph();
+      return configService.getGraph();
     },
 
     getUriBase: function() {
-      return CONFIG.getNS();
+      return configService.getNS();
     },
 
     deleteResource: function(uri){
-      var settings = CONFIG.getSettings();
+      var settings = configService.getSettings();
       delete settings[uri];
-      CONFIG.write();
+      configService.write();
       return true;
     },
 
     getIdentifiers: function(){
-      return Object.keys(CONFIG.getSettings());
+      return Object.keys(configService.getSettings());
     },
 
     /**
@@ -34,7 +34,7 @@ module.factory('ConfigurationService', function() {
     */
     getAllEndpoints: function(){
       var results = [];
-      var elements = CONFIG.select("rdf:type", "lds:SPARQLendpoint");
+      var elements = configService.select("rdf:type", "lds:SPARQLendpoint");
       for (var resource in elements)
       {
         var element = elements[resource];
@@ -50,7 +50,7 @@ module.factory('ConfigurationService', function() {
     },
 
     getEndpoint: function(uri){
-      var settings = CONFIG.getSettings();
+      var settings = configService.getSettings();
       var results = {
           uri      : uri
         , label    : settings[uri]["rdfs:label"][0]
@@ -61,23 +61,23 @@ module.factory('ConfigurationService', function() {
     },
 
     addEndpoint: function(endpoint){
-      var settings = CONFIG.getSettings();
+      var settings = configService.getSettings();
       settings[endpoint.uri] = { 
                     "rdfs:label" : [endpoint.label]
                   , "foaf:homepage" : [endpoint.homepage]
                   , "rdf:type": ["void:Dataset", "lds:SPARQLendpoint"] 
                   , "void:sparqlEndpoint" : [endpoint.endpoint]
                 };
-      CONFIG.write();
+      configService.write();
       return true;
     },
 
     updateEndpoint: function(pEndpoint){
-      var endpoint = CONFIG.getSettings()[pEndpoint.uri];
+      var endpoint = configService.getSettings()[pEndpoint.uri];
       endpoint["rdfs:label"][0] = pEndpoint.label;
       endpoint["void:sparqlEndpoint"][0] = pEndpoint.endpoint;
       endpoint["foaf:homepage"][0] = pEndpoint.homepage;
-      CONFIG.write();
+      configService.write();
       return true;
     },
 
@@ -86,7 +86,7 @@ module.factory('ConfigurationService', function() {
     */
     getAllDatabases: function(){
       var results = [];
-      var elements = CONFIG.select("rdf:type", "lds:Database");
+      var elements = configService.select("rdf:type", "lds:Database");
       for (var resource in elements)
       {
         var element = elements[resource];
@@ -105,7 +105,7 @@ module.factory('ConfigurationService', function() {
     },
 
     getDatabase: function(uri){
-      var settings = CONFIG.getSettings();
+      var settings = configService.getSettings();
       var results = {
           uri      : uri
         , label    : settings[uri]["rdfs:label"][0]
@@ -119,7 +119,7 @@ module.factory('ConfigurationService', function() {
     },
 
     addDatabase: function(database){
-      var settings = CONFIG.getSettings();
+      var settings = configService.getSettings();
       settings[database.uri] = { 
                     "rdfs:label"   : [database.label]
                   , "lds:serverIp" : [database.server]
@@ -129,19 +129,19 @@ module.factory('ConfigurationService', function() {
                   , "lds:user"     : [database.user]
                   , "lds:password" : [database.password]
                 };
-      CONFIG.write();
+      configService.write();
       return true;
     },
 
     updateDatabase: function(pDatabase){
-      var database = CONFIG.getSettings()[pDatabase.uri];
+      var database = configService.getSettings()[pDatabase.uri];
       database["rdfs:label"][0]    = pDatabase.label;
       database["lds:serverIp"][0]  = pDatabase.server;
       database["lds:driver"][0]    = pDatabase.driver;
       database["lds:database"][0]  = pDatabase.database;
       database["lds:user"][0]      = pDatabase.user;
       database["lds:password"][0]  = pDatabase.password;
-      CONFIG.write();
+      configService.write();
       return true;
     },
 
@@ -180,7 +180,7 @@ module.factory('ConfigurationService', function() {
     
   	getAllComponents: function() {
   		var results = [];
-      var elements = CONFIG.select("rdf:type", "lds:StackComponent");
+      var elements = configService.select("rdf:type", "lds:StackComponent");
   		for (var resource in elements)
   		{
   			var element = elements[resource];
@@ -201,7 +201,7 @@ module.factory('ConfigurationService', function() {
     */
     getAllNamedGraphs: function() {
       var results = [];
-  		var elements = CONFIG.select("rdf:type", "sd:NamedGraph");
+  		var elements = configService.select("rdf:type", "sd:NamedGraph");
   		for (var resource in elements)
   		{
   			var namedGraph = elements[resource];
@@ -221,7 +221,7 @@ module.factory('ConfigurationService', function() {
     },
 
     getNamedGraph: function(name) {
-      var settings = CONFIG.getSettings();
+      var settings = configService.getSettings();
       var results = {
           name  : settings[name]["sd:name"][0] // name is the URI
           , graph : { 
@@ -237,9 +237,9 @@ module.factory('ConfigurationService', function() {
     // add a named graph in the store
     addGraph: function(namedGraph) {
       // create the metadata for the graph
-      
+      var graphName = namedGraph.name
       var graph = { "rdf:type" : ["sd:NamedGraph"]
-                  ,  "sd:name" : [namedGraph.name]
+                  ,  "sd:name" : [graphName]
                   ,  "sd:graph" : [{ "rdfs:label" : [namedGraph.graph.label]
                                      , "rdf:type": ["void:Dataset", "sd:Graph"] 
                                      , "dcterms:description" : [namedGraph.graph.description]
@@ -248,36 +248,36 @@ module.factory('ConfigurationService', function() {
                                      , "void:sparqlEndpoint" : [namedGraph.graph.endpoint]
                                   }] };
       // create the graph
-      CONFIG.createGraph(CONFIG.getNS()+namedGraph.name.replace(':',''));
+      configService.createGraph(configService.getNS()+namedGraph.name);
       // if the creation succeed, then add the metadata
       // insert the metadata of the graph
-      var settings = CONFIG.getSettings();
-      settings[namedGraph.name] = graph;
-      settings[":default-dataset"]["sd:namedGraph"].push(namedGraph.name);
-      CONFIG.write();
+      var settings = configService.getSettings();
+      settings[graphName] = graph;
+      settings[":default-dataset"]["sd:namedGraph"].push(graphName);
+      configService.write();
       return true;
     },
 
     // saves a named graph in the store
     updateGraph: function(namedGraph) {
-      var graph = CONFIG.getSettings()[namedGraph.name];
-      graph["sd:graph"][0]["rdfs:label"][0] = namedGraph.graph.label;
-      graph["sd:graph"][0]["dcterms:description"][0]= namedGraph.graph.description;
-      graph["sd:graph"][0]["dcterms:modified"][0] = namedGraph.graph.modified;
-      graph["sd:graph"][0]["dcterms:created"][0] = namedGraph.graph.created;
-      graph["sd:graph"][0]["void:sparqlEndpoint"][0] = namedGraph.graph.endpoint;
-      CONFIG.write();
+      var graph = configService.getSettings()[namedGraph.name];
+      // graph["sd:graph"][0]["rdfs:label"][0] = namedGraph.graph.label;
+      // graph["sd:graph"][0]["dcterms:description"][0]= namedGraph.graph.description;
+      // graph["sd:graph"][0]["dcterms:modified"][0] = namedGraph.graph.modified;
+      // graph["sd:graph"][0]["dcterms:created"][0] = namedGraph.graph.created;
+      // graph["sd:graph"][0]["void:sparqlEndpoint"][0] = namedGraph.graph.endpoint;
+      configService.write();
       return true;
     },
 
     // saves a named graph in the store
     deleteGraph: function(graphName) {
-  		CONFIG.dropGraph(graphName.replace(':',CONFIG.getNS()));
+  		configService.dropGraph(graphName.replace(':',configService.getNS()));
       // if the creation succeed, then delete the metadata
-      var settings = CONFIG.getSettings();
+      var settings = configService.getSettings();
       settings[":default-dataset"]["sd:namedGraph"].pop(graphName);
       delete settings[graphName];
-      CONFIG.write();
+      configService.write();
       return true;
     }
 

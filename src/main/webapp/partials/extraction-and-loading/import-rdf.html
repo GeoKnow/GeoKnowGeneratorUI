@@ -94,11 +94,14 @@
 			<div class="form-group">
 	    	<label for="endPoint" class="col-xs-2 control-label">SPARQL EndPoint</label>
 		    <div class="col-xs-10">
-			    <input type="text" id="endPoint" class="form-control" name="endPoint" ng-model="importSparql.endPoint" regex-validate="sparqlEndpoint" required>
+		    	 <select id="endPoint" class="form-control" ng-model="importSparql.endPoint"
+		      				ng-options="c.endpoint as c.label for c in endpoints" required>
+		      </select>
+<!-- 			    <input type="text" id="endPoint" class="form-control" name="endPoint" ng-model="importSparql.endPoint" regex-validate="sparqlEndpoint" required>
 			    <div class="error"  ng-show="sparqlForm.endPoint.$dirty && sparqlForm.endPoint.$invalid">Invalid:
           	<span ng-show="sparqlForm.endPoint.$error.required">Specify the EndPoint</span>
           	<span ng-show="sparqlForm.endPoint.$error.regexValidate">This is not a valid endPoint</span>
-        	</div>
+        	</div> -->
 	  		</div>
 	  	</div>
 			<div class="form-group">

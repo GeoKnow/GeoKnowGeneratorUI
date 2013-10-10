@@ -2,7 +2,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -12,7 +11,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.codehaus.jackson.map.ObjectMapper;
 
-import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.QueryExecution;
+import com.hp.hpl.jena.query.QueryExecutionFactory;
+import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.RDFNode;
@@ -92,26 +94,26 @@ public class ImportRDF extends HttpServlet {
 //	    }
 	    
     	String source = ((rdfFiles == null) ? rdfUrl : filePath+rdfFiles);
-    	if(source != null){
-    		try {
- 				String file = source;
+    	try {
+    		if(source != null){
+    			String file = source;
  				System.out.println("import    " +file);
- 				httpUpdate(endpoint, graph, file);
+ 				Model model = ModelFactory.createDefaultModel() ; 
+ 				model.read(source) ;
+ 				int inserted = httpUpdate(endpoint, graph, model);
  				res.setStatus("SUCESS");
- 				res.setMessage("File Imported");
- 				   
- 			} catch (Exception e) {
- 				res.setStatus("FAIL");
- 				res.setMessage(e.getMessage());
- 				e.printStackTrace();
- 			}    	
- 	    }
- 		// else try the sparql query 
- 	    // there is nothing to import
- 	    else{
- 	    	res.setStatus("SUCESS");
- 	    	res.setMessage("Nothing to import");
- 	    }
+ 				res.setMessage("Data Imported "+ inserted+ " triples");
+    		}	  
+ 			else{
+ 		 	  	int inserted = queryImport(endpoint, graph, rdfQueryEndpoint, rdfQuery);
+ 		 	   	res.setStatus("ßSUCESS");
+ 		 	   	res.setMessage("Data Imported "+ inserted + " triples");
+ 		 	}
+ 		} catch (Exception e) {
+				res.setStatus("FAIL");
+				res.setMessage(e.getMessage());
+				e.printStackTrace();
+		}    
         	
     mapper.writeValue(out, res); 
 	    out.close();
@@ -122,14 +124,20 @@ public class ImportRDF extends HttpServlet {
 //		ujdbc.loadLocalFile(file, graph);
 //	}
 
-	private static void httpUpdate(String endpoint, String graph, String source) throws Exception{
-		
-		Model model = ModelFactory.createDefaultModel() ; 
-		model.read(source) ;
+	private static int queryImport(String destEndpoint, String graph, String sourceEndpoint, String sparql) throws Exception{
+		 Query query = QueryFactory.create(sparql);
+	     QueryExecution qexec = QueryExecutionFactory.sparqlService(sourceEndpoint, query);
+	     Model model = qexec.execConstruct();
+	     int inserted = httpUpdate(destEndpoint, graph, model);
+	     qexec.close() ;
+	     return inserted;
+	}
 	
+	private static int httpUpdate(String endpoint, String graph, Model model) throws Exception{
+		
 		// generate queries of 100 lines each
 		StmtIterator stmts = model.listStatements();
-		int linesLimit=100, linesCount=0;
+		int linesLimit=100, linesCount=0, total=0;
 		HashMap<String, String> blancNodes = new HashMap<String,String>();
 		
 		Model tmpModel = ModelFactory.createDefaultModel();
@@ -188,8 +196,7 @@ public class ImportRDF extends HttpServlet {
 		        
 		        if (! p.execute())  throw new Exception("UPDATE/SPARQL failed: " + queryString);
 				
-				System.out.println("\n DONE " + linesCount + " = "+linesLimit);
-				System.out.println("\n Generated blanc nodes: " +blancNodes.size());
+				total += linesCount;
 				linesCount = 0;			
 				tmpModel.removeAll();
 			}
@@ -210,11 +217,11 @@ public class ImportRDF extends HttpServlet {
 	        
 	        if (!p.execute())  throw new Exception("UPDATE/SPARQL failed: " + queryString);
 			
-			System.out.println("\n DONE " + linesCount + " = "+linesLimit);
-			System.out.println("\n Generated blanc nodes: " +blancNodes.size());
-			
+	        total += linesCount;
+	        
 		}
        
+		return total;
      
 	}
 
