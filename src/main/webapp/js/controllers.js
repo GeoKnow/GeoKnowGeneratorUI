@@ -27,7 +27,8 @@ function StackMenuCtrl($scope) {
 	      id:"extraction-loading",
 	      items: [
 	        {name: 'Import RDF data', route:'#/home/extraction-and-loading/import-rdf',  url:'/home/extraction-and-loading/import-rdf' },
-	        {name: 'Extract with Sparqlify', route:'#/home/extraction-and-loading/sparqlify',  url:'/home/extraction-and-loading/sparqlify' }]
+	        {name: 'Sparqlify Extraction', route:'#/home/extraction-and-loading/sparqlify',  url:'/home/extraction-and-loading/sparqlify' },
+	        {name: 'TripleGeo Extraction', route:'#/home/extraction-and-loading/triplegeo',  url:'/home/extraction-and-loading/triplegeo' }]
 	    },
 	    {
 	      title: "Querying and Exploration",
@@ -138,6 +139,7 @@ app.controller('FaceteFormCtrl', function($scope, ConfigurationService) {
                 '&default-graph-uri=' + $scope.facete.dataset;
 	};
 });
+
 
 var LimesCtrl = function($scope, $http){
 	
@@ -267,22 +269,36 @@ var LimesCtrl = function($scope, $http){
 	  	$scope.startReview = false;
 	  	$scope.showProgress = true;
 	  	
-		$http({
+	  	$http({
 			url: "http://localhost:8080/LimeServlet/LimesReview",
 	        method: "POST",
 	        dataType: "json",
 	        contentType: "application/json; charset=utf-8"
 	      }).then(function(data){
-	    	  		var result = data.data[0];
-	    		  	$scope.limes.reviewResults = result.substring(13,result.length-3);
-	    	  		result = data.data[1];
-	    		  	$scope.limes.acceptedResults = result.substring(13,result.length-3);
-	    		  	$scope.enterConfig = false;
-	    		  	$scope.showProgress = false;
-	  	    		$scope.inputForm = false;
-	  	    		$scope.reviewForm = true;
-	      		}
-	      );
+	    	 
+	    	  	var result = data.data[0];
+	  	  		result = result.substring(13,result.length-5);
+	  	  		if (result.length<3){
+	  		  		$scope.limes.reviewResults = "No results to review";
+	  		  	}else{
+	  		  		$scope.limes.reviewResults = result;
+	  		  	}
+	  	  		
+	  	  		result = data.data[1];
+	  	  		result = result.substring(13,result.length-5);
+	  	  		if (result.length<3){
+	  	  			$scope.limes.acceptedResults = "No results meet the acceptance threshold";
+	  	  		}else{
+	  	  			$scope.limes.acceptedResults = result;
+	  	  		}
+	  	  		
+	  		  	$scope.enterConfig = false;
+	  		  	$scope.showProgress = false;
+	    		$scope.inputForm = false;
+	    		$scope.reviewForm = true;
+	  	    		
+	      		});
+	      
 	}
 	
 	$scope.loadLimesXML = function($files){
@@ -345,6 +361,82 @@ var LimesCtrl = function($scope, $http){
 		    return uploadError;
 		  };
 	
+}
+
+var GeoliftCtrl = function($scope, $http){
+	
+	$scope.inputForm = true;
+	var uploadError = false;
+	var uploadedFiles = null;
+	
+	$scope.appendInput = function(option){
+		if(option === 0){
+			$('#dereferencing').append('<input class="form-control input-sm col-xs-12 deref"></input><br><br>');
+		}
+		if(option === 2){
+			$('#nlp').append('<input class="form-control input-sm col-xs-12 nlp"></input><br><br>');
+		}
+		if(option === 3){
+			$('#linking').append('<input class="form-control input-sm col-xs-12 linking"></input><br><br>');
+		}
+	}
+	
+	$scope.startGeoLift = function(){
+			
+			var params = { 
+						 
+						 };
+			
+			$http({
+				url: "http://localhost:8080/LimeServlet/LimesRun",
+		        method: "POST",
+		        params: params,
+		        dataType: "json",
+		        contentType: "application/json; charset=utf-8"
+		      }).then(function() {
+		    	$scope.startLimes = false;
+		    	$scope.showProgress = false;
+		    	$scope.startReview = true;
+		      });
+			
+		}
+	
+	$scope.reviewGeoLiftResult = function(){
+			
+		$scope.configOptions = false;
+	  	$scope.startReview = false;
+	  	$scope.showProgress = true;
+	  	
+		$http({
+			url: "http://localhost:8080/LimeServlet/LimesReview",
+	        method: "POST",
+	        dataType: "json",
+	        contentType: "application/json; charset=utf-8"
+	      }).then(function(data){
+	    	 
+	    	  		var result = data.data[0];
+	    	  		result = result.substring(13,result.length-3);
+	    	  		if (result.length<3){
+	    		  		$scope.limes.reviewResults = "No results to review";
+	    		  	}else{
+	    		  		$scope.limes.reviewResults = result;
+	    		  	}
+	    	  		
+	    	  		result = data.data[1];
+	    	  		result = result.substring(13,result.length-3);
+	    	  		if (result.length<3){
+	    	  			$scope.limes.acceptedResults = "No results meet the acceptance threshold";
+	    	  		}else{
+	    	  			$scope.limes.acceptedResults = result;
+	    	  		}
+	    	  		
+	    		  	$scope.enterConfig = false;
+	    		  	$scope.showProgress = false;
+	  	    		$scope.inputForm = false;
+	  	    		$scope.reviewForm = true;
+	  	    		
+	      		});
+		}
 }
 
 app.controller('OpenMap', function OpenMap($scope, $timeout, $log){
