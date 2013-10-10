@@ -17,8 +17,8 @@
 			<label for="inputFile" class="col-xs-2 control-label">Upload a File</label>
 		    	<div class="col-xs-8">
 					  <!-- <input type="file" class="form-control" ng-file-select="onFileSelect($files)" > -->
-					    <input id="lefile" class="form-control input-sm" type="file" ng-file-select="onFileSelect($files); loadLimesXML($files)" multiple name="fileName"
-					  				accept=".xml" style="display:none">
+					    <input id="lefile" class="form-control input-sm" type="file" ng-file-select="loadLimesXML($files)" 
+					    		multiple name="fileName" accept=".xml" style="display:none">
 					  	<div class="error" ng-show="uploadedError()">Invalid:
 					  	<span>{{uploadMessage}}</span></div>
 						<div class="input-append">
@@ -58,12 +58,11 @@
 		    </div>
 		    <div class="col-xs-2">
 				<a class="btn btn-sm btn-success btn-block" id="showConfig" ng-model="limes.showConfig" ng-click="enterConfig = !enterConfig">Show Form</a>
-	  		<a class="btn btn-sm btn-success btn-block" id="reviewLimes" ng-click="ReviewLimes()">Review Results</a>
 	  		</div>
 	</div>
+	<br>
+	<br>
 	</div>
-	<br>
-	<br>
 	<div id="limesOptions" ng-model="limes.Options" ng-show="enterConfig">
 	<div class="row">
 		<div class="col-xs-12">
@@ -259,7 +258,9 @@
 		</div>
 	</div>
 	<div class="row">
-		<div class="col-xs-2"></div>
+		<div class="col-xs-2" ng-show="startReview">
+		<b>Processing complete!</b
+		></div>
 		<div class="col-xs-2">
 		  <a class="btn btn-sm btn-success btn-block" id="reviewLimes" ng-show="startReview" ng-click="ReviewLimes()">Review Results</a>
 		</div>

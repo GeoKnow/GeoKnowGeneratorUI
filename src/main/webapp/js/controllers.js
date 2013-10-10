@@ -139,9 +139,10 @@ app.controller('FaceteFormCtrl', function($scope, ConfigurationService) {
 
 var LimesCtrl = function($scope, $http){
 	
-	$scope.reviewForm = true;
 	$scope.configOptions = true;
 	$scope.inputForm = true;
+	var uploadError = false;
+	var uploadedFiles = null;
 	
 	$scope.examples = [
 	                { name : "Duplicate Dbpedia country entries for the CET time zone" },
@@ -270,9 +271,10 @@ var LimesCtrl = function($scope, $http){
 	        dataType: "json",
 	        contentType: "application/json; charset=utf-8"
 	      }).then(function(data){
-	    	  		var resultsArray = data.data.split(" .");
-	    	  		console.log(resultsArray);
-	    		  	$scope.limes.reviewResults = resultsArray;
+	    	  		var result = data.data[0];
+	    		  	$scope.limes.reviewResults = result.substring(13,result.length-3);
+	    	  		result = data.data[1];
+	    		  	$scope.limes.acceptedResults = result.substring(13,result.length-3);
 	    		  	$scope.enterConfig = false;
 	    		  	$scope.showProgress = false;
 	  	    		$scope.inputForm = false;
@@ -280,6 +282,67 @@ var LimesCtrl = function($scope, $http){
 	      		}
 	      );
 	}
+	
+	$scope.loadLimesXML = function($files){
+		
+		for (var i = 0; i < $files.length; i++) {
+		      var $file = $files[i];
+		      $http.uploadFile({
+		        url: 'UploadServlet', //upload.php script, node.js route, or servlet uplaod url)
+		        file: $file
+		      }).then(function(response, status, headers, config) {
+		        // file is uploaded successfully
+		    	  
+		    	  var filename = $files[0].name;
+		  		
+					$http({
+						method: "POST",
+						url: "http://localhost:8080/LimeServlet/LoadFile",
+						params: {file : filename}
+				      }).then(function(data) {
+						    	console.log(data);
+						    	
+						    	$scope.limes = { SourceServiceURI : data.data[0][0],
+												 TargetServiceURI  : data.data[1][0],
+												 SourceVar: data.data[0][1],
+												 TargetVar: data.data[1][1],
+												 SourceSize: data.data[0][2],
+												 TargetSize: data.data[1][2],
+												 SourceRestr: data.data[0][3],
+												 TargetRestr: data.data[1][3],
+												 SourceProp: data.data[0][4],
+												 TargetProp: data.data[1][4],
+												 Metric: data.data[2],
+												 OutputFormat: $scope.options[0].output[0],
+												 ExecType: $scope.options[1].execType[0],
+												 AcceptThresh: data.data[3][0],
+												 ReviewThresh: data.data[4][0],
+												 AcceptRelation: data.data[3][1],
+												 ReviewRelation: data.data[4][1] 
+											};
+						    	
+						    	$scope.enterConfig = true;
+						    	$scope.startLimes = true;
+						    	
+					      });
+		    	  
+		        if(response.data.status=="FAIL"){
+		          uploadError = true;
+		          $scope.uploadMessage=response.data.message;
+		        }
+		        else {
+		          uploadError = false;
+		          uploadedFiles = $file.name;
+		        }
+		      }); 
+		    }
+
+		}
+	
+		$scope.uploadedError =  function(){
+		    return uploadError;
+		  };
+	
 }
 
 app.controller('OpenMap', function OpenMap($scope, $timeout, $log){
