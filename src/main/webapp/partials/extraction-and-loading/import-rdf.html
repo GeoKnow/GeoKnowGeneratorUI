@@ -9,13 +9,13 @@
 
 <div ng-controller="ImportFormCtrl">
 
-	<form class="form-horizontal col-xs-11" role="form">
-	<div class="form-group">
+	<form class="form-horizontal InputForm col-xs-11" role="form">
+	<div class="row">
 		<label for="source-type" class="col-xs-2 control-label">Import from a </label>
 		<div class="col-xs-10">
-      <select id="source-type" class="form-control" ng-model="sourceType" 
-      				ng-options="c.label for c in sourceTypes" ng-change="updateForm()" required>
-      </select>
+	      <select id="source-type" class="form-control" ng-model="sourceType" 
+	      				ng-options="c.label for c in sourceTypes" ng-change="updateForm()" required>
+	      </select>
 		</div>
 	</div>
 	</form>
