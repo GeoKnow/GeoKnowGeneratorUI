@@ -208,7 +208,7 @@ var CONFIG = CONFIG || (function()
 		{
 			var wrap = function(s)
 			{
-				return /^http:\/\//.test(s) ? "<" + s + ">" : !/^\w*:/.test(s) ? '"' + s + '"' : s;
+				return /^https?:\/\//.test(s) ? "<" + s + ">" : !/^\w*:/.test(s) ? '"' + s + '"' : s;
 			}
 
 			var data = "",
@@ -268,7 +268,7 @@ var CONFIG = CONFIG || (function()
 			$.getJSON(endpoint + "?callback=?",
 				{
 					format: FORMAT
-				,	query: "CREATE SILENT GRAPH " + name
+				,	query: "CREATE SILENT GRAPH <" + name +">"
 				}
 			,	function(data)
 				{
@@ -289,7 +289,7 @@ var CONFIG = CONFIG || (function()
 			$.getJSON(endpoint + "?callback=?",
 				{
 					format: FORMAT
-				,	query: "DROP SILENT GRAPH " + name
+				,	query: "DROP SILENT GRAPH <" + name +">"
 				}
 			,	function(data)
 				{

@@ -7,8 +7,15 @@ function SettingsMenuCtrl($scope) {
   	{ name: "Data Sources", route:'#/settings/data-sources', url:'/settings/data-sources' },
   	{ name: "Datasets", route:'#/settings/datasets', url:'/settings/datasets' },
     { name: "Namespaces", route:'#/settings/namespaces', url:'/settings/namespaces' },
-  	{ name: "Components", route:'#/settings/components', url:'/settings/components' },
-    { name: "User Preferences",   route:'#/settings/preferences', url:'/settings/preferences' }];
+  	{ name: "Components", route:'#/settings/components', url:'/settings/components' }
+  ];
+}
+
+function AccountMenuCtrl($scope) {
+  $scope.oneAtATime = true;
+  // these data can be replaced later with the configuration
+  $scope.items = [
+    { name: "User Preferences",   route:'#/account/preferences', url:'/account/preferences' }];
 }
 
 function StackMenuCtrl($scope) {
@@ -92,14 +99,7 @@ app.controller('ModalWindow', function ($scope) {
        show: true
     });
   }; 
-
-  $scope.OpenTemplateWindow = function (template, id) {
-    $("#" + id).modal({
-       remote : template,
-       show: true
-    });
-  };
-  
+ 
   $scope.close = function (id) {
 	  $("#" + id).modal('hide');
 	  $('body').removeClass('modal-open');
@@ -107,50 +107,13 @@ app.controller('ModalWindow', function ($scope) {
 	  $('.modal-scrollable').slideUp();
   };
 
-  // for the parent controller to be able to close the modal window
+  // for the child($scope.$emit)/parent($scope.$broadcast) controller to be able to close the modal window
   $scope.$on('closeModal', function(event, args) {
   	$scope.close(args.id);
   })        
   
 });
 
-/*
-var ModalWindow = function ($scope) {
-
-  $scope.OpenFullWindow = function (id) {
-    $("#" + id).modal({
-    	height : $(window).height() - 165,
-    	width : "100%",
-        show: true
-    });
-  };
-
-  $scope.OpenWindow = function (id) {
-    $("#" + id).modal({
-       show: true
-    });
-  }; 
-
-  $scope.OpenTemplateWindow = function (template, id) {
-    $("#" + id).modal({
-       remote : template,
-       show: true
-    });
-  };
-  
-  $scope.close = function (id) {
-	  $("#" + id).modal('hide');
-	  $('body').removeClass('modal-open');
-	  $('.modal-backdrop').slideUp();
-	  $('.modal-scrollable').slideUp();
-  };
-
-  // for the parent controller to be able to close the modal window
-  $scope.$on('closeModal', function(event, args) {
-  	close(args.id);
-  });        
-  
-};*/
 
 app.controller('FaceteFormCtrl', function($scope, ConfigurationService) {
 	  //Settings for Facete

@@ -35,8 +35,7 @@
 	    	<label for="inputFile" class="col-xs-2 control-label">File input</label>
 	    	<div class="col-xs-10">
 				  <!-- <input type="file" ng-file-select="onFileSelect($files)" > -->
-				  <input type="file" ng-file-select="onFileSelect($files)" multiple name="fileName"
-				  				accept=".nt, .n3, .ttl, .rdf">
+				  <input type="file" ng-file-select="onFileSelect($files)" multiple name="fileName" accept=".nt, .n3, .ttl, .rdf">
 				  <div class="error" ng-show="uploadedError()">Invalid:
           	<span>{{uploadMessage}}</span>
         	</div>
@@ -65,10 +64,10 @@
 			<div class="form-group">
 	    	<label for="inputUrl" class="col-xs-2 control-label">Url input</label>
 		    <div class="col-xs-10">
-			    <input type="text" id="inputUrl" name="inputUrl" class="form-control" ng-model="importUrl.inputUrl" url required>
+			    <input type="text" id="inputUrl" name="inputUrl" class="form-control" ng-model="importUrl.inputUrl" regex-validate="url" required>
 			    <div class="error" ng-show="urlForm.inputUrl.$dirty && urlForm.inputUrl.$invalid">Invalid:
-          	<span ng-show="urlForm.inputUrl.$error.required">Specify the URL</span>
-          	<span ng-show="urlForm.inputUrl.$error.url">This is not a valid URL.</span>
+          	<span ng-show="urlForm.inputUrl.$error.required">Specify a valid URL</span>
+          	<span ng-show="urlForm.inputUrl.$error.regexValidate">This is not a valid URL.</span>
         	</div>
 	  		</div>
 	  	</div>
@@ -95,10 +94,10 @@
 			<div class="form-group">
 	    	<label for="endPoint" class="col-xs-2 control-label">SPARQL EndPoint</label>
 		    <div class="col-xs-10">
-			    <input type="text" id="endPoint" class="form-control" name="endPoint" ng-model="importSparql.endPoint" url required>
+			    <input type="text" id="endPoint" class="form-control" name="endPoint" ng-model="importSparql.endPoint" regex-validate="sparqlEndpoint" required>
 			    <div class="error"  ng-show="sparqlForm.endPoint.$dirty && sparqlForm.endPoint.$invalid">Invalid:
           	<span ng-show="sparqlForm.endPoint.$error.required">Specify the EndPoint</span>
-          	<span ng-show="sparqlForm.endPoint.$error.url">This is not a valid endPoint</span>
+          	<span ng-show="sparqlForm.endPoint.$error.regexValidate">This is not a valid endPoint</span>
         	</div>
 	  		</div>
 	  	</div>
