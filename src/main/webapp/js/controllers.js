@@ -337,6 +337,7 @@ var GoogleMapWindow = function ($scope, $timeout, $log) {
 var ImportFormCtrl = function($scope, $http, ConfigurationService, flash) {
 
 		  $scope.namedGraphs = ConfigurationService.getAllNamedGraphs();
+		  $scope.endpoints = ConfigurationService.getAllEndpoints();
 		  $scope.uploadMessage = '';
 		  
 		  var uploadError = false;
@@ -493,8 +494,8 @@ var ImportFormCtrl = function($scope, $http, ConfigurationService, flash) {
     if(type == 'file'){
       parameters ={
         rdfFiles: uploadedFiles, 
-        endpoint: ConfigurationService.getEndpoint(), 
-        graph: $scope.importFile.graph, 
+        endpoint: ConfigurationService.getSPARQLEndpoint(), 
+        graph: $scope.importFile.graph.replace(':',ConfigurationService.getUriBase()), 
         uriBase : ConfigurationService.getUriBase()
       };
       
@@ -502,8 +503,8 @@ var ImportFormCtrl = function($scope, $http, ConfigurationService, flash) {
     else if(type == 'url'){
       parameters ={
         rdfUrl: $scope.importUrl.inputUrl, 
-        endpoint: ConfigurationService.getEndpoint(), 
-        graph: $scope.importUrl.graph, 
+        endpoint: ConfigurationService.getSPARQLEndpoint(), 
+        graph: $scope.importUrl.graph.replace(':',ConfigurationService.getUriBase()), 
         uriBase : ConfigurationService.getUriBase() 
       };
 
@@ -512,8 +513,8 @@ var ImportFormCtrl = function($scope, $http, ConfigurationService, flash) {
       parameters ={
         rdfQuery: $scope.importSparql.sparqlQuery,
         rdfQueryEndpoint: $scope.importSparql.endPoint, 
-        endpoint: ConfigurationService.getEndpoint(), 
-        graph: $scope.importSparql.graph, 
+        endpoint: ConfigurationService.getSPARQLEndpoint(), 
+        graph: $scope.importSparql.graph.replace(':',ConfigurationService.getUriBase()), 
         uriBase : ConfigurationService.getUriBase() 
       };
     }

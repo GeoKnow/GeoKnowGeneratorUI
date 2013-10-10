@@ -237,9 +237,9 @@ module.factory('ConfigurationService', function() {
     // add a named graph in the store
     addGraph: function(namedGraph) {
       // create the metadata for the graph
-      var graphName = namedGraph.name
+      
       var graph = { "rdf:type" : ["sd:NamedGraph"]
-                  ,  "sd:name" : [graphName]
+                  ,  "sd:name" : [namedGraph.name]
                   ,  "sd:graph" : [{ "rdfs:label" : [namedGraph.graph.label]
                                      , "rdf:type": ["void:Dataset", "sd:Graph"] 
                                      , "dcterms:description" : [namedGraph.graph.description]
@@ -248,12 +248,12 @@ module.factory('ConfigurationService', function() {
                                      , "void:sparqlEndpoint" : [namedGraph.graph.endpoint]
                                   }] };
       // create the graph
-      CONFIG.createGraph(CONFIG.getNS()+namedGraph.name);
+      CONFIG.createGraph(CONFIG.getNS()+namedGraph.name.replace(':',''));
       // if the creation succeed, then add the metadata
       // insert the metadata of the graph
       var settings = CONFIG.getSettings();
-      settings[graphName] = graph;
-      settings[":default-dataset"]["sd:namedGraph"].push(graphName);
+      settings[namedGraph.name] = graph;
+      settings[":default-dataset"]["sd:namedGraph"].push(namedGraph.name);
       CONFIG.write();
       return true;
     },
@@ -261,11 +261,11 @@ module.factory('ConfigurationService', function() {
     // saves a named graph in the store
     updateGraph: function(namedGraph) {
       var graph = CONFIG.getSettings()[namedGraph.name];
-      // graph["sd:graph"][0]["rdfs:label"][0] = namedGraph.graph.label;
-      // graph["sd:graph"][0]["dcterms:description"][0]= namedGraph.graph.description;
-      // graph["sd:graph"][0]["dcterms:modified"][0] = namedGraph.graph.modified;
-      // graph["sd:graph"][0]["dcterms:created"][0] = namedGraph.graph.created;
-      // graph["sd:graph"][0]["void:sparqlEndpoint"][0] = namedGraph.graph.endpoint;
+      graph["sd:graph"][0]["rdfs:label"][0] = namedGraph.graph.label;
+      graph["sd:graph"][0]["dcterms:description"][0]= namedGraph.graph.description;
+      graph["sd:graph"][0]["dcterms:modified"][0] = namedGraph.graph.modified;
+      graph["sd:graph"][0]["dcterms:created"][0] = namedGraph.graph.created;
+      graph["sd:graph"][0]["void:sparqlEndpoint"][0] = namedGraph.graph.endpoint;
       CONFIG.write();
       return true;
     },
