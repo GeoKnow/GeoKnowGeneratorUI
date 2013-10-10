@@ -74,7 +74,7 @@ var CONFIG = CONFIG || (function()
 		}
 
 		return value;
-	}
+	};
 
 	return {
 		setEndpoint: function(url)
@@ -209,7 +209,7 @@ var CONFIG = CONFIG || (function()
 			var wrap = function(s)
 			{
 				return /^https?:\/\//.test(s) ? "<" + s + ">" : !/^\w*:/.test(s) ? '"' + s + '"' : s;
-			}
+			};
 
 			var data = "",
 				bnodeIndex = 0;
@@ -232,7 +232,7 @@ var CONFIG = CONFIG || (function()
 						}
 					}
 				}
-			}
+			};
 
 			for (var s in settings)
 				walk(s, settings[s]);
