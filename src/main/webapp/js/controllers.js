@@ -114,28 +114,30 @@ app.controller('ModalWindow', function ($scope) {
   
 });
 
+app.controller('VirtuosoEndpointCtrl', function($scope, ConfigurationService) {
+	var component = ConfigurationService.getComponent(":Virtuoso");
+	$scope.url = "";
+	$scope.setUrl = function(){
+		$scope.url= component.serviceUrl;
+	};
+});
 
 app.controller('FaceteFormCtrl', function($scope, ConfigurationService) {
-	  //Settings for Facete
-	  $scope.namedGraphs = ConfigurationService.getAllNamedGraphs();
-	  
-	  $scope.facete = { service : "http://10.0.0.75:8890/sparql",
-	  					dataset :  $scope.namedGraphs[0].name
-					  }
-	  
-				}).directive("ngPortlet", function ($compile) {
-					return {
-					    template: '<iframe  id="mod-frame" '+
-					    	'src="http://[2001:638:902:2010:0:168:35:114]:8080/facete/?service-uri={{facete.service}}'+
-					    	'&default-graph-uri={{facete.dataset}}"></iframe>',
-					    	restrict: 'E',
-					    link: function (scope, elm) {
-					        scope.OpenFullWindow = function(){
-					           elm.after($compile('<ng-portlet></ng-portlet>')(scope));
-					        }
-					    }
-					};
-				});
+	//Settings for Facete
+	$scope.namedGraphs = ConfigurationService.getAllNamedGraphs();
+	var component = ConfigurationService.getComponent(":Facete");
+	$scope.facete = {
+		service   : ConfigurationService.getSPARQLEndpoint(),
+	 	dataset   : $scope.namedGraphs[0].name,
+	}
+	$scope.url = "";
+
+	$scope.setUrl = function(){
+		$scope.url= component.serviceUrl + 
+								'?service-uri='+ $scope.facete.service+
+                '&default-graph-uri=' + $scope.facete.dataset;
+	};
+});
 
 var LimesCtrl = function($scope, $http){
 	

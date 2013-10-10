@@ -29,6 +29,18 @@ module.factory('ConfigurationService', function() {
       return Object.keys(CONFIG.getSettings());
     },
 
+    elementToJson: function(element){
+      //create the json string
+      var jsonStr = ""; 
+      if(isArray(element)){
+        for (var prop in element)
+        {
+           
+        }  
+      }
+      return results;
+    },
+
     /**
     * Data Sources Endpoint functions
     */
@@ -176,6 +188,17 @@ module.factory('ConfigurationService', function() {
           { name: "Linking", id:"linking" },
           { name: "Enriching and Data Cleaning", id:"enriching-and-cleaning" }]
       }
+    },
+
+    getComponent : function(uri){
+      var component = CONFIG.getSettings()[uri];
+      var results = {
+        label       : component["rdfs:label"][0]
+      , category    : component["lds:category"][0]
+      , serviceUrl  : component["lds:serviceURL"][0]
+      , version     : component["lds:version"][0]
+      };
+      return results; 
     },
     
   	getAllComponents: function() {
