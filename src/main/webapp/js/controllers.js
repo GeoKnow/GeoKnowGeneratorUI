@@ -107,6 +107,16 @@ app.controller('ModalWindow', function ($scope) {
 	  $('.modal-backdrop').slideUp();
 	  $('.modal-scrollable').slideUp();
   };
+  
+  $scope.del = function (index) {
+	  
+	  var person_to_delete = $scope.persons[index];
+
+	  API.DeletePerson({ id: person_to_delete.id }, function (success) {
+	    $scope.persons.splice(idx, 1);
+	  });
+	  
+  };
 
   // for the child($scope.$emit)/parent($scope.$broadcast) controller to be able to close the modal window
   $scope.$on('closeModal', function(event, args) {
@@ -359,27 +369,42 @@ var LimesCtrl = function($scope, $http){
 	
 		$scope.uploadedError =  function(){
 		    return uploadError;
-		  };
+		};
 	
 }
 
 var GeoliftCtrl = function($scope, $http){
 	
 	$scope.inputForm = true;
+	$scope.link = false;
 	var uploadError = false;
 	var uploadedFiles = null;
 	
+	
+	$scope.options = [		  
+	                  		  { 	inputs : [], 
+	                  			    visible: false		},
+	     					  { 	inputs : [], 
+	                  			    visible: false		},
+	     					  { 	inputs : [], 
+	                  			    visible: false		},
+	                  		  { 	visible: false		},
+	     			  ];
+	
 	$scope.appendInput = function(option){
-		if(option === 0){
-			$('#dereferencing').append('<input class="form-control input-sm col-xs-12 deref"></input><br><br>');
-		}
-		if(option === 2){
-			$('#nlp').append('<input class="form-control input-sm col-xs-12 nlp"></input><br><br>');
-		}
-		if(option === 3){
-			$('#linking').append('<input class="form-control input-sm col-xs-12 linking"></input><br><br>');
-		}
+			$scope.options[option].inputs.push( {idx: "1"} );
+			$scope.options[option].visible = true;
+			$scope.options[3].visible = true;
 	}
+	
+	$scope.removeInput = function ( option, index ) {
+	    	$scope.options[option].inputs.splice( index, 1 );
+	    	if($scope.options[option].inputs.length === 0){
+	    		$scope.options[option].visible = false;
+	    	}
+	    	if($scope.options[0].inputs.length === 0 && $scope.options[1].inputs.length === 0 && $scope.options[2].inputs.length === 0)
+	    		$scope.options[3].visible = false;
+	  }
 	
 	$scope.startGeoLift = function(){
 			
@@ -439,6 +464,7 @@ var GeoliftCtrl = function($scope, $http){
 		}
 }
 
+/*
 app.controller('OpenMap', function OpenMap($scope, $timeout, $log){
 
   var map = new OpenLayers.Map( 'map', {controls:[
@@ -490,6 +516,7 @@ var GoogleMapWindow = function ($scope, $timeout, $log) {
       mapOptions);
 
 };
+*/
 
 var ImportFormCtrl = function($scope, $http, ConfigurationService, flash) {
 

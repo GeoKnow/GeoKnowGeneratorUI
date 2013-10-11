@@ -16,7 +16,6 @@
 	<div class="row" ng-controller="ImportFormCtrl">
 			<label for="inputFile" class="col-xs-2 control-label">Upload a File</label>
 		    	<div class="col-xs-6">
-					  <!-- <input type="file" class="form-control" ng-file-select="onFileSelect($files)" > -->
 					    <input id="lefile" class="form-control input-sm" type="file" ng-file-select="onFileSelect($files)" 
 					    		multiple name="fileName" accept=".xml" style="display:none">
 					  	<div class="error" ng-show="uploadedError()">Invalid:
@@ -30,7 +29,7 @@
     <br><br>
 	<div class="row">
 			<div class="col-xs-2">
-				<label for="showConfig">Add Enriching Options</label>
+				<label>Add Enriching Options</label>
 		    </div>
 		    <div class="col-xs-2">
 				<a class="btn btn-sm btn-success btn-block" ng-click="appendInput(0)">Dereferencing</a>
@@ -43,13 +42,54 @@
 	  		</div>
 	</div>
 	<br>
+	<br>
 	<form class="form-inline col-xs-11" role="form">
-	<div class="row">
-			<div class="col-xs-2"></div>
-			<div class="col-xs-6" id="dereferencing"></div>
-			<div class="col-xs-6" id="nlp"></div>
-			<div class="col-xs-6" id="linking"></div>
+	<div class="row" ng-show="options[0].visible">
+	<div class="col-xs-2" style="height:100%">
+		<h5 class="green bold">Dereferencing Options</h5>
+	</div>
+	<div class="col-xs-6">
+	<div ng-repeat="option in options[0].inputs">
+		<div class="pull-left" style="width:90%"><input class="form-control input-sm"></input></div>
+		<span class="glyphicon glyphicon-plus plusbutton pull-left" ng-click="appendInput(0)" aria-hidden="true"></span>
+		<button type="button" class="close pull-left" ng-click="removeInput(0, $index)" aria-hidden="true">&times;</button>
+	<br><br><br>
+	</div>
+	</div>
+	</div>
+	<div class="row" ng-show="options[1].visible">
+	<div class="col-xs-2" style="height:100%">
+		<h5 class="green bold">Natural Language Processing Options</h5>
+	</div>
+	<div class="col-xs-6">
+	<div ng-repeat="option in options[1].inputs">
+		<div class="pull-left" style="width:90%"><input class="form-control input-sm"></input></div>
+		<span class="glyphicon glyphicon-plus plusbutton pull-left" ng-click="appendInput(1)" aria-hidden="true"></span>
+		<button type="button" class="close pull-left" ng-click="removeInput(1, $index)" aria-hidden="true">&times;</button>
+	<br><br><br>
+	</div>
+	</div>
+	</div>
+	<div class="row" ng-show="options[2].visible">
+	<div class="col-xs-2" style="height:100%">
+		<h5 class="green bold">Linking Options</h5>
+	</div>
+	<div class="col-xs-6">
+	<div ng-repeat="option in options[2].inputs">
+		<div class="pull-left" style="width:90%"><input class="form-control input-sm"></input></div>
+		<span class="glyphicon glyphicon-plus plusbutton pull-left" ng-click="appendInput(2)" aria-hidden="true"></span>
+		<button type="button" class="close pull-left" ng-click="removeInput(2, $index)" aria-hidden="true">&times;</button>
+	<br><br><br>
+	</div>
+	</div>
+	</div>
+	<div class="row" ng-show="options[3].visible">
+		<div class="col-xs-2"></div>
+		<div class="col-xs-2">
+		  <a class="btn btn-sm btn-primary btn-block" ng-click="startGeoLift()">Start GeoLift</a>
+		</div>
 	</div>
 	</form>
 	</div>
 </form>
+</div>
