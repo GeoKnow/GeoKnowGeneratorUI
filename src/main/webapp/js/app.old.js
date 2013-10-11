@@ -1,7 +1,7 @@
 'use strict';
 
 //TODO: this async call has to be called aspromise and resolve
-//CONFIG.read();
+CONFIG.read();
 //http://stackoverflow.com/questions/17623591/angular-app-resolve-not-controller-for-async-pre-loaded-data
 
 
@@ -15,8 +15,8 @@ var app = angular.module('app', ['app.services',
                                  'angular-flash.flash-alert-directive']);
 
 
-app.config(function($routeSegmentProvider, $routeProvider, Config)
-{
+app.config(function($routeSegmentProvider, $routeProvider) {
+
     $routeSegmentProvider.options.autoLoadTemplates = true;
     $routeSegmentProvider
         // TODO: these routes may have to be loaded from the configuration
@@ -30,6 +30,7 @@ app.config(function($routeSegmentProvider, $routeProvider, Config)
         .when('/settings/components', 'settings.components')
         .when('/home/extraction-and-loading/import-rdf', 'default.import-rdf')
         .when('/home/extraction-and-loading/sparqlify', 'default.sparqlify')
+        .when('/home/extraction-and-loading/triplegeo', 'default.triplegeo')
         .when('/home/querying-and-exploration/geospatial', 'default.geospatial')
         .when('/home/querying-and-exploration/googlemap', 'default.googlemap')
         .when('/home/querying-and-exploration/facete', 'default.facete')
@@ -44,6 +45,8 @@ app.config(function($routeSegmentProvider, $routeProvider, Config)
                     templateUrl: 'partials/extraction-and-loading/import-rdf.html' })
                 .segment('sparqlify', {
                     templateUrl: 'partials/extraction-and-loading/sparqlify.html' })
+                .segment('triplegeo', {
+                    templateUrl: 'partials/extraction-and-loading/triplegeo.html' })
                 .segment('geospatial', {
                     templateUrl: 'partials/querying-and-exploration/geospatial.html'})
                 .segment('googlemap', {
@@ -58,14 +61,8 @@ app.config(function($routeSegmentProvider, $routeProvider, Config)
                     templateUrl: 'partials/linking/limes.html' })
             .up()
 
-		.segment('settings',
-		{
-			templateUrl: 'partials/settings.html',
-			resolve:
-			{
-				settings: Config.read()
-			}
-		})
+        .segment('settings', {
+                templateUrl:'partials/settings.html'})
                 // we could implement here the resolve here for each route
                 // the disadantage is that is the same for all routes,
                 // the advantage is that in theory if the resolve do not succeed the
