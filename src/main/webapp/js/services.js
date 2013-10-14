@@ -29,15 +29,35 @@ module.factory('ConfigurationService', function() {
       return Object.keys(CONFIG.getSettings());
     },
 
-    elementToJson: function(element){
-      //create the json string
-      var jsonStr = ""; 
-      if(isArray(element)){
-        for (var prop in element)
+    getDatabaseTypes: function(){
+      var results = [];
+      var elements = CONFIG.select("rdf:type", "lds:DatabaseType");
+      for (var resource in elements)
+      {
+        var element = elements[resource];
+        results.push(
         {
-           
-        }  
+          uri      : resource
+        , label    : element["rdfs:label"][0]
+        });
       }
+      return results;
+    },
+
+    // TODO: a function the will replace all the json object building
+    // but this may be easier to do on the config.js since there we know the propertyTypes
+    elementToJson: function(resource, element){
+      //create the json string
+      var jsonStr = '{ "uri" : "' + resource + '", '; 
+      if(element instanceof Object){ // do not consider arrays
+        for (var prop in element)
+          if (element[prop].length == 1)
+            jsonStr += ' "' + prop.substring(prop.indexOf(':')+1, prop.length) + '" : "' + element[prop][0] + '",';
+          //else make recursive
+      }
+      jsonStr += '}';
+      // convert the json string into a object
+      var results = eval ("(" + jsonStr + ")");
       return results;
     },
 
@@ -106,11 +126,12 @@ module.factory('ConfigurationService', function() {
         {
           uri  : resource
         , label       : element["rdfs:label"][0]
-        , server      : element["lds:serverIp"][0]
-        , database    : element["lds:database"][0]
-        , driver      : element["lds:driver"][0]
-        , user        : element["lds:user"][0]
-        , password    : element["lds:password"][0]
+        , dbHost      : element["lds:dbHost"][0]
+        , dbName      : element["lds:dbName"][0]
+        , dbUser      : element["lds:dbUser"][0]
+        , dbPort      : element["lds:dbPort"][0]
+        , dbType      : element["lds:dbType"][0]
+        , dbPassword  : element["lds:dbPassword"][0]
         });
       }
       return results;     
@@ -119,13 +140,14 @@ module.factory('ConfigurationService', function() {
     getDatabase: function(uri){
       var settings = CONFIG.getSettings();
       var results = {
-          uri      : uri
-        , label    : settings[uri]["rdfs:label"][0]
-        , server   : settings[uri]["lds:serverIp"][0]
-        , database : settings[uri]["lds:database"][0]
-        , driver   : settings[uri]["lds:driver"][0]
-        , user     : settings[uri]["lds:user"][0]
-        , password : settings[uri]["lds:password"][0]
+          uri        : uri
+        , label      : settings[uri]["rdfs:label"][0]
+        , dbHost     : settings[uri]["lds:dbHost"][0]
+        , dbName     : settings[uri]["lds:dbName"][0]
+        , dbPort     : settings[uri]["lds:dbPort"][0]
+        , dbType     : settings[uri]["lds:dbType"][0]
+        , dbUser     : settings[uri]["lds:dbUser"][0]
+        , dbPassword : settings[uri]["lds:dbPassword"][0]
       };
       return results; 
     },
@@ -133,13 +155,14 @@ module.factory('ConfigurationService', function() {
     addDatabase: function(database){
       var settings = CONFIG.getSettings();
       settings[database.uri] = { 
-                    "rdfs:label"   : [database.label]
-                  , "lds:serverIp" : [database.server]
-                  , "rdf:type"     : ["void:Dataset", "lds:Database"] 
-                  , "lds:database" : [database.database]
-                  , "lds:driver"   : [database.driver]
-                  , "lds:user"     : [database.user]
-                  , "lds:password" : [database.password]
+                    "rdfs:label"     : [database.label]
+                  , "lds:dbHost"     : [database.dbHost]
+                  , "rdf:type"       : ["void:Dataset", "lds:Database"] 
+                  , "lds:dbPort"     : [database.dbPort]
+                  , "lds:dbName"     : [database.dbName]
+                  , "lds:dbType"     : [database.dbType]
+                  , "lds:dbUser"     : [database.dbUser]
+                  , "lds:dbPassword" : [database.dbPassword]
                 };
       CONFIG.write();
       return true;
@@ -147,12 +170,13 @@ module.factory('ConfigurationService', function() {
 
     updateDatabase: function(pDatabase){
       var database = CONFIG.getSettings()[pDatabase.uri];
-      database["rdfs:label"][0]    = pDatabase.label;
-      database["lds:serverIp"][0]  = pDatabase.server;
-      database["lds:driver"][0]    = pDatabase.driver;
-      database["lds:database"][0]  = pDatabase.database;
-      database["lds:user"][0]      = pDatabase.user;
-      database["lds:password"][0]  = pDatabase.password;
+      database["rdfs:label"][0]      = pDatabase.label;
+      database["lds:dbHost"][0]      = pDatabase.dbHost;
+      database["lds:dbType"][0]      = pDatabase.dbType;
+      database["lds:dbPort"][0]      = pDatabase.dbPort;
+      database["lds:dbName"][0]      = pDatabase.dbName;
+      database["lds:dbUser"][0]      = pDatabase.dbUser;
+      database["lds:dbPassword"][0]  = pDatabase.dbPassword;
       CONFIG.write();
       return true;
     },
@@ -192,12 +216,21 @@ module.factory('ConfigurationService', function() {
 
     getComponent : function(uri){
       var component = CONFIG.getSettings()[uri];
-      var results = {
-        label       : component["rdfs:label"][0]
-      , category    : component["lds:category"][0]
-      , serviceUrl  : component["lds:serviceURL"][0]
-      , version     : component["lds:version"][0]
-      };
+      var results = this.elementToJson(uri, component)
+      return results; 
+    },
+
+    getComponentServices : function(uri, serviceType){
+      var elements = CONFIG.getSettings()[uri]["lds:providesService"];
+      var results = [];
+      for (var resource in elements)
+      {
+        var element = elements[resource];
+        if (typeof serviceType != "undefined" && element["rdf:type"].indexOf(serviceType) === -1)
+            continue; // not of the required type
+        
+        results.push(this.elementToJson(resource, element));
+      }
       return results; 
     },
     
@@ -207,14 +240,7 @@ module.factory('ConfigurationService', function() {
   		for (var resource in elements)
   		{
   			var element = elements[resource];
-  			results.push(
-  			{
-  				uri      : resource
-  			,	url      : resource
-  			,	label    : element["rdfs:label"][0]
-  			,	version  : element["lds:version"][0]
-  			,	category : element["lds:category"]
-  			});
+        results.push(this.elementToJson(resource, element));
   		}
 		  return results;     
     },
