@@ -26,12 +26,12 @@
 
 "use strict";
 
-angular.module("app.services", [])
+angular.module("app.configuration", [])
 .factory("Config", function($q, $http)
 {
 	$http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded; charset=UTF-8";
 
-	var ENDPOINT  = "http://144.76.166.111:8890/sparql";
+	var ENDPOINT  = "http://192.168.2.15:8890/sparql";
 	var NS        = "http://generator.geoknow.eu/";
 	var GRAPH_URI = NS + "settingsGraph";
 

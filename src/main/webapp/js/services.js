@@ -31,7 +31,7 @@ module.factory('ConfigurationService', function(Config) {
 
     getDatabaseTypes: function(){
       var results = [];
-      var elements = CONFIG.select("rdf:type", "lds:DatabaseType");
+      var elements = Config.select("rdf:type", "lds:DatabaseType");
       for (var resource in elements)
       {
         var element = elements[resource];
@@ -67,6 +67,7 @@ module.factory('ConfigurationService', function(Config) {
     getAllEndpoints: function(){
       var results = [];
       var elements = Config.select("rdf:type", "lds:SPARQLendpoint");
+
       for (var resource in elements)
       {
         var element = elements[resource];
@@ -169,7 +170,7 @@ module.factory('ConfigurationService', function(Config) {
     },
 
     updateDatabase: function(pDatabase){
-      var database = CONFIG.getSettings()[pDatabase.uri];
+      var database = Config.getSettings()[pDatabase.uri];
       database["rdfs:label"][0]      = pDatabase.label;
       database["lds:dbHost"][0]      = pDatabase.dbHost;
       database["lds:dbType"][0]      = pDatabase.dbType;
@@ -177,7 +178,7 @@ module.factory('ConfigurationService', function(Config) {
       database["lds:dbName"][0]      = pDatabase.dbName;
       database["lds:dbUser"][0]      = pDatabase.dbUser;
       database["lds:dbPassword"][0]  = pDatabase.dbPassword;
-      CONFIG.write();
+      Config.write();
       return true;
     },
 
@@ -215,13 +216,13 @@ module.factory('ConfigurationService', function(Config) {
     },
 
     getComponent : function(uri){
-      var component = CONFIG.getSettings()[uri];
+      var component = Config.getSettings()[uri];
       var results = this.elementToJson(uri, component)
       return results; 
     },
 
     getComponentServices : function(uri, serviceType){
-      var elements = CONFIG.getSettings()[uri]["lds:providesService"];
+      var elements = Config.getSettings()[uri]["lds:providesService"];
       var results = [];
       for (var resource in elements)
       {

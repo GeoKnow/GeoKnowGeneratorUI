@@ -1,11 +1,9 @@
 'use strict';
 
-//TODO: this async call has to be called aspromise and resolve
-//CONFIG.read();
-//http://stackoverflow.com/questions/17623591/angular-app-resolve-not-controller-for-async-pre-loaded-data
-
-var app = angular.module('app', ['app.services', 
+var app = angular.module('app', ['ngRoute', 
+                                 'app.services', 
                                  'app.directives', 
+                                 'app.configuration',
                                  'ui.bootstrap',
                                  'route-segment',
                                  'view-segment', 
@@ -14,7 +12,7 @@ var app = angular.module('app', ['app.services',
                                  'angular-flash.flash-alert-directive']);
 
 
-app.config(function($routeSegmentProvider, $routeProvider, Config)
+app.config(function($routeSegmentProvider, $routeProvider)
 {
     $routeSegmentProvider.options.autoLoadTemplates = true;
     $routeSegmentProvider
@@ -63,25 +61,12 @@ app.config(function($routeSegmentProvider, $routeProvider, Config)
 		.segment('settings',
 		{
 			templateUrl: 'partials/settings.html',
-			resolve:
-			{
-				settings: Config.read()
-			}
+            resolve: {
+              settings: function (Config) {
+                return Config.read();
+              }
+            }
 		})
-                // we could implement here the resolve here for each route
-                // the disadantage is that is the same for all routes,
-                // the advantage is that in theory if the resolve do not succeed the
-                // route is not followed. I couldn make it work 
-                // resolve : function (){
-                //     var deferred = $q.defer();
-                //     console.log("LoadConfig");
-                //      if (CONFIG.read()) {
-                //         deferred.resolve('Configuration loaded!');
-                //       } else {
-                //         deferred.reject('Configuration is not available');
-                //       }
-                //       return deferred.promise;
-                // } })
             .within()
                 .segment('datasets', {
                     templateUrl: 'partials/settings/datasets.html'})
