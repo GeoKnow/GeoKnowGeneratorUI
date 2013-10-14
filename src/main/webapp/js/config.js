@@ -32,7 +32,7 @@ angular.module("app.configuration", [])
 	$http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded; charset=UTF-8";
 
 	var ENDPOINT  = "http://144.76.166.111:8890/sparql";
-	var NS        = "http://generator.geoknow.eu/resource/";
+	var NS        = "http://generator.geoknow.eu/";
 	var GRAPH_URI = NS + "settingsGraph";
 
 	var namespaces =
@@ -82,8 +82,6 @@ angular.module("app.configuration", [])
 		.error(function(data, status)
 		{
 			deferred.reject(data || ENDPOINT + " not found");
-			console.log(data);
-			console.log(status);
 		});
 
 		return deferred.promise;
@@ -192,13 +190,11 @@ angular.module("app.configuration", [])
 					if (/^nodeID:\/\//.test(s))
 					{
 						var id  = s.slice(9),
-							map = bnodes[id] = bnodes[id] || {};
+						map = bnodes[id] = bnodes[id] || {};
 					}
 					else
 					{
 						var map = settings[s] || (settings[s] = {});
-
-						
 					}
 
 					if (/^nodeID:\/\//.test(o))
@@ -206,7 +202,7 @@ angular.module("app.configuration", [])
 						var id = o.slice(9);
 						o = bnodes[id] = bnodes[id] || {};
 					}
-						
+
 					(map[p] || (map[p] = [])).push(o);
 				}
 
