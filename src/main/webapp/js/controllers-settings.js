@@ -44,6 +44,7 @@ function EndpointCtrl($scope, ConfigurationService){
 		newEndpoint=true;
 		$scope.modaltitle = "New Endpoint";
 		$scope.endpoint = angular.copy(emptyEndpoint);
+		$scope.endpointForm.$setPristine();
 	};
 
 	$scope.edit = function(uri){
@@ -71,7 +72,6 @@ function EndpointCtrl($scope, ConfigurationService){
 			success = ConfigurationService.updateEndpoint($scope.endpoint);
 
 		if(success){
-			$scope.endpointForm.$setPristine();
 			$('#modalEndpoint').modal('hide');
 			$scope.refreshTable();
 		}
@@ -97,8 +97,9 @@ function DatabaseCtrl($scope, ConfigurationService){
 		return newDatabase;
 	};
 
-		$scope.new = function(){
+	$scope.new = function(){
 		// default values
+		$scope.databaseForm.$setPristine();
 		newDatabase=true;
 		$scope.modaltitle = "New Database";
 		$scope.database = angular.copy(emptyDatabase);
@@ -129,7 +130,6 @@ function DatabaseCtrl($scope, ConfigurationService){
 			success = ConfigurationService.updateDatabase($scope.database);
 		
 		if(success){
-			$scope.databaseForm.$setPristine();
 			$('#modalDatabase').modal('hide');
 			$scope.refreshTable();
 		}
@@ -158,6 +158,7 @@ function GraphCtrl($scope, ConfigurationService){
 	$scope.new = function(){
 		// default values
 		newGraph=true;
+		$scope.graphForm.$setPristine();
 		$scope.modaltitle = "New Named Graph";
 		var now = new Date();
 	  //"YYYY-MM-DDThh:mm:ss"^^xsd:date;
@@ -191,7 +192,6 @@ function GraphCtrl($scope, ConfigurationService){
 			success = ConfigurationService.updateGraph($scope.namedgraph);
 			
 		if(success){
-			$scope.graphForm.$setPristine();
 			$('#modalGraph').modal('hide');
 			$scope.refreshTable();
 		}
