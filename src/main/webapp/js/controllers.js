@@ -134,6 +134,7 @@ app.controller('VirtuosoCtrl', function($scope, ConfigurationService) {
 	$scope.url = "";
 
 	$scope.setUrl = function(){
+
 		$scope.url = $scope.services[0].serviceUrl;
 	};
 });

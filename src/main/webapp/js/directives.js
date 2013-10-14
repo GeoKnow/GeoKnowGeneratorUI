@@ -7,11 +7,33 @@ app.directive("modalIframe", function ($compile) {
     template: '<iframe  id="mod-frame" src="{{url}}"></iframe>',
     restrict: 'E',
     link: function (scope, elm, attr) {
+        
         scope.openModal = function(){
-            $('#modal').modal({
-                width:'100%',
-                height : $(window).height() - 165
+            // $('#modal').modal({
+            //     width:'100%',
+            //     height : $(window).height() - 165
+            // });
+
+            $('#modal').css({
+                width: $(window).width() ,
+                height : $(window).height(),
+                position: 'fixed',
+                'margin-left': function () {
+                     return -($(this).width() / 2);
+                 },
+                'margin-top': function () {
+                    return -($(this).height() / 2)
+                }
             });
+
+            $('#modal').find('.modal-body').css({
+                width:'auto',
+                padding:'0px', 
+                height: function(){ 
+                    return $(window).height() - 160; 
+                }, 
+            });
+
             $('#modal').modal('show');
         }
     }

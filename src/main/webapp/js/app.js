@@ -36,7 +36,13 @@ app.config(function($routeSegmentProvider, $routeProvider)
         .when('/home/enriching-and-cleaning/geolift', 'default.geolift')
 
         .segment('default', {
-                templateUrl :'partials/default.html'})
+                templateUrl :'partials/default.html',
+                resolve: {
+                      settings: function (Config) {
+                        return Config.read();
+                      }
+                }
+            })
             .within()
                 .segment('import-rdf', {
                     templateUrl: 'partials/extraction-and-loading/import-rdf.html' })
@@ -93,11 +99,19 @@ app.config(function($routeSegmentProvider, $routeProvider)
     // TODO: replace with a not found page or something like that
     $routeProvider.otherwise({redirectTo: '/home'}); 
 
-}).config(function (flashProvider) {
+})
+// configuration of flashProvider module directive
+.config(function (flashProvider) {
     // Support bootstrap 3.0 "alert-danger" class with error flash types
     flashProvider.errorClassnames.push('alert-danger');
     flashProvider.warnClassnames.push('alert-warning');
     flashProvider.infoClassnames.push('alert-info');
     flashProvider.successClassnames.push('alert-sucess');  
+})
+// TODO: we have to add here all the url from components in order that they are not
+// blocked by angular 
+// Error: [$sce:insecurl] Blocked loading resource from url not allowed by $sceDelegate policy.
+.config(function($sceDelegateProvider) {
+    $sceDelegateProvider.resourceUrlWhitelist(['.*']);
 });
 
