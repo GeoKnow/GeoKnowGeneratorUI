@@ -1,0 +1,26 @@
+
+<div ng-controller="VirtuosoCtrl">
+  <div class="col-lg-8">
+  	<h3 class="green bold">Virtuoso</h3>
+
+    More about this tool <a href="{{component.homepage}}" target="_blanc">here</a>.
+    <br>
+    <br>
+    <p>Launch the SPARQLEndpoint service from Virtuoso</p>
+    <a class="btn btn-primary btn-large" data-toggle="modal" ng-click="setUrl(); openModal();">Launch</a>
+  </div>
+  <!-- Modal -->
+  <div class="modal fade" id="modal">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+      <h5 class="modal-title green bold">Virtuoso SPARQLEndpoint</h5>
+    </div>
+    <div class="modal-body">
+      <modal-iframe></modal-iframe>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn-sm btn-success" data-dismiss="modal">Close</button>
+    </div>       
+  </div><!-- /.modal -->  
+</div>
+

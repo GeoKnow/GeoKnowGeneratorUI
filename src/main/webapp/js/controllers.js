@@ -36,7 +36,8 @@ function StackMenuCtrl($scope) {
 	      items: [
 	   //    {name: 'Geospatial Exploration', route:'#/home/querying-and-exploration/geospatial', url:'/home/querying-and-exploration/geospatial' },
 	   //    {name: 'Google Maps', route:'#/home/querying-and-exploration/googlemap', url:'/home/querying-and-exploration/googlemap' },
-	       {name: 'Facete', route:'#/home/querying-and-exploration/facete', url:'/home/querying-and-exploration/facete' }]
+	       {name: 'Facete', route:'#/home/querying-and-exploration/facete', url:'/home/querying-and-exploration/facete' },
+	       {name: 'Virtuoso', route:'#/home/querying-and-exploration/virtuoso', url:'/home/querying-and-exploration/virtuoso' }]
 	    },
 	    {
 	      title: "Authoring",
@@ -84,14 +85,15 @@ app.controller('SidebarCtrl', function($scope, $location) {
 	    }
 });
 
-
+// this ModalWindow may be replaced witht the modalIframe directive
 app.controller('ModalWindow', function ($scope) {
 
   $scope.OpenFullWindow = function (id) {
+  	console.log("open");
     $("#" + id).modal({
     	height : $(window).height() - 165,
-    	width : "100%",
-        show: true
+    	width  : "100%", 
+    	show   : true
     });
   };
 
@@ -115,18 +117,23 @@ app.controller('ModalWindow', function ($scope) {
   
 });
 
-app.controller('VirtuosoEndpointCtrl', function($scope, ConfigurationService) {
-	var component = ConfigurationService.getComponent(":Virtuoso");
+app.controller('VirtuosoCtrl', function($scope, ConfigurationService) {
+
+	$scope.component = ConfigurationService.getComponent(":Virtuoso");
+	$scope.services = ConfigurationService.getComponentServices(":Virtuoso", "lds:SPARQLEndPoint");
 	$scope.url = "";
+
 	$scope.setUrl = function(){
-		$scope.url= component.serviceUrl;
+		$scope.url = $scope.services[0].serviceUrl;
 	};
 });
 
 app.controller('FaceteFormCtrl', function($scope, ConfigurationService) {
 	//Settings for Facete
+
 	$scope.namedGraphs = ConfigurationService.getAllNamedGraphs();
-	var component = ConfigurationService.getComponent(":Facete");
+	$scope.component = ConfigurationService.getComponent(":Facete");
+	var services = ConfigurationService.getComponentServices(":Facete");
 	$scope.facete = {
 		service   : ConfigurationService.getSPARQLEndpoint(),
 	 	dataset   : $scope.namedGraphs[0].name,
@@ -134,9 +141,11 @@ app.controller('FaceteFormCtrl', function($scope, ConfigurationService) {
 	$scope.url = "";
 
 	$scope.setUrl = function(){
-		$scope.url= component.serviceUrl + 
+		$scope.url= services[0].serviceUrl + 
 								'?service-uri='+ $scope.facete.service+
                 '&default-graph-uri=' + $scope.facete.dataset;
+
+
 	};
 });
 

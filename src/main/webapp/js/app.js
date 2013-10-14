@@ -4,7 +4,6 @@
 CONFIG.read();
 //http://stackoverflow.com/questions/17623591/angular-app-resolve-not-controller-for-async-pre-loaded-data
 
-
 var app = angular.module('app', ['app.services', 
                                  'app.directives', 
                                  'ui.bootstrap',
@@ -34,6 +33,7 @@ app.config(function($routeSegmentProvider, $routeProvider) {
         .when('/home/querying-and-exploration/geospatial', 'default.geospatial')
         .when('/home/querying-and-exploration/googlemap', 'default.googlemap')
         .when('/home/querying-and-exploration/facete', 'default.facete')
+        .when('/home/querying-and-exploration/virtuoso', 'default.virtuoso')
         .when('/home/authoring/ontowiki', 'default.ontowiki')
         .when('/home/linking/limes', 'default.limes')
         .when('/home/enriching-and-cleaning/geolift', 'default.geolift')
@@ -53,6 +53,8 @@ app.config(function($routeSegmentProvider, $routeProvider) {
                     templateUrl: 'partials/querying-and-exploration/googlemap.html'})
                 .segment('facete', {
                     templateUrl: 'partials/querying-and-exploration/facete.html'})
+                .segment('virtuoso', {
+                    templateUrl: 'partials/querying-and-exploration/virtuoso.html'})
                 .segment('ontowiki', {
                     templateUrl: 'partials/authoring/ontowiki.html' })
                 .segment('geolift', {

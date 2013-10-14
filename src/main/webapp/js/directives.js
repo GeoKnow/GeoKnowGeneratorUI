@@ -2,13 +2,17 @@
 
 var module = angular.module('app.directives', []);
 
-app.directive("ngPortlet", function ($compile) {
+app.directive("modalIframe", function ($compile) {
   return {
     template: '<iframe  id="mod-frame" src="{{url}}"></iframe>',
     restrict: 'E',
     link: function (scope, elm, attr) {
-        scope.OpenFullWindow = function(){
-            elm.append($compile('<ng-portlet></ng-portlet>')(scope));
+        scope.openModal = function(){
+            $('#modal').modal({
+                width:'100%',
+                height : $(window).height() - 165
+            });
+            $('#modal').modal('show');
         }
     }
   };

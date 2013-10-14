@@ -80,9 +80,10 @@ function EndpointCtrl($scope, ConfigurationService){
 
 function DatabaseCtrl($scope, ConfigurationService){
 	
-	var emptyDatabase = { uri: "", label:"", server:"", database: "", driver: "", user: "", password: ""};
+	var emptyDatabase = { uri: "", label:"", dbHost:"", dbName: "", dbType: "", dbUser: "", dbPassword: "", dbPort:""};
 	var newDatabase=true;
 	$scope.databases = ConfigurationService.getAllDatabases();
+	$scope.databaseTypes = ConfigurationService.getDatabaseTypes();
 	$scope.database = emptyDatabase;
 	$scope.uribase = ConfigurationService.getUriBase();
 	$scope.modaltitle = "";
