@@ -13,20 +13,21 @@ app.directive("modalIframe", function ($compile) {
             //     width:'100%',
             //     height : $(window).height() - 165
             // });
+            console.log('modalIframe directive');
 
-            $('#modal').css({
+            $('#fullModal').css({
                 width: $(window).width() ,
                 height : $(window).height(),
                 position: 'fixed',
                 'margin-left': function () {
                      return -($(this).width() / 2);
                  },
-                'margin-top': function () {
-                    return -($(this).height() / 2)
-                }
+                // 'margin-top': function () {
+                //     return -($(this).height() / 2)
+                // }
             });
 
-            $('#modal').find('.modal-body').css({
+            $('#fullModal').find('.modal-body').css({
                 width:'auto',
                 padding:'0px', 
                 height: function(){ 
@@ -34,7 +35,7 @@ app.directive("modalIframe", function ($compile) {
                 }, 
             });
 
-            $('#modal').modal('show');
+            $('#fullModal').modal('show');
         }
     }
   };

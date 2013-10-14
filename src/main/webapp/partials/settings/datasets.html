@@ -3,71 +3,69 @@
 
 <div ng-controller="GraphCtrl">
 
-  <div ng-controller="ModalWindow">
-    <button type="button" class="btn btn-large btn-primary" ng-click="new(); OpenWindow('modalGraph');">Add new dataset</button>
+  <button type="button" class="btn btn-large btn-primary" data-toggle="modal" data-target="#modalGraph" ng-click="new();">Add new dataset</button>
 
-    <div class="modal fade" id="modalGraph">
-      <form name="graphForm" class="form-horizontal InputForm" role="form" novalidate>
-        <div class="modal-header">
-          <button type="button" class="close" ng-click="close('modalGraph')" aria-hidden="true">&times;</button>
-          <h5 class="modal-title green bold">{{modaltitle}}</h5>
-        </div>
+  <div class="modal fade" id="modalGraph">
+    <form name="graphForm" class="form-horizontal InputForm" role="form" novalidate>
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h5 class="modal-title green bold">{{modaltitle}}</h5>
+      </div>
 
-        <div class="modal-body">
-           <div class="form-group">
-            <label class="col-lg-2 control-label">Name</label>
-            <div class="col-lg-10">
-              <input type="text" class="form-control" id="name" name="name" placeholder="Name" ng-model="namedgraph.name" ng-disabled="!isNew()" required regex-validate="identifier" unique-identifier/>
-              <div class="error"  ng-show="graphForm.name.$dirty && graphForm.name.$invalid">Invalid:
-                <span ng-show="graphForm.name.$error.required || graphForm.name.$error.regexValidate ">Specify a valid identifier (letters and or numbers)</span>
-                <span ng-show="graphForm.name.$error.uniqueIdentifier">This identifier already exist</span>
-              </div>
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="name" class="col-lg-2 control-label">Label</label>
-            <div class="col-lg-10">
-              <input type="text" class="form-control" id="label" name="label" placeholder="Label" ng-model="namedgraph.graph.label" required />
-              <div class="error"  ng-show="graphForm.label.$dirty && graphForm.label.$invalid">Invalid:
-                <span ng-show="graphForm.label.$error.required">Specify a label</span>
-              </div>
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="description" class="col-lg-2 control-label">Description</label>
-            <div class="col-lg-10">
-              <input type="text" class="form-control" name="description" id="description" placeholder="Description" ng-model="namedgraph.graph.description" required />
-              <div class="error"  ng-show="graphForm.description.$dirty && graphForm.description.$invalid">Invalid:
-                <span ng-show="graphForm.description.$error.required">Give a description</span>
-              </div>
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="col-lg-2 control-label">Created</label>
-            <div class="col-lg-10">
-              <p class="form-control-static">{{namedgraph.graph.created}}</p>
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="col-lg-2 control-label">Modified</label>
-            <div class="col-lg-10">
-              <p class="form-control-static">{{namedgraph.graph.modified}}</p>
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="col-lg-2 control-label">SPARQL Endpoint</label>
-            <div class="col-lg-10">
-              <p class="form-control-static">{{namedgraph.graph.endpoint}}</p>
+      <div class="modal-body">
+         <div class="form-group">
+          <label class="col-lg-2 control-label">Name</label>
+          <div class="col-lg-10">
+            <input type="text" class="form-control" id="name" name="name" placeholder="Name" ng-model="namedgraph.name" ng-disabled="!isNew()" required regex-validate="identifier" unique-identifier/>
+            <div class="error"  ng-show="graphForm.name.$dirty && graphForm.name.$invalid">Invalid:
+              <span ng-show="graphForm.name.$error.required || graphForm.name.$error.regexValidate ">Specify a valid identifier (letters and or numbers)</span>
+              <span ng-show="graphForm.name.$error.uniqueIdentifier">This identifier already exist</span>
             </div>
           </div>
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn-sm btn-success" ng-click="save();"
-          ng-disabled="graphForm.$invalid || isUnchanged(namedgraph)">Save</button>
-          <button type="button" class="btn-sm btn-default" ng-click="close('modalGraph')">Cancel</button>
-        </div>      
-      </form>
-   	</div>
+        <div class="form-group">
+          <label for="name" class="col-lg-2 control-label">Label</label>
+          <div class="col-lg-10">
+            <input type="text" class="form-control" id="label" name="label" placeholder="Label" ng-model="namedgraph.graph.label" required />
+            <div class="error"  ng-show="graphForm.label.$dirty && graphForm.label.$invalid">Invalid:
+              <span ng-show="graphForm.label.$error.required">Specify a label</span>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="description" class="col-lg-2 control-label">Description</label>
+          <div class="col-lg-10">
+            <input type="text" class="form-control" name="description" id="description" placeholder="Description" ng-model="namedgraph.graph.description" required />
+            <div class="error"  ng-show="graphForm.description.$dirty && graphForm.description.$invalid">Invalid:
+              <span ng-show="graphForm.description.$error.required">Give a description</span>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-lg-2 control-label">Created</label>
+          <div class="col-lg-10">
+            <p class="form-control-static">{{namedgraph.graph.created}}</p>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-lg-2 control-label">Modified</label>
+          <div class="col-lg-10">
+            <p class="form-control-static">{{namedgraph.graph.modified}}</p>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-lg-2 control-label">SPARQL Endpoint</label>
+          <div class="col-lg-10">
+            <p class="form-control-static">{{namedgraph.graph.endpoint}}</p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn-sm btn-success" ng-click="save();" ng-disabled="graphForm.$invalid || isUnchanged(namedgraph)">Save</button>
+        <button type="button" class="btn-sm btn-default" data-dismiss="modal">Cancel</button>
+      </div>      
+    </form>
+ 	</div>
 
   <h3>Existing Graphs</h3>
 
@@ -86,7 +84,7 @@
      <tr ng-repeat="namedgraph in namedgraphs">
       <td>
         <button type="button" class="btn btn-default btn-xs" ng-click="delete('{{namedgraph.name}}')"><span class="glyphicon glyphicon-trash"></span></button>
-        <button type="button" class="btn btn-default btn-xs" ng-click="edit('{{namedgraph.name}}'); OpenWindow('modalGraph');"><span class="glyphicon glyphicon-edit"></span></button>
+        <button type="button" class="btn btn-default btn-xs" data-toggle="modal" data-target="#modalGraph" ng-click="edit('{{namedgraph.name}}');"><span class="glyphicon glyphicon-edit"></span></button>
       </td>
       <td>{{namedgraph.name}}</td>
       <td>{{namedgraph.graph.label}}</td>
@@ -96,5 +94,4 @@
     </tr>
   </tbody>
   </table>
-  </div><!-- /.modal -->
 </div> <!-- controller div -->

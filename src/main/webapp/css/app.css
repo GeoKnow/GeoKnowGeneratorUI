@@ -159,14 +159,11 @@ a.accordion-toggle:hover{
 /* Modal iframe */
 
 #mod-frame{
-	  position: relative;
-	  /*top: 0;*/
+	  position: absolute;
+	  top: 0;
 	  height: 100%;
-	  width: 100%;
-	  border:none;
-
+	  width: 97%;
 }
-
 /* Forms */
 
 .InputForm{

@@ -35,7 +35,7 @@ function EndpointCtrl($scope, ConfigurationService){
 	$scope.uribase = ConfigurationService.getUriBase();
 	$scope.modaltitle = "";
 
-	$scope.isNew = function(){
+  $scope.isNew = function(){
 		return newEndpoint;
 	};
 
@@ -69,10 +69,14 @@ function EndpointCtrl($scope, ConfigurationService){
 			success = ConfigurationService.addEndpoint($scope.endpoint);
 		else
 			success = ConfigurationService.updateEndpoint($scope.endpoint);
-		
+
 		if(success){
-			$scope.$emit('closeModal', {id : 'modalEndpoint'}); 
+			$scope.endpointForm.$setPristine();
+			$('#modalEndpoint').modal('hide');
 			$scope.refreshTable();
+		}
+		else{
+			// TODO: check if success then close the window or where to put error messages		
 		}
 	};
 
@@ -125,8 +129,12 @@ function DatabaseCtrl($scope, ConfigurationService){
 			success = ConfigurationService.updateDatabase($scope.database);
 		
 		if(success){
-			$scope.$emit('closeModal', {id : 'modalDatabase'}); 
+			$scope.databaseForm.$setPristine();
+			$('#modalDatabase').modal('hide');
 			$scope.refreshTable();
+		}
+		else{
+		// TODO: check if success then close the window or where to put error messages		
 		}
 	};
 }
@@ -167,15 +175,14 @@ function GraphCtrl($scope, ConfigurationService){
 	};
 
 	$scope.edit = function(graphName){
-		var namedg = ConfigurationService.getNamedGraph(graphName);
-		// namedg.name = namedg.name.replace(':','');
-		$scope.namedgraph = angular.copy(namedg);
+		$scope.namedgraph = angular.copy(ConfigurationService.getNamedGraph(graphName));
+		$scope.namedgraph.name = $scope.namedgraph.name.replace(':','');
 		newGraph=false;
 		$scope.modaltitle = "Edit Named Graph";
 	};
 
 	$scope.save = function(){
-		// TODO: check if success then close the window or where to put error messages
+		
 		var success =  false;
 		$scope.namedgraph.name =  ":" + $scope.namedgraph.name;
 		if(newGraph)
@@ -184,8 +191,12 @@ function GraphCtrl($scope, ConfigurationService){
 			success = ConfigurationService.updateGraph($scope.namedgraph);
 			
 		if(success){
-			$scope.$broadcast('closeModal', {id : 'modalGraph'}); 
+			$scope.graphForm.$setPristine();
+			$('#modalGraph').modal('hide');
 			$scope.refreshTable();
+		}
+		else{
+		// TODO: check if success then close the window or where to put error messages		
 		}
 	};
 

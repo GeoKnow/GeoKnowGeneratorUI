@@ -6,7 +6,7 @@ function SettingsMenuCtrl($scope) {
   $scope.items = [
   	{ name: "Data Sources", route:'#/settings/data-sources', url:'/settings/data-sources' },
   	{ name: "Datasets", route:'#/settings/datasets', url:'/settings/datasets' },
-    { name: "Namespaces", route:'#/settings/namespaces', url:'/settings/namespaces' },
+    // { name: "Namespaces", route:'#/settings/namespaces', url:'/settings/namespaces' },
   	{ name: "Components", route:'#/settings/components', url:'/settings/components' }
   ];
 }
@@ -762,20 +762,20 @@ var DataSourceTabCtrl = function($scope, $window, $location) {
   
 };
 
-var OpenModalCtrl = function($scope, $modal) {
+// var OpenModalCtrl = function($scope, $modal) {
 
-  $scope.viaService = function() {
-    // do something	
-    var modal = $modal({
-      template: "=bsModal",
-      show: true,
-      backdrop: 'static',
-      scope: $scope
-    });
-  }
-  $scope.parentController = function(dismiss) {
-    console.warn(arguments);
-    // do something
-    dismiss();
-  }
-};
+//   $scope.viaService = function() {
+//     // do something	
+//     var modal = $modal({
+//       template: "=bsModal",
+//       show: true,
+//       backdrop: 'static',
+//       scope: $scope
+//     });
+//   }
+//   $scope.parentController = function(dismiss) {
+//     console.warn(arguments);
+//     // do something
+//     dismiss();
+//   }
+// };
