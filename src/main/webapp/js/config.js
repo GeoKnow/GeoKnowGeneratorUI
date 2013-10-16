@@ -27,7 +27,7 @@
 "use strict";
 
 angular.module("app.configuration", [])
-.factory("Config", function($q, $http)
+.factory("Config", function($q, $http, flash)
 {
 	$http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded; charset=UTF-8";
 
@@ -81,7 +81,9 @@ angular.module("app.configuration", [])
 		})
 		.error(function(data, status)
 		{
-			deferred.reject(data || ENDPOINT + " not found");
+			var message = data || ENDPOINT + " not found";
+			deferred.reject(message);
+			flash.error = message;
 		});
 
 		return deferred.promise;
