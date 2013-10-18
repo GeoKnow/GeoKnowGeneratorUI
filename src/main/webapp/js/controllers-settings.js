@@ -1,7 +1,15 @@
 'use strict';
 
 function GeneralSettingsCtrl($scope, ConfigurationService) {
-	$scope.settings = { uribase : ConfigurationService.getUriBase()};
+	$scope.settings = { 
+			uribase : ConfigurationService.getUriBase(), 
+			generatorEndpoint : ConfigurationService.getSPARQLEndpoint(), 
+			settingsGraph : ConfigurationService.getSettingsGraph()
+	};
+	// get the services that provide a SPARQLEndpoint service
+	// $scope.endpointServices = ConfigurationService.getResourcesType("lds:SPARQLEndPoint");
+	// console.log($scope.endpointServices);
+	// console.log($scope.getEndpoint());
 }
 
 function NamespacesCtrl($scope, ConfigurationService) {
@@ -20,6 +28,16 @@ function NamespacesCtrl($scope, ConfigurationService) {
 
 	$scope.delete = function(){
 	};
+}
+
+function ComponentServicesCtrl($scope, ConfigurationService){
+	
+	$scope.services = [];
+
+	$scope.getServices = function(uri){
+		$scope.services = ConfigurationService.getComponentServices(uri);
+	};
+
 }
 
 function ComponentCtrl($scope, ConfigurationService){

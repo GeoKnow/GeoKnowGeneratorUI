@@ -10,7 +10,7 @@ module.factory('ConfigurationService', function(Config) {
       return Config.getEndpoint();
     },
 
-    getDefaultGraph: function() {
+    getSettingsGraph: function() {
       return Config.getGraph();
     },
 
@@ -24,6 +24,18 @@ module.factory('ConfigurationService', function(Config) {
       Config.write();
       return true;
     },
+
+    getResourcesType : function(type){
+      var results = [];
+      var elements = Config.select("rdf:type", type);
+      for (var resource in elements)
+      {
+        var element = elements[resource];
+        results.push(this.elementToJson(resource, element));
+      }
+      return results; 
+    },
+    
 
     getIdentifiers: function(){
       return Object.keys(Config.getSettings());
@@ -229,12 +241,11 @@ module.factory('ConfigurationService', function(Config) {
         var element = elements[resource];
         if (typeof serviceType != "undefined" && element["rdf:type"].indexOf(serviceType) === -1)
             continue; // not of the required type
-        
         results.push(this.elementToJson(resource, element));
       }
       return results; 
     },
-    
+
   	getAllComponents: function() {
   		var results = [];
       var elements = Config.select("rdf:type", "lds:StackComponent");

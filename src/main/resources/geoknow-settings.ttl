@@ -42,7 +42,7 @@
       rdfs:label "Facete"^^xsd:string ;
       lds:providesService
               [ a       lds:ExplorationService ;
-                lds:serviceUrl <http://generator.geoknow.eu/facete>
+                lds:serviceUrl <http://144.76.166.111/facete/>
               ] ;
       lds:version "0.1-SNAPSHOT"^^xsd:string ;
       foaf:homepage <http://aksw.org/Projects/Facete.html> .
@@ -52,7 +52,7 @@
       rdfs:label "Limes Linking Service"^^xsd:string ;
       lds:providesService
               [ a       lds:InterlinkingService ;
-                lds:serviceUrl <http://generator.geoknow.eu/limes>
+                lds:serviceUrl <http://generator.geoknow.eu:8080/limes>
               ] ;
       lds:version "0.6.4ss"^^xsd:string ;
       foaf:homepage <http://aksw.org/Projects/LIMES.html> .

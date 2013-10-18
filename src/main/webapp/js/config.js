@@ -33,7 +33,7 @@ angular.module("app.configuration", [])
 {
 	$http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded; charset=UTF-8";
 
-	var ENDPOINT  = "http://144.76.166.111:8890/sparql";
+	var ENDPOINT  = "http://10.0.0.63:8890/sparql";
 	var NS        = "http://generator.geoknow.eu/resource/";
 	var GRAPH_URI = NS + "settingsGraph";
 
@@ -126,7 +126,7 @@ angular.module("app.configuration", [])
 
 	var getGraph = function()
 	{
-		return GRAPH;
+		return GRAPH_URI;
 	};
 
 	var getSettings = function()

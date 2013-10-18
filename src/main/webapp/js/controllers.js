@@ -154,8 +154,8 @@ app.controller('FaceteFormCtrl', function($scope, ConfigurationService) {
 	$scope.setUrl = function(){
 		$scope.url= services[0].serviceUrl + 
 								'?service-uri='+ $scope.facete.service+
-                '&default-graph-uri=' + $scope.facete.dataset;
-
+                '&default-graph-uri=' + $scope.facete.dataset.replace(':',ConfigurationService.getUriBase());
+   console.log($scope.url);
 
 	};
 });

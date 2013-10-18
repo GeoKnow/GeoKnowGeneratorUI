@@ -16,20 +16,37 @@
 		
 	  <div class="col-lg-10 contents" app-view-segment="1">
 	  	
-	  <h2>General Settings</h2>
+	  <h2>Generator Settings</h2>
 	   
 
 		<form class="form-horizontal InputForm col-xs-11" ng-controller="GeneralSettingsCtrl">
 
  			<div class="form-group">
-		    <label class="col-xs-2" for="inputPassword">Uri base</label>
+		    <label class="col-xs-2" for="uriBase">Uri base</label>
 		    <div class="col-xs-10">
 		       <input type="text" class="form-control" name="uriBase" id="uriBase" ng-model="settings.uribase">
 		  	</div>
 		  </div>
 
-		  <div class="form-group">
-		    <label class="col-xs-2" for="inputPassword">Export Current Settings</label>
+ 			<div class="form-group">
+		    <label class="col-xs-2" for="settingsGraph">Settings graph</label>
+		    <div class="col-xs-10">
+		       <input type="text" class="form-control" name="settingsGraph" id="settingsGraph" ng-model="settings.settingsGraph">
+		  	</div>
+		  </div>
+
+ 			<div class="form-group">
+		    <label class="col-xs-2" for="generatorEndpoint">Generator Endpoint</label>
+		    <div class="col-xs-10">
+		    	<input type="text" class="form-control" name="generatorEndpoint" id="generatorEndpoint" ng-model="settings.generatorEndpoint">
+		       <!-- <select id="generatorEndpoint" class="form-control" ng-model="settings.generatorEndpoint" 
+	      				ng-options="c.serviceUrl for c in endpointServices" required>
+		      </select> -->
+		  	</div>
+		  </div>
+
+<!-- 		  <div class="form-group">
+		    <label class="col-xs-2" for="optionsRadios">Export Current Settings</label>
 		    <div class="col-xs-10">
 		      <input type="radio" name="optionsRadios" id="optionsRadios1" value="xml/rdf">RDF/XML
 				  <input type="radio" name="optionsRadios" id="optionsRadios2" value="option2">NTriples
@@ -40,7 +57,7 @@
     		<div class="col-lg-offset-2 col-xs-10">
       		<button class="btn btn-success" ng-click="export()" >Export</button>
     		</div>
-  		</div>	
+  		</div>	 -->
 		</form>
 
 		</div>
