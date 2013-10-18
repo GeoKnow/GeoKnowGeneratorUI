@@ -24,6 +24,8 @@
  *   dropGraph(name)           - delete graph
  */
 
+// TODO handle shared blank nodes
+
 "use strict";
 
 angular.module("app.configuration", [])
@@ -32,7 +34,7 @@ angular.module("app.configuration", [])
 	$http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded; charset=UTF-8";
 
 	var ENDPOINT  = "http://144.76.166.111:8890/sparql";
-	var NS        = "http://generator.geoknow.eu/";
+	var NS        = "http://generator.geoknow.eu/resource/";
 	var GRAPH_URI = NS + "settingsGraph";
 
 	var namespaces =
@@ -138,19 +140,36 @@ angular.module("app.configuration", [])
 		value    = ns(value);
 
 		var elements = {};
+		var resource;
 
-		for (var resource in settings)
+		var walk = function(element)
 		{
-			var element = settings[resource];
-			var prop = element[property];
-			if (prop)
-				for (var i in prop)
-					if (prop[i] == value)
-					{
-						elements[resource] = element;
-						break;
-					}
-		}
+			for (var key in element)
+			{
+				var prop = element[key];
+				if (prop)
+					if (key == property)
+						for (var i in prop)
+						{
+							var val = prop[i];
+							if (val == value)
+							{
+								elements[resource] = element;
+								break;
+							}
+						}
+					else
+						for (var i in prop)
+						{
+							var val = prop[i];
+							if (typeof val === "object")
+								walk(val);
+						}
+			}
+		};
+
+		for (resource in settings)
+			walk(settings[resource]);
 
 		return elements;
 	};
