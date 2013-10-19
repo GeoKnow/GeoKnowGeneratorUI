@@ -1,15 +1,19 @@
 'use strict';
 
 function GeneralSettingsCtrl($scope, ConfigurationService) {
+
+	$scope.endpointServices = ConfigurationService.getResourcesType("lds:SPARQLEndPoint");
+
 	$scope.settings = { 
-			uribase : ConfigurationService.getUriBase(), 
-			generatorEndpoint : ConfigurationService.getSPARQLEndpoint(), 
-			settingsGraph : ConfigurationService.getSettingsGraph()
+			uriBase 				: ConfigurationService.getUriBase(), 
+			endpointService : ConfigurationService.getSPARQLEndpoint(),
+			settingsGraph 	: ConfigurationService.getSettingsGraph()
 	};
-	// get the services that provide a SPARQLEndpoint service
-	// $scope.endpointServices = ConfigurationService.getResourcesType("lds:SPARQLEndPoint");
-	// console.log($scope.endpointServices);
-	// console.log($scope.getEndpoint());
+
+	// $scope.update = function(){
+	// 	ConfigurationService.setUriBase($scope.settings.);
+	// 	ConfigurationService.getSPARQLEndpoint($scope.settings);
+	// }
 }
 
 function NamespacesCtrl($scope, ConfigurationService) {

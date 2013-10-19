@@ -6,16 +6,24 @@ module.factory('ConfigurationService', function(Config) {
 
   var SettingsService = {
 
+    setSPARQLEndpoint: function(endpoint) {
+      Config.setEndpoint(endpoint);
+    },
+
     getSPARQLEndpoint: function() {
       return Config.getEndpoint();
     },
 
-    getSettingsGraph: function() {
-      return Config.getGraph();
+    setUriBase: function(uri) {
+      Config.setNS(uri);
     },
 
     getUriBase: function() {
       return Config.getNS();
+    },
+
+    getSettingsGraph: function() {
+      return Config.getGraph();
     },
 
     deleteResource: function(uri){
@@ -56,12 +64,12 @@ module.factory('ConfigurationService', function(Config) {
       return results;
     },
 
-    // TODO: a function the will replace all the json object building
+    // TODO: improve the function the will replace all the json object building
     // but this may be easier to do on the config.js since there we know the propertyTypes
     elementToJson: function(resource, element){
       //create the json string
       var jsonStr = '{ "uri" : "' + resource + '", '; 
-      if(element instanceof Object){ // do not consider arrays
+      if(typeof element == "object"){ // do not consider arrays
         for (var prop in element)
           if (element[prop].length == 1)
             jsonStr += ' "' + prop.substring(prop.indexOf(':')+1, prop.length) + '" : "' + element[prop][0] + '",';
@@ -234,13 +242,23 @@ module.factory('ConfigurationService', function(Config) {
     },
 
     getComponentServices : function(uri, serviceType){
-      var elements = Config.getSettings()[uri]["lds:providesService"];
+      var settings = Config.getSettings();
+      var elements = settings[uri]["lds:providesService"];
+      
       var results = [];
       for (var resource in elements)
       {
         var element = elements[resource];
+
+        // TODO: get a new version of config.js to provide also blanc nodes as URIS
+        // if element is an string is an URI, otherwise is a nested node (blanc)
+        if( typeof element == "string"){
+          element = settings[element];
+        }
+
         if (typeof serviceType != "undefined" && element["rdf:type"].indexOf(serviceType) === -1)
-            continue; // not of the required type
+          continue; // not of the required type
+        
         results.push(this.elementToJson(resource, element));
       }
       return results; 

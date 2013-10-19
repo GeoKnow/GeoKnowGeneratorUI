@@ -131,12 +131,8 @@ app.controller('VirtuosoCtrl', function($scope, ConfigurationService) {
 
 	$scope.component = ConfigurationService.getComponent(":Virtuoso");
 	$scope.services = ConfigurationService.getComponentServices(":Virtuoso", "lds:SPARQLEndPoint");
-	$scope.url = "";
+	$scope.url = ConfigurationService.getSPARQLEndpoint();
 
-	$scope.setUrl = function(){
-
-		$scope.url = $scope.services[0].serviceUrl;
-	};
 });
 
 app.controller('FaceteFormCtrl', function($scope, ConfigurationService) {
@@ -155,7 +151,7 @@ app.controller('FaceteFormCtrl', function($scope, ConfigurationService) {
 		$scope.url= services[0].serviceUrl + 
 								'?service-uri='+ $scope.facete.service+
                 '&default-graph-uri=' + $scope.facete.dataset.replace(':',ConfigurationService.getUriBase());
-   console.log($scope.url);
+   
 
 	};
 });

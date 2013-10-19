@@ -33,9 +33,11 @@ angular.module("app.configuration", [])
 {
 	$http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded; charset=UTF-8";
 
-	var ENDPOINT  = "http://10.0.0.63:8890/sparql";
+	var ENDPOINT  = "http://144.76.166.111:8890/sparql";
+	// if new resorces are created they will use this name space, and it can be changed
 	var NS        = "http://generator.geoknow.eu/resource/";
-	var GRAPH_URI = NS + "settingsGraph";
+  // this is the graph where settings are stored, it doesnt change, and independent on the Namespace
+	var GRAPH_URI = "http://generator.geoknow.eu/resource/settingsGraph";
 
 	var namespaces =
 	{
@@ -117,6 +119,11 @@ angular.module("app.configuration", [])
 	var getEndpoint = function()
 	{
 		return ENDPOINT;
+	};
+	
+	var setNS = function(ns)
+	{
+		NS = ns;
 	};
 
 	var getNS = function()
@@ -299,9 +306,4 @@ angular.module("app.configuration", [])
 		dropGraph   : dropGraph
 	};
 });
-/*
-.controller("ConfigCtrl", function($scope, Config)
-{
-	$scope.settings = Config.read();
-});
-*/
+

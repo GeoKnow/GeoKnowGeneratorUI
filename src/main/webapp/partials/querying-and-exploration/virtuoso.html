@@ -1,13 +1,29 @@
 
 <div ng-controller="VirtuosoCtrl">
   <div class="col-lg-8">
-  	<h3 class="green bold">Virtuoso</h3>
+  	<h3 class="green bold">{{component.label}}</h3>
 
-    More about this tool <a href="{{component.homepage}}" target="_blanc">here</a>.
-    <br>
-    <br>
-    <p>Launch the SPARQLEndpoint service from Virtuoso</p>
-    <a class="btn btn-primary btn-large" data-toggle="modal" ng-click="setUrl(); openModal();">Launch</a>
+
+    <dl class="dl-horizontal">
+      <dt>Version:</dt><dd>{{component.version}}</dd>
+      <dt>Homepage:</dt><dd>{{component.homepage}}</dd>
+    </dl>
+
+    <h4>Launch SPARQLEndPoint Services</h4>
+
+    <form name="virtuosoForm" class="form-horizontal InputForm col-xs-11"  role="form" novalidate>
+     <div class="form-group">
+        <label class="col-xs-2" for="availableEndponts">Endpoint</label>
+        <div class="col-xs-10">
+           <select id="availableEndponts" class="form-control" ng-model="url" 
+                ng-options="c.serviceUrl as (c.label + ': ' + c.serviceUrl) for c in services" required>
+          </select> 
+        </div>
+      </div>
+
+      <a class="btn btn-success btn-large" data-toggle="modal" ng-click="openModal();">Launch</a>
+    </form>
+
   </div>
   <!-- Modal -->
   <div class="modal fade" id="fullModal">
