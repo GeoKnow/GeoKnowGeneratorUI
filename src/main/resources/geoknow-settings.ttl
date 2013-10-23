@@ -21,28 +21,51 @@
 
 :Virtuoso
       a       lds:StackComponent ;
-      rdfs:label "Service URL"^^xsd:string ;
+      rdfs:label "Virtuoso"^^xsd:string ;
       lds:providesService
               [ a       lds:StorageService ;
-                rdfs:label "Service URL"^^xsd:string ;
+                rdfs:label "Virtuoso Generator Conductor"^^xsd:string ;
                 lds:dbPassword "dba"^^xsd:string ;
                 lds:dbUser "dba"^^xsd:string ;
                 lds:serviceUrl <http://generator.geoknow.eu:8890/conductor>
               ] ;
-      lds:providesService
-              [ a       lds:SPARQLEndPoint ;
-                lds:serviceUrl <http://generator.geoknow.eu:8890/sparql>
-              ] ;
+      lds:providesService :VirtuosoGeneratorEndpoint, :OntosVirtuosoEndpoint, :MorgesVirtuosoEndpoint ;
       lds:version "7.0"^^xsd:string ;
       foaf:homepage <http://virtuoso.openlinksw.com/> .
 
+:VirtuosoGeneratorEndpoint
+      a       lds:SPARQLEndPoint ;
+      rdfs:label "Virtuoso Generator Endpoint"^^xsd:string ;
+      lds:serviceUrl <http://generator.geoknow.eu:8890/sparql> .
+
+:OntosVirtuosoEndpoint
+      a       lds:SPARQLEndPoint ;
+      rdfs:label "My Local Virtuoso Endpoint"^^xsd:string ;
+      lds:serviceUrl <http://10.0.0.63:8890/sparql> .
+
+:MorgesVirtuosoEndpoint
+      a       lds:SPARQLEndPoint ;
+      rdfs:label "At home Virtuoso Endpoint"^^xsd:string ;
+      lds:serviceUrl <http://192.168.2.15:8890/sparql> .
+
+:OntoQuad
+      a       lds:StackComponent ;
+      rdfs:label "OntoQuad"^^xsd:string ;
+      lds:providesService :OntoQuadEndpoint ;
+      lds:version "1.0"^^xsd:string ;
+      foaf:homepage <http://virtuoso.openlinksw.com/> .
+
+:OntoQuadEndpoint
+      a       lds:SPARQLEndPoint ;
+      rdfs:label "OntoQuad Endpoint"^^xsd:string ;
+      lds:serviceUrl <http://192.168.43.105:8890/sparql> .
 
 :Facete
       a       lds:StackComponent ;
       rdfs:label "Facete"^^xsd:string ;
       lds:providesService
               [ a       lds:ExplorationService ;
-                lds:serviceUrl <http://generator.geoknow.eu/facete>
+                lds:serviceUrl <http://144.76.166.111/facete/>
               ] ;
       lds:version "0.1-SNAPSHOT"^^xsd:string ;
       foaf:homepage <http://aksw.org/Projects/Facete.html> .
@@ -52,7 +75,7 @@
       rdfs:label "Limes Linking Service"^^xsd:string ;
       lds:providesService
               [ a       lds:InterlinkingService ;
-                lds:serviceUrl <http://generator.geoknow.eu/limes>
+                lds:serviceUrl <http://generator.geoknow.eu:8080/limes>
               ] ;
       lds:version "0.6.4ss"^^xsd:string ;
       foaf:homepage <http://aksw.org/Projects/LIMES.html> .

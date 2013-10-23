@@ -24,16 +24,22 @@
  *   dropGraph(name)           - delete graph
  */
 
+// TODO handle shared blank nodes
+
 "use strict";
 
 angular.module("app.configuration", [])
-.factory("Config", function($q, $http)
+.factory("Config", function($q, $http, flash)
 {
 	$http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded; charset=UTF-8";
 
 	var ENDPOINT  = "http://144.76.166.111:8890/sparql";
 	var NS        = "http://generator.geoknow.eu/";
 	var GRAPH_URI = NS + "resource/settingsGraph";
+	// if new resorces are created they will use this name space, and it can be changed
+	var NS        = "http://generator.geoknow.eu/resource/";
+  // this is the graph where settings are stored, it doesnt change, and independent on the Namespace
+	var GRAPH_URI = "http://generator.geoknow.eu/resource/settingsGraph";
 
 	var namespaces =
 	{
@@ -81,7 +87,9 @@ angular.module("app.configuration", [])
 		})
 		.error(function(data, status)
 		{
-			deferred.reject(data || ENDPOINT + " not found");
+			var message = data || ENDPOINT + " not found";
+			deferred.reject(message);
+			flash.error = message;
 		});
 
 		return deferred.promise;
@@ -114,6 +122,11 @@ angular.module("app.configuration", [])
 	{
 		return ENDPOINT;
 	};
+	
+	var setNS = function(ns)
+	{
+		NS = ns;
+	};
 
 	var getNS = function()
 	{
@@ -122,7 +135,7 @@ angular.module("app.configuration", [])
 
 	var getGraph = function()
 	{
-		return GRAPH;
+		return GRAPH_URI;
 	};
 
 	var getSettings = function()
@@ -136,19 +149,36 @@ angular.module("app.configuration", [])
 		value    = ns(value);
 
 		var elements = {};
+		var resource;
 
-		for (var resource in settings)
+		var walk = function(element)
 		{
-			var element = settings[resource];
-			var prop = element[property];
-			if (prop)
-				for (var i in prop)
-					if (prop[i] == value)
-					{
-						elements[resource] = element;
-						break;
-					}
-		}
+			for (var key in element)
+			{
+				var prop = element[key];
+				if (prop)
+					if (key == property)
+						for (var i in prop)
+						{
+							var val = prop[i];
+							if (val == value)
+							{
+								elements[resource] = element;
+								break;
+							}
+						}
+					else
+						for (var i in prop)
+						{
+							var val = prop[i];
+							if (typeof val === "object")
+								walk(val);
+						}
+			}
+		};
+
+		for (resource in settings)
+			walk(settings[resource]);
 
 		return elements;
 	};
@@ -278,9 +308,4 @@ angular.module("app.configuration", [])
 		dropGraph   : dropGraph
 	};
 });
-/*
-.controller("ConfigCtrl", function($scope, Config)
-{
-	$scope.settings = Config.read();
-});
-*/
+
