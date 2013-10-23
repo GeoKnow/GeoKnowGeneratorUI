@@ -28,7 +28,7 @@ function StackMenuCtrl($scope) {
 	      items: [
 	        {name: 'Import RDF data', route:'#/home/extraction-and-loading/import-rdf',  url:'/home/extraction-and-loading/import-rdf' },
 	        {name: 'Sparqlify Extraction', route:'#/home/extraction-and-loading/sparqlify',  url:'/home/extraction-and-loading/sparqlify' },
-	        {name: 'TripleGeo Extraction', route:'#/home/extraction-and-loading/triplegeo',  url:'/home/extraction-and-loading/triplegeo' }]
+	        {name: 'TripleGeo Extraction', route:'#/home/extraction-and-loading/triplegeo', target:'_blank',  url:'/home/extraction-and-loading/triplegeo' }]
 	    },
 	    {
 	      title: "Querying and Exploration",
@@ -49,13 +49,13 @@ function StackMenuCtrl($scope) {
 	      title: "Linking",
 	      id:"linking",
 	      items: [
-	       {name: 'LIMES', route:'#/home/linking/limes', url:'/home/linking/limes' }]
+	       {name: 'LIMES', route:'#/home/linking/limes', target:'_blank', url:'/home/linking/limes' }]
 	    },
 	    {
 	     title: "Enriching and Data Cleaning",
 	     id:"enriching-cleansing",
 	     items: [
-	       {name: 'GeoLift', route:'#/home/enriching-and-cleaning/geolift', url:'/home/enriching-and-cleaning/geolift' }]
+	       {name: 'GeoLift', route:'#/home/enriching-and-cleaning/geolift', target:'_blank', url:'/home/enriching-and-cleaning/geolift' }]
 	    }
 
 	  ];
@@ -193,7 +193,6 @@ var LimesCtrl = function($scope, $http){
 		
 		$scope.enterConfig = true;
 		$scope.startLimes = true;
-		$scope.startReview = false;
 		
 		if(example === "Duplicate Dbpedia country entries for the CET time zone"){
 			
@@ -279,14 +278,13 @@ var LimesCtrl = function($scope, $http){
 	      }).then(function() {
 	    	$scope.startLimes = false;
 	    	$scope.showProgress = false;
-	    	$scope.startReview = true;
+	    	$scope.ReviewLimes();
 	      });
 	}
 	
 	$scope.ReviewLimes = function(){
 
 		$scope.configOptions = false;
-	  	$scope.startReview = false;
 	  	$scope.showProgress = true;
 	  	
 	  	$http({
@@ -332,13 +330,13 @@ var LimesCtrl = function($scope, $http){
 		        // file is uploaded successfully
 		    	  
 		    	  var filename = $files[0].name;
+		    	  $('#dummyInput').val(filename);
 		  		
 					$http({
-						method: "POST",
-						url: "http://localhost:8080/LimeServlet/LoadFile",
-						params: {file : filename}
-				      }).then(function(data) {
-						    	console.log(data);
+							method: "POST",
+							url: "http://localhost:8080/LimeServlet/LoadFile",
+							params: {file : filename}
+				      	}).then(function(data) {
 						    	
 						    	$scope.limes = { SourceServiceURI : data.data[0][0],
 												 TargetServiceURI  : data.data[1][0],
@@ -386,7 +384,6 @@ var LimesCtrl = function($scope, $http){
 var GeoliftCtrl = function($scope, $http){
 	
 	$scope.inputForm = true;
-	$scope.link = false;
 	var uploadError = false;
 	var uploadedFiles = null;
 	
@@ -431,7 +428,6 @@ var GeoliftCtrl = function($scope, $http){
 		      }).then(function() {
 		    	$scope.startLimes = false;
 		    	$scope.showProgress = false;
-		    	$scope.startReview = true;
 		      });
 			
 		}
@@ -439,7 +435,6 @@ var GeoliftCtrl = function($scope, $http){
 	$scope.reviewGeoLiftResult = function(){
 			
 		$scope.configOptions = false;
-	  	$scope.startReview = false;
 	  	$scope.showProgress = true;
 	  	
 		$http({
@@ -465,6 +460,362 @@ var GeoliftCtrl = function($scope, $http){
 	    	  			$scope.limes.acceptedResults = result;
 	    	  		}
 	    	  		
+	    		  	$scope.enterConfig = false;
+	    		  	$scope.showProgress = false;
+	  	    		$scope.inputForm = false;
+	  	    		$scope.reviewForm = true;
+	  	    		
+	      		});
+		}
+}
+
+var TripleGeoCtrl = function($scope, $http, ConfigurationService){
+	
+	$scope.inputForm = true;
+	$scope.configOptions = true;
+	$scope.dbLogin = true;
+	$scope.configForm = false;
+	var configArray = new Array();
+	$scope.databases = ConfigurationService.getAllDatabases();
+
+	var uploadError = false;
+	var uploadedFiles = null;
+	var inputFileName = null;
+	var params = {};
+	$('i').tooltip();
+	
+	configArray[0]  = ['format', ''];
+	configArray[1]  = ['targetStore', ''];
+	configArray[2]  = ['featureString', ''];
+	configArray[3]  = ['attribute', ''];
+	configArray[4]  = ['ignore', ''];
+	configArray[5]  = ['type', ''];
+	configArray[6]  = ['name', ''];
+	configArray[7]  = ['class', ''];
+	configArray[8]  = ['nsPrefix', ''];
+	configArray[9]  = ['nsURI', ''];
+	configArray[10] = ['ontologyNSPrefix', ''];
+	configArray[11] = ['ontologyNS', ''];
+	configArray[12] = ['sourceRS', ''];
+	configArray[13] = ['targetRS', ''];
+	configArray[14] = ['defaultLang', ''];
+	
+	$scope.tooltips = { data: "Change parameters to reflect the shapefile contents that will be extracted - case sensitive!",
+						ns: "Optional parameters. Change these parameters if you want to use different"+
+							"values for the namespaces and prefixes nsPrefix=georesource",
+						spatial: "Optional parameters. These fields should be filled in if a transformation between EPSG reference systems is needed"+
+								 "If not specified, geometries are assumedto be WGS84 reference system (EPSG:4326).",
+						other: "Optional parameter. Default languages for the labels created in the output RDF. By default, the value is English - en."
+	}
+	
+	$scope.options = { 		
+							database: false,
+							file: false,
+							fileExample: false,
+							dbExample: false,
+							dataParams: false,
+							dbParams: false,
+							job: null,
+							inputFile: null,
+							displayConfigUpload: false,
+							format: [
+	  		     			                "RDF/XML" ,
+			     			                "RDF/XML-ABBREV",
+			     			                "N-TRIPLES",
+			     			                "TURTLE",
+			     			                "N3"
+			     			                	],
+							targetStore: [
+							              	"GeoSPARQL",
+							              	"Virtuoso",
+							              	"wgs84_pos"
+							              		],
+		     			    datasource: [
+		     			                 	{ datasource : "Shape File" },
+											{ datasource : "Database" }
+				     			                ],
+				     	    fileExamples: [
+											{ eg : "Points shape file extraction" }
+											],
+							dbExamples: [
+						  		     		{ eg : "Hotles Dataset" }
+						  		     		],
+				     		dbtype: [
+				     		         { dbtype : "MySQL"},
+				     		         { dbtype :"Oracle"},
+				     		         { dbtype : "PostGIS"},
+				     		         { dbtype :"DB2"}
+				     		         ]
+								};
+	
+	$scope.choice = function($name){
+		
+		$scope.configForm = false;
+		$scope.stTripleGeo = true;
+		
+		if($name == "Shape File"){
+			$scope.options.file = true;
+			$scope.options.database = false;
+			$scope.options.dbExample = false;
+			$scope.options.fileExample = true;
+			$scope.options.dataParams = true;
+			$scope.options.dbParams = false;
+			$scope.options.job = "file";
+		}
+		if($name == "Database"){
+			$scope.options.file = false;
+			$scope.options.database = true;
+			$scope.options.fileExample = false;
+			$scope.options.dbExample = true;
+			$scope.options.dbParams = true;
+			$scope.options.dataParams = false;
+			$scope.configForm = true;
+			$scope.options.job = "db";
+			$scope.triplegeo = {
+								format : $scope.options.format[0],
+								targetStore : $scope.options.targetStore[0],
+								dbtype: $scope.options.dbtype[0],
+								
+			};
+		}
+	}
+	
+	$scope.FillForm = function(example, name){
+		
+			var params = {};
+			
+			if(example === "fileExample" && name === "Points shape file extraction"){
+				
+				$scope.options.dataParams = true;
+				$scope.options.dbParams = false;
+				$scope.options.job = "example";
+				$scope.options.displayConfigUpload = false;
+				$scope.options.file = false;
+		
+				$scope.tripleGeoConfig = {
+						 inputFile :   "./examples/points.shp",
+						 format :      $scope.options.format[0],
+						 targetStore : $scope.options.targetStore[0],
+						
+						 featureString: "points",
+						 attribute: "osm_id",
+						 ignore: "UNK",
+						 type: "points",
+						 name: "name",
+						 dclass: "type",
+						 
+						 nsPrefix: "georesource",
+						 nsURI: "http://geoknow.eu/geodata#",
+						 ontologyNSPrefix: "geo",
+						 ontologyNS: "http://www.opengis.net/ont/geosparql#"
+						}
+			}
+			
+			if(example === "dbExample"){
+				for(var i=0; i<$scope.databases.length; i++){
+					if($scope.databases[i].label === name){
+						$scope.options.dataParams = false;
+						$scope.options.dbParams = true;
+						$scope.options.job = "db";
+						
+						$scope.tripleGeoConfig = {
+								 format :      $scope.options.format[0],
+								 targetStore : $scope.options.targetStore[0],
+								 
+								 dbtype: $scope.options.dbtype[0], //$scope.databases[i].dbtype.substring(3),
+								 dbName: $scope.databases[i].dbName,
+								 dbUserName: $scope.databases[i].dbUser,
+								 dbPassword: $scope.databases[i].dbPassword,
+								 dbHost: $scope.databases[i].dbHost,
+								 dbPort: $scope.databases[i].dbPort,
+								 resourceName: "",
+								 tableName: "",
+								 condition: "",
+								 labelColumnName: "",
+								 nameColumnName: "",
+								 classColumnName: "",
+								 geometryColumnName: "",
+								 ignore: "",
+								 
+								 nsPrefix: "georesource",
+								 nsURI: "http://geoknow.eu/geodata#",
+								 ontologyNSPrefix: "geo",
+								 ontologyNS: "http://www.opengis.net/ont/geosparql#"
+						}
+					}
+				}
+			}
+	}
+	
+	$scope.loadShapeFile = function($files){
+		$scope.options.displayConfigUpload = true;
+		inputFileName = $files[0].name;
+		$('#dummyShapeInput').val(inputFileName);
+		$scope.configForm = true;
+		}
+
+	$scope.loadConfigFile = function($files){
+		
+		for (var i = 0; i < $files.length; i++) {
+		      var $file = $files[i];
+		      $http.uploadFile({
+		        url: 'UploadServlet', //upload.php script, node.js route, or servlet uplaod url)
+		        file: $file
+		      }).then(function(response, status, headers, config) {
+		        // file is uploaded successfully
+		    	  
+		    	  var filename = $files[0].name;
+		    	  $('#dummyConfigInput').val(filename);
+		  		
+					$http({
+							method: "POST",
+							url: "http://localhost:8080/TripleGeoServlet/LoadFile",
+							params: {
+									file : filename,
+									shp: inputFileName}
+				      	}).then(function(data) {
+				      			for(var i=0; i<configArray.length; i++){
+					      			for(var j=0; j<data.data.length; j++){
+					      				if(configArray[i][0] === data.data[j][0]){
+					      					configArray[i][1] = data.data[j][1];
+					      				}
+					      			}
+				      			}
+				      			
+						    	$scope.tripleGeoConfig = {
+										 inputFile :   data.data[0][0],
+										 format:      configArray[0][1],
+										 targetStore: configArray[1][1],
+										
+										 featureString: configArray[2][1],
+										 attribute: configArray[3][1],
+										 ignore: configArray[4][1],
+										 type: configArray[5][1],
+										 name: configArray[6][1],
+										 dclass: configArray[7][1],
+										 
+										 nsPrefix: configArray[8][1],
+										 nsURI: configArray[9][1],
+										 ontologyNSPrefix: configArray[10][1],
+										 ontologyNS: configArray[11][1],
+										 
+										 sourceRS: configArray[12][1],
+										 targetRS: configArray[13][1],
+											 
+										 defaultLang: configArray[14][1],
+										}
+						    	
+					      });
+		    	  
+		        if(response.data.status=="FAIL"){
+		          uploadError = true;
+		          $scope.uploadMessage=response.data.message;
+		        }
+		        else {
+		          uploadError = false;
+		          uploadedFiles = $file.name;
+		        }
+		      }); 
+		    }
+	}
+	
+	$scope.startTripleGeo= function(){
+		
+		$scope.configOptions = false;
+	  	$scope.showProgress = true;
+		
+		if($scope.options.job == "file" || $scope.options.job == "example"){
+			params = {
+					 job: $scope.options.job,
+					
+					 format: $scope.tripleGeoConfig.format,
+					 targetStore: $scope.tripleGeoConfig.targetStore,
+					 inputFile : $scope.tripleGeoConfig.inputFile,
+					 
+					 featureString: $scope.tripleGeoConfig.featureString,
+					 attribute: $scope.tripleGeoConfig.attribute,
+					 ignore: $scope.tripleGeoConfig.ignore,
+					 type: $scope.tripleGeoConfig.type,
+					 name: $scope.tripleGeoConfig.name,
+					 dclass: $scope.tripleGeoConfig.dclass,
+					 
+					 nsPrefix: $scope.tripleGeoConfig.nsPrefix,
+					 nsURI: $scope.tripleGeoConfig.nsURI,
+					 ontologyNSPrefix: $scope.tripleGeoConfig.ontologyNSPrefix,
+					 ontologyNS: $scope.tripleGeoConfig.ontologyNS,
+					 
+					 sourceRS: $scope.tripleGeoConfig.sourceRS,
+					 targetRS: $scope.tripleGeoConfig.targetRS,
+					 
+					 defaultLang: $scope.tripleGeoConfig.defaultLang,
+				   };
+		}
+		
+		if($scope.options.job == "db"){
+			params = {
+					 job: $scope.options.job,
+					
+					 format: $scope.tripleGeoConfig.format,
+					 targetStore: $scope.tripleGeoConfig.targetStore,
+					 
+					 dbType: ($('#dbtype').prop("selectedIndex")+1),
+					 dbName: $scope.tripleGeoConfig.dbName,
+					 dbUserName: $scope.tripleGeoConfig.dbUserName,
+					 dbPassword: $scope.tripleGeoConfig.dbPassword,
+					 dbHost: $scope.tripleGeoConfig.dbHost,
+					 dbPort: $scope.tripleGeoConfig.dbPort,
+					 resourceName: $scope.tripleGeoConfig.resourceName,
+					 tableName: $scope.tripleGeoConfig.tableName,
+					 condition: $scope.tripleGeoConfig.condition,
+					 labelColumnName: $scope.tripleGeoConfig.labelColumnName,
+					 nameColumnName: $scope.tripleGeoConfig.nameColumnName,
+					 classColumnName: $scope.tripleGeoConfig.classColumnName,
+					 geometryColumnName: $scope.tripleGeoConfig.geometryColumnName,
+					 ignore: $scope.tripleGeoConfig.ignore,
+					 
+					 nsPrefix: $scope.tripleGeoConfig.nsPrefix,
+					 nsURI: $scope.tripleGeoConfig.nsURI,
+					 ontologyNSPrefix: $scope.tripleGeoConfig.ontologyNSPrefix,
+					 ontologyNS: $scope.tripleGeoConfig.ontologyNS,
+					 
+					 sourceRS: $scope.tripleGeoConfig.sourceRS,
+					 targetRS: $scope.tripleGeoConfig.targetRS,
+					 
+					 defaultLang: $scope.tripleGeoConfig.defaultLang,
+				   };
+		}
+			
+			$http({
+				url: "http://localhost:8080/TripleGeoServlet/TripleGeoRun",
+		        method: "POST",
+		        params: params,
+		        dataType: "json",
+		        contentType: "application/json; charset=utf-8"
+		      }).then(function(data) {
+		    	$scope.stTripleGeo = false;
+		    	$scope.showProgress = false;
+		    	$scope.reviewTripleGeoResult(data.data);
+		      });
+			
+		}
+	
+	$scope.reviewTripleGeoResult = function(filetype){
+			
+		$scope.configOptions = false;
+	  	$scope.showProgress = true;
+	  	
+	  	params = { filetype : filetype };
+	  	
+		$http({
+			url: "http://localhost:8080/TripleGeoServlet/TripleGeoReview",
+	        method: "POST",
+	        params: params,
+	        dataType: "json",
+	        contentType: "application/json; charset=utf-8"
+	      }).then(function(data){
+	    	  		var results = data.data[0];
+  	  				results = results.substring(13,results.length-3);
+	    	  		$scope.results = results;
 	    		  	$scope.enterConfig = false;
 	    		  	$scope.showProgress = false;
 	  	    		$scope.inputForm = false;

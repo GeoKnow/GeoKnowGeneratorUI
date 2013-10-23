@@ -13,7 +13,7 @@
 				  </div>
 				  <div id="{{group.id}}" class="panel-collapse collapse" ng-controller="SidebarCtrl">
 					  <div class="list-item" ng-class="{selected:isSelected('{{item.url}}')}" ng-repeat="item in group.items">
-							<h6><a class="list-group-item" href="{{item.route}}">{{item.name}}</a></h6>
+							<h6><a class="list-group-item" target="{{item.target}}" href="{{item.route}}">{{item.name}}</a></h6>
 					  </div>
 				  </div>
 			  	</div>

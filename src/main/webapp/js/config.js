@@ -33,7 +33,7 @@ angular.module("app.configuration", [])
 
 	var ENDPOINT  = "http://144.76.166.111:8890/sparql";
 	var NS        = "http://generator.geoknow.eu/";
-	var GRAPH_URI = NS + "settingsGraph";
+	var GRAPH_URI = NS + "resource/settingsGraph";
 
 	var namespaces =
 	{
