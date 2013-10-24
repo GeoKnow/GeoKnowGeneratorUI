@@ -36,15 +36,14 @@
 	    	<div class="col-xs-10">
 				  <!-- <input type="file" ng-file-select="onFileSelect($files)" > -->
 				  <input type="file" ng-file-select="onFileSelect($files)" multiple name="fileName" accept=".nt, .n3, .ttl, .rdf">
-				  <div class="error" ng-show="uploadedError()">Invalid:
-          	<span>{{uploadMessage}}</span>
-        	</div>
+				  <div class="error" ng-show="uploadedError()">Invalid:<span>{{uploadMessage}}</span></div>
+				  <div ng-show="isUploading()"><span>Uploading ...</span></div>
 	  		</div>
 	  	</div>
 	  	<div class="form-group">
     		<div class="col-lg-offset-2 col-xs-10">
       		<button class="btn btn-success" ng-click="import()" ng-disabled="isInvalid()||isImporting()">Import</button>
-      		<span ng-show="isImporting()"> Importing ...</span>
+      		<span ng-show="isImporting()"> Importing ... </span>
     		</div>
   	</div>
 	  </form>

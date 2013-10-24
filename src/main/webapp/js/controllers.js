@@ -526,101 +526,26 @@ var GoogleMapWindow = function ($scope, $timeout, $log) {
 
 var ImportFormCtrl = function($scope, $http, ConfigurationService, flash) {
 
-		  $scope.namedGraphs = ConfigurationService.getAllNamedGraphs();
-		  $scope.endpoints = ConfigurationService.getAllEndpoints();
-		  $scope.uploadMessage = '';
+	$scope.namedGraphs = ConfigurationService.getAllNamedGraphs();
+	$scope.endpoints = ConfigurationService.getAllEndpoints();
+	$scope.uploadMessage = '';
 		  
-		  var uploadError = false;
-		  var importing = false;
-		  var uploadedFiles = null;
+	var uploadError = false;
+	var importing = false;
+	var uploadedFiles = null;
 		
-		  $scope.sourceTypes = [
-		    {value:'file', label:'File'},
-		    {value:'url', label:'URL'},
-		    {value:'query', label:'SPARQL Query'}
-		  ];
-		  var type = '';
+	$scope.sourceTypes = [
+		{value:'file', label:'File'},
+		{value:'url', label:'URL'},
+		{value:'query', label:'SPARQL Query'}
+	];
+	var type = '';
 		
-		  $scope.updateForm = function() {
-		    if($scope.sourceType.value == 'file'){
-		    	$scope.fileElements = true;	
-				  $scope.urlElements = false;
-		  		$scope.queryElements = false;
-		    }
-		    else if($scope.sourceType.value == 'url'){
-		    	$scope.fileElements = false;	
-				  $scope.urlElements = true;
-		  		$scope.queryElements = false;
-		    }
-		    else if($scope.sourceType.value == 'query'){
-		    	$scope.fileElements = false;	
-				  $scope.urlElements = false;
-		  		$scope.queryElements = true;
-		    }
-		    type = $scope.sourceType.value;
-		  };
-		  $scope.fileElements = false;
-  $scope.namedGraphs = ConfigurationService.getAllNamedGraphs();
-  $scope.uploadMessage = '';
-  
-  var uploadError = false;
-  var importing = false;
-  var uploadedFiles = null;
-  $scope.importSparql = { sparqlQuery : "CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o } LIMIT 10"};
-
-  $scope.sourceTypes = [
-    {value:'file', label:'File'},
-    {value:'url', label:'URL'},
-    {value:'query', label:'SPARQL Query'}
-  ];
-  var type = '';
-
   $scope.updateForm = function() {
     if($scope.sourceType.value == 'file'){
     	$scope.fileElements = true;	
 		  $scope.urlElements = false;
-		  $scope.queryElements = false;
-		  
-		$scope.onFileSelect = function($files) {
-		    //$files: an array of files selected, each file has name, size, and type.
-		    for (var i = 0; i < $files.length; i++) {
-		      var $file = $files[i];
-		      $http.uploadFile({
-		        url: 'UploadServlet', //upload.php script, node.js route, or servlet uplaod url)
-		        file: $file
-		      }).then(function(response, status, headers, config) {
-		        // file is uploaded successfully
-		        if(response.data.status=="FAIL"){
-		          uploadError = true;
-		          $scope.uploadMessage=response.data.message;
-		        }
-		        else {
-		          uploadError = false;
-		          uploadedFiles = $file.name;
-		        }
-		      }); 
-		    }
-		  };
-		
-		  $scope.uploadedError =  function(){
-		    return uploadError;
-		  };
-		
-		  $scope.isImporting =  function(){
-		    return importing;
-		  };
-		  
-		  $scope.isInvalid = function(){
-		    var invalid =true;
-		    if(!$scope.fileForm.$invalid){
-		        if(uploadedFiles!= null){
-		          invalid = false;
-		        }
-		    }
-		    return invalid;
-		    
   		$scope.queryElements = false;
-		  }
     }
     else if($scope.sourceType.value == 'url'){
     	$scope.fileElements = false;	
@@ -634,11 +559,89 @@ var ImportFormCtrl = function($scope, $http, ConfigurationService, flash) {
     }
     type = $scope.sourceType.value;
   };
+	
+	$scope.fileElements = false;
+  $scope.namedGraphs = ConfigurationService.getAllNamedGraphs();
+  $scope.uploadMessage = '';
+  
+  var uploadError = false;
+  var importing = false;
+  var uploading = false;
+  var uploadedFiles = null;
+  $scope.importSparql = { sparqlQuery : "CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o } LIMIT 10"};
+
+  $scope.sourceTypes = [
+    {value:'file', label:'File'},
+    {value:'url', label:'URL'},
+    {value:'query', label:'SPARQL Query'}
+  ];
+  var type = '';
+
+  // $scope.updateForm = function() {
+  //   if($scope.sourceType.value == 'file'){
+  //   	$scope.fileElements = true;	
+		//   $scope.urlElements = false;
+		//   $scope.queryElements = false;
+		  
+		// $scope.onFileSelect = function($files) {
+		//     //$files: an array of files selected, each file has name, size, and type.
+		//     for (var i = 0; i < $files.length; i++) {
+		//       var $file = $files[i];
+		//       $http.uploadFile({
+		//         url: 'UploadServlet', //upload.php script, node.js route, or servlet uplaod url)
+		//         file: $file
+		//       }).then(function(response, status, headers, config) {
+		//         // file is uploaded successfully
+		//         if(response.data.status=="FAIL"){
+		//           uploadError = true;
+		//           $scope.uploadMessage=response.data.message;
+		//         }
+		//         else {
+		//           uploadError = false;
+		//           uploadedFiles = $file.name;
+		//         }
+		//       }); 
+		//     }
+		//   };
+		
+		//   $scope.uploadedError =  function(){
+		//     return uploadError;
+		//   };
+		
+		//   $scope.isImporting =  function(){
+		//     return importing;
+		//   };
+		  
+		//   $scope.isInvalid = function(){
+		//     var invalid =true;
+		//     if(!$scope.fileForm.$invalid){
+		//         if(uploadedFiles!= null){
+		//           invalid = false;
+		//         }
+		//     }
+		//     return invalid;
+		    
+  // 		$scope.queryElements = false;
+		//   }
+  //   }
+  //   else if($scope.sourceType.value == 'url'){
+  //   	$scope.fileElements = false;	
+		//   $scope.urlElements = true;
+  // 		$scope.queryElements = false;
+  //   }
+  //   else if($scope.sourceType.value == 'query'){
+  //   	$scope.fileElements = false;	
+		//   $scope.urlElements = false;
+  // 		$scope.queryElements = true;
+  //   }
+  //   type = $scope.sourceType.value;
+  // };
   $scope.fileElements = false;
   $scope.urlElements = false;
   $scope.queryElements = false;
 
   $scope.onFileSelect = function($files) {
+  	uploading = true;
     //$files: an array of files selected, each file has name, size, and type.
     for (var i = 0; i < $files.length; i++) {
       var $file = $files[i];
@@ -656,6 +659,7 @@ var ImportFormCtrl = function($scope, $http, ConfigurationService, flash) {
           uploadedFiles = $file.name;
           //Use response.data.results to get the file location;
         }
+  			uploading = false;
       }); 
     }
   };
@@ -664,9 +668,14 @@ var ImportFormCtrl = function($scope, $http, ConfigurationService, flash) {
     return uploadError;
   };
 
+  $scope.isUploading =  function(){
+    return uploading;
+  };
+
   $scope.isImporting =  function(){
     return importing;
   };
+
   $scope.isInvalid = function(){
     var invalid =true;
     if(!$scope.fileForm.$invalid){
@@ -739,6 +748,8 @@ var ImportFormCtrl = function($scope, $http, ConfigurationService, flash) {
     $scope.urlForm.$setPristine();
     $scope.fileForm.$setPristine();
     $scope.sparqlForm.$setPristine();
+
+    $scope.fileForm.fileName.value = null;
 
     $scope.importFile = {file:"", graph:"?"};
     $scope.importUrl = {url:"", graph:"?"};
