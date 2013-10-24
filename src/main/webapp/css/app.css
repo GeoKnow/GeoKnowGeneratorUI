@@ -175,6 +175,10 @@ a.accordion-toggle:hover{
 		padding:20px 40px 20px 40px;
 }
 
+.below{
+	margin-bottom:20px;
+}
+
 /* Selects */
 
 #DataSet {
