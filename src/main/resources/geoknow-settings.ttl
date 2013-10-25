@@ -75,10 +75,30 @@
       rdfs:label "Limes Linking Service"^^xsd:string ;
       lds:providesService
               [ a       lds:InterlinkingService ;
-                lds:serviceUrl <http://generator.geoknow.eu:8080/limes>
+                lds:serviceUrl <http://generator.geoknow.eu:8080/LimeServlet>
               ] ;
       lds:version "0.6.4ss"^^xsd:string ;
       foaf:homepage <http://aksw.org/Projects/LIMES.html> .
+      
+:TripleGeo
+      a       lds:StackComponent ;
+      rdfs:label "TripleGeo"^^xsd:string ;
+      lds:providesService
+              [ a       lds:ExtractionService ;
+                lds:serviceUrl <http://generator.geoknow.eu:8080/TripleGeoServlet>
+              ] ;
+      lds:version "1.0"^^xsd:string ;
+      foaf:homepage <https://web.imis.athena-innovation.gr/redmine/projects/geoknow_public/wiki/TripleGeo> .
+      
+:GeoLift
+      a       lds:StackComponent ;
+      rdfs:label "GeoLift"^^xsd:string ;
+      lds:providesService
+              [ a       lds:EnrichmentService ;
+                lds:serviceUrl <http://generator.geoknow.eu:8080/GeoLiftServlet>
+              ] ;
+      lds:version "0.6.4ss"^^xsd:string ;
+      foaf:homepage <https://github.com/AKSW/GeoLift> .
 
 :Dbpedia
       a       void:Dataset , lds:SPARQLendpoint ;
