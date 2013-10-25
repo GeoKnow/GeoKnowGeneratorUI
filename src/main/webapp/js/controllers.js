@@ -157,7 +157,10 @@ app.controller('FaceteFormCtrl', function($scope, ConfigurationService) {
 });
 
 
-var LimesCtrl = function($scope, $http){
+var LimesCtrl = function($scope, $http, ConfigurationService){
+	
+	var services = ConfigurationService.getComponentServices(":Limes");
+	var serviceUrl = services[0].serviceUrl;
 	
 	$scope.configOptions = true;
 	$scope.inputForm = true;
@@ -266,16 +269,17 @@ var LimesCtrl = function($scope, $http){
 					 };
 		
 		$http({
-			url: "http://localhost:8080/LimeServlet/LimesRun",
-	        method: "POST",
-	        params: params,
-	        dataType: "json",
-	        contentType: "application/json; charset=utf-8"
+				url: serviceUrl+"/LimesRun",
+		        method: "POST",
+		        params: params,
+		        dataType: "json",
+		        contentType: "application/json; charset=utf-8"
 	      }).then(function() {
-	    	$scope.startLimes = false;
-	    	$scope.showProgress = false;
-	    	$scope.ReviewLimes();
+		    	$scope.startLimes = false;
+		    	$scope.showProgress = false;
+		    	$scope.ReviewLimes();
 	      });
+		
 	}
 	
 	$scope.ReviewLimes = function(){
@@ -284,7 +288,7 @@ var LimesCtrl = function($scope, $http){
 	  	$scope.showProgress = true;
 	  	
 	  	$http({
-			url: "http://localhost:8080/LimeServlet/LimesReview",
+			url: serviceUrl+"/Limesreview",
 	        method: "POST",
 	        dataType: "json",
 	        contentType: "application/json; charset=utf-8"
@@ -330,7 +334,7 @@ var LimesCtrl = function($scope, $http){
 		  		
 					$http({
 							method: "POST",
-							url: "http://localhost:8080/LimeServlet/LoadFile",
+							url: serviceUrl+"/LimesRun",
 							params: {file : filename}
 				      	}).then(function(data) {
 						    	
@@ -378,6 +382,9 @@ var LimesCtrl = function($scope, $http){
 }
 
 var GeoliftCtrl = function($scope, $http, ConfigurationService){
+	
+	var services = ConfigurationService.getComponentServices(":GeoLift");
+	var serviceUrl = services[0].serviceUrl;
 	
 	$scope.endpoints = ConfigurationService.getAllEndpoints();
 	
@@ -582,12 +589,25 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService){
 			  		
 						$http({
 								method: "POST",
-								url: "http://localhost:8080/GeoLiftServlet/LoadFile",
+								url: serviceUrl+"/LoadFile",
 								params: {
 										configFile : configFile,
 										dataFile: dataFile}
 					      	}).then(function(data) {
 					      		$scope.addParamButton = true;
+					      		sourceInput = data.data[0][0];
+					      		
+					      		for(var i=1; i<data.data.length; i++){
+									
+									$scope.params[0].inputs.push({
+																	 index: data.data[i][0],
+																	 module: data.data[i][1]
+													  					});
+					      			}
+					
+									$scope.params[0].visible = true;
+									$scope.startButton = true;
+					      		
 					      		console.log(data);
 						      });
 			    	  
@@ -609,8 +629,8 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService){
 		$scope.showProgress = true;
 		
 		var params = {};
-		params[0] = $scope.params[0].inputs.length;
-		params[1] = sourceInput;
+			params[0] = $scope.params[0].inputs.length;
+			params[1] = sourceInput;
 			
 		for(var i=0; i<$scope.params[0].inputs.length; i++){
 			
@@ -619,7 +639,7 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService){
 						 }
 		
 			$http({
-				url: "http://localhost:8080/GeoLiftServlet/GeoLiftRun",
+				url: serviceUrl+"/GeoLiftRun",
 		        method: "POST",
 		        params: params,
 		        headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' }
@@ -635,7 +655,7 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService){
 	  	$scope.showProgress = true;
 	  	
 		$http({
-			url: "http://localhost:8080/LimeServlet/LimesReview",
+			url: serviceUrl+"/GeoLiftReview",
 	        method: "POST",
 	        dataType: "json",
 	        contentType: "application/json; charset=utf-8"
@@ -667,6 +687,9 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService){
 }
 
 var TripleGeoCtrl = function($scope, $http, ConfigurationService){
+	
+	var services = ConfigurationService.getComponentServices(":TripleGeo");
+	var serviceUrl = services[0].serviceUrl;
 	
 	$scope.inputForm = true;
 	$scope.configOptions = true;
@@ -994,7 +1017,7 @@ var TripleGeoCtrl = function($scope, $http, ConfigurationService){
 		}
 			
 			$http({
-				url: "http://localhost:8080/TripleGeoServlet/TripleGeoRun",
+				url: serviceUrl+"/TripleGeoRun",
 		        method: "POST",
 		        params: params,
 		        dataType: "json",
@@ -1015,7 +1038,7 @@ var TripleGeoCtrl = function($scope, $http, ConfigurationService){
 	  	params = { filetype : filetype };
 	  	
 		$http({
-			url: "http://localhost:8080/TripleGeoServlet/TripleGeoReview",
+			url: serviceUrl+"/TripleGeoReview",
 	        method: "POST",
 	        params: params,
 	        dataType: "json",
