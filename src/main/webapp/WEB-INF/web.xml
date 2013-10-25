@@ -14,9 +14,9 @@
     <param-value>/uploads/</param-value> 
   </context-param>
   <context-param> 
-    <description>Maximum file size to be uploaded 1024 * 1024</description> 
+    <description>Maximum file size to be uploaded 1024 * 1024 * 5</description> 
     <param-name>max-file-size</param-name> 
-    <param-value>1048576</param-value> 
+    <param-value>5242880</param-value> 
   </context-param>
   <context-param> 
     <description>Maximum size that will be stored in memory 20 * 1024</description> 
