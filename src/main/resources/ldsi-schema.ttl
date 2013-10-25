@@ -5,8 +5,8 @@
 @prefix dcmit:   <http://purl.org/dc/dcmitype/> .
 @prefix dcterms:  <http://purl.org/dc/terms/> .
 @prefix foaf:    <http://xmlns.com/foaf/> .
-@prefix gkgres:  <http://generator.geoknow.eu/resource/> .
 @prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix prov:    <http://www.w3.org/ns/prov#> .
 @prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix schema:  <http://schema.org/> .
@@ -14,16 +14,10 @@
 @prefix void:    <http://rdfs.org/ns/void#> .
 @prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
 
-
 :     rdf:type owl:Ontology ;
       dcterms:contributor "Alejandra Garcia Rojas"^^xsd:string ;
       dcterms:descripton "Schema for integrating Software components from the Linked Data Stack"^^xsd:string ;
-      dcterms:title "LDStack - Language Specification v0.1"^^xsd:string ;
       owl:versionInfo "0.1.0"^^xsd:string .
-
-:API  rdf:type owl:Class ;
-      rdfs:label "Service URL"^^xsd:string ;
-      rdfs:subClassOf :SoftwareComponent .
 
 :AnalysisService
       rdf:type owl:Class ;
@@ -36,40 +30,20 @@
       rdfs:comment "Represents the agent responsible for authoring."@en ;
       rdfs:subClassOf :ComponentService .
 
-:CKAN
-      rdf:type owl:Class ;
-      rdfs:label "CKAN"^^xsd:string ;
-      rdfs:subClassOf :DataSource .
-
 :CleaningService
       rdf:type owl:Class ;
       rdfs:comment "Represents the agent responsible for storage."@en ;
       rdfs:label "Cleaning Service"^^xsd:string ;
       rdfs:subClassOf :ComponentService .
 
-:ComponentCategory
-      rdf:type rdfs:Class ;
-      rdfs:label "Version"^^xsd:string .
-
 :ComponentService
       rdf:type owl:Class ;
-      rdfs:label "Version"^^xsd:string ;
       rdfs:subClassOf owl:Thing .
 
-:DataSource
+:EnrichmentService
       rdf:type owl:Class ;
-      rdfs:label "Data Source"^^xsd:string ;
-      rdfs:subClassOf owl:Thing .
-
-:Database
-      rdf:type owl:Class ;
-      rdfs:label "Database"^^xsd:string ;
-      rdfs:subClassOf :DataSource .
-
-:DatabaseType
-      rdf:type owl:Class ;
-      rdfs:label "Database port number"^^xsd:string ;
-      rdfs:subClassOf owl:Thing .
+      rdfs:label "Enrichment Service"^^xsd:string ;
+      rdfs:subClassOf :ComponentService .
 
 :ExplorationService
       rdf:type owl:Class ;
@@ -85,18 +59,6 @@
       rdf:type owl:Class ;
       rdfs:comment "Represents the agent responsible for interlinking."@en ;
       rdfs:subClassOf :ComponentService .
-
-:MySql
-      rdf:type :DatabaseType ;
-      rdfs:label "MySql"^^xsd:string .
-
-:Oracle
-      rdf:type :DatabaseType ;
-      rdfs:label "Oracle"^^xsd:string .
-
-:PostGIS
-      rdf:type :DatabaseType ;
-      rdfs:label "PostGIS"^^xsd:string .
 
 :PublicationService
       rdf:type owl:Class ;
@@ -118,20 +80,10 @@
       rdfs:comment "Represents a Sparql query end point"@en ;
       rdfs:subClassOf :QueryEndPoint .
 
-:SPARQLendpoint
-      rdf:type owl:Class ;
-      rdfs:label "SPARQL endpoint"^^xsd:string ;
-      rdfs:subClassOf :DataSource .
-
-:SoftwareComponent
+:StackComponent
       rdf:type owl:Class ;
       rdfs:label "Service URL"^^xsd:string ;
       rdfs:subClassOf owl:Thing .
-
-:StackComponent
-      rdf:type owl:Class ;
-      rdfs:label "Software Component      "^^xsd:string ;
-      rdfs:subClassOf :SoftwareComponent .
 
 :StorageService
       rdf:type owl:Class ;
@@ -143,85 +95,20 @@
       rdfs:comment "Represents the agent responsible for transformation."@en ;
       rdfs:subClassOf :ComponentService .
 
-:dbHost
-      rdf:type owl:DatatypeProperty ;
-      rdfs:domain :Database ;
-      rdfs:label "Service URL"^^xsd:string ;
-      rdfs:range xsd:string .
-
-:dbName
-      rdf:type owl:DatatypeProperty ;
-      rdfs:comment "Name of the database to connect"^^xsd:string ;
-      rdfs:domain :Database ;
-      rdfs:label "database"^^xsd:string ;
-      rdfs:range xsd:string .
-
-:dbPassword
-      rdf:type owl:DatatypeProperty ;
-      rdfs:domain
-              [ rdf:type owl:Class ;
-                owl:unionOf (:Database :ComponentService)
-              ] ;
-      rdfs:label "password"^^xsd:string ;
-      rdfs:range xsd:string .
-
-:dbPort
-      rdf:type owl:DatatypeProperty ;
-      rdfs:domain :Database ;
-      rdfs:label "Database port number"^^xsd:string .
-
-:dbType
-      rdf:type owl:DatatypeProperty ;
-      rdfs:domain :Database ;
-      rdfs:label "Database Type"^^xsd:string ;
-      rdfs:range :DatabaseType .
-
-:dbUserName
-      rdf:type owl:DatatypeProperty ;
-      rdfs:comment "If the component requires user/password authentication method (for instance a database)"^^xsd:string ;
-      rdfs:domain
-              [ rdf:type owl:Class ;
-                owl:unionOf (:Database :ComponentService)
-              ] ;
-      rdfs:label "Service user"^^xsd:string ;
-      rdfs:range xsd:string .
-
-:endpoint
-      rdf:type owl:DatatypeProperty ;
-      rdfs:domain :SPARQLendpoint ;
-      rdfs:label "Service URL"^^xsd:string .
-
 :integrates
       rdf:type owl:ObjectProperty ;
-      rdfs:domain :StackComponent ;
-      rdfs:label "integrates"^^xsd:string ;
-      rdfs:range :StackComponent .
+      rdfs:label "integrates"^^xsd:string .
 
-:jdbcDSN
-      rdf:type owl:DatatypeProperty ;
-      rdfs:comment "JDBC data source name." ;
-      rdfs:label "JDBC DSN" .
-
-:jdbcDriver
-      rdf:type owl:DatatypeProperty ;
-      rdfs:label "JDBC driver" .
-
-:odbcDSN
-      rdf:type owl:DatatypeProperty ;
-      rdfs:comment "ODBC DSN" ;
-      rdfs:label "ODBC data source name. Deprecated, use JDBC instead (with ODBC-JDBC bridge if necessary)." .
+:password
+      rdf:type rdf:Property ;
+      rdfs:label "Oracel"^^xsd:string .
 
 :providesService
       rdf:type owl:ObjectProperty ;
-      rdfs:domain :SoftwareComponent ;
-      rdfs:label "Version"^^xsd:string ;
-      rdfs:range :ComponentService .
-
-:requires
-      rdf:type owl:ObjectProperty ;
+      rdfs:comment "A component in the stack provides a service of a givent type"^^xsd:string ;
       rdfs:domain :StackComponent ;
-      rdfs:label "Service URL"^^xsd:string ;
-      rdfs:range :StackComponent .
+      rdfs:label "Provides Service"^^xsd:string ;
+      rdfs:range :ComponentService .
 
 :serviceUrl
       rdf:type rdf:Property ;
@@ -229,39 +116,14 @@
       rdfs:label "Service URL"^^xsd:string ;
       rdfs:range xsd:string .
 
-:version
-      rdf:type owl:DatatypeProperty ;
-      rdfs:domain :SoftwareComponent ;
-      rdfs:label "Version"^^xsd:string ;
-      rdfs:range xsd:string .
+:user
+      rdf:type rdf:Property ;
+      rdfs:label "Oracel"^^xsd:string .
 
-dcterms:creator
-      rdf:type owl:DatatypeProperty ;
-      rdfs:domain void:Dataset ;
-      rdfs:label "Service URL"^^xsd:string .
-
-dcterms:description
-      rdf:type owl:DatatypeProperty ;
-      rdfs:domain void:Dataset ;
-      rdfs:label "Service URL"^^xsd:string .
-
-dcterms:source
-      rdf:type owl:DatatypeProperty ;
-      rdfs:domain void:Dataset ;
-      rdfs:label "Service URL"^^xsd:string .
-
-dcterms:title
-      rdf:type owl:DatatypeProperty ;
-      rdfs:comment "The name of the dataset."^^xsd:string ;
-      rdfs:domain void:Dataset ;
-      rdfs:label "Title"^^xsd:string .
-
-void:Dataset
-      rdf:type owl:Class ;
-      rdfs:label "Service URL"^^xsd:string ;
-      rdfs:subClassOf owl:Thing .
+dcterms:hasVersion
+      rdf:type rdf:Property ;
+      rdfs:domain :StackComponent .
 
 foaf:homepage
       rdf:type rdf:Property ;
-      rdfs:domain :SoftwareComponent ;
-      rdfs:label "Service URL"^^xsd:string .
+      rdfs:domain :StackComponent .
