@@ -13,7 +13,7 @@ app.directive("modalIframe", function ($compile) {
             //     width:'100%',
             //     height : $(window).height() - 165
             // });
-            console.log("URL:" + scope.url);
+            //console.log("URL:" + scope.url);
 
             $('#fullModal').css({
                 width: $(window).width() ,

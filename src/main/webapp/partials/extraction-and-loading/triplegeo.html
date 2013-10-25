@@ -6,6 +6,7 @@
 	<p>To get started choose whether to process a file or database, you can then choose an example or specify your own parameters.</p>
 	
 <form class="form-inline InputForm col-xs-11" role="form" ng-show="inputForm"  ng-model="tooltips">
+	<i type="button" class="close glyphicon glyphicon-refresh" aria-hidden="true" onclick="document.location.reload()"></i>
 	<div class="row">
 		<div class="col-xs-12">
 		<h5 class="green bold">TripleGeo Configuration</h5>
@@ -19,7 +20,7 @@
 			</div>
 			<div class="col-xs-8">
 			<select id="Option" class="form-control input-sm" ng-model="Options" 
-				ng-options="option as option.datasource for option in options.datasource" ng-change="choice(Options.datasource)">
+				ng-options="option for option in options.datasource" ng-change="choice(Options)">
 			 <option value="">Choose data source type</option>
 			</select>
 			</div>
@@ -31,7 +32,7 @@
 			</div>
 			<div class="col-xs-8">
 			<select id="Example" class="form-control input-sm" ng-model="fileExample" 
-			ng-options="option.eg for option in options.fileExamples" ng-change="FillForm('fileExample', fileExample.eg); configForm = true;">
+			ng-options="option for option in options.fileExamples" ng-change="FillForm('fileExample', fileExample); configForm = true;">
 			 <option value="">Choose an example</option>
 			</select>
 			</div>
@@ -43,7 +44,7 @@
 			</div>
 			<div class="col-xs-8">
 			<select id="Example" class="form-control input-sm" ng-model="dbExample" 
-			ng-options="option.eg for option in options.dbExamples" ng-change="FillForm('dbExample', dbExample.eg); configForm = true;">
+			ng-options="option for option in options.dbExamples" ng-change="FillForm('dbExample', dbExample); configForm = true;">
 			 <option value="">Choose an example</option>
 			</select>
 			</div>
@@ -98,17 +99,17 @@
 	</div>
 	</div>
 	<br>
-	<!--  
-	<div class="row" ng-show="options.inputFileDisplay">
+	  
+	<div class="row" ng-show="options.inputDisplay">
 	<div class="col-xs-2">
-		<label class="green bold">Input File</label>
+		<label class="green bold">Data Source</label>
 	</div>
 	<div class="col-xs-4">
-		<input class="form-control input-sm" ng-model="tripleGeoConfig.inputFile" readonly="readonly"></input>
+		<input class="form-control input-sm" ng-model="tripleGeoConfig.inputDisplay" readonly="readonly"></input>
 	</div>
 	</div>
 	<br>
-	-->
+	
 	<div class="row">
 	<div class="col-xs-2">
 		<label class="green bold">Output Format</label>
@@ -194,7 +195,7 @@
 		<h5 class="green bold">Database Type</h5>
 	</div>
 	<div class="col-xs-4">
-		<select class="form-control input-sm" ng-options="option as option.dbtype for option in options.dbtype" 
+		<select class="form-control input-sm" ng-options="option for option in options.dbtype" 
 	    ng-model="tripleGeoConfig.dbtype" id="dbtype"></select>
 	    <option value="">Choose a database type</option>
 	</div>
@@ -376,7 +377,7 @@
 	<div class="row">
 		<div class="col-xs-2"></div>
 		<div class="col-xs-2">
-		  <a class="btn btn-sm btn-primary btn-block" ng-show="stTripleGeo" ng-click="startTripleGeo()">Start TripleGeo</a>
+		  <a class="btn btn-sm btn-success btn-block" ng-show="stTripleGeo" ng-click="startTripleGeo()">Start TripleGeo</a>
 		</div>
 	</div>
 	</div>

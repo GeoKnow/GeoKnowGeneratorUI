@@ -6,6 +6,7 @@
 	<p>To get started either upload a configuration file, choose an example, or fill in the options form.</p>
 	
 <form class="form-inline InputForm col-xs-11" role="form" ng-show="inputForm">
+	<i type="button" class="close glyphicon glyphicon-refresh" aria-hidden="true" onclick="document.location.reload()"></i>
 	<div class="row">
 		<div class="col-xs-12">
 		<h5 class="green bold">LIMES Configuration</h5>
@@ -242,7 +243,7 @@
 	<div class="row">
 		<div class="col-xs-2"></div>
 		<div class="col-xs-2">
-		  <a class="btn btn-sm btn-primary btn-block" id="startLimes" ng-show="startLimes" ng-click="StartLimes()">Start LIMES</a>
+		  <a class="btn btn-sm btn-success btn-block" id="startLimes" ng-show="startLimes" ng-click="StartLimes()">Start LIMES</a>
 		</div>
 	</div>
 	<div class="row">

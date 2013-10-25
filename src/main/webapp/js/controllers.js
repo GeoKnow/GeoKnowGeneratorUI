@@ -377,53 +377,254 @@ var LimesCtrl = function($scope, $http){
 	
 }
 
-var GeoliftCtrl = function($scope, $http){
+var GeoliftCtrl = function($scope, $http, ConfigurationService){
+	
+	$scope.endpoints = ConfigurationService.getAllEndpoints();
 	
 	$scope.inputForm = true;
+	$scope.configOptions = true;
+	$scope.startButton = false;
+	var sourceInput = null;
+	var dataFile = null;
 	var uploadError = false;
 	var uploadedFiles = null;
+	var count = 0;
 	
-	
-	$scope.options = [		  
-	                  		  { 	inputs : [], 
-	                  			    visible: false		},
-	     					  { 	inputs : [], 
-	                  			    visible: false		},
-	     					  { 	inputs : [], 
-	                  			    visible: false		},
-	                  		  { 	visible: false		},
-	     			  ];
-	
-	$scope.appendInput = function(option){
-			$scope.options[option].inputs.push( {idx: "1"} );
-			$scope.options[option].visible = true;
-			$scope.options[3].visible = true;
+	$scope.options = {
+			inputFile: false,
+			configFile: false,
+			endpoints: false,
+			datasource: [
+		                 	"File",
+							"SPARQL Endpoint"
+  			                ]
 	}
 	
-	$scope.removeInput = function ( option, index ) {
-	    	$scope.options[option].inputs.splice( index, 1 );
-	    	if($scope.options[option].inputs.length === 0){
-	    		$scope.options[option].visible = false;
+	$scope.params = [		  
+             		  { 	inputs : [], 
+             			    visible: false		},
+
+			  ];
+	
+	$scope.choice = function($name){
+		
+		$scope.configForm = false;
+		$scope.inputDisplay = "";
+		$scope.inputDisplayRow = false;
+		$scope.params[0].visible = false;
+		
+		if($name == "File"){
+			$scope.configOptions = true;
+			$scope.addParamButton = true;
+			$scope.options.epExamples = false;
+			$scope.options.fileExamples = true;
+			$scope.options.endpoints = false;
+			$scope.options.inputFile = true;
+			$scope.options.configFile = false;
+		}
+		if($name == "SPARQL Endpoint"){
+			$scope.configOptions = true;
+			$scope.addParamButton = true;
+			$scope.options.epExamples = true;
+			$scope.options.fileExamples = false;
+			$scope.options.endpoints = true;
+			$scope.options.inputFile = false;
+			$scope.options.configFile = false;
+		}
+		$scope.startButton = true;
+		$scope.params[0].inputs.length = 0;
+	}
+	
+	$scope.epExamples = [
+							{ 	label : "Dbpedia endpoint enrichment", 
+								params: [
+											{
+											index: "1",
+											module: "nlp useFoxLight true"
+												},
+											{
+											index: "1",
+											module: "nlp askEndPoint false"
+												},
+											{
+											index: "2",
+											module: "dereferencing predicate1 http://www.w3.org/2003/01/geo/wgs84_pos#geometry"
+												},
+											{
+											index: "3",
+											module: "nlp LiteralProperty http://www.w3.org/2000/01/rdf-schema#comment"
+												},
+											{
+											index: "3",
+											module: "nlp useFoxLight false"
+												},
+											{
+											index: "4",
+											module: "nlp useFoxLight true"
+												},
+									]
+							}
+					],
+					
+	$scope.fileExamples = [
+							{ 	label : "Berlin Turtle File", 
+								params: [
+															{
+															index: "1",
+															module: "nlp useFoxLight true"
+																},
+															{
+															index: "1",
+															module: "nlp askEndPoint false"
+																},
+															{
+															index: "2",
+															module: "dereferencing predicate1 http://www.w3.org/2003/01/geo/wgs84_pos#geometry"
+																},
+															{
+															index: "3",
+															module: "nlp LiteralProperty http://www.w3.org/2000/01/rdf-schema#comment"
+																},
+															{
+															index: "3",
+															module: "nlp useFoxLight false"
+																},
+															{
+															index: "4",
+															module: "nlp useFoxLight true"
+																},
+													]
+											}
+									],
+	
+	$scope.appendInput = function(){
+			$scope.params[0].inputs.push( { idx : count++ } );
+			$scope.params[0].visible = true;
+			$scope.startButton = true;
+	}
+	
+	$scope.removeInput = function ( index ) {
+	    	$scope.params[0].inputs.splice( index, 1 );
+	    	if($scope.params[0].inputs.length === 0){
+	    		$scope.params[0].visible = false;
 	    	}
-	    	if($scope.options[0].inputs.length === 0 && $scope.options[1].inputs.length === 0 && $scope.options[2].inputs.length === 0)
-	    		$scope.options[3].visible = false;
-	  }
+	    	if($scope.params[0].inputs.length === 0)
+	    		$scope.startButton = false;
+	}
+	
+	$scope.FillForm = function(example){
+		
+		$scope.params[0].inputs = [];
+		
+		if(example === "Dbpedia endpoint enrichment"){
+			
+			$scope.endpointSelect = $scope.endpoints[0];
+			sourceInput = $scope.endpointSelect.endpoint;
+			$scope.inputDisplay = sourceInput;
+			$scope.options.endpoints = false;
+			$scope.endpointSelect = false;
+			$scope.inputDisplayRow = true;
+			
+			for(var i=0; i<$scope.epExamples[0].params.length; i++){
+				
+				$scope.params[0].inputs.push({
+												 index: $scope.epExamples[0].params[i].index,
+												 module: $scope.epExamples[0].params[i].module
+								  					});
+
+				$scope.params[0].visible = true;
+				$scope.startButton = true;
+				
+				}
+		 }
+		
+		 if(example === "Berlin Turtle File"){
+			 
+			 $scope.options.inputFile = false;
+			 sourceInput = "berlin.ttl";
+			 $scope.inputDisplay = sourceInput;
+			 $scope.inputDisplayRow = true;
+					
+					for(var i=0; i<$scope.epExamples[0].params.length; i++){
+						
+						$scope.params[0].inputs.push({
+														 index: $scope.fileExamples[0].params[i].index,
+														 module: $scope.fileExamples[0].params[i].module
+										  					});
+		
+						$scope.params[0].visible = true;
+						$scope.startButton = true;
+						
+						}
+				 }
+		
+	}
+	
+	$scope.loadDataFile = function($files){
+		$scope.options.fileExamples = false;
+		$scope.options.configFile = true;
+		dataFile = $files[0].name;
+		$('#dummyGeoLiftInput').val(dataFile);
+		}
+	
+	$scope.loadConfigFile = function($files){
+			
+			for (var i = 0; i < $files.length; i++) {
+			      var $file = $files[i];
+			      $http.uploadFile({
+			        url: 'UploadServlet', //upload.php script, node.js route, or servlet uplaod url)
+			        file: $file
+			      }).then(function(response, status, headers, config) {
+			        // file is uploaded successfully
+			    	  
+			    	  var configFile = $files[0].name;
+			    	  $('#dummyConfigInput').val(configFile);
+			  		
+						$http({
+								method: "POST",
+								url: "http://localhost:8080/GeoLiftServlet/LoadFile",
+								params: {
+										configFile : configFile,
+										dataFile: dataFile}
+					      	}).then(function(data) {
+					      		$scope.addParamButton = true;
+					      		console.log(data);
+						      });
+			    	  
+			        if(response.data.status=="FAIL"){
+			          uploadError = true;
+			          $scope.uploadMessage=response.data.message;
+			        }
+			        else {
+			          uploadError = false;
+			          uploadedFiles = $file.name;
+			        }
+			      }); 
+			    }
+		}
 	
 	$scope.startGeoLift = function(){
+		
+		$scope.configOptions = false;
+		$scope.showProgress = true;
+		
+		var params = {};
+		params[0] = $scope.params[0].inputs.length;
+		params[1] = sourceInput;
 			
-			var params = { 
-						 
-						 };
+		for(var i=0; i<$scope.params[0].inputs.length; i++){
 			
+			 params[i+2] = $scope.params[0].inputs[i].index + " " + $scope.params[0].inputs[i].module;
+			 
+						 }
+		
 			$http({
-				url: "http://localhost:8080/LimeServlet/LimesRun",
+				url: "http://localhost:8080/GeoLiftServlet/GeoLiftRun",
 		        method: "POST",
 		        params: params,
-		        dataType: "json",
-		        contentType: "application/json; charset=utf-8"
+		        headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' }
 		      }).then(function() {
-		    	$scope.startLimes = false;
-		    	$scope.showProgress = false;
+		    	  //$scope.reviewGeoLiftResult();
 		      });
 			
 		}
@@ -527,20 +728,20 @@ var TripleGeoCtrl = function($scope, $http, ConfigurationService){
 							              	"wgs84_pos"
 							              		],
 		     			    datasource: [
-		     			                 	{ datasource : "Shape File" },
-											{ datasource : "Database" }
+		     			                 	"Shape File",
+											"Database"
 				     			                ],
 				     	    fileExamples: [
-											{ eg : "Points shape file extraction" }
+											"Points shape file extraction"
 											],
 							dbExamples: [
-						  		     		{ eg : "Hotles Dataset" }
+						  		     		"Hotles Dataset"
 						  		     		],
 				     		dbtype: [
-				     		         { dbtype : "MySQL"},
-				     		         { dbtype :"Oracle"},
-				     		         { dbtype : "PostGIS"},
-				     		         { dbtype :"DB2"}
+				     		         "MySQL",
+				     		         "Oracle",
+				     		         "PostGIS",
+				     		         "DB2"
 				     		         ]
 								};
 	
@@ -567,7 +768,7 @@ var TripleGeoCtrl = function($scope, $http, ConfigurationService){
 			$scope.options.dataParams = false;
 			$scope.configForm = true;
 			$scope.options.job = "db";
-			$scope.triplegeo = {
+			$scope.tripleGeoConfig = {
 								format : $scope.options.format[0],
 								targetStore : $scope.options.targetStore[0],
 								dbtype: $scope.options.dbtype[0],
@@ -587,8 +788,12 @@ var TripleGeoCtrl = function($scope, $http, ConfigurationService){
 				$scope.options.job = "example";
 				$scope.options.displayConfigUpload = false;
 				$scope.options.file = false;
+				$scope.options.inputDisplay = true;
 		
 				$scope.tripleGeoConfig = {
+						
+						inputDisplay: "points.shp",
+						
 						 inputFile :   "./examples/points.shp",
 						 format :      $scope.options.format[0],
 						 targetStore : $scope.options.targetStore[0],
@@ -613,8 +818,13 @@ var TripleGeoCtrl = function($scope, $http, ConfigurationService){
 						$scope.options.dataParams = false;
 						$scope.options.dbParams = true;
 						$scope.options.job = "db";
+						$scope.options.database = false;
+						$scope.options.inputDisplay = true;
 						
 						$scope.tripleGeoConfig = {
+								
+								 inputDisplay: $scope.databases[i].dbName,
+								
 								 format :      $scope.options.format[0],
 								 targetStore : $scope.options.targetStore[0],
 								 
@@ -644,6 +854,7 @@ var TripleGeoCtrl = function($scope, $http, ConfigurationService){
 	}
 	
 	$scope.loadShapeFile = function($files){
+		$scope.options.fileExample = false;
 		$scope.options.displayConfigUpload = true;
 		inputFileName = $files[0].name;
 		$('#dummyShapeInput').val(inputFileName);
@@ -668,7 +879,8 @@ var TripleGeoCtrl = function($scope, $http, ConfigurationService){
 							url: "http://localhost:8080/TripleGeoServlet/LoadFile",
 							params: {
 									file : filename,
-									shp: inputFileName}
+									shp: inputFileName
+									}
 				      	}).then(function(data) {
 				      			for(var i=0; i<configArray.length; i++){
 					      			for(var j=0; j<data.data.length; j++){
