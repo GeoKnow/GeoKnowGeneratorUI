@@ -1,4 +1,10 @@
 <div class="contents" ng-controller="TripleGeoCtrl">
+	<!-- Subscribe to all flash messages. -->
+	<div flash-alert active-class="in" class="alert fade" duration="10000">
+		<button type="button" class="close" ng-click="hide()">&times;</button>
+	  <span class="alert-message">{{flash.message}}</span>
+	</div>
+
 	<h3 class="green bold">TripleGeo</h3>
 	<b>Utility for Converting Geospatial Data into Triples</b>
 	<br>

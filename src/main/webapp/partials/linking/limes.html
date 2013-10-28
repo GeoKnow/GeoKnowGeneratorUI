@@ -1,4 +1,11 @@
 <div class="contents" ng-controller="LimesCtrl">
+
+	<!-- Subscribe to all flash messages. -->
+	<div flash-alert active-class="in" class="alert fade" duration="10000">
+		<button type="button" class="close" ng-click="hide()">&times;</button>
+  	<span class="alert-message">{{flash.message}}</span>
+	</div>
+
 	<h3 class="green bold">LIMES</h3>
 	<b>Link Discovery Framework for Metric Spaces</b>
 	<br>

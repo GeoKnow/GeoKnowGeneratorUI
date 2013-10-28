@@ -2,6 +2,39 @@
 
 var module = angular.module('app.services', []);
 
+
+module.factory('ServerErrorResponse', function() {
+
+  var ServerErrorResponseService = {
+
+   getMessage: function(statusText){
+   
+    var statusText = '';
+      switch (status) {
+      case 400:
+        statusText = 'Bad Request';
+        break;
+      case 401:
+        statusText = 'Unauthorized';
+        break;
+      case 403:
+        statusText = 'Forbidden';
+        break;
+      case 404:
+        statusText = 'Not Found ';
+        break;
+      case 500:
+        statusText = 'Internal Server Error';
+        break;
+      default:
+        statusText = 'An error occurred:'+status;
+      };
+      return statusText;
+    }
+  };
+  return ServerErrorResponseService;
+});
+
 module.factory('ConfigurationService', function(Config) {
 
   var SettingsService = {

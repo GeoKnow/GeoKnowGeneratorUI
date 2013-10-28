@@ -27,8 +27,8 @@ function StackMenuCtrl($scope) {
 	      id:"extraction-loading",
 	      items: [
 	        {name: 'Import RDF data', route:'#/home/extraction-and-loading/import-rdf',  url:'/home/extraction-and-loading/import-rdf' },
-	        {name: 'Sparqlify Extraction', route:'#/home/extraction-and-loading/sparqlify',  url:'/home/extraction-and-loading/sparqlify' },
-	        {name: 'TripleGeo Extraction', route:'#/home/extraction-and-loading/triplegeo', target:'_blank',  url:'/home/extraction-and-loading/triplegeo' }]
+	        {name: 'Sparqlify Extraction', route:'#/home/extraction-and-loading/sparqlify', url:'/home/extraction-and-loading/sparqlify' },
+	        {name: 'TripleGeo Extraction', route:'#/home/extraction-and-loading/triplegeo', url:'/home/extraction-and-loading/triplegeo' }]
 	    },
 	    {
 	      title: "Querying and Exploration",
@@ -49,13 +49,13 @@ function StackMenuCtrl($scope) {
 	      title: "Linking",
 	      id:"linking",
 	      items: [
-	       {name: 'LIMES', route:'#/home/linking/limes', target:'_blank', url:'/home/linking/limes' }]
+	       {name: 'LIMES', route:'#/home/linking/limes', url:'/home/linking/limes' }]
 	    },
 	    {
 	     title: "Enriching and Data Cleaning",
 	     id:"enriching-cleansing",
 	     items: [
-	       {name: 'GeoLift', route:'#/home/enriching-and-cleaning/geolift', target:'_blank', url:'/home/enriching-and-cleaning/geolift' }]
+	       {name: 'GeoLift', route:'#/home/enriching-and-cleaning/geolift', url:'/home/enriching-and-cleaning/geolift' }]
 	    }
 
 	  ];
@@ -157,7 +157,7 @@ app.controller('FaceteFormCtrl', function($scope, ConfigurationService) {
 });
 
 
-var LimesCtrl = function($scope, $http, ConfigurationService){
+var LimesCtrl = function($scope, $http, ConfigurationService, flash, ServerErrorResponse){
 	
 	var services = ConfigurationService.getComponentServices(":Limes");
 	var serviceUrl = services[0].serviceUrl;
@@ -275,9 +275,15 @@ var LimesCtrl = function($scope, $http, ConfigurationService){
 		        dataType: "json",
 		        contentType: "application/json; charset=utf-8"
 	      }).then(function() {
+	      	// TODO: in fact here is the new window to open with the progress and the results
 		    	$scope.startLimes = false;
 		    	$scope.showProgress = false;
 		    	$scope.ReviewLimes();
+	      }, function (response){ // in the case of an error      	
+	      	$scope.startLimes = false;
+		    	$scope.showProgress = false;
+		    	$scope.inputForm = true;
+		    	flash.error = ServerErrorResponse.getMessage(response.status);
 	      });
 		
 	}
@@ -312,10 +318,15 @@ var LimesCtrl = function($scope, $http, ConfigurationService){
 	  	  		
 	  		  	$scope.enterConfig = false;
 	  		  	$scope.showProgress = false;
-	    		$scope.inputForm = false;
-	    		$scope.reviewForm = true;
-	  	    		
-	      		});
+	    			$scope.inputForm = false;
+		    		$scope.reviewForm = true;
+	  		 }, function (response){ // in the case of an error      	
+	      	$scope.startLimes = false;
+		    	$scope.showProgress = false;
+		    	$scope.inputForm = true;
+		    	$scope.reviewForm = false;
+		    	flash.error = ServerErrorResponse.getMessage(response.status);
+	    });
 	      
 	}
 	
@@ -360,7 +371,9 @@ var LimesCtrl = function($scope, $http, ConfigurationService){
 						    	$scope.enterConfig = true;
 						    	$scope.startLimes = true;
 						    	
-					      });
+					      }, function (response){ // in the case of an error      	
+						    	flash.error = ServerErrorResponse.getMessage(response.status);
+	    				});
 		    	  
 		        if(response.data.status=="FAIL"){
 		          uploadError = true;
@@ -381,7 +394,7 @@ var LimesCtrl = function($scope, $http, ConfigurationService){
 	
 }
 
-var GeoliftCtrl = function($scope, $http, ConfigurationService){
+var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErrorResponse){
 	
 	var services = ConfigurationService.getComponentServices(":GeoLift");
 	var serviceUrl = services[0].serviceUrl;
@@ -609,7 +622,9 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService){
 									$scope.startButton = true;
 					      		
 					      		console.log(data);
-						      });
+						      }, function (response){ // in the case of an error      	
+						   	 	flash.error = ServerErrorResponse.getMessage(response.status);
+	    					});
 			    	  
 			        if(response.data.status=="FAIL"){
 			          uploadError = true;
@@ -645,7 +660,9 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService){
 		        headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' }
 		      }).then(function() {
 		    	  //$scope.reviewGeoLiftResult();
-		      });
+		      },  function (response){ // in the case of an error      	
+						flash.error = ServerErrorResponse.getMessage(response.status);
+	    		});
 			
 		}
 	
@@ -682,11 +699,13 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService){
 	  	    		$scope.inputForm = false;
 	  	    		$scope.reviewForm = true;
 	  	    		
-	      		});
+	      		}, function (response){ // in the case of an error      	
+						 	flash.error = ServerErrorResponse.getMessage(response.status);
+	    			});
 		}
 }
 
-var TripleGeoCtrl = function($scope, $http, ConfigurationService){
+var TripleGeoCtrl = function($scope, $http, ConfigurationService, flash, ServerErrorResponse){
 	
 	var services = ConfigurationService.getComponentServices(":TripleGeo");
 	var serviceUrl = services[0].serviceUrl;
@@ -936,7 +955,9 @@ var TripleGeoCtrl = function($scope, $http, ConfigurationService){
 										 defaultLang: configArray[14][1],
 										}
 						    	
-					      });
+					      }, function (response){ // in the case of an error      	
+						    	flash.error = ServerErrorResponse.getMessage(response.status);
+	    					});
 		    	  
 		        if(response.data.status=="FAIL"){
 		          uploadError = true;
@@ -953,7 +974,7 @@ var TripleGeoCtrl = function($scope, $http, ConfigurationService){
 	$scope.startTripleGeo= function(){
 		
 		$scope.configOptions = false;
-	  	$scope.showProgress = true;
+	  $scope.showProgress = true;
 		
 		if($scope.options.job == "file" || $scope.options.job == "example"){
 			params = {
@@ -1026,7 +1047,11 @@ var TripleGeoCtrl = function($scope, $http, ConfigurationService){
 		    	$scope.stTripleGeo = false;
 		    	$scope.showProgress = false;
 		    	$scope.reviewTripleGeoResult(data.data);
-		      });
+		      }, function (response){ // in the case of an error      	
+		      	$scope.stTripleGeo = false;
+		    		$scope.showProgress = false;
+						flash.error = ServerErrorResponse.getMessage(response.status);
+	    		});
 			
 		}
 	
@@ -1051,8 +1076,13 @@ var TripleGeoCtrl = function($scope, $http, ConfigurationService){
 	    		  	$scope.showProgress = false;
 	  	    		$scope.inputForm = false;
 	  	    		$scope.reviewForm = true;
-	  	    		
-	      		});
+	      }, function (response){ // in the case of an error      	
+	      	$scope.enterConfig = false;
+	    		$scope.showProgress = false;
+	  	    $scope.inputForm = false;
+	  	    $scope.reviewForm = false;
+					flash.error = ServerErrorResponse.getMessage(response.status);
+	    	});
 		}
 }
 

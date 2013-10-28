@@ -1,4 +1,10 @@
 <div class="contents" ng-controller="GeoliftCtrl">
+	<!-- Subscribe to all flash messages. -->
+	<div flash-alert active-class="in" class="alert fade" duration="10000">
+		<button type="button" class="close" ng-click="hide()">&times;</button>
+	  <span class="alert-message">{{flash.message}}</span>
+	</div>
+
 	<h3 class="green bold">GeoLift</h3>
 	<b>Framework to Enrich Geographic Content in the Semantic Web</b>
 	<br>

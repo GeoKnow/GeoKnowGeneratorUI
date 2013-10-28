@@ -65,7 +65,7 @@
       rdfs:label "Facete"^^xsd:string ;
       lds:providesService
               [ a       lds:ExplorationService ;
-                lds:serviceUrl <http://144.76.166.111/facete/>
+                lds:serviceUrl <http://localhost:8080/facete/>
               ] ;
       lds:version "0.1-SNAPSHOT"^^xsd:string ;
       foaf:homepage <http://aksw.org/Projects/Facete.html> .
@@ -75,7 +75,7 @@
       rdfs:label "Limes Linking Service"^^xsd:string ;
       lds:providesService
               [ a       lds:InterlinkingService ;
-                lds:serviceUrl <http://generator.geoknow.eu:8080/Limes-Service>
+                lds:serviceUrl <http://localhost:8080/Limes-Service>
               ] ;
       lds:version "0.6.4ss"^^xsd:string ;
       foaf:homepage <http://aksw.org/Projects/LIMES.html> .
@@ -85,7 +85,7 @@
       rdfs:label "TripleGeo"^^xsd:string ;
       lds:providesService
               [ a       lds:ExtractionService ;
-                lds:serviceUrl <http://generator.geoknow.eu:8080/TripleGeo-Service>
+                lds:serviceUrl <http://localhost:8080/TripleGeo-Service>
               ] ;
       lds:version "1.0"^^xsd:string ;
       foaf:homepage <https://web.imis.athena-innovation.gr/redmine/projects/geoknow_public/wiki/TripleGeo> .
@@ -95,7 +95,7 @@
       rdfs:label "GeoLift"^^xsd:string ;
       lds:providesService
               [ a       lds:EnrichmentService ;
-                lds:serviceUrl <http://generator.geoknow.eu:8080/GeoLiftServlet>
+                lds:serviceUrl <http://localhost:8080/GeoLiftServlet>
               ] ;
       lds:version "0.6.4ss"^^xsd:string ;
       foaf:homepage <https://github.com/AKSW/GeoLift> .
