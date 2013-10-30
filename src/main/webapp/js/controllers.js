@@ -294,7 +294,7 @@ var LimesCtrl = function($scope, $http, ConfigurationService, flash, ServerError
 	  	$scope.showProgress = true;
 	  	
 	  	$http({
-			url: serviceUrl+"/Limesreview",
+			url: serviceUrl+"/LimesReview",
 	        method: "POST",
 	        dataType: "json",
 	        contentType: "application/json; charset=utf-8"
