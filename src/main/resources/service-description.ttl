@@ -27,9 +27,7 @@
     rdfs:label "GeoKnow Generator";
     dcterms:description "The GeoKnow Generator Service"^^xsd:string;
     sd:defaultGraph <http://localhost:8890/DAV>;
-    sd:namedGraph :serviceDescription;
     sd:namedGraph :settingsGraph;
-    sd:namedGraph :schemaGraph;
     sd:namedGraph :testing;
 .
 <http://localhost:8890/DAV> a sd:Graph, void:Dataset;
@@ -37,40 +35,19 @@
 		dcterms:description "Default graph"^^xsd:string;
 .
 
-:serviceDescription a sd:NamedGraph;
-    sd:name :serviceDescription;
-    sd:graph [
-              a sd:Graph, void:Dataset;
-              rdfs:label "Service Description"^^xsd:string;
-              dcterms:description "This Graph contains the service description of this endpoint"^^xsd:string;
-              dcterms:modified "2013-09-12"^^xsd:date;
-              dcterms:created "2013-09-12"^^xsd:date;
-              void:sparqlEndpoint <http://localhost:8890/sparql>;
-          ];
-.
 :settingsGraph a sd:NamedGraph;
 		sd:name :settingsGraph;
     sd:graph [
               a sd:Graph, void:Dataset;
               rdfs:label "Generator Settings"^^xsd:string;
               dcterms:description "GeoKnow Generator settings and configurations"^^xsd:string;
-              foaf:homepage <http://localhost/#/settings/>; 
+              foaf:homepage <http://generator.geoknow.eu/#/settings>; 
               dcterms:modified "2013-09-12"^^xsd:date;
               dcterms:created "2013-09-12"^^xsd:date;
-              void:sparqlEndpoint <http://localhost:8890/sparql>;
+              void:sparqlEndpoint <http://generator.geoknow.eu:8890/sparql>;
           ];
 .
-:schemaGraph a sd:NamedGraph;
-      sd:name :schemaGraph;
-      sd:graph [
-            a sd:Graph, void:Dataset;
-            rdfs:label "LDS schema"^^xsd:string;
-            dcterms:description "The Linked Data Stack schema for describing components and their configurations"^^xsd:string;
-            dcterms:modified "2013-09-12"^^xsd:date;
-            dcterms:created "2013-09-12"^^xsd:date;
-            void:sparqlEndpoint <http://localhost:8890/sparql>; 
-    	];
-.
+
 :testing a sd:NamedGraph;
       sd:name :testing;
       sd:graph [
@@ -79,6 +56,6 @@
             dcterms:description "This is a graph to tes loading data"^^xsd:string;
             dcterms:modified "2013-09-12"^^xsd:date;
             dcterms:created "2013-09-12"^^xsd:date;
-            void:sparqlEndpoint <http://localhost:8890/sparql>; 
+            void:sparqlEndpoint <http://generator.geoknow.eu:8890/sparql>; 
       ];
 .

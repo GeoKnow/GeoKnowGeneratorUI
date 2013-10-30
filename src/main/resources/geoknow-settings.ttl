@@ -38,28 +38,6 @@
       rdfs:label "Virtuoso Generator Endpoint"^^xsd:string ;
       lds:serviceUrl <http://generator.geoknow.eu:8890/sparql> .
 
-:OntosVirtuosoEndpoint
-      a       lds:SPARQLEndPoint ;
-      rdfs:label "My Local Virtuoso Endpoint"^^xsd:string ;
-      lds:serviceUrl <http://10.0.0.63:8890/sparql> .
-
-:MorgesVirtuosoEndpoint
-      a       lds:SPARQLEndPoint ;
-      rdfs:label "At home Virtuoso Endpoint"^^xsd:string ;
-      lds:serviceUrl <http://192.168.2.15:8890/sparql> .
-
-:OntoQuad
-      a       lds:StackComponent ;
-      rdfs:label "OntoQuad"^^xsd:string ;
-      lds:providesService :OntoQuadEndpoint ;
-      lds:version "1.0"^^xsd:string ;
-      foaf:homepage <http://virtuoso.openlinksw.com/> .
-
-:OntoQuadEndpoint
-      a       lds:SPARQLEndPoint ;
-      rdfs:label "OntoQuad Endpoint"^^xsd:string ;
-      lds:serviceUrl <http://192.168.43.105:8890/sparql> .
-
 :Facete
       a       lds:StackComponent ;
       rdfs:label "Facete"^^xsd:string ;
