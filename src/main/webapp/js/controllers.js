@@ -166,6 +166,7 @@ var LimesCtrl = function($scope, $http, ConfigurationService, flash, ServerError
 	$scope.inputForm = true;
 	var uploadError = false;
 	var uploadedFiles = null;
+	var params = {};
 	
 	$scope.examples = [
 	                { name : "Duplicate Dbpedia country entries for the CET time zone" },
@@ -188,7 +189,7 @@ var LimesCtrl = function($scope, $http, ConfigurationService, flash, ServerError
 	
 	$scope.FillForm = function(example){
 		
-		var params = {};
+		params = {};
 		
 		$scope.enterConfig = true;
 		$scope.startLimes = true;
@@ -240,15 +241,10 @@ var LimesCtrl = function($scope, $http, ConfigurationService, flash, ServerError
 			}
 		
 	}
+	
+	$scope.SetParams = function(){
 		
-	$scope.StartLimes = function(){
-		
-		$scope.startLimes = false;
-		$scope.enterConfig = false;
-		$scope.configOptions = false;
-		$scope.showProgress = true;
-		
-		var params = { 
+		params = { 
 					 SourceServiceURI: $scope.limes.SourceServiceURI,
 					 TargetServiceURI: $scope.limes.TargetServiceURI,
 					 SourceVar: $scope.limes.SourceVar,
@@ -267,6 +263,14 @@ var LimesCtrl = function($scope, $http, ConfigurationService, flash, ServerError
 					 AcceptRelation: $scope.limes.AcceptRelation,
 					 ReviewRelation: $scope.limes.ReviewRelation
 					 };
+		
+		var newWindow = $window.open("#/home/linking/limes-result");
+		newWindow.params = params;
+	}
+		
+	$scope.StartLimes = function(){
+		params = $window.params;
+		$scope.showProgress = true;
 		
 		$http({
 				url: serviceUrl+"/LimesRun",
@@ -303,7 +307,6 @@ var LimesCtrl = function($scope, $http, ConfigurationService, flash, ServerError
 	  	  		result = result.substring(13,result.length-5);
 	  	  		if (result.length<3){
 	  	  			$scope.limes.reviewResults = "No results to review";
-	  	  		$window.limes.reviewResults = "No results to review";
 	  		  	}else{
 	  		  		$scope.limes.reviewResults = result;
 	  		  	}
@@ -345,7 +348,7 @@ var LimesCtrl = function($scope, $http, ConfigurationService, flash, ServerError
 		  		
 					$http({
 							method: "POST",
-							url: serviceUrl+"/LimesRun",
+							url: serviceUrl+"/LoadFile",
 							params: {file : filename}
 				      	}).then(function(data) {
 						    	
@@ -971,11 +974,8 @@ var TripleGeoCtrl = function($scope, $http, ConfigurationService, flash, ServerE
 		    }
 	}
 	
-	$scope.startTripleGeo= function(){
-		
-		$scope.configOptions = false;
-	  $scope.showProgress = true;
-		
+	$scope.SetParams = function(){
+			
 		if($scope.options.job == "file" || $scope.options.job == "example"){
 			params = {
 					 job: $scope.options.job,
@@ -1037,6 +1037,14 @@ var TripleGeoCtrl = function($scope, $http, ConfigurationService, flash, ServerE
 				   };
 		}
 			
+			var newWindow = $window.open("#/home/linking/limes-result");
+			newWindow.params = params;
+		}
+	
+	$scope.startTripleGeo= function(){
+		
+	  $scope.showProgress = true;
+			
 			$http({
 				url: serviceUrl+"/TripleGeoRun",
 		        method: "POST",
@@ -1057,7 +1065,6 @@ var TripleGeoCtrl = function($scope, $http, ConfigurationService, flash, ServerE
 	
 	$scope.reviewTripleGeoResult = function(filetype){
 			
-		$scope.configOptions = false;
 	  	$scope.showProgress = true;
 	  	
 	  	params = { filetype : filetype };
