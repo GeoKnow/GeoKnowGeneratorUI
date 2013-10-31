@@ -34,6 +34,7 @@ app.config(function($routeSegmentProvider, $routeProvider)
         .when('/home/querying-and-exploration/virtuoso', 'default.virtuoso')
         .when('/home/authoring/ontowiki', 'default.ontowiki')
         .when('/home/linking/limes', 'default.limes')
+        .when('/home/linking/limes-result', 'default.limes-result')
         .when('/home/enriching-and-cleaning/geolift', 'default.geolift')
 
         .segment('default', {
@@ -65,6 +66,8 @@ app.config(function($routeSegmentProvider, $routeProvider)
                     templateUrl: 'partials/enriching-and-cleaning/geolift.html' })
                 .segment('limes', {
                     templateUrl: 'partials/linking/limes.html' })
+                .segment('limes-result', {
+                    templateUrl: 'partials/linking/limes-result.html' })
             .up()
 
 		.segment('settings',

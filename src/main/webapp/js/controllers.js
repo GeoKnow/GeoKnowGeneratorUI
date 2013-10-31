@@ -157,7 +157,7 @@ app.controller('FaceteFormCtrl', function($scope, ConfigurationService) {
 });
 
 
-var LimesCtrl = function($scope, $http, ConfigurationService, flash, ServerErrorResponse){
+var LimesCtrl = function($scope, $http, ConfigurationService, flash, ServerErrorResponse, $window){
 	
 	var services = ConfigurationService.getComponentServices(":Limes");
 	var serviceUrl = services[0].serviceUrl;
@@ -281,9 +281,9 @@ var LimesCtrl = function($scope, $http, ConfigurationService, flash, ServerError
 		    	$scope.ReviewLimes();
 	      }, function (response){ // in the case of an error      	
 	      	$scope.startLimes = false;
-		    	$scope.showProgress = false;
-		    	$scope.inputForm = true;
-		    	flash.error = ServerErrorResponse.getMessage(response.status);
+		    $scope.showProgress = false;
+		    $scope.inputForm = true;
+		    flash.error = ServerErrorResponse.getMessage(response.status);
 	      });
 		
 	}
@@ -292,18 +292,18 @@ var LimesCtrl = function($scope, $http, ConfigurationService, flash, ServerError
 
 		$scope.configOptions = false;
 	  	$scope.showProgress = true;
-	  	
+		
 	  	$http({
 			url: serviceUrl+"/LimesReview",
 	        method: "POST",
 	        dataType: "json",
 	        contentType: "application/json; charset=utf-8"
 	      }).then(function(data){
-	    	 
 	    	  	var result = data.data[0];
 	  	  		result = result.substring(13,result.length-5);
 	  	  		if (result.length<3){
-	  		  		$scope.limes.reviewResults = "No results to review";
+	  	  			$scope.limes.reviewResults = "No results to review";
+	  	  		$window.limes.reviewResults = "No results to review";
 	  		  	}else{
 	  		  		$scope.limes.reviewResults = result;
 	  		  	}
@@ -321,7 +321,7 @@ var LimesCtrl = function($scope, $http, ConfigurationService, flash, ServerError
 	    			$scope.inputForm = false;
 		    		$scope.reviewForm = true;
 	  		 }, function (response){ // in the case of an error      	
-	      	$scope.startLimes = false;
+	  			$scope.startLimes = false;
 		    	$scope.showProgress = false;
 		    	$scope.inputForm = true;
 		    	$scope.reviewForm = false;
