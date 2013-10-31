@@ -79,6 +79,7 @@ module.factory('ConfigurationService', function(Config) {
     
 
     getIdentifiers: function(){
+      Config.read(); //update the list of identifiers
       return Object.keys(Config.getSettings());
     },
 
