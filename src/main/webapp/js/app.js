@@ -31,13 +31,14 @@ app.config(function($routeSegmentProvider, $routeProvider)
         .when('/home/extraction-and-loading/import-rdf', 'default.import-rdf')
         .when('/home/extraction-and-loading/sparqlify', 'default.sparqlify')
         .when('/home/extraction-and-loading/triplegeo', 'default.triplegeo')
+        .when('/home/extraction-and-loading/triplegeo-result', 'default.triplegeo-result')
         .when('/home/querying-and-exploration/geospatial', 'default.geospatial')
         .when('/home/querying-and-exploration/googlemap', 'default.googlemap')
         .when('/home/querying-and-exploration/facete', 'default.facete')
         .when('/home/querying-and-exploration/virtuoso', 'default.virtuoso')
         .when('/home/authoring/ontowiki', 'default.ontowiki')
         .when('/home/linking/limes', 'default.limes')
-        .when('/home/linking/limes-result', 'default.limes-result')
+        .when('/home/linking/limes-result', 'results.limes-result')
         .when('/home/enriching-and-cleaning/geolift', 'default.geolift')
 
         .segment('popup-limes', {
@@ -64,6 +65,8 @@ app.config(function($routeSegmentProvider, $routeProvider)
                     templateUrl: 'partials/extraction-and-loading/sparqlify.html' })
                 .segment('triplegeo', {
                     templateUrl: 'partials/extraction-and-loading/triplegeo.html' })
+                .segment('triplegeo-result', {
+                    templateUrl: 'partials/extraction-and-loading/triplegeo-result.html' })
                 .segment('geospatial', {
                     templateUrl: 'partials/querying-and-exploration/geospatial.html'})
                 .segment('googlemap', {
@@ -78,8 +81,6 @@ app.config(function($routeSegmentProvider, $routeProvider)
                     templateUrl: 'partials/enriching-and-cleaning/geolift.html' })
                 .segment('limes', {
                     templateUrl: 'partials/linking/limes.html' })
-                // .segment('limes-result', {
-                    // templateUrl: 'partials/linking/limes-result.html' })
             .up()
 
 		.segment('settings',
@@ -102,6 +103,20 @@ app.config(function($routeSegmentProvider, $routeProvider)
                     templateUrl: 'partials/settings/components.html'})
             .up()
 
+		.segment('results',
+		{
+			templateUrl: 'partials/results.html',
+            resolve: {
+              settings: function (Config) {
+                return Config.read();
+              }
+            }
+		})
+		 .within()
+                .segment('limes-result', {
+                    templateUrl: 'partials/linking/limes-result.html' })
+           .up()
+           
         .segment('account', {
             templateUrl:'partials/account.html' })
             .within()

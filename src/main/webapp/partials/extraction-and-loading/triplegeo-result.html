@@ -1,17 +1,15 @@
-<div class="contents" ng-controller="LimesCtrl" ng-init="StartLimes()">
-
+<div class="contents" ng-controller="TripleGeoCtrl" ng-init="startTripleGeo()">
 <!-- Subscribe to all flash messages. -->
 	<div flash-alert active-class="in" class="alert fade" duration="10000">
 		<button type="button" class="close" ng-click="hide()">&times;</button>
-  	<span class="alert-message">{{flash.message}}</span>
+	  <span class="alert-message">{{flash.message}}</span>
 	</div>
 
-	<h3 class="green bold">LIMES</h3>
-	<b>Link Discovery Framework for Metric Spaces</b>
+	<h3 class="green bold">TripleGeo</h3>
+	<b>Utility for Converting Geospatial Data into Triples</b>
 	<br>
 	<br>
 
-<form class="form-inline InputForm col-xs-11" role="form" ng-show="inputForm">
 	<div class="row">
 		<div class="col-xs-11">
 		<div class="progress progress-striped active" ng-show="showProgress">
@@ -25,23 +23,16 @@
 		<b>Processsing and getting the results which could take a while... Please keep this browser window open.</b>
 	</div>
 	</div>
-</form>
-	
+
 <form class="form-horizontal InputForm col-xs-11" role="form" ng-show="reviewForm">
 	<div class="row">
 		<h5 class="green bold">Results</h5>
 	</div>
 	<br>
 	<div class="row">
-	    <label for="ReviewResults">Results for review</label>
-	    <textarea class="form-control boldtext" id="ReviewResults" ng-model="limes.reviewResults"></textarea>
+	    <label for="ReviewResults">Extracted Triples</label>
+	    <textarea class="form-control boldtext" id="ReviewResults" ng-model="results"></textarea>
 	</div>
-	<br>
-	<div class="row">
-	    <label for="AcceptedResults">Accepted Results</label>
-	    <textarea class="form-control boldtext" id="AcceptedResults" ng-model="limes.acceptedResults"></textarea>
-	</div>
-	<br>
 	<br>
 	<div class="row">
 	<div class="col-xs-12">
@@ -51,4 +42,5 @@
 	</div>
 	</div>
 </form>
+
 </div>
