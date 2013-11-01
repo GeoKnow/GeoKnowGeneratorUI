@@ -127,6 +127,13 @@ app.controller('ModalWindow', function ($scope) {
   
 });
 
+app.controller('OntoWikiCtrl', function($scope, ConfigurationService) {
+	$scope.component = ConfigurationService.getComponent(":OntoWiki");
+	var services = ConfigurationService.getComponentServices(":OntoWiki");
+	$scope.url = services[0].serviceUrl;
+});
+
+
 app.controller('VirtuosoCtrl', function($scope, ConfigurationService) {
 
 	$scope.component = ConfigurationService.getComponent(":Virtuoso");
@@ -162,6 +169,7 @@ var LimesCtrl = function($scope, $http, ConfigurationService, flash, ServerError
 	var services = ConfigurationService.getComponentServices(":Limes");
 	var serviceUrl = services[0].serviceUrl;
 	
+	$scope.endpoints = ConfigurationService.getAllEndpoints();
 	$scope.configOptions = true;
 	$scope.inputForm = true;
 	var uploadError = false;
@@ -285,9 +293,9 @@ var LimesCtrl = function($scope, $http, ConfigurationService, flash, ServerError
 		    	$scope.ReviewLimes();
 	      }, function (response){ // in the case of an error      	
 	      	$scope.startLimes = false;
-		    $scope.showProgress = false;
-		    $scope.inputForm = true;
-		    flash.error = ServerErrorResponse.getMessage(response.status);
+		    	$scope.showProgress = false;
+		    	$scope.inputForm = true;
+		    	flash.error = ServerErrorResponse.getMessage(response.status);
 	      });
 		
 	}
@@ -298,7 +306,7 @@ var LimesCtrl = function($scope, $http, ConfigurationService, flash, ServerError
 	  	$scope.showProgress = true;
 		
 	  	$http({
-			url: serviceUrl+"/LimesReview",
+			url: serviceUrl+"/Limesreview",
 	        method: "POST",
 	        dataType: "json",
 	        contentType: "application/json; charset=utf-8"

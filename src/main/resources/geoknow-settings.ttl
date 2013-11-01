@@ -75,8 +75,18 @@
               [ a       lds:EnrichmentService ;
                 lds:serviceUrl <http://generator.geoknow.eu:8080/GeoLiftServlet>
               ] ;
-      lds:version "0.6.4ss"^^xsd:string ;
+      lds:version "0.6.4"^^xsd:string ;
       foaf:homepage <https://github.com/AKSW/GeoLift> .
+
+:OntoWiki
+      a       lds:StackComponent ;
+      rdfs:label "OntoWiki"^^xsd:string ;
+      lds:providesService
+              [ a       lds:AuthoringService ;
+                lds:serviceUrl <http://144.76.166.111/ontowiki>
+              ] ;
+      lds:version "0.9.10-1"^^xsd:string ;
+      foaf:homepage <http://aksw.org/Projects/OntoWiki.html> .
 
 :Dbpedia
       a       void:Dataset , lds:SPARQLendpoint ;
@@ -102,13 +112,19 @@
       foaf:homepage <https://data.ox.ac.uk/doc/dataset/oxpoints> ;
       void:sparqlEndpoint <https://data.ox.ac.uk/sparql/> .
 
-:UHotels
+:LinkedGeoData
+      a       void:Dataset , lds:SPARQLendpoint ;
+      rdfs:label "LinkedGeoData"^^xsd:string ;
+      foaf:homepage <http://linkedgeodata.org> ;
+      void:sparqlEndpoint <http://linkedgeodata.org/sparql> .
+
+:unister
       a       lds:Database ;
-      rdfs:label "Hotles Dataset"^^xsd:string ;
+      rdfs:label "Unister Dataset"^^xsd:string ;
       lds:dbHost "127.0.0.1"^^xsd:string ;
-      lds:dbName "hotels"^^xsd:string ;
-      lds:dbPassword "1234"^^xsd:string ;
-      lds:dbPort "3306"^^xsd:string ;
+      lds:dbName "unister"^^xsd:string ;
+      lds:dbPassword "admin"^^xsd:string ;
+      lds:dbPort "3306"^^xsd:integer ;
       lds:dbType lds:MySql ;
       lds:dbUser "root"^^xsd:string .
 

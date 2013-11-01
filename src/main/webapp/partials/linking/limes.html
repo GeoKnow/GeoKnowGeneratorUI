@@ -91,13 +91,17 @@
 	    <label for="SourceServiceURI">Endpoint URL</label>
 	    </div>
 	    <div class="col-xs-4">
-	    <input class="form-control input-sm" id="SourceServiceURI" ng-model="limes.SourceServiceURI"></input>
-	    </div>
+	    <!-- <input class="form-control input-sm" id="SourceServiceURI" ng-model="limes.SourceServiceURI"></input> -->
+	   	 <select id="SourceServiceURI" class="form-control" ng-model="limes.SourceServiceURI" ng-options="c.endpoint as c.label for c in endpoints" required>
+		   </select>
+	   </div>
 	    <div class="col-xs-2">
 	    <label for="TargetServiceURI">Endpoint URL</label>
 	    </div>
 	    <div class="col-xs-4">
-	    <input class="form-control input-sm" id="TargetServiceURI" ng-model="limes.TargetServiceURI"></input>
+	    <!-- <input class="form-control input-sm" id="TargetServiceURI" ng-model="limes.TargetServiceURI"></input> -->
+	    <select id="TargetServiceURI" class="form-control" ng-model="limes.TargetServiceURI" ng-options="c.endpoint as c.label for c in endpoints" required>
+		   </select>
 	    </div>
 	</div>
 	<br>
