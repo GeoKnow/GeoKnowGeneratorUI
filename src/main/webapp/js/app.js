@@ -17,6 +17,9 @@ app.config(function($routeSegmentProvider, $routeProvider)
     $routeSegmentProvider.options.autoLoadTemplates = true;
     $routeSegmentProvider
         // TODO: these routes may have to be loaded from the configuration
+        
+        .when('/popup-limes','popup-limes')
+
         .when('/home', 'default')
         .when('/account','account')
         .when('/account/preferences', 'account.preferences')
@@ -37,9 +40,18 @@ app.config(function($routeSegmentProvider, $routeProvider)
         .when('/home/linking/limes-result', 'default.limes-result')
         .when('/home/enriching-and-cleaning/geolift', 'default.geolift')
 
+        .segment('popup-limes', {
+            templateUrl: 'partials/linking/limes-result.html',
+            resolve: {
+                      settings: function (Config) {
+                        return Config.read();
+                      }
+                }
+            })
+         
         .segment('default', {
-                templateUrl :'partials/default.html',
-                resolve: {
+            templateUrl :'partials/default.html',
+            resolve: {
                       settings: function (Config) {
                         return Config.read();
                       }
@@ -66,8 +78,8 @@ app.config(function($routeSegmentProvider, $routeProvider)
                     templateUrl: 'partials/enriching-and-cleaning/geolift.html' })
                 .segment('limes', {
                     templateUrl: 'partials/linking/limes.html' })
-                .segment('limes-result', {
-                    templateUrl: 'partials/linking/limes-result.html' })
+                // .segment('limes-result', {
+                    // templateUrl: 'partials/linking/limes-result.html' })
             .up()
 
 		.segment('settings',

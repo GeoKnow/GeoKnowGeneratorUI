@@ -250,9 +250,9 @@ var LimesCtrl = function($scope, $http, ConfigurationService, flash, ServerError
 		
 	}
 	
-	$scope.SetParams = function(){
+	$scope.LaunchLimes = function(){
 		
-		params = { 
+		var params = { 
 					 SourceServiceURI: $scope.limes.SourceServiceURI,
 					 TargetServiceURI: $scope.limes.TargetServiceURI,
 					 SourceVar: $scope.limes.SourceVar,
@@ -272,14 +272,16 @@ var LimesCtrl = function($scope, $http, ConfigurationService, flash, ServerError
 					 ReviewRelation: $scope.limes.ReviewRelation
 					 };
 		
-		var newWindow = $window.open("#/home/linking/limes-result");
+		$window.$windowScope = $scope;
+ 		var newWindow = $window.open('popup.html#/popup-limes', 'frame', 'resizeable,top=100,left=100,height=400,width=400');
+		//$window.open('popup.html#/popup-limes', 'frame', 'resizeable,top=100,left=100,height=400,width=400');
 		newWindow.params = params;
 	}
 		
 	$scope.StartLimes = function(){
-		params = $window.params;
+		var params = $window.params;
 		$scope.showProgress = true;
-		
+		console.log(params);
 		$http({
 				url: serviceUrl+"/LimesRun",
 		        method: "POST",
@@ -288,8 +290,6 @@ var LimesCtrl = function($scope, $http, ConfigurationService, flash, ServerError
 		        contentType: "application/json; charset=utf-8"
 	      }).then(function() {
 	      	// TODO: in fact here is the new window to open with the progress and the results
-		    	$scope.startLimes = false;
-		    	$scope.showProgress = false;
 		    	$scope.ReviewLimes();
 	      }, function (response){ // in the case of an error      	
 	      	$scope.startLimes = false;
@@ -303,9 +303,10 @@ var LimesCtrl = function($scope, $http, ConfigurationService, flash, ServerError
 	$scope.ReviewLimes = function(){
 
 		$scope.configOptions = false;
-	  	$scope.showProgress = true;
-		
-	  	$http({
+	  $scope.showProgress = true;
+		$scope.reviewForm = false;
+
+	  $http({
 			url: serviceUrl+"/Limesreview",
 	        method: "POST",
 	        dataType: "json",
