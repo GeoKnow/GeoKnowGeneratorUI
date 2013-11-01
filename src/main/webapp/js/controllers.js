@@ -127,6 +127,13 @@ app.controller('ModalWindow', function ($scope) {
   
 });
 
+app.controller('OntoWikiCtrl', function($scope, ConfigurationService) {
+	$scope.component = ConfigurationService.getComponent(":OntoWiki");
+	var services = ConfigurationService.getComponentServices(":OntoWiki");
+	$scope.url = services[0].serviceUrl;
+});
+
+
 app.controller('VirtuosoCtrl', function($scope, ConfigurationService) {
 
 	$scope.component = ConfigurationService.getComponent(":Virtuoso");
@@ -294,7 +301,7 @@ var LimesCtrl = function($scope, $http, ConfigurationService, flash, ServerError
 	  	$scope.showProgress = true;
 	  	
 	  	$http({
-			url: serviceUrl+"/LimesReview",
+			url: serviceUrl+"/Limesreview",
 	        method: "POST",
 	        dataType: "json",
 	        contentType: "application/json; charset=utf-8"

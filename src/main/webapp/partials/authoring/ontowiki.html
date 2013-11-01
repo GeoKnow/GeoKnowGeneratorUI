@@ -1,36 +1,29 @@
-<!--  
-<div ng-controller="ModalWindow">
-    <button class="btn" ng-click="open()">Open me!</button>
-    <div modal="shouldBeOpen" close="close()" options="opts">
-        <div class="modal-header">
-            <h4>OntoWiki</h4>
-        </div>
-        <div class="modal-body">
-            <iframe id="ow-frame" src="http://10.0.0.90/ontowiki"></iframe>
-        </div>
-        <div class="modal-footer">
-            <button class="btn btn-warning cancel" ng-click="close()">Close</button>
-        </div>
-    </div>
-</div>
--->
+<div ng-controller="OntoWikiCtrl">
+  <div class="col-lg-8">
+    <h3 class="green bold">{{component.label}}</h3>
 
-<div ng-controller="ModalWindow">
-	<h3 class="green bold">OntoWiki</h3>
-    <a class="btn btn-primary btn-large" ng-click="OpenFullWindow()">Launch OntoWiki</a>
 
+    <dl class="dl-horizontal">
+      <dt>Version:</dt><dd>{{component.version}}</dd>
+      <dt>Homepage:</dt><dd>{{component.homepage}}</dd>
+    </dl>
+
+    <form class="form-horizontal InputForm col-xs-11"  role="form" >
+      <a class="btn btn-success btn-large" data-toggle="modal" ng-click="openModal();">Launch</a>
+    </form>
+  </div>
   <!-- Modal -->
-  <div class="modal fade" id="modalWindow">
-        <div class="modal-header">
-          <button type="button" class="close" ng-click="close()" aria-hidden="true">&times;</button>
-          <h5 class="modal-title green bold">OntoWiki</h5>
-        </div>
-        <div class="modal-body">
-        <iframe id="mod-frame" src="http://10.0.0.90/ontowiki"></iframe>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn-sm btn-success" ng-click="close()">Close</button>
-        </div>
+  <div class="modal fade" id="fullModal" >
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+      <h5 class="modal-title green bold">{{component.label}}</h5>
+    </div>
+    <div class="modal-body">
+      <modal-iframe></modal-iframe>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn-sm btn-success" data-dismiss="modal">Close</button>
+    </div>       
   </div><!-- /.modal -->
 </div>
 
