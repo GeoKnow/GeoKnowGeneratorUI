@@ -112,6 +112,12 @@
       foaf:homepage <https://data.ox.ac.uk/doc/dataset/oxpoints> ;
       void:sparqlEndpoint <https://data.ox.ac.uk/sparql/> .
 
+:LinkedGeoData
+      a       void:Dataset , lds:SPARQLendpoint ;
+      rdfs:label "LinkedGeoData"^^xsd:string ;
+      foaf:homepage <http://linkedgeodata.org> ;
+      void:sparqlEndpoint <http://linkedgeodata.org/sparql> .
+
 :unister
       a       lds:Database ;
       rdfs:label "Unister Dataset"^^xsd:string ;

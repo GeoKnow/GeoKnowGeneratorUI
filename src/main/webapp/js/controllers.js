@@ -169,6 +169,7 @@ var LimesCtrl = function($scope, $http, ConfigurationService, flash, ServerError
 	var services = ConfigurationService.getComponentServices(":Limes");
 	var serviceUrl = services[0].serviceUrl;
 	
+	$scope.endpoints = ConfigurationService.getAllEndpoints();
 	$scope.configOptions = true;
 	$scope.inputForm = true;
 	var uploadError = false;
@@ -292,9 +293,9 @@ var LimesCtrl = function($scope, $http, ConfigurationService, flash, ServerError
 		    	$scope.ReviewLimes();
 	      }, function (response){ // in the case of an error      	
 	      	$scope.startLimes = false;
-		    $scope.showProgress = false;
-		    $scope.inputForm = true;
-		    flash.error = ServerErrorResponse.getMessage(response.status);
+		    	$scope.showProgress = false;
+		    	$scope.inputForm = true;
+		    	flash.error = ServerErrorResponse.getMessage(response.status);
 	      });
 		
 	}
