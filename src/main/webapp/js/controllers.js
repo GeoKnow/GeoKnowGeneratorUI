@@ -845,7 +845,7 @@ var TripleGeoCtrl = function($scope, $http, ConfigurationService, flash, ServerE
 						
 						inputDisplay: "points.shp",
 						
-						 inputFile :   "./examples/points.shp",
+						 inputFile :   "points.shp",
 						 format :      $scope.options.format[0],
 						 targetStore : $scope.options.targetStore[0],
 						
@@ -980,7 +980,7 @@ var TripleGeoCtrl = function($scope, $http, ConfigurationService, flash, ServerE
 		    }
 	}
 	
-	$scope.SetParams = function(){
+	$scope.LaunchTripleGeo = function(){
 			
 		if($scope.options.job == "file" || $scope.options.job == "example"){
 			params = {
@@ -1043,8 +1043,10 @@ var TripleGeoCtrl = function($scope, $http, ConfigurationService, flash, ServerE
 				   };
 		}
 			
-			var newWindow = $window.open("#/home/extraction-and-loading/triplegeo-result");
-			newWindow.params = params;
+		$window.$windowScope = $scope;
+ 		var newWindow = $window.open('popup.html#/popup-triplegeo', 'frame', 'resizeable,top=100,left=100,height=400,width=400');
+		//$window.open('popup.html#/popup-limes', 'frame', 'resizeable,top=100,left=100,height=400,width=400');
+		newWindow.params = params;
 		}
 	
 	$scope.startTripleGeo= function(){

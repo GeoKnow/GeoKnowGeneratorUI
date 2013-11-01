@@ -19,6 +19,7 @@ app.config(function($routeSegmentProvider, $routeProvider)
         // TODO: these routes may have to be loaded from the configuration
         
         .when('/popup-limes','popup-limes')
+        .when('/popup-triplegeo','popup-triplegeo')
 
         .when('/home', 'default')
         .when('/account','account')
@@ -38,11 +39,19 @@ app.config(function($routeSegmentProvider, $routeProvider)
         .when('/home/querying-and-exploration/virtuoso', 'default.virtuoso')
         .when('/home/authoring/ontowiki', 'default.ontowiki')
         .when('/home/linking/limes', 'default.limes')
-        .when('/home/linking/limes-result', 'results.limes-result')
         .when('/home/enriching-and-cleaning/geolift', 'default.geolift')
 
         .segment('popup-limes', {
             templateUrl: 'partials/linking/limes-result.html',
+            resolve: {
+                      settings: function (Config) {
+                        return Config.read();
+                      }
+                }
+            })
+            
+        .segment('popup-triplegeo', {
+            templateUrl: 'partials/extraction-and-loading/triplegeo-result.html',
             resolve: {
                       settings: function (Config) {
                         return Config.read();
@@ -102,20 +111,6 @@ app.config(function($routeSegmentProvider, $routeProvider)
                 .segment('components', {
                     templateUrl: 'partials/settings/components.html'})
             .up()
-
-		.segment('results',
-		{
-			templateUrl: 'partials/results.html',
-            resolve: {
-              settings: function (Config) {
-                return Config.read();
-              }
-            }
-		})
-		 .within()
-                .segment('limes-result', {
-                    templateUrl: 'partials/linking/limes-result.html' })
-           .up()
            
         .segment('account', {
             templateUrl:'partials/account.html' })
