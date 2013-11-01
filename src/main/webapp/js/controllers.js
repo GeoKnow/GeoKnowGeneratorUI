@@ -708,11 +708,10 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErr
 		}
 }
 
-var TripleGeoCtrl = function($scope, $http, ConfigurationService, flash, ServerErrorResponse){
+var TripleGeoCtrl = function($scope, $http, ConfigurationService, flash, ServerErrorResponse, $window){
 	
 	var services = ConfigurationService.getComponentServices(":TripleGeo");
 	var serviceUrl = services[0].serviceUrl;
-	
 	$scope.inputForm = true;
 	$scope.configOptions = true;
 	$scope.dbLogin = true;
@@ -921,7 +920,7 @@ var TripleGeoCtrl = function($scope, $http, ConfigurationService, flash, ServerE
 		  		
 					$http({
 							method: "POST",
-							url: "http://localhost:8080/TripleGeoServlet/LoadFile",
+							url: serviceUrl+"/LoadFile",
 							params: {
 									file : filename,
 									shp: inputFileName
@@ -1037,13 +1036,14 @@ var TripleGeoCtrl = function($scope, $http, ConfigurationService, flash, ServerE
 				   };
 		}
 			
-			var newWindow = $window.open("#/home/linking/limes-result");
+			var newWindow = $window.open("#/home/extraction-and-loading/triplegeo-result");
 			newWindow.params = params;
 		}
 	
 	$scope.startTripleGeo= function(){
-		
-	  $scope.showProgress = true;
+	  
+		params = $window.params;
+		$scope.showProgress = true;
 			
 			$http({
 				url: serviceUrl+"/TripleGeoRun",
@@ -1079,16 +1079,14 @@ var TripleGeoCtrl = function($scope, $http, ConfigurationService, flash, ServerE
 	    	  		var results = data.data[0];
   	  				results = results.substring(13,results.length-3);
 	    	  		$scope.results = results;
-	    		  	$scope.enterConfig = false;
 	    		  	$scope.showProgress = false;
-	  	    		$scope.inputForm = false;
 	  	    		$scope.reviewForm = true;
 	      }, function (response){ // in the case of an error      	
-	      	$scope.enterConfig = false;
+	      		$scope.enterConfig = false;
 	    		$scope.showProgress = false;
-	  	    $scope.inputForm = false;
-	  	    $scope.reviewForm = false;
-					flash.error = ServerErrorResponse.getMessage(response.status);
+	    		$scope.inputForm = false;
+	    		$scope.reviewForm = false;
+				flash.error = ServerErrorResponse.getMessage(response.status);
 	    	});
 		}
 }
