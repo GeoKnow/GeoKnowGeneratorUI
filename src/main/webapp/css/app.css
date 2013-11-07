@@ -38,6 +38,12 @@ a.navbar-brand:hover{
 	
 }
 
+.navbar-brand{
+	width:60px;
+	height:50px;
+	background:transparent url('../img/gkg-logo.png') center center no-repeat;
+}
+
 .navbar .navbar-nav > .active > a {
     background: none;
 }

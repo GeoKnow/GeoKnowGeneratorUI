@@ -273,7 +273,7 @@ var LimesCtrl = function($scope, $http, ConfigurationService, flash, ServerError
 					 };
 		
 		$window.$windowScope = $scope;
- 		var newWindow = $window.open('popup.html#/popup-limes', 'frame', 'resizeable,top=100,left=100,height=400,width=400');
+ 		var newWindow = $window.open('popup.html#/popup-limes', 'frame', 'resizeable,height=400,width=600');
 		//$window.open('popup.html#/popup-limes', 'frame', 'resizeable,top=100,left=100,height=400,width=400');
 		newWindow.params = params;
 	}
@@ -291,7 +291,7 @@ var LimesCtrl = function($scope, $http, ConfigurationService, flash, ServerError
 	      	// TODO: in fact here is the new window to open with the progress and the results
 		    	$scope.ReviewLimes();
 	      }, function (response){ // in the case of an error      	
-	      	$scope.startLimes = false;
+	      		$scope.startLimes = false;
 		    	$scope.showProgress = false;
 		    	$scope.inputForm = true;
 		    	flash.error = ServerErrorResponse.getMessage(response.status);
@@ -404,7 +404,7 @@ var LimesCtrl = function($scope, $http, ConfigurationService, flash, ServerError
 	
 }
 
-var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErrorResponse){
+var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErrorResponse, $window){
 	
 	var services = ConfigurationService.getComponentServices(":GeoLift");
 	var serviceUrl = services[0].serviceUrl;
@@ -648,20 +648,27 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErr
 			    }
 		}
 	
-	$scope.startGeoLift = function(){
+	$scope.LaunchGeoLift = function(){
 		
-		$scope.configOptions = false;
+		 var params = {};
+         params[0] = $scope.params[0].inputs.length;
+         params[1] = sourceInput;
+         
+		 for(var i=0; i<$scope.params[0].inputs.length; i++){
+		         
+		          params[i+2] = $scope.params[0].inputs[i].index + " " + $scope.params[0].inputs[i].module;
+		          
+		                                  }
+			
+			$window.$windowScope = $scope;
+	 	var newWindow = $window.open('popup.html#/popup-geolift', 'frame', 'resizeable,height=400,width=600');
+			newWindow.params = params;
+		}
+	
+	$scope.StartGeoLift = function(){
+		
+		var params = $window.params;
 		$scope.showProgress = true;
-		
-		var params = {};
-			params[0] = $scope.params[0].inputs.length;
-			params[1] = sourceInput;
-			
-		for(var i=0; i<$scope.params[0].inputs.length; i++){
-			
-			 params[i+2] = $scope.params[0].inputs[i].index + " " + $scope.params[0].inputs[i].module;
-			 
-						 }
 		
 			$http({
 				url: serviceUrl+"/GeoLiftRun",
@@ -669,7 +676,7 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErr
 		        params: params,
 		        headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' }
 		      }).then(function() {
-		    	  //$scope.reviewGeoLiftResult();
+		    	  $scope.reviewGeoLiftResult();
 		      },  function (response){ // in the case of an error      	
 						flash.error = ServerErrorResponse.getMessage(response.status);
 	    		});
@@ -677,8 +684,7 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErr
 		}
 	
 	$scope.reviewGeoLiftResult = function(){
-			
-		$scope.configOptions = false;
+		
 	  	$scope.showProgress = true;
 	  	
 		$http({
@@ -687,32 +693,25 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErr
 	        dataType: "json",
 	        contentType: "application/json; charset=utf-8"
 	      }).then(function(data){
-	    	 
-	    	  		var result = data.data[0];
-	    	  		result = result.substring(13,result.length-3);
-	    	  		if (result.length<3){
-	    		  		$scope.limes.reviewResults = "No results to review";
-	    		  	}else{
-	    		  		$scope.limes.reviewResults = result;
-	    		  	}
+	    	  console.log(data);
+	    	  		var results = data.data[0];
+	    	  		results = results.substring(13,results.length-3);
+	    	  		console.log(results);
+	    	  		$scope.results = results;
 	    	  		
-	    	  		result = data.data[1];
-	    	  		result = result.substring(13,result.length-3);
-	    	  		if (result.length<3){
-	    	  			$scope.limes.acceptedResults = "No results meet the acceptance threshold";
-	    	  		}else{
-	    	  			$scope.limes.acceptedResults = result;
-	    	  		}
-	    	  		
-	    		  	$scope.enterConfig = false;
 	    		  	$scope.showProgress = false;
-	  	    		$scope.inputForm = false;
+	    		  	$scope.inputForm = false;
 	  	    		$scope.reviewForm = true;
 	  	    		
-	      		}, function (response){ // in the case of an error      	
+	      				}, function (response){ // in the case of an error      	
 						 	flash.error = ServerErrorResponse.getMessage(response.status);
 	    			});
 		}
+	
+	$scope.save = function(){
+		var endpoint = $scope.saveEndpoint;
+	}
+	
 }
 
 var TripleGeoCtrl = function($scope, $http, ConfigurationService, flash, ServerErrorResponse, $window){
@@ -1044,7 +1043,7 @@ var TripleGeoCtrl = function($scope, $http, ConfigurationService, flash, ServerE
 		}
 			
 		$window.$windowScope = $scope;
- 		var newWindow = $window.open('popup.html#/popup-triplegeo', 'frame', 'resizeable,top=100,left=100,height=400,width=400');
+ 		var newWindow = $window.open('popup.html#/popup-triplegeo', 'frame', 'resizeable,height=400,width=600');
 		//$window.open('popup.html#/popup-limes', 'frame', 'resizeable,top=100,left=100,height=400,width=400');
 		newWindow.params = params;
 		}

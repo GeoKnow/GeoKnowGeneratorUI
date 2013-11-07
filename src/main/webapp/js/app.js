@@ -20,6 +20,7 @@ app.config(function($routeSegmentProvider, $routeProvider)
         
         .when('/popup-limes','popup-limes')
         .when('/popup-triplegeo','popup-triplegeo')
+        .when('/popup-geolift','popup-geolift')
 
         .when('/home', 'default')
         .when('/account','account')
@@ -34,7 +35,7 @@ app.config(function($routeSegmentProvider, $routeProvider)
         .when('/home/extraction-and-loading/triplegeo', 'default.triplegeo')
         .when('/home/extraction-and-loading/triplegeo-result', 'default.triplegeo-result')
         .when('/home/querying-and-exploration/geospatial', 'default.geospatial')
-        .when('/home/querying-and-exploration/googlemap', 'default.googlemap')
+     /*   .when('/home/querying-and-exploration/googlemap', 'default.googlemap') */
         .when('/home/querying-and-exploration/facete', 'default.facete')
         .when('/home/querying-and-exploration/virtuoso', 'default.virtuoso')
         .when('/home/authoring/ontowiki', 'default.ontowiki')
@@ -52,6 +53,15 @@ app.config(function($routeSegmentProvider, $routeProvider)
             
         .segment('popup-triplegeo', {
             templateUrl: 'partials/extraction-and-loading/triplegeo-result.html',
+            resolve: {
+                      settings: function (Config) {
+                        return Config.read();
+                      }
+                }
+            })
+            
+        .segment('popup-geolift', {
+            templateUrl: 'partials/enriching-and-cleaning/geolift-result.html',
             resolve: {
                       settings: function (Config) {
                         return Config.read();
@@ -78,8 +88,8 @@ app.config(function($routeSegmentProvider, $routeProvider)
                     templateUrl: 'partials/extraction-and-loading/triplegeo-result.html' })
                 .segment('geospatial', {
                     templateUrl: 'partials/querying-and-exploration/geospatial.html'})
-                .segment('googlemap', {
-                    templateUrl: 'partials/querying-and-exploration/googlemap.html'})
+     /*           .segment('googlemap', {
+                    templateUrl: 'partials/querying-and-exploration/googlemap.html'}) */
                 .segment('facete', {
                     templateUrl: 'partials/querying-and-exploration/facete.html'})
                 .segment('virtuoso', {
