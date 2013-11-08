@@ -2,12 +2,12 @@
 
 html, body{
 	height:100%;
-	font: 13px Helvetica, arial, freesans, clean, sans-serif;
+	font: .87em Helvetica, arial, freesans, clean, sans-serif;
 }
 
 #contents{
-	position:absolute;
-	top:70px;
+	position:relative;
+	top:10px;
 	bottom:0;
 	width:100%;
 	max-width:1920px;
@@ -75,6 +75,11 @@ a.navbar-brand:hover{
 }
 
 /* Sidebar Menu */
+
+.sidebar{
+	padding-left:10px;
+	padding-bottom:15px;
+}
 
 .list-group-item{
 	border:none;
@@ -221,4 +226,10 @@ a.accordion-toggle:hover{
 	cursor: pointer;
 	color: #000000;
 	opacity:0.5;
+}
+
+/* Row width fix */
+
+.contents{
+	padding-right: 0px;
 }

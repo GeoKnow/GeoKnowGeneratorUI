@@ -1,4 +1,3 @@
-
 <h2>Data Sources</h2>
 
 
@@ -6,7 +5,7 @@
 
 <div ng-controller="EndpointCtrl">
 
-  <button type="button" class="btn btn-large btn-primary" 
+  <button type="button" class="btn btn-large btn-primary"
     ng-click="new();" data-toggle="modal" data-target="#modalEndpoint">Add new Endpoint</button>
 
   <div class="modal fade" id="modalEndpoint">
@@ -20,17 +19,17 @@
           <label for="uri" class="col-lg-2 control-label">Identifier</label>
           <div class="col-lg-10">
             <input type="text" class="form-control" name="identifier" id="identifier" placeholder="Identifier" ng-model="endpoint.uri" ng-disabled="!isNew()" required regex-validate="identifier" unique-identifier>
-            <div class="error"  ng-show="endpointForm.identifier.$dirty && endpointForm.identifier.$invalid">Invalid:
+            <div class="error" ng-show="endpointForm.identifier.$dirty && endpointForm.identifier.$invalid">Invalid:
               <span ng-show="endpointForm.identifier.$error.required || endpointForm.identifier.$error.regexValidate">Specify a valid identifier (letters and or numbers)</span>
               <span ng-show="endpointForm.identifier.$error.uniqueIdentifier">This identifier already exist</span>
             </div>
-          </div>  
+          </div>
         </div>
         <div class="form-group">
           <label for="label" class="col-lg-2 control-label">Label</label>
           <div class="col-lg-10">
             <input type="text" class="form-control" name="label" id="label" placeholder="Label" ng-model="endpoint.label" required>
-            <div class="error"  ng-show="endpointForm.label.$dirty && endpointForm.label.$invalid">Invalid:
+            <div class="error" ng-show="endpointForm.label.$dirty && endpointForm.label.$invalid">Invalid:
               <span ng-show="endpointForm.label.$error.required">Specify a valid label</span>
             </div>
           </div>
@@ -39,7 +38,7 @@
           <label for="endpoint" class="col-lg-2 control-label">Endpoint</label>
           <div class="col-lg-10">
             <input type="text" class="form-control" name="endpoint" id="endpoint" placeholder="Endpoint" ng-model="endpoint.endpoint" required regex-validate="sparqlEndpoint">
-             <div class="error"  ng-show="endpointForm.endpoint.$dirty && endpointForm.endpoint.$invalid">Invalid:
+             <div class="error" ng-show="endpointForm.endpoint.$dirty && endpointForm.endpoint.$invalid">Invalid:
               <span ng-show="endpointForm.endpoint.$error.required || endpointForm.endpoint.$error.regexValidate ">Specify a valid endpoint</span>
             </div>
           </div>
@@ -48,7 +47,7 @@
           <label for="homepage" class="col-lg-2 control-label">Homepage</label>
           <div class="col-lg-10">
             <input type="text" class="form-control" name="homepage" id="homepage" placeholder="Homepage" ng-model="endpoint.homepage" required regex-validate="url">
-             <div class="error"  ng-show="endpointForm.homepage.$dirty && endpointForm.homepage.$invalid">Invalid:
+             <div class="error" ng-show="endpointForm.homepage.$dirty && endpointForm.homepage.$invalid">Invalid:
               <span ng-show="endpointForm.homepage.$error.required || endpointForm.homepage.$error.regexValidate ">Specify a valid homepage</span>
             </div>
           </div>
@@ -75,7 +74,7 @@
     <tr ng-repeat="endpoint in endpoints">
       <td>
         <button type="button" class="btn btn-default btn-xs" ng-click="delete('{{endpoint.uri}}')"><span class="glyphicon glyphicon-trash"></span></button>
-        <button type="button" class="btn btn-default btn-xs" ng-click="edit('{{endpoint.uri}}');"  data-toggle="modal" data-target="#modalEndpoint"><span class="glyphicon glyphicon-edit"></span></button>
+        <button type="button" class="btn btn-default btn-xs" ng-click="edit('{{endpoint.uri}}');" data-toggle="modal" data-target="#modalEndpoint"><span class="glyphicon glyphicon-edit"></span></button>
       </td>
       <td>{{endpoint.uri}}</td>
       <td>{{endpoint.label}}</td>
@@ -92,7 +91,7 @@
 
 <div ng-controller="DatabaseCtrl">
 
-  <button type="button" class="btn btn-large btn-primary" 
+  <button type="button" class="btn btn-large btn-primary"
     ng-click="new();" data-toggle="modal" data-target="#modalDatabase">Add new Database</button>
 
   <div class="modal fade" id="modalDatabase">
@@ -106,7 +105,7 @@
           <label for="identifier" class="col-lg-2 control-label">Identifier</label>
           <div class="col-lg-10">
             <input type="text" class="form-control" id="identifier" name="identifier" placeholder="Identifier" ng-model="database.uri" ng-disabled="!isNew()" required regex-validate="identifier" unique-identifier >
-            <div class="error"  ng-show="databaseForm.identifier.$dirty && databaseForm.identifier.$invalid">Invalid:
+            <div class="error" ng-show="databaseForm.identifier.$dirty && databaseForm.identifier.$invalid">Invalid:
               <span ng-show="databaseForm.identifier.$error.required || databaseForm.identifier.$error.regexValidate ">Specify a valid identifier (letters and or numbers)</span>
               <span ng-show="databaseForm.identifier.$error.uniqueIdentifier">This identifier already exist</span>
             </div>
@@ -116,7 +115,7 @@
           <label for="label" class="col-lg-2 control-label">Label</label>
           <div class="col-lg-10">
             <input type="text" class="form-control" name="label" id="label" placeholder="Label" ng-model="database.label" required>
-            <div class="error"  ng-show="databaseForm.label.$dirty && databaseForm.label.$invalid">Invalid:
+            <div class="error" ng-show="databaseForm.label.$dirty && databaseForm.label.$invalid">Invalid:
               <span ng-show="databaseForm.label.$error.required">Specify a valid label</span>
             </div>
           </div>
@@ -133,7 +132,7 @@
           <label for="dbHost" class="col-lg-2 control-label">Host</label>
           <div class="col-lg-10">
             <input type="text" class="form-control" id="dbHost" name="dbHost" placeholder="Host" ng-model="database.dbHost" required>
-            <div class="error"  ng-show="databaseForm.dbHost.$dirty && databaseForm.dbHost.$invalid">Invalid:
+            <div class="error" ng-show="databaseForm.dbHost.$dirty && databaseForm.dbHost.$invalid">Invalid:
               <span ng-show="databaseForm.dbHost.$error.required">Specify a valid Host</span>
             </div>
           </div>
@@ -142,7 +141,7 @@
           <label for="dbPort" class="col-lg-2 control-label">Port</label>
           <div class="col-lg-10">
             <input type="text" class="form-control" id="dbPort" name="dbPort" placeholder="Port" ng-model="database.dbPort" required>
-            <div class="error"  ng-show="databaseForm.dbPort.$dirty && databaseForm.dbPort.$invalid">Invalid:
+            <div class="error" ng-show="databaseForm.dbPort.$dirty && databaseForm.dbPort.$invalid">Invalid:
               <span ng-show="databaseForm.dbPort.$error.required">Specify a valid port number</span>
             </div>
           </div>
@@ -151,7 +150,7 @@
           <label for="dbName" class="col-lg-2 control-label">Database Name</label>
           <div class="col-lg-10">
             <input type="text" class="form-control" id="dbName" name="dbName" placeholder="Database" ng-model="database.dbName" required>
-            <div class="error"  ng-show="databaseForm.dbName.$dirty && databaseForm.dbName.$invalid">Invalid:
+            <div class="error" ng-show="databaseForm.dbName.$dirty && databaseForm.dbName.$invalid">Invalid:
               <span ng-show="databaseForm.dbName.$error.required">Specify a valid database name</span>
             </div>
           </div>
@@ -160,7 +159,7 @@
           <label for="dbUser" class="col-lg-2 control-label">User</label>
           <div class="col-lg-10">
             <input type="text" class="form-control" id="dbUser" name="dbUser" placeholder="User" ng-model="database.dbUser" required>
-            <div class="error"  ng-show="databaseForm.dbUser.$dirty && databaseForm.dbUser.$invalid">Invalid:
+            <div class="error" ng-show="databaseForm.dbUser.$dirty && databaseForm.dbUser.$invalid">Invalid:
               <span ng-show="databaseForm.dbUser.$error.required">Specify a valid user</span>
             </div>
           </div>
@@ -169,7 +168,7 @@
           <label for="dbPassword" class="col-lg-2 control-label">Password</label>
           <div class="col-lg-10">
             <input type="text" class="form-control" id="dbPassword" name="dbPassword" placeholder="Password" ng-model="database.dbPassword" required>
-            <div class="error"  ng-show="databaseForm.dbPassword.$dirty && databaseForm.dbPassword.$invalid">Invalid:
+            <div class="error" ng-show="databaseForm.dbPassword.$dirty && databaseForm.dbPassword.$invalid">Invalid:
               <span ng-show="databaseForm.dbPassword.$error.required">Specify a valid password</span>
             </div>
           </div>

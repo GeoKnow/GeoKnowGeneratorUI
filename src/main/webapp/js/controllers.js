@@ -273,7 +273,7 @@ var LimesCtrl = function($scope, $http, ConfigurationService, flash, ServerError
 					 };
 		
 		$window.$windowScope = $scope;
- 		var newWindow = $window.open('popup.html#/popup-limes', 'frame', 'resizeable,height=400,width=600');
+ 		var newWindow = $window.open('popup.html#/popup-limes', 'frame', 'resizeable,height=600,width=800');
 		//$window.open('popup.html#/popup-limes', 'frame', 'resizeable,top=100,left=100,height=400,width=400');
 		newWindow.params = params;
 	}
@@ -398,6 +398,21 @@ var LimesCtrl = function($scope, $http, ConfigurationService, flash, ServerError
 
 		}
 	
+		$scope.save = function(){
+			var endpoint = $scope.saveEndpoint;
+			
+			$http({
+				url: serviceUrl+"/LIMESave",
+		        method: "POST",
+		        dataType: "json",
+		        contentType: "application/json; charset=utf-8"
+		      }).then(function(data){
+		    	  				console.log(data);
+		      				}, function (response){ // in the case of an error      	
+							 	flash.error = ServerErrorResponse.getMessage(response.status);
+		    			});
+			}
+	
 		$scope.uploadedError =  function(){
 		    return uploadError;
 		};
@@ -419,6 +434,7 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErr
 	var uploadError = false;
 	var uploadedFiles = null;
 	var count = 0;
+	var isCompletePath = 0;
 	
 	$scope.options = {
 			inputFile: false,
@@ -453,6 +469,7 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErr
 			$scope.options.configFile = false;
 		}
 		if($name == "SPARQL Endpoint"){
+			isCompletePath = 1;
 			$scope.configOptions = true;
 			$scope.addParamButton = true;
 			$scope.options.epExamples = true;
@@ -548,6 +565,7 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErr
 		
 		if(example === "Dbpedia endpoint enrichment"){
 			
+			isCompletePath = 1;
 			$scope.endpointSelect = $scope.endpoints[0];
 			sourceInput = $scope.endpointSelect.endpoint;
 			$scope.inputDisplay = sourceInput;
@@ -570,6 +588,7 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErr
 		
 		 if(example === "Berlin Turtle File"){
 			 
+			 isCompletePath = 1;
 			 $scope.options.inputFile = false;
 			 sourceInput = "berlin.ttl";
 			 $scope.inputDisplay = sourceInput;
@@ -659,9 +678,11 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErr
 		          params[i+2] = $scope.params[0].inputs[i].index + " " + $scope.params[0].inputs[i].module;
 		          
 		                                  }
+		 
+		 params[params.length-1] = isCompletePath;
 			
 			$window.$windowScope = $scope;
-	 	var newWindow = $window.open('popup.html#/popup-geolift', 'frame', 'resizeable,height=400,width=600');
+	 	var newWindow = $window.open('popup.html#/popup-geolift', 'frame', 'resizeable,height=600,width=800');
 			newWindow.params = params;
 		}
 	
@@ -669,6 +690,7 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErr
 		
 		var params = $window.params;
 		$scope.showProgress = true;
+		$scope.reviewForm = false;
 		
 			$http({
 				url: serviceUrl+"/GeoLiftRun",
@@ -710,7 +732,18 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErr
 	
 	$scope.save = function(){
 		var endpoint = $scope.saveEndpoint;
-	}
+		
+		$http({
+			url: serviceUrl+"/GeoLiftSave",
+	        method: "POST",
+	        dataType: "json",
+	        contentType: "application/json; charset=utf-8"
+	      }).then(function(data){
+	    	  				console.log(data);
+	      				}, function (response){ // in the case of an error      	
+						 	flash.error = ServerErrorResponse.getMessage(response.status);
+	    			});
+		}
 	
 }
 
@@ -718,6 +751,7 @@ var TripleGeoCtrl = function($scope, $http, ConfigurationService, flash, ServerE
 	
 	var services = ConfigurationService.getComponentServices(":TripleGeo");
 	var serviceUrl = services[0].serviceUrl;
+	$scope.endpoints = ConfigurationService.getAllEndpoints();
 	$scope.inputForm = true;
 	$scope.configOptions = true;
 	$scope.dbLogin = true;
@@ -1043,7 +1077,7 @@ var TripleGeoCtrl = function($scope, $http, ConfigurationService, flash, ServerE
 		}
 			
 		$window.$windowScope = $scope;
- 		var newWindow = $window.open('popup.html#/popup-triplegeo', 'frame', 'resizeable,height=400,width=600');
+ 		var newWindow = $window.open('popup.html#/popup-triplegeo', 'frame', 'resizeable,height=600,width=800');
 		//$window.open('popup.html#/popup-limes', 'frame', 'resizeable,top=100,left=100,height=400,width=400');
 		newWindow.params = params;
 		}
@@ -1097,6 +1131,22 @@ var TripleGeoCtrl = function($scope, $http, ConfigurationService, flash, ServerE
 				flash.error = ServerErrorResponse.getMessage(response.status);
 	    	});
 		}
+	
+	$scope.save = function(){
+		var endpoint = $scope.saveEndpoint;
+		
+		$http({
+			url: serviceUrl+"/TripleGeoSave",
+	        method: "POST",
+	        dataType: "json",
+	        contentType: "application/json; charset=utf-8"
+	      }).then(function(data){
+	    	  				console.log(data);
+	      				}, function (response){ // in the case of an error      	
+						 	flash.error = ServerErrorResponse.getMessage(response.status);
+	    			});
+		}
+	
 }
 
 /*
