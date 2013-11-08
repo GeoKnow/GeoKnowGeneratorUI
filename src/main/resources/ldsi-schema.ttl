@@ -70,12 +70,12 @@
       rdfs:comment "Represents the agent responsible for quality analysis."@en ;
       rdfs:subClassOf :ComponentService .
 
-:QueryEndPoint
+:QueryEndPointService
       rdf:type owl:Class ;
       rdfs:comment "Represents a query end point"@en ;
       rdfs:subClassOf :ExplorationService .
 
-:SPARQLEndPoint
+:SPARQLEndPointService
       rdf:type owl:Class ;
       rdfs:comment "Represents a Sparql query end point"@en ;
       rdfs:subClassOf :QueryEndPoint .

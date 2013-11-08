@@ -2,7 +2,7 @@
 
 function GeneralSettingsCtrl($scope, ConfigurationService) {
 
-	$scope.endpointServices = ConfigurationService.getResourcesType("lds:SPARQLEndPoint");
+	$scope.endpointServices = ConfigurationService.getResourcesType("lds:SPARQLEndPointService");
 
 	$scope.settings = { 
 			uriBase 				: ConfigurationService.getUriBase(), 

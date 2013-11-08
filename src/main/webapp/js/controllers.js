@@ -137,7 +137,7 @@ app.controller('OntoWikiCtrl', function($scope, ConfigurationService) {
 app.controller('VirtuosoCtrl', function($scope, ConfigurationService) {
 
 	$scope.component = ConfigurationService.getComponent(":Virtuoso");
-	$scope.services = ConfigurationService.getComponentServices(":Virtuoso", "lds:SPARQLEndPoint");
+	$scope.services = ConfigurationService.getComponentServices(":Virtuoso", "lds:SPARQLEndPointService");
 	$scope.url = ConfigurationService.getSPARQLEndpoint();
 
 });
