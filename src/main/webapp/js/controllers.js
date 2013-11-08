@@ -588,7 +588,7 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErr
 		
 		 if(example === "Berlin Turtle File"){
 			 
-			 isCompletePath = 1;
+			 isCompletePath = 0;
 			 $scope.options.inputFile = false;
 			 sourceInput = "berlin.ttl";
 			 $scope.inputDisplay = sourceInput;
@@ -672,14 +672,13 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErr
 		 var params = {};
          params[0] = $scope.params[0].inputs.length;
          params[1] = sourceInput;
+         params[2] = isCompletePath;
          
 		 for(var i=0; i<$scope.params[0].inputs.length; i++){
 		         
-		          params[i+2] = $scope.params[0].inputs[i].index + " " + $scope.params[0].inputs[i].module;
+		          params[i+3] = $scope.params[0].inputs[i].index + " " + $scope.params[0].inputs[i].module;
 		          
 		                                  }
-		 
-		 params[params.length-1] = isCompletePath;
 			
 			$window.$windowScope = $scope;
 	 	var newWindow = $window.open('popup.html#/popup-geolift', 'frame', 'resizeable,height=600,width=800');
@@ -731,12 +730,19 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErr
 		}
 	
 	$scope.save = function(){
-		var endpoint = $scope.saveEndpoint;
+		
+		parameters ={
+		        rdfFiles: "result.rdf", 
+		        endpoint: $scope.saveEndpoint, 
+		        graph: "http://localhost:8890/GeoLift",//$scope.saveDataset, 
+		        uriBase : ConfigurationService.getUriBase()
+		      	};
 		
 		$http({
-			url: serviceUrl+"/GeoLiftSave",
+			url: serviceUrl+"/ImportRDF",
 	        method: "POST",
 	        dataType: "json",
+	        params: parameters,
 	        contentType: "application/json; charset=utf-8"
 	      }).then(function(data){
 	    	  				console.log(data);
@@ -1210,7 +1216,7 @@ var ImportFormCtrl = function($scope, $http, ConfigurationService, flash) {
 	$scope.uploadMessage = '';
 		  
 	var uploadError = false;
-  var uploading = false;
+    var uploading = false;
 	var importing = false;
 	var uploadedFiles = null;
 		
