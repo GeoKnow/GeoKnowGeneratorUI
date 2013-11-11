@@ -1,11 +1,13 @@
-<h2>Data Sources</h2>
 
 
-<h3>SPARQL Endpoint</h3>
+<h3 class="green bold">Data Sources</h3>
+
+
+<h4>SPARQL Endpoint</h4>
 
 <div ng-controller="EndpointCtrl">
 
-  <button type="button" class="btn btn-large btn-primary"
+  <button type="button" class="btn btn-success btn-large"
     ng-click="new();" data-toggle="modal" data-target="#modalEndpoint">Add new Endpoint</button>
 
   <div class="modal fade" id="modalEndpoint">
@@ -87,11 +89,11 @@
 </div>
 
 
-<h3>Relational Databases</h3>
+<h4>Relational Databases</h4>
 
 <div ng-controller="DatabaseCtrl">
 
-  <button type="button" class="btn btn-large btn-primary"
+  <button type="button" class="btn btn-success btn-large"
     ng-click="new();" data-toggle="modal" data-target="#modalDatabase">Add new Database</button>
 
   <div class="modal fade" id="modalDatabase">
@@ -215,3 +217,4 @@
   </table>
 <!-- DatabaseCtrl Controller -->
 </div>
+

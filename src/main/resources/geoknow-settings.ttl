@@ -83,7 +83,7 @@
                 lds:dbUser "dba"^^xsd:string ;
                 lds:serviceUrl <http://generator.geoknow.eu:8890/conductor>
               ] ;
-      lds:providesService :VirtuosoGeneratorEndpoint, :OntosVirtuosoEndpoint, :MorgesVirtuosoEndpoint ;
+      lds:providesService :VirtuosoGeneratorEndpoint ;
       lds:version "7.0"^^xsd:string ;
       foaf:homepage <http://virtuoso.openlinksw.com/> .
 
@@ -109,7 +109,7 @@
               [ a       lds:InterlinkingService ;
                 lds:serviceUrl <http://generator.geoknow.eu:8080/Limes-Service>
               ] ;
-      lds:version "0.6.4ss"^^xsd:string ;
+      lds:version "0.6.4"^^xsd:string ;
       foaf:homepage <http://aksw.org/Projects/LIMES.html> .
       
 :TripleGeo
