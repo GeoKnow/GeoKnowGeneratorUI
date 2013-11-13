@@ -25,7 +25,9 @@ Note that the endpoint has to support [UPDATE](http://www.w3.org/TR/2013/REC-spa
 	* geoknow-settings.ttl : description of integrated services, this may depend on the integration you want to have in your application. It will provide required infomration about the stack components. 
 	* service-description.ttl : a basic dataset example using [Void](http://www.w3.org/TR/void/) and [Service Description](http://www.w3.org/TR/2013/REC-sparql11-service-description-20130321/) that is used by the generator to describe datasets and datasources.
 	
- 
+## Optional Extra Configutation
+
+Depending on the components you use in the Generator some extra configurations may be required.  
 
 ### Using Virtuoso Endpoint
 
@@ -39,6 +41,10 @@ If you have a Virtuoso Endpoint, you can configure the following:
 
 2. [Enable CORS for Virtuoso](http://virtuoso.openlinksw.com/dataspace/dav/wiki/Main/VirtTipsAndTricksCORsEnableSPARQLURLs) SPARQL endpoint.
 
+
+### Using OntoWiki-Virtuoso
+
+In order that [OntoWiki](https://github.com/AKSW/OntoWiki) is able to access Virtuoso store, besides the installation of the OntoWiki-Virtuoso component you need to follow the instructions of OntoWiku using [Virtuoso Backend](https://github.com/AKSW/OntoWiki/wiki/VirtuosoBackend).
 
 ## Licence
 

@@ -25,7 +25,7 @@
       rdfs:label "Database"^^xsd:string ;
       rdfs:subClassOf :DataSource .
 
-:SPARQLendpoint
+:SPARQLEndpoint
       rdf:type owl:Class ;
       rdfs:label "SPARQL endpoint"^^xsd:string ;
       rdfs:subClassOf :DataSource .
@@ -75,7 +75,7 @@
 
 :endpoint
       rdf:type owl:DatatypeProperty ;
-      rdfs:domain :SPARQLendpoint ;
+      rdfs:domain :SPARQLEndpoint ;
       rdfs:label "Service URL"^^xsd:string .
  
  
@@ -92,7 +92,23 @@
       rdf:type owl:DatatypeProperty ;
       rdfs:comment "ODBC DSN" ;
       rdfs:label "ODBC data source name. Deprecated, use JDBC instead (with ODBC-JDBC bridge if necessary)." .
- 
+
+:IBM_DB2
+      rdf:type :DatabaseType ;
+      rdfs:label "IBM DB2"^^xsd:string .
+
+:MySQL
+      rdf:type :DatabaseType ;
+      rdfs:label "MySQL"^^xsd:string .
+
+:OracleSpatial
+      rdf:type :DatabaseType ;
+      rdfs:label "Oracle Spatial"^^xsd:string .
+
+:PostGIS
+      rdf:type :DatabaseType ;
+      rdfs:label "PostGIS"^^xsd:string .
+
 dcterms:creator
       rdf:type owl:DatatypeProperty ;
       rdfs:domain void:Dataset ;

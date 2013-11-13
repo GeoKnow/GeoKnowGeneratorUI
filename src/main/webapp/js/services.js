@@ -85,7 +85,7 @@ module.factory('ConfigurationService', function(Config) {
 
     getDatabaseTypes: function(){
       var results = [];
-      var elements = Config.select("rdf:type", "lds:DatabaseType");
+      var elements = Config.select("rdf:type", "gkg:DatabaseType");
       for (var resource in elements)
       {
         var element = elements[resource];
@@ -120,7 +120,7 @@ module.factory('ConfigurationService', function(Config) {
     */
     getAllEndpoints: function(){
       var results = [];
-      var elements = Config.select("rdf:type", "lds:SPARQLendpoint");
+      var elements = Config.select("rdf:type", "gkg:SPARQLEndpoint");
 
       for (var resource in elements)
       {
@@ -129,8 +129,8 @@ module.factory('ConfigurationService', function(Config) {
         {
           uri      : resource
         , label    : element["rdfs:label"][0]
-        , endpoint    : element["void:sparqlEndpoint"][0]
-        , homepage    : element["foaf:homepage"][0]
+        , endpoint : element["void:sparqlEndpoint"][0]
+        , homepage : element["foaf:homepage"][0]
         });
       }
       return results;
@@ -152,7 +152,7 @@ module.factory('ConfigurationService', function(Config) {
       settings[endpoint.uri] = { 
                     "rdfs:label" : [endpoint.label]
                   , "foaf:homepage" : [endpoint.homepage]
-                  , "rdf:type": ["void:Dataset", "lds:SPARQLendpoint"] 
+                  , "rdf:type": ["void:Dataset", "gkg:SPARQLEndpoint", "gkg:DataSource"] 
                   , "void:sparqlEndpoint" : [endpoint.endpoint]
                 };
       Config.write();
@@ -173,20 +173,25 @@ module.factory('ConfigurationService', function(Config) {
     */
     getAllDatabases: function(){
       var results = [];
-      var elements = Config.select("rdf:type", "lds:Database");
+      var elements = Config.select("rdf:type", "gkg:Database");
       for (var resource in elements)
       {
         var element = elements[resource];
+        // var typeLabel = Config.getSettings()[element["gkg:dbType"][0]]["rdfs:label"];
+        var type = Config.getSettings()[element["gkg:dbType"][0]];
+        
+        if(type != undefined)
+          type = type["rdfs:label"][0];
         results.push(
         {
           uri  : resource
         , label       : element["rdfs:label"][0]
-        , dbHost      : element["lds:dbHost"][0]
-        , dbName      : element["lds:dbName"][0]
-        , dbUser      : element["lds:dbUser"][0]
-        , dbPort      : element["lds:dbPort"][0]
-        , dbType      : element["lds:dbType"][0]
-        , dbPassword  : element["lds:dbPassword"][0]
+        , dbHost      : element["gkg:dbHost"][0]
+        , dbName      : element["gkg:dbName"][0]
+        , dbUser      : element["gkg:dbUser"][0]
+        , dbPort      : element["gkg:dbPort"][0]
+        , dbType      : type
+        , dbPassword  : element["gkg:dbPassword"][0]
         });
       }
       return results;     
@@ -197,12 +202,12 @@ module.factory('ConfigurationService', function(Config) {
       var results = {
           uri        : uri
         , label      : settings[uri]["rdfs:label"][0]
-        , dbHost     : settings[uri]["lds:dbHost"][0]
-        , dbName     : settings[uri]["lds:dbName"][0]
-        , dbPort     : settings[uri]["lds:dbPort"][0]
-        , dbType     : settings[uri]["lds:dbType"][0]
-        , dbUser     : settings[uri]["lds:dbUser"][0]
-        , dbPassword : settings[uri]["lds:dbPassword"][0]
+        , dbHost     : settings[uri]["gkg:dbHost"][0]
+        , dbName     : settings[uri]["gkg:dbName"][0]
+        , dbPort     : settings[uri]["gkg:dbPort"][0]
+        , dbType     : settings[uri]["gkg:dbType"][0]
+        , dbUser     : settings[uri]["gkg:dbUser"][0]
+        , dbPassword : settings[uri]["gkg:dbPassword"][0]
       };
       return results; 
     },
@@ -211,13 +216,13 @@ module.factory('ConfigurationService', function(Config) {
       var settings = Config.getSettings();
       settings[database.uri] = { 
                     "rdfs:label"     : [database.label]
-                  , "lds:dbHost"     : [database.dbHost]
-                  , "rdf:type"       : ["void:Dataset", "lds:Database"] 
-                  , "lds:dbPort"     : [database.dbPort]
-                  , "lds:dbName"     : [database.dbName]
-                  , "lds:dbType"     : [database.dbType]
-                  , "lds:dbUser"     : [database.dbUser]
-                  , "lds:dbPassword" : [database.dbPassword]
+                  , "gkg:dbHost"     : [database.dbHost]
+                  , "rdf:type"       : ["void:Dataset", "gkg:Database", "gkg:DataSource"] 
+                  , "gkg:dbPort"     : [database.dbPort]
+                  , "gkg:dbName"     : [database.dbName]
+                  , "gkg:dbType"     : [database.dbType]
+                  , "gkg:dbUser"     : [database.dbUser]
+                  , "gkg:dbPassword" : [database.dbPassword]
                 };
       Config.write();
       return true;
@@ -226,12 +231,12 @@ module.factory('ConfigurationService', function(Config) {
     updateDatabase: function(pDatabase){
       var database = Config.getSettings()[pDatabase.uri];
       database["rdfs:label"][0]      = pDatabase.label;
-      database["lds:dbHost"][0]      = pDatabase.dbHost;
-      database["lds:dbType"][0]      = pDatabase.dbType;
-      database["lds:dbPort"][0]      = pDatabase.dbPort;
-      database["lds:dbName"][0]      = pDatabase.dbName;
-      database["lds:dbUser"][0]      = pDatabase.dbUser;
-      database["lds:dbPassword"][0]  = pDatabase.dbPassword;
+      database["gkg:dbHost"][0]      = pDatabase.dbHost;
+      database["gkg:dbType"][0]      = pDatabase.dbType;
+      database["gkg:dbPort"][0]      = pDatabase.dbPort;
+      database["gkg:dbName"][0]      = pDatabase.dbName;
+      database["gkg:dbUser"][0]      = pDatabase.dbUser;
+      database["gkg:dbPassword"][0]  = pDatabase.dbPassword;
       Config.write();
       return true;
     },
