@@ -717,7 +717,6 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErr
 	    	  console.log(data);
 	    	  		var results = data.data[0];
 	    	  		results = results.substring(13,results.length-3);
-	    	  		console.log(results);
 	    	  		$scope.results = results;
 	    	  		
 	    		  	$scope.showProgress = false;
@@ -731,8 +730,8 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErr
 	
 	$scope.save = function(){
 		
-		parameters ={
-		        rdfFiles: "result.rdf", 
+		var parameters = {
+		        rdfFile: "result.rdf", 
 		        endpoint: $scope.saveEndpoint, 
 		        graph: "http://localhost:8890/GeoLift",//$scope.saveDataset, 
 		        uriBase : ConfigurationService.getUriBase()
