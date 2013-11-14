@@ -425,6 +425,7 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErr
 	var serviceUrl = services[0].serviceUrl;
 	
 	$scope.endpoints = ConfigurationService.getAllEndpoints();
+	$scope.namedGraphs = ConfigurationService.getAllNamedGraphs();
 	
 	$scope.inputForm = true;
 	$scope.configOptions = true;
@@ -731,9 +732,9 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErr
 	$scope.save = function(){
 		
 		var parameters = {
-		        rdfFile: "result.rdf", 
+		        rdfFile: "result.ttl", 
 		        endpoint: $scope.saveEndpoint, 
-		        graph: "http://localhost:8890/GeoLift",//$scope.saveDataset, 
+		        graph: $scope.saveDataset, 
 		        uriBase : ConfigurationService.getUriBase()
 		      	};
 		
@@ -743,12 +744,22 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErr
 	        dataType: "json",
 	        params: parameters,
 	        contentType: "application/json; charset=utf-8"
-	      }).then(function(data){
-	    	  				console.log(data);
-	      				}, function (response){ // in the case of an error      	
-						 	flash.error = ServerErrorResponse.getMessage(response.status);
-	    			});
-		}
+		})
+	      .success(function (data, status, headers, config){
+	        if(data.status=="FAIL"){
+	          flash.error = data.message;
+	          importing = false;
+	        }
+	        else{
+	          flash.success = data.message;
+	          $scope.resetValues();
+	        }
+	      })
+	      .error(function(data, status, headers, config) {
+	          flash.error = data;
+	          $scope.resetValues();
+	      });
+	  };
 	
 }
 
