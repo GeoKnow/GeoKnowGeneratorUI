@@ -57,10 +57,13 @@
 	</div>
 	
 	<div class="row below" ng-controller="ImportFormCtrl" ng-show="options.file">
-			<label for="inputFile" class="col-xs-2 control-label">Upload a Shape File</label>
+			<div class="col-xs-2">
+			<label class="control-label">Upload Files</label><i class="glyphicon glyphicon-warning-sign" style="margin-left:5px"
+				data-toggle="tooltip" data-original-title="{{tooltips.files}}"></i>
+				</div>
 		    	<div class="col-xs-8">
 					    <input id="lefile" class="form-control input-sm" type="file" ng-file-select="loadShapeFile($files); onFileSelect($files)" 
-					    		multiple name="fileName" accept=".shp" style="display:none">
+					    		multiple name="fileName" accept=".shp, .shx, .dbf" style="display:none">
 					  	<div class="error" ng-show="uploadedError()">Invalid:
 					  	<span>{{uploadMessage}}</span></div>
 						<div class="input-append">

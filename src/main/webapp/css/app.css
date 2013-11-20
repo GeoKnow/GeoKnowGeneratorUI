@@ -227,3 +227,11 @@ a.accordion-toggle:hover{
 	color: #000000;
 	opacity:0.5;
 }
+
+/* Glyphicons */
+
+.glyphicon-warning-sign {
+	font-size: 1.4em;
+	color: red;
+}
+

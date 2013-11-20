@@ -183,8 +183,8 @@ function GraphCtrl($scope, ConfigurationService){
 		$scope.graphForm.$setPristine();
 		$scope.modaltitle = "New Named Graph";
 		var now = new Date();
-	  //"YYYY-MM-DDThh:mm:ss"^^xsd:date;
-	  var month = now.getMonth() + 1; // getMonth returns values from 0 to 11
+	    //"YYYY-MM-DDThh:mm:ss"^^xsd:date;
+	    var month = now.getMonth() + 1; // getMonth returns values from 0 to 11
 		var s_now = now.getFullYear() + "-" 
 							+ (month.toString().length==1 ? "0"+ month : month + "-") 
 							+ (now.getDate().toString().length==1 ? "0"+now.getDate() : now.getDate())

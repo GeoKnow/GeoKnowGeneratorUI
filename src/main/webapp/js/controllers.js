@@ -791,6 +791,7 @@ var TripleGeoCtrl = function($scope, $http, ConfigurationService, flash, ServerE
 	var uploadError = false;
 	var uploadedFiles = null;
 	var inputFileName = null;
+	var fileType = null;
 	var params = {};
 	$('i').tooltip();
 	
@@ -810,7 +811,9 @@ var TripleGeoCtrl = function($scope, $http, ConfigurationService, flash, ServerE
 	configArray[13] = ['targetRS', ''];
 	configArray[14] = ['defaultLang', ''];
 	
-	$scope.tooltips = { data: "Change parameters to reflect the shapefile contents that will be extracted - case sensitive!",
+	$scope.tooltips = { files: "When the file upload dialog opens, select the .shp, .shx, and .dbf files " +
+								"you wish to upload and process. Only these 3 files are necessary.",
+						data: "Change parameters to reflect the shapefile contents that will be extracted - case sensitive!",
 						ns: "Optional parameters. Change these parameters if you want to use different"+
 							"values for the namespaces and prefixes nsPrefix=georesource",
 						spatial: "Optional parameters. These fields should be filled in if a transformation between EPSG reference systems is needed"+
@@ -967,11 +970,18 @@ var TripleGeoCtrl = function($scope, $http, ConfigurationService, flash, ServerE
 	}
 	
 	$scope.loadShapeFile = function($files){
-		$scope.options.fileExample = false;
-		$scope.options.displayConfigUpload = true;
-		inputFileName = $files[0].name;
-		$('#dummyShapeInput').val(inputFileName);
-		$scope.configForm = true;
+		if($files.length!=3){
+			alert("You chose either too few or too many files. Please select the .shp, .shx and .dbf " +
+					"shape files (1 of each) which you wish to convert. The files must share the same base name.");
+		}else{
+			$scope.options.fileExample = false;
+			$scope.options.displayConfigUpload = true;
+			inputFileName = $files[0].name;
+			inputFileName = inputFileName.split(".");
+			inputFileName = inputFileName[0]+".shp";
+			$('#dummyShapeInput').val(inputFileName+".shp");
+			$scope.configForm = true;
+			}
 		}
 
 	$scope.loadConfigFile = function($files){
@@ -1125,9 +1135,10 @@ var TripleGeoCtrl = function($scope, $http, ConfigurationService, flash, ServerE
 		      }).then(function(data) {
 		    	$scope.stTripleGeo = false;
 		    	$scope.showProgress = false;
-		    	$scope.reviewTripleGeoResult(data.data);
+		    	fileType = data.data;
+		    	$scope.reviewTripleGeoResult(fileType);
 		      }, function (response){ // in the case of an error      	
-		      	$scope.stTripleGeo = false;
+		      		$scope.stTripleGeo = false;
 		    		$scope.showProgress = false;
 						flash.error = ServerErrorResponse.getMessage(response.status);
 	    		});
@@ -1164,7 +1175,8 @@ var TripleGeoCtrl = function($scope, $http, ConfigurationService, flash, ServerE
 	$scope.save = function(){
 		
 		var parameters = {
-		        rdfFile: "result.rdf", 
+		        rdfFile: "result."+fileType,
+		        fileType: fileType,
 		        endpoint: $scope.saveEndpoint, 
 		        graph: $scope.saveDataset, 
 		        uriBase : ConfigurationService.getUriBase()
