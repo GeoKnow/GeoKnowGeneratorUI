@@ -399,23 +399,35 @@ var LimesCtrl = function($scope, $http, ConfigurationService, flash, ServerError
 		}
 	
 		$scope.save = function(){
-			var endpoint = $scope.saveEndpoint;
-			
-			$http({
-				url: serviceUrl+"/LIMESave",
-		        method: "POST",
-		        dataType: "json",
-		        contentType: "application/json; charset=utf-8"
-		      }).then(function(data){
-		    	  				console.log(data);
-		      				}, function (response){ // in the case of an error      	
-							 	flash.error = ServerErrorResponse.getMessage(response.status);
-		    			});
-			}
-	
-		$scope.uploadedError =  function(){
-		    return uploadError;
-		};
+				
+				var parameters = {
+				        rdfFile: "accepted.nt", 
+				        endpoint: $scope.saveEndpoint, 
+				        graph: $scope.saveDataset, 
+				        uriBase : ConfigurationService.getUriBase()
+				      	};
+				
+				$http({
+					url: serviceUrl+"/ImportRDF",
+			        method: "POST",
+			        dataType: "json",
+			        params: parameters,
+			        contentType: "application/json; charset=utf-8"
+				})
+			      .success(function (data, status, headers, config){
+			        if(data.status=="FAIL"){
+			          flash.error = data.message;
+			          importing = false;
+			        }
+			        else{
+			          flash.success = data.message;
+			          console.log(data);
+			        }
+			      })
+			      .error(function(data, status, headers, config) {
+			          flash.error = data;
+			      });
+			  };
 	
 }
 
@@ -752,12 +764,10 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErr
 	        }
 	        else{
 	          flash.success = data.message;
-	          $scope.resetValues();
 	        }
 	      })
 	      .error(function(data, status, headers, config) {
 	          flash.error = data;
-	          $scope.resetValues();
 	      });
 	  };
 	
@@ -773,6 +783,9 @@ var TripleGeoCtrl = function($scope, $http, ConfigurationService, flash, ServerE
 	$scope.dbLogin = true;
 	$scope.configForm = false;
 	var configArray = new Array();
+	
+	$scope.endpoints = ConfigurationService.getAllEndpoints();
+	$scope.namedGraphs = ConfigurationService.getAllNamedGraphs();
 	$scope.databases = ConfigurationService.getAllDatabases();
 
 	var uploadError = false;
@@ -1149,19 +1162,34 @@ var TripleGeoCtrl = function($scope, $http, ConfigurationService, flash, ServerE
 		}
 	
 	$scope.save = function(){
-		var endpoint = $scope.saveEndpoint;
+		
+		var parameters = {
+		        rdfFile: "result.rdf", 
+		        endpoint: $scope.saveEndpoint, 
+		        graph: $scope.saveDataset, 
+		        uriBase : ConfigurationService.getUriBase()
+		      	};
 		
 		$http({
-			url: serviceUrl+"/TripleGeoSave",
+			url: serviceUrl+"/ImportRDF",
 	        method: "POST",
 	        dataType: "json",
+	        params: parameters,
 	        contentType: "application/json; charset=utf-8"
-	      }).then(function(data){
-	    	  				console.log(data);
-	      				}, function (response){ // in the case of an error      	
-						 	flash.error = ServerErrorResponse.getMessage(response.status);
-	    			});
-		}
+		})
+	      .success(function (data, status, headers, config){
+	        if(data.status=="FAIL"){
+	          flash.error = data.message;
+	          importing = false;
+	        }
+	        else{
+	          flash.success = data.message;
+	        }
+	      })
+	      .error(function(data, status, headers, config) {
+	          flash.error = data;
+	      });
+	  };
 	
 }
 
