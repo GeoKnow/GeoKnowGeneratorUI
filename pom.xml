@@ -4,9 +4,8 @@
   <groupId>eu.geoknow</groupId>
   <artifactId>generator</artifactId>
   <packaging>war</packaging>
-  <version>1.0-SNAPSHOT</version>
+  <version>1.0</version>
   <name>GeoKnow Generator</name>
-  <url>http://maven.apache.org</url>
   
   <properties>
     <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
