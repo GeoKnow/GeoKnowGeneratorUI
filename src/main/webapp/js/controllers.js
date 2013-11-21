@@ -163,6 +163,24 @@ app.controller('FaceteFormCtrl', function($scope, ConfigurationService) {
 	};
 });
 
+app.controller('SparqlifyCtrl', function($scope, ConfigurationService) {
+	//Settings for Facete
+
+	$scope.namedGraphs = ConfigurationService.getAllNamedGraphs();
+	$scope.component = ConfigurationService.getComponent(":Sparqlify");
+	var services = ConfigurationService.getComponentServices(":Sparqlify");
+	$scope.sparqlify = {
+		service   : ConfigurationService.getSPARQLEndpoint(),
+	 	dataset   : $scope.namedGraphs[0].name,
+	}
+	$scope.url = "";
+
+	$scope.setUrl = function(){
+		$scope.url= services[0].serviceUrl;
+    
+	};
+});
+
 
 var LimesCtrl = function($scope, $http, ConfigurationService, flash, ServerErrorResponse, $window){
 	
@@ -978,7 +996,7 @@ var TripleGeoCtrl = function($scope, $http, ConfigurationService, flash, ServerE
 			$scope.options.displayConfigUpload = true;
 			inputFileName = $files[0].name;
 			inputFileName = inputFileName.split(".");
-			inputFileName = inputFileName[0]+".shp";
+			inputFileName = inputFileName+".shp";
 			$('#dummyShapeInput').val(inputFileName+".shp");
 			$scope.configForm = true;
 			}
