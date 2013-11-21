@@ -161,7 +161,7 @@ function DatabaseCtrl($scope, ConfigurationService){
 	};
 }
 
-function GraphCtrl($scope, ConfigurationService){
+function GraphCtrl($scope, ConfigurationService, DateService){
 
 	var emptyGraph = {  name:"", 
 										  graph: {
@@ -182,15 +182,10 @@ function GraphCtrl($scope, ConfigurationService){
 		newGraph=true;
 		$scope.graphForm.$setPristine();
 		$scope.modaltitle = "New Named Graph";
-		var now = new Date();
-	    //"YYYY-MM-DDThh:mm:ss"^^xsd:date;
-	    var month = now.getMonth() + 1; // getMonth returns values from 0 to 11
-		var s_now = now.getFullYear() + "-" 
-							+ (month.toString().length==1 ? "0"+ month : month + "-") 
-							+ (now.getDate().toString().length==1 ? "0"+now.getDate() : now.getDate())
-							+ "T" + now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds();
-	
+
+		var s_now = DateService.getCurrentDate();
 		var defaultEndpoint = ConfigurationService.getSPARQLEndpoint();
+
 		$scope.namedgraph = angular.copy(emptyGraph);
 		$scope.namedgraph.graph.created = s_now;
 		$scope.namedgraph.graph.modified = s_now;

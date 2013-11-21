@@ -3,6 +3,22 @@
 var module = angular.module('app.services', []);
 
 
+module.factory('DateService', function(){
+  var DateService = {
+    getCurrentDate : function(){
+      var now = new Date();
+      //"YYYY-MM-DDThh:mm:ss"^^xsd:date;
+      var month = now.getMonth() + 1; // getMonth returns values from 0 to 11
+      var s_now = now.getFullYear() + "-" 
+              + (month.toString().length==1 ? "0"+ month : month + "-") 
+              + (now.getDate().toString().length==1 ? "0"+now.getDate() : now.getDate())
+              + "T" + now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds();
+      return s_now;
+    }
+  }
+  return DateService;
+});
+
 module.factory('ServerErrorResponse', function() {
 
   var ServerErrorResponseService = {

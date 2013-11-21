@@ -127,6 +127,23 @@ app.controller('ModalWindow', function ($scope) {
   
 });
 
+var DataSourceTabCtrl = function($scope, $window, $location) {
+
+  // The tab directive will use this data
+  $scope.tabs = ['SPARQL Endpoint', 'Relational Database'];
+  $scope.tabs.index = 0;
+  $scope.tabs.active = function() { 
+    return $scope.tabs[$scope.tabs.index]; 
+    }
+  
+};
+
+/****************************************************************************************************
+*
+* ONTOWIKI Controller
+*
+***************************************************************************************************/
+
 app.controller('OntoWikiCtrl', function($scope, ConfigurationService) {
 	$scope.component = ConfigurationService.getComponent(":OntoWiki");
 	var services = ConfigurationService.getComponentServices(":OntoWiki");
@@ -134,6 +151,12 @@ app.controller('OntoWikiCtrl', function($scope, ConfigurationService) {
 });
 
 
+
+/****************************************************************************************************
+*
+* Virtuoso Controller
+*
+***************************************************************************************************/
 app.controller('VirtuosoCtrl', function($scope, ConfigurationService) {
 
 	$scope.component = ConfigurationService.getComponent(":Virtuoso");
@@ -141,6 +164,12 @@ app.controller('VirtuosoCtrl', function($scope, ConfigurationService) {
 	$scope.url = ConfigurationService.getSPARQLEndpoint();
 
 });
+
+/****************************************************************************************************
+*
+* Facete Controller
+*
+***************************************************************************************************/
 
 app.controller('FaceteFormCtrl', function($scope, ConfigurationService) {
 	//Settings for Facete
@@ -163,8 +192,12 @@ app.controller('FaceteFormCtrl', function($scope, ConfigurationService) {
 	};
 });
 
-
-var LimesCtrl = function($scope, $http, ConfigurationService, flash, ServerErrorResponse, $window){
+/****************************************************************************************************
+*
+* LIMES Controller
+*
+***************************************************************************************************/
+var LimesCtrl = function($scope, $http, ConfigurationService, flash, ServerErrorResponse, $window, DateService){
 	
 	var services = ConfigurationService.getComponentServices(":Limes");
 	var serviceUrl = services[0].serviceUrl;
@@ -343,93 +376,119 @@ var LimesCtrl = function($scope, $http, ConfigurationService, flash, ServerError
 	$scope.loadLimesXML = function($files){
 		
 		for (var i = 0; i < $files.length; i++) {
-		      var $file = $files[i];
-		      $http.uploadFile({
-		        url: 'UploadServlet', //upload.php script, node.js route, or servlet uplaod url)
-		        file: $file
-		      }).then(function(response, status, headers, config) {
+		  var $file = $files[i];
+		  $http.uploadFile({
+		    url: 'UploadServlet', //upload.php script, node.js route, or servlet uplaod url)
+		    file: $file
+		  }).then(function(response, status, headers, config) {
 		        // file is uploaded successfully
-		    	  
-		    	  var filename = $files[0].name;
-		    	  $('#dummyInput').val(filename);
-		  		
-					$http({
-							method: "POST",
-							url: serviceUrl+"/LoadFile",
-							params: {file : filename}
-				      	}).then(function(data) {
-						    	
-						    	$scope.limes = { SourceServiceURI : data.data[0][0],
-												 TargetServiceURI  : data.data[1][0],
-												 SourceVar: data.data[0][1],
-												 TargetVar: data.data[1][1],
-												 SourceSize: data.data[0][2],
-												 TargetSize: data.data[1][2],
-												 SourceRestr: data.data[0][3],
-												 TargetRestr: data.data[1][3],
-												 SourceProp: data.data[0][4],
-												 TargetProp: data.data[1][4],
-												 Metric: data.data[2],
-												 OutputFormat: $scope.options[0].output[0],
-												 ExecType: $scope.options[1].execType[0],
-												 AcceptThresh: data.data[3][0],
-												 ReviewThresh: data.data[4][0],
-												 AcceptRelation: data.data[3][1],
-												 ReviewRelation: data.data[4][1] 
-											};
-						    	
-						    	$scope.enterConfig = true;
-						    	$scope.startLimes = true;
-						    	
-					      }, function (response){ // in the case of an error      	
-						    	flash.error = ServerErrorResponse.getMessage(response.status);
-	    				});
-		    	  
-		        if(response.data.status=="FAIL"){
-		          uploadError = true;
-		          $scope.uploadMessage=response.data.message;
-		        }
-		        else {
-		          uploadError = false;
-		          uploadedFiles = $file.name;
-		        }
-		      }); 
-		    }
-
-		}
-	
-		$scope.save = function(){
-				
-				var parameters = {
-				        rdfFile: "accepted.nt", 
-				        endpoint: $scope.saveEndpoint, 
-				        graph: $scope.saveDataset, 
-				        uriBase : ConfigurationService.getUriBase()
-				      	};
-				
+			  var filename = $files[0].name;
+			  $('#dummyInput').val(filename);
+			  		
 				$http({
-					url: serviceUrl+"/ImportRDF",
-			        method: "POST",
-			        dataType: "json",
-			        params: parameters,
-			        contentType: "application/json; charset=utf-8"
-				})
-			      .success(function (data, status, headers, config){
-			        if(data.status=="FAIL"){
-			          flash.error = data.message;
-			          importing = false;
-			        }
-			        else{
-			          flash.success = data.message;
-			          console.log(data);
-			        }
-			      })
-			      .error(function(data, status, headers, config) {
-			          flash.error = data;
-			      });
-			  };
+						method: "POST",
+						url: serviceUrl+"/LoadFile",
+						params: {file : filename}})
+
+					.then(function(data) {
+						$scope.limes = { 
+							SourceServiceURI : data.data[0][0],
+							TargetServiceURI  : data.data[1][0],
+							SourceVar: data.data[0][1],
+							TargetVar: data.data[1][1],
+							SourceSize: data.data[0][2],
+							TargetSize: data.data[1][2],
+							SourceRestr: data.data[0][3],
+							TargetRestr: data.data[1][3],
+							SourceProp: data.data[0][4],
+							TargetProp: data.data[1][4],
+							Metric: data.data[2],
+							OutputFormat: $scope.options[0].output[0],
+							ExecType: $scope.options[1].execType[0],
+							AcceptThresh: data.data[3][0],
+							ReviewThresh: data.data[4][0],
+							AcceptRelation: data.data[3][1],
+							ReviewRelation: data.data[4][1] 
+						};
+						$scope.enterConfig = true;
+						$scope.startLimes = true;		    	
+					}, function (response){ // in the case of an error      	
+					    	flash.error = ServerErrorResponse.getMessage(response.status);
+		    });
+			    	  
+			  if(response.data.status=="FAIL"){
+			    uploadError = true;
+			    $scope.uploadMessage=response.data.message;
+			  }
+			  else {
+			    uploadError = false;
+			    uploadedFiles = $file.name;
+			  }
+		  }); 
+		}
+	}
 	
+	$scope.save = function(){
+			
+		var parameters = { 
+      endpoint: ConfigurationService.getSPARQLEndpoint() , 
+   		uriBase : ConfigurationService.getUriBase()
+		};
+				
+		$http({
+			url: serviceUrl+"/ImportRDF",
+      method: "POST",
+      dataType: "json",
+      params: parameters,
+      contentType: "application/json; charset=utf-8"
+			})
+	    .success(function (data, status, headers, config){
+	      if(data.status=="FAIL"){
+		      flash.error = data.message;
+		      importing = false;
+		    }
+		    else{
+		      flash.success = data.message;
+		      console.log(data);
+		      // add the graph metadata to settingsGraph
+		      var now = DateService.getCurrentDate();
+		      var newGraph = {  name:"" ,  graph: {
+					  	created : now, endpoint: ConfigurationService.getSPARQLEndpoint(), 
+					  	description: "", 
+					  	modified: now, label:"" 
+						}};
+					var sucess;
+			    for (var res in data.result){
+			     	var graphName = data.result[res].replace(ConfigurationService.getUriBase() ,":");
+			     	if (graphName.indexOf("accepted") >= 0){
+			     		newGraph.name = graphName;
+			     		newGraph.graph.description = "Accepted results from LIMES";
+			     		newGraph.graph.label = "LIMES Accepted";
+			     		sucess  = ConfigurationService.addGraph(newGraph);
+			     		// TODO: handle succes/error
+			     	}
+						if (graphName.indexOf("review") >= 0){
+			     		newGraph.name = graphName;
+			     		newGraph.graph.description = "Results to review from LIMES";
+			     		newGraph.graph.label = "LIMES review";
+				   		sucess = ConfigurationService.addGraph(newGraph);
+				   		console.log(newGraph);
+			     		// TODO: handle succes/error
+			     	}
+			    }
+			  }
+			})
+			.error(function(data, status, headers, config) {
+			  flash.error = data;
+		});
+	};
 }
+
+/****************************************************************************************************
+*
+* GEOLIFT Controller
+*
+***************************************************************************************************/
 
 var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErrorResponse, $window){
 	
@@ -459,11 +518,9 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErr
   			                ]
 	}
 	
-	$scope.params = [		  
-             		  { 	inputs : [], 
-             			    visible: false		},
-
-			  ];
+	$scope.params = [{ 	
+		inputs : [], 
+    visible: false }];
 	
 	$scope.choice = function($name){
 		
@@ -558,18 +615,18 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErr
 									],
 	
 	$scope.appendInput = function(){
-			$scope.params[0].inputs.push( { idx : count++ } );
-			$scope.params[0].visible = true;
-			$scope.startButton = true;
+		$scope.params[0].inputs.push( { idx : count++ } );
+		$scope.params[0].visible = true;
+		$scope.startButton = true;
 	}
 	
 	$scope.removeInput = function ( index ) {
-	    	$scope.params[0].inputs.splice( index, 1 );
-	    	if($scope.params[0].inputs.length === 0){
-	    		$scope.params[0].visible = false;
-	    	}
-	    	if($scope.params[0].inputs.length === 0)
-	    		$scope.startButton = false;
+	  $scope.params[0].inputs.splice( index, 1 );
+	  if($scope.params[0].inputs.length === 0){
+	  	$scope.params[0].visible = false;
+	  }
+	  if($scope.params[0].inputs.length === 0)
+	  	$scope.startButton = false;
 	}
 	
 	$scope.FillForm = function(example){
@@ -589,37 +646,35 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErr
 			for(var i=0; i<$scope.epExamples[0].params.length; i++){
 				
 				$scope.params[0].inputs.push({
-												 index: $scope.epExamples[0].params[i].index,
-												 module: $scope.epExamples[0].params[i].module
-								  					});
+					index: $scope.epExamples[0].params[i].index,
+		  		module: $scope.epExamples[0].params[i].module
+				});
 
 				$scope.params[0].visible = true;
 				$scope.startButton = true;
 				
-				}
-		 }
+			}
+		}
 		
-		 if(example === "Berlin Turtle File"){
+		if(example === "Berlin Turtle File"){
 			 
-			 isCompletePath = 0;
-			 $scope.options.inputFile = false;
-			 sourceInput = "berlin.ttl";
-			 $scope.inputDisplay = sourceInput;
-			 $scope.inputDisplayRow = true;
+			isCompletePath = 0;
+			$scope.options.inputFile = false;
+			sourceInput = "berlin.ttl";
+			$scope.inputDisplay = sourceInput;
+			$scope.inputDisplayRow = true;
 					
-					for(var i=0; i<$scope.epExamples[0].params.length; i++){
+			for(var i=0; i<$scope.epExamples[0].params.length; i++){
 						
-						$scope.params[0].inputs.push({
-														 index: $scope.fileExamples[0].params[i].index,
-														 module: $scope.fileExamples[0].params[i].module
-										  					});
+				$scope.params[0].inputs.push({
+				  index: $scope.fileExamples[0].params[i].index,
+					module: $scope.fileExamples[0].params[i].module
+				});
 		
-						$scope.params[0].visible = true;
-						$scope.startButton = true;
-						
-						}
-				 }
-		
+				$scope.params[0].visible = true;
+				$scope.startButton = true;			
+			}
+		}
 	}
 	
 	$scope.loadDataFile = function($files){
@@ -630,73 +685,69 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErr
 		}
 	
 	$scope.loadConfigFile = function($files){
-			
-			for (var i = 0; i < $files.length; i++) {
-			      var $file = $files[i];
-			      $http.uploadFile({
-			        url: 'UploadServlet', //upload.php script, node.js route, or servlet uplaod url)
-			        file: $file
-			      }).then(function(response, status, headers, config) {
-			        // file is uploaded successfully
-			    	  
-			    	  var configFile = $files[0].name;
-			    	  $('#dummyConfigInput').val(configFile);
+	
+		for (var i = 0; i < $files.length; i++) {
+	    var $file = $files[i];
+	    $http.uploadFile({
+	      url: 'UploadServlet', //upload.php script, node.js route, or servlet uplaod url)
+	      file: $file
+	    	})
+	    .then(function(response, status, headers, config) {
+			  // file is uploaded successfully
+			  var configFile = $files[0].name;
+			  $('#dummyConfigInput').val(configFile);
 			  		
-						$http({
-								method: "POST",
-								url: serviceUrl+"/LoadFile",
-								params: {
-										configFile : configFile,
-										dataFile: dataFile}
-					      	}).then(function(data) {
-					      		$scope.addParamButton = true;
-					      		sourceInput = data.data[0][0];
+				$http({
+					method: "POST",
+					url: serviceUrl+"/LoadFile",
+					params: {
+						configFile : configFile,
+						dataFile: dataFile}
+				 	})
+				.then(function(data) {
+					$scope.addParamButton = true;
+					sourceInput = data.data[0][0];
+				     		
+					for(var i=1; i<data.data.length; i++){
+						$scope.params[0].inputs.push({
+					  	index: data.data[i][0],
+				 	  	module: data.data[i][1]
+						});
+					}
+					$scope.params[0].visible = true;
+					$scope.startButton = true;
 					      		
-					      		for(var i=1; i<data.data.length; i++){
-									
-									$scope.params[0].inputs.push({
-																	 index: data.data[i][0],
-																	 module: data.data[i][1]
-													  					});
-					      			}
-					
-									$scope.params[0].visible = true;
-									$scope.startButton = true;
-					      		
-					      		console.log(data);
-						      }, function (response){ // in the case of an error      	
-						   	 	flash.error = ServerErrorResponse.getMessage(response.status);
-	    					});
+				}, function (response){ // in the case of an error      	
+				 	flash.error = ServerErrorResponse.getMessage(response.status);
+	    	});
 			    	  
-			        if(response.data.status=="FAIL"){
-			          uploadError = true;
-			          $scope.uploadMessage=response.data.message;
-			        }
-			        else {
-			          uploadError = false;
-			          uploadedFiles = $file.name;
-			        }
-			      }); 
-			    }
+			  if(response.data.status=="FAIL"){
+			    uploadError = true;
+			    $scope.uploadMessage=response.data.message;
+			  }
+			  else {
+			    uploadError = false;
+			    uploadedFiles = $file.name;
+			  }
+			}); 
 		}
+	}
 	
 	$scope.LaunchGeoLift = function(){
 		
-		 var params = {};
-         params[0] = $scope.params[0].inputs.length;
-         params[1] = sourceInput;
-         params[2] = isCompletePath;
+		var params = {};
+    params[0] = $scope.params[0].inputs.length;
+    params[1] = sourceInput;
+    params[2] = isCompletePath;
          
-		 for(var i=0; i<$scope.params[0].inputs.length; i++){
-		         
-		          params[i+3] = $scope.params[0].inputs[i].index + " " + $scope.params[0].inputs[i].module;
-		          
-		                                  }
-			
-			$window.$windowScope = $scope;
-	 	var newWindow = $window.open('popup.html#/popup-geolift', 'frame', 'resizeable,height=600,width=800');
-			newWindow.params = params;
+		for(var i=0; i<$scope.params[0].inputs.length; i++){
+		  params[i+3] = $scope.params[0].inputs[i].index + " " + $scope.params[0].inputs[i].module;
 		}
+			
+		window.$windowScope = $scope;
+	 	var newWindow = $window.open('popup.html#/popup-geolift', 'frame', 'resizeable,height=600,width=800');
+		newWindow.params = params;
+	}
 	
 	$scope.StartGeoLift = function(){
 		
@@ -704,22 +755,22 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErr
 		$scope.showProgress = true;
 		$scope.reviewForm = false;
 		
-			$http({
-				url: serviceUrl+"/GeoLiftRun",
-		        method: "POST",
-		        params: params,
-		        headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' }
-		      }).then(function() {
-		    	  $scope.reviewGeoLiftResult();
-		      },  function (response){ // in the case of an error      	
-						flash.error = ServerErrorResponse.getMessage(response.status);
-	    		});
-			
-		}
+		$http({
+			url: serviceUrl+"/GeoLiftRun",
+      method: "POST",
+      params: params,
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' }
+      })
+		.then(function() {
+		  $scope.reviewGeoLiftResult();
+	  	},  function (response){ // in the case of an error      	
+			flash.error = ServerErrorResponse.getMessage(response.status);
+	  });		
+	}
 	
 	$scope.reviewGeoLiftResult = function(){
 		
-	  	$scope.showProgress = true;
+	  $scope.showProgress = true;
 	  	
 		$http({
 			url: serviceUrl+"/GeoLiftReview",
@@ -738,40 +789,45 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErr
 	  	    		
 	      				}, function (response){ // in the case of an error      	
 						 	flash.error = ServerErrorResponse.getMessage(response.status);
-	    			});
-		}
+	  });
+	}
 	
 	$scope.save = function(){
 		
 		var parameters = {
-		        rdfFile: "result.ttl", 
-		        endpoint: $scope.saveEndpoint, 
-		        graph: $scope.saveDataset, 
-		        uriBase : ConfigurationService.getUriBase()
-		      	};
+	    rdfFile: "result.ttl", 
+	    endpoint: $scope.saveEndpoint, 
+	    graph: $scope.saveDataset, 
+	    uriBase : ConfigurationService.getUriBase()
+	 	};
 		
 		$http({
 			url: serviceUrl+"/ImportRDF",
-	        method: "POST",
-	        dataType: "json",
-	        params: parameters,
-	        contentType: "application/json; charset=utf-8"
+	    method: "POST",
+	    dataType: "json",
+	    params: parameters,
+	    contentType: "application/json; charset=utf-8"
 		})
-	      .success(function (data, status, headers, config){
-	        if(data.status=="FAIL"){
-	          flash.error = data.message;
-	          importing = false;
-	        }
-	        else{
-	          flash.success = data.message;
-	        }
-	      })
-	      .error(function(data, status, headers, config) {
-	          flash.error = data;
-	      });
-	  };
-	
+	  .success(function (data, status, headers, config){
+	    if(data.status=="FAIL"){
+	      flash.error = data.message;
+	      importing = false;
+	    }
+	    else{
+	      flash.success = data.message;
+	    }
+	  })
+	  .error(function(data, status, headers, config) {
+	    flash.error = data;
+	  });
+	};
 }
+
+/****************************************************************************************************
+*
+* TRIPLEGEO Controller
+*
+***************************************************************************************************/
 
 var TripleGeoCtrl = function($scope, $http, ConfigurationService, flash, ServerErrorResponse, $window){
 	
@@ -987,8 +1043,8 @@ var TripleGeoCtrl = function($scope, $http, ConfigurationService, flash, ServerE
 	$scope.loadConfigFile = function($files){
 		
 		for (var i = 0; i < $files.length; i++) {
-		      var $file = $files[i];
-		      $http.uploadFile({
+		  var $file = $files[i];
+		  $http.uploadFile({
 		        url: 'UploadServlet', //upload.php script, node.js route, or servlet uplaod url)
 		        file: $file
 		      }).then(function(response, status, headers, config) {
@@ -1177,11 +1233,12 @@ var TripleGeoCtrl = function($scope, $http, ConfigurationService, flash, ServerE
 		var parameters = {
 		        rdfFile: "result."+fileType,
 		        fileType: fileType,
-		        endpoint: $scope.saveEndpoint, 
-		        graph: $scope.saveDataset, 
+		        endpoint: ConfigurationService.getSPARQLEndpoint() , 
+		        graph: $scope.saveDataset.replace(':', ConfigurationService.getUriBase()), 
 		        uriBase : ConfigurationService.getUriBase()
 		      	};
-		
+		console.log(parameters);
+		console.log(serviceUrl+"/ImportRDF");
 		$http({
 			url: serviceUrl+"/ImportRDF",
 	        method: "POST",
@@ -1205,59 +1262,12 @@ var TripleGeoCtrl = function($scope, $http, ConfigurationService, flash, ServerE
 	
 }
 
-/*
-app.controller('OpenMap', function OpenMap($scope, $timeout, $log){
 
-  var map = new OpenLayers.Map( 'map', {controls:[
-         new OpenLayers.Control.Navigation(),
-         new OpenLayers.Control.PanZoomBar(),
-         //new OpenLayers.Control.LayerSwitcher(),
-         new OpenLayers.Control.Attribution()],
-         units: 'm',
-     });
-  var layer = new OpenLayers.Layer.OSM( "Biel/Bienne Map");
-  map.addLayer(layer);
-  map.setCenter(
-      new OpenLayers.LonLat(7.25 , 47.133333).transform(
-          new OpenLayers.Projection("EPSG:4326"),
-          map.getProjectionObject()
-      ), 13 
-  );
-});
-
-var OpenMapWindow = function ($scope, $timeout, $log) {
-	
-	var map = new OpenLayers.Map( 'map', {controls:[
-         new OpenLayers.Control.Navigation(),
-         new OpenLayers.Control.PanZoomBar(),
-         //new OpenLayers.Control.LayerSwitcher(),
-         new OpenLayers.Control.Attribution()],
-         units: 'm',
-     });
-  var layer = new OpenLayers.Layer.OSM( "Biel/Bienne Map");
-  map.addLayer(layer);
-  map.setCenter(
-      new OpenLayers.LonLat(7.25 , 47.133333).transform(
-          new OpenLayers.Projection("EPSG:4326"),
-          map.getProjectionObject()
-      ), 13 
-  );
-};
-	
-var GoogleMapWindow = function ($scope, $timeout, $log) {
-	var map;
-
-  var mapOptions = {
-    zoom: 14,
-    center: new google.maps.LatLng(47.126776, 7.24),
-    mapTypeId: google.maps.MapTypeId.ROADMAP
-  };
-  
-  map = new google.maps.Map(document.getElementById('map'),
-      mapOptions);
-
-};
-*/
+/****************************************************************************************************
+*
+* IMPORT Controller
+*
+***************************************************************************************************/
 
 var ImportFormCtrl = function($scope, $http, ConfigurationService, flash) {
 
@@ -1420,14 +1430,58 @@ var ImportFormCtrl = function($scope, $http, ConfigurationService, flash) {
 };
 
 
-var DataSourceTabCtrl = function($scope, $window, $location) {
 
-  // The tab directive will use this data
-  $scope.tabs = ['SPARQL Endpoint', 'Relational Database'];
-  $scope.tabs.index = 0;
-  $scope.tabs.active = function() { 
-    return $scope.tabs[$scope.tabs.index]; 
-    }
-  
+/*
+app.controller('OpenMap', function OpenMap($scope, $timeout, $log){
+
+  var map = new OpenLayers.Map( 'map', {controls:[
+         new OpenLayers.Control.Navigation(),
+         new OpenLayers.Control.PanZoomBar(),
+         //new OpenLayers.Control.LayerSwitcher(),
+         new OpenLayers.Control.Attribution()],
+         units: 'm',
+     });
+  var layer = new OpenLayers.Layer.OSM( "Biel/Bienne Map");
+  map.addLayer(layer);
+  map.setCenter(
+      new OpenLayers.LonLat(7.25 , 47.133333).transform(
+          new OpenLayers.Projection("EPSG:4326"),
+          map.getProjectionObject()
+      ), 13 
+  );
+});
+
+var OpenMapWindow = function ($scope, $timeout, $log) {
+	
+	var map = new OpenLayers.Map( 'map', {controls:[
+         new OpenLayers.Control.Navigation(),
+         new OpenLayers.Control.PanZoomBar(),
+         //new OpenLayers.Control.LayerSwitcher(),
+         new OpenLayers.Control.Attribution()],
+         units: 'm',
+     });
+  var layer = new OpenLayers.Layer.OSM( "Biel/Bienne Map");
+  map.addLayer(layer);
+  map.setCenter(
+      new OpenLayers.LonLat(7.25 , 47.133333).transform(
+          new OpenLayers.Projection("EPSG:4326"),
+          map.getProjectionObject()
+      ), 13 
+  );
 };
+	
+var GoogleMapWindow = function ($scope, $timeout, $log) {
+	var map;
+
+  var mapOptions = {
+    zoom: 14,
+    center: new google.maps.LatLng(47.126776, 7.24),
+    mapTypeId: google.maps.MapTypeId.ROADMAP
+  };
+  
+  map = new google.maps.Map(document.getElementById('map'),
+      mapOptions);
+
+};
+*/
 
