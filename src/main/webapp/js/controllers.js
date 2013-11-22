@@ -634,7 +634,21 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErr
 															module: "nlp useFoxLight true"
 																},
 													]
-											}
+											},
+											
+											{ 	label : "Berlin N Triples File", 
+												params: [
+																			{
+																			index: "1",
+																			module: "nlp useFoxLight true"
+																				},
+																			{
+																			index: "2",
+																			module: "dereferencing predicate1 http://www.w3.org/2003/01/geo/wgs84_pos#geometry"
+																				},
+																	]
+															}
+											
 									],
 	
 	$scope.appendInput = function(){
@@ -670,7 +684,7 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErr
 				
 				$scope.params[0].inputs.push({
 					index: $scope.epExamples[0].params[i].index,
-		  		module: $scope.epExamples[0].params[i].module
+					module: $scope.epExamples[0].params[i].module
 				});
 
 				$scope.params[0].visible = true;
@@ -690,7 +704,7 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErr
 			for(var i=0; i<$scope.epExamples[0].params.length; i++){
 						
 				$scope.params[0].inputs.push({
-				  index: $scope.fileExamples[0].params[i].index,
+					index: $scope.fileExamples[0].params[i].index,
 					module: $scope.fileExamples[0].params[i].module
 				});
 		
@@ -698,6 +712,27 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErr
 				$scope.startButton = true;			
 			}
 		}
+		
+		if(example === "Berlin N Triples File"){
+			 
+			isCompletePath = 0;
+			$scope.options.inputFile = false;
+			sourceInput = "berlin.n3";
+			$scope.inputDisplay = sourceInput;
+			$scope.inputDisplayRow = true;
+					
+			for(var i=0; i<$scope.epExamples[0].params.length; i++){
+						
+				$scope.params[0].inputs.push({
+					index: $scope.fileExamples[0].params[i].index,
+					module: $scope.fileExamples[0].params[i].module
+				});
+		
+				$scope.params[0].visible = true;
+				$scope.startButton = true;			
+			}
+		}
+		
 	}
 	
 	$scope.loadDataFile = function($files){
@@ -759,9 +794,9 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErr
 	$scope.LaunchGeoLift = function(){
 		
 		var params = {};
-    params[0] = $scope.params[0].inputs.length;
-    params[1] = sourceInput;
-    params[2] = isCompletePath;
+		params[0] = $scope.params[0].inputs.length;
+		params[1] = sourceInput;
+		params[2] = isCompletePath;
          
 		for(var i=0; i<$scope.params[0].inputs.length; i++){
 		  params[i+3] = $scope.params[0].inputs[i].index + " " + $scope.params[0].inputs[i].module;
@@ -780,9 +815,9 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErr
 		
 		$http({
 			url: serviceUrl+"/GeoLiftRun",
-      method: "POST",
-      params: params,
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' }
+	        method: "POST",
+	        params: params,
+	        headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' }
       })
 		.then(function() {
 		  $scope.reviewGeoLiftResult();
@@ -930,7 +965,7 @@ var TripleGeoCtrl = function($scope, $http, ConfigurationService, flash, ServerE
 											"Points shape file extraction"
 											],
 							dbExamples: [
-						  		     		"Hotles Dataset"
+						  		     		"GeospatialDB"
 						  		     		],
 				     		dbtype: [
 				     		         "MySQL",
@@ -975,6 +1010,7 @@ var TripleGeoCtrl = function($scope, $http, ConfigurationService, flash, ServerE
 	$scope.FillForm = function(example, name){
 		
 			var params = {};
+			console.log(example + ' ' + name);
 			
 			if(example === "fileExample" && name === "Points shape file extraction"){
 				
@@ -1007,14 +1043,15 @@ var TripleGeoCtrl = function($scope, $http, ConfigurationService, flash, ServerE
 						}
 			}
 			
-			if(example === "dbExample"){
+			if(example === "database"){
 				for(var i=0; i<$scope.databases.length; i++){
 					if($scope.databases[i].label === name){
 						$scope.options.dataParams = false;
 						$scope.options.dbParams = true;
 						$scope.options.job = "db";
-						$scope.options.database = false;
+						$scope.options.dbExample = false;
 						$scope.options.inputDisplay = true;
+						$scope.options.displayConfigUpload = true;
 						
 						$scope.tripleGeoConfig = {
 								
@@ -1037,6 +1074,47 @@ var TripleGeoCtrl = function($scope, $http, ConfigurationService, flash, ServerE
 								 classColumnName: "",
 								 geometryColumnName: "",
 								 ignore: "",
+								 
+								 nsPrefix: "georesource",
+								 nsURI: "http://geoknow.eu/geodata#",
+								 ontologyNSPrefix: "geo",
+								 ontologyNS: "http://www.opengis.net/ont/geosparql#"
+						}
+					}
+				}
+			}
+			
+			if(example === "dbExample"){
+				for(var i=0; i<$scope.databases.length; i++){
+					if($scope.databases[i].label === name){
+						$scope.options.dataParams = false;
+						$scope.options.dbParams = true;
+						$scope.options.job = "db";
+						$scope.options.database = false;
+						$scope.options.inputDisplay = true;
+						$scope.options.displayConfigUpload = false;
+						
+						$scope.tripleGeoConfig = {
+								
+								 inputDisplay: $scope.databases[i].dbName,
+								
+								 format :      $scope.options.format[4],
+								 targetStore : $scope.options.targetStore[1],
+								 
+								 dbtype: $scope.options.dbtype[2], //$scope.databases[i].dbtype.substring(3),
+								 dbName: "athena",
+								 dbUserName: $scope.databases[i].dbUser,
+								 dbPassword: $scope.databases[i].dbPassword,
+								 dbHost: $scope.databases[i].dbHost,
+								 dbPort: $scope.databases[i].dbPort,
+								 resourceName: "points",
+								 tableName: "public.points",
+								 condition: "",
+								 labelColumnName: "osm_id",
+								 nameColumnName: "name",
+								 classColumnName: "type",
+								 geometryColumnName: "geom",
+								 ignore: "UNK",
 								 
 								 nsPrefix: "georesource",
 								 nsURI: "http://geoknow.eu/geodata#",
