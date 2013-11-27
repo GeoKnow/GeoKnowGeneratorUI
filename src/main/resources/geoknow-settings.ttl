@@ -88,7 +88,7 @@
       foaf:homepage <http://virtuoso.openlinksw.com/> .
 
 :VirtuosoGeneratorEndpoint
-      a       lds:SPARQLEndPoint ;
+      a       lds:SPARQLEndPointService ;
       rdfs:label "Virtuoso Generator Endpoint"^^xsd:string ;
       lds:serviceUrl <http://generator.geoknow.eu:8890/sparql> .
 
