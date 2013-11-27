@@ -2,6 +2,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -51,7 +52,9 @@ public class ImportRDF extends HttpServlet {
 		PrintWriter out = response.getWriter();
 		
 		// get the paht where files were uploaded 
-		String filePath = getServletContext().getRealPath("/") + getServletContext().getInitParameter("file-upload").replaceFirst(File.separator,""); 
+		String filePath = getServletContext().getRealPath(File.separator) + getServletContext().getInitParameter("file-upload").replaceFirst("/","");
+		filePath = "file:///"+filePath.replace("\\", "/");
+		filePath = filePath.replace(" ", "%20");
 		JsonResponse res = new JsonResponse();
 	    ObjectMapper mapper = new ObjectMapper();
 	 

@@ -56,6 +56,18 @@
 			</div>
 	</div>
 	
+	<div class="row below" ng-show="options.database">
+			<div class="col-xs-2">
+			<label for="Example">Database</label>
+			</div>
+			<div class="col-xs-8">
+			<select id="Database" class="form-control input-sm" ng-model="Database" 
+			ng-options="database.label for database in databases" ng-change="FillForm('database', Database.label); configForm = true;">
+			 <option value="">Choose a database</option>
+			</select>
+			</div>
+	</div>
+	
 	<div class="row below" ng-controller="ImportFormCtrl" ng-show="options.file">
 			<div class="col-xs-2">
 			<label class="control-label">Upload Files</label><i class="glyphicon glyphicon-warning-sign" style="margin-left:5px"
@@ -86,18 +98,6 @@
 						</div>
 			    </div>
     </div>
-	
-	<div class="row below" ng-show="options.database">
-			<div class="col-xs-2">
-			<label for="Example">Database</label>
-			</div>
-			<div class="col-xs-8">
-			<select id="Database" class="form-control input-sm" ng-model="Database" 
-			ng-options="database.label for database in databases" ng-change="FillForm('database', database.label); configForm = true;">
-			 <option value="">Choose a database</option>
-			</select>
-			</div>
-	</div>
 	
 	<div ng-show="configForm">
 	<br>

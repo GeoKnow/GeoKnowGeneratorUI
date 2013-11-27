@@ -1,15 +1,20 @@
 Source: geoknow-generator-ui
-Section: unknown
+Section: web
 Priority: extra
 Maintainer: Vadim Zaslawski <vadim.zaslawski@ontos.com>
 Build-Depends: debhelper (>= 8.0.0)
 Standards-Version: 3.9.4
-Homepage: <insert the upstream URL, if relevant>
+Homepage: http://stack.linkeddata.org/
 #Vcs-Git: git://git.debian.org/collab-maint/geoknow-generator-ui.git
 #Vcs-Browser: http://git.debian.org/?p=collab-maint/geoknow-generator-ui.git;a=summary
 
 Package: geoknow-generator-ui
 Architecture: all
 Depends: ${misc:Depends}
-Description: <insert up to 60 chars description>
- <insert long description, indented with spaces>
+Description: Workbench to integrate tools of project GeoKnow.
+ The GeoKnow Generator provides workbench that integrates of tools
+ developed within [GeoKnow project](http://geoknow.eu/),
+ and are part of the [Linked Data Stack](http://stack.linkeddata.org/).
+ These workbench aim to provide the required methods and tools
+ to easly integrate and process geospatial data
+ across a wide range of data sources on the web of data.

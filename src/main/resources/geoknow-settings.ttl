@@ -91,6 +91,16 @@
       a       lds:SPARQLEndPointService ;
       rdfs:label "Virtuoso Generator Endpoint"^^xsd:string ;
       lds:serviceUrl <http://generator.geoknow.eu:8890/sparql> .
+      
+:Sparqlify
+      a       lds:StackComponent ;
+      rdfs:label "Facete"^^xsd:string ;
+      lds:providesService
+              [ a       lds:ExplorationService ;
+                lds:serviceUrl <http://144.76.166.111:8080/sparqlify/>
+              ] ;
+      lds:version "0.1-SNAPSHOT"^^xsd:string ;
+      foaf:homepage <http://aksw.org/Projects/Sparqlify.html> .
 
 :Facete
       a       lds:StackComponent ;
