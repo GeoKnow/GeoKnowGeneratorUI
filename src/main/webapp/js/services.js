@@ -387,7 +387,6 @@ module.factory('ConfigurationService', function(Config) {
       // insert the metadata of the graph
       var settings = Config.getSettings();
       settings[namedGraph.name] = graph;
-      console.log(settings[":default-dataset"]["rdf:type"]);
       settings[":default-dataset"]["sd:namedGraph"].push(namedGraph.name);
       Config.write();
       return true;
