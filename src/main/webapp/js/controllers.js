@@ -537,6 +537,7 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErr
 			endpoints: false,
 			datasource: [
 		                 	"File",
+		                 	"URI",
 							"SPARQL Endpoint"
   			                ]
 	}
@@ -561,6 +562,16 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErr
 			$scope.options.inputFile = true;
 			$scope.options.configFile = false;
 		}
+		if($name == "URI"){
+			isCompletePath = 1;
+			$scope.configOptions = true;
+			$scope.addParamButton = true;
+			$scope.options.URIExamples = true;
+			$scope.options.fileExamples = false;
+			$scope.options.endpoints = false;
+			$scope.options.inputFile = false;
+			$scope.options.configFile = false;
+		}
 		if($name == "SPARQL Endpoint"){
 			isCompletePath = 1;
 			$scope.configOptions = true;
@@ -574,6 +585,21 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErr
 		$scope.startButton = true;
 		$scope.params[0].inputs.length = 0;
 	}
+	
+	$scope.URIExamples = [
+							{ 	label : "http://dbpedia.org/page/Biel/Bienne", 
+								params: [
+											{
+											index: "1",
+											module: "dereferencing predicate1 http://www.w3.org/2003/01/geo/wgs84_pos#geometry"
+												},
+											{
+											index: "2",
+											module: "nlp useFoxLight false"
+												},
+									]
+							}
+					],
 	
 	$scope.epExamples = [
 							{ 	label : "Dbpedia endpoint enrichment", 
@@ -648,7 +674,7 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErr
 																				},
 																	]
 															},
-															
+											/*	
 											{ 	label : "Denmark Turtle File", 
 													params: [
 																			{
@@ -661,7 +687,7 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErr
 																				},
 																		]
 															}
-											
+											*/
 									],
 	
 	$scope.appendInput = function(){
@@ -706,6 +732,28 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErr
 			}
 		}
 		
+		if(example === "http://dbpedia.org/page/Biel/Bienne"){
+			
+			isCompletePath = 1;
+			sourceInput = "http://dbpedia.org/page/Biel/Bienne";
+			$scope.inputDisplay = sourceInput;
+			$scope.options.endpoints = false;
+			$scope.endpointSelect = false;
+			$scope.inputDisplayRow = true;
+			
+			for(var i=0; i<$scope.URIExamples[0].params.length; i++){
+				
+				$scope.params[0].inputs.push({
+					index: $scope.URIExamples[0].params[i].index,
+					module: $scope.URIExamples[0].params[i].module
+				});
+
+				$scope.params[0].visible = true;
+				$scope.startButton = true;
+				
+			}
+		}
+		
 		if(example === "Berlin Turtle File"){
 			 
 			isCompletePath = 0;
@@ -734,7 +782,7 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErr
 			$scope.inputDisplay = sourceInput;
 			$scope.inputDisplayRow = true;
 					
-			for(var i=0; i<$scope.epExamples[0].params.length; i++){
+			for(var i=0; i<$scope.epExamples[1].params.length; i++){
 						
 				$scope.params[0].inputs.push({
 					index: $scope.fileExamples[1].params[i].index,
@@ -754,7 +802,7 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErr
 			$scope.inputDisplay = sourceInput;
 			$scope.inputDisplayRow = true;
 					
-			for(var i=0; i<$scope.epExamples[0].params.length; i++){
+			for(var i=0; i<$scope.epExamples[2].params.length; i++){
 						
 				$scope.params[0].inputs.push({
 					index: $scope.fileExamples[2].params[i].index,

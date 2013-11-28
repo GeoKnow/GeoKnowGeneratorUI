@@ -57,6 +57,18 @@
 			</div>
 	</div>
 	
+	<div class="row below" ng-show="options.URIExamples">
+			<div class="col-xs-2">
+			<label>URI Examples</label>
+			</div>
+			<div class="col-xs-10">
+			<select id="URIExample" class="form-control input-sm" ng-model="URIExample" 
+			ng-options="example.label for example in URIExamples" ng-change="FillForm(URIExample.label)">
+			<option value="">Choose an example</option>
+			</select>
+			</div>
+	</div>
+	
 	<div class="row below" ng-show="options.endpoints">
 			<div class="col-xs-2">
 			<label>Endpoints</label>
