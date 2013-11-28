@@ -588,7 +588,7 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErr
 	}
 	
 	$scope.URIExamples = [
-							{ 	label : "http://dbpedia.org/page/Nidau", 
+							{ 	label : "http://dbpedia.org/data/Nidau", 
 								params: [
 											{
 											index: "1",
@@ -733,7 +733,7 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErr
 			}
 		}
 		
-		if(example === "http://dbpedia.org/page/Nidau"){
+		if(example === "http://dbpedia.org/data/Nidau"){
 			
 			isCompletePath = 1;
 			sourceInput = example;
