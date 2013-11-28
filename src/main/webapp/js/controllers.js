@@ -647,6 +647,19 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErr
 																			module: "dereferencing predicate1 http://www.w3.org/2003/01/geo/wgs84_pos#geometry"
 																				},
 																	]
+															},
+															
+											{ 	label : "Denmark Turtle File", 
+													params: [
+																			{
+																			index: "1",
+																			module: "nlp useFoxLight true"
+																				},
+																			{
+																			index: "2",
+																			module: "dereferencing predicate1 http://www.w3.org/2003/01/geo/wgs84_pos#geometry"
+																				},
+																		]
 															}
 											
 									],
@@ -724,8 +737,28 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErr
 			for(var i=0; i<$scope.epExamples[0].params.length; i++){
 						
 				$scope.params[0].inputs.push({
-					index: $scope.fileExamples[0].params[i].index,
-					module: $scope.fileExamples[0].params[i].module
+					index: $scope.fileExamples[1].params[i].index,
+					module: $scope.fileExamples[1].params[i].module
+				});
+		
+				$scope.params[0].visible = true;
+				$scope.startButton = true;			
+			}
+		}
+		
+		if(example === "Denmark Turtle File"){
+			 
+			isCompletePath = 0;
+			$scope.options.inputFile = false;
+			sourceInput = "denmark.ttl";
+			$scope.inputDisplay = sourceInput;
+			$scope.inputDisplayRow = true;
+					
+			for(var i=0; i<$scope.epExamples[0].params.length; i++){
+						
+				$scope.params[0].inputs.push({
+					index: $scope.fileExamples[2].params[i].index,
+					module: $scope.fileExamples[2].params[i].module
 				});
 		
 				$scope.params[0].visible = true;
