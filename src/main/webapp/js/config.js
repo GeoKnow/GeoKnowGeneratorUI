@@ -33,7 +33,7 @@ angular.module("app.configuration", [])
 {
 	$http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded; charset=UTF-8";
 
-	var ENDPOINT  = "http://10.0.0.87:8890/sparql";
+	var ENDPOINT  = "http://generator.geoknow.eu:8890/sparql";
 	// if new resorces are created they will use this name space, and it can be changed
 	var NS        = "http://generator.geoknow.eu/resource/";
   // this is the graph where settings are stored, it doesnt change, and independent on the Namespace
