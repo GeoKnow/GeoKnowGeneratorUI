@@ -198,13 +198,14 @@ app.controller('FaceteFormCtrl', function($scope, ConfigurationService) {
 *
 ***************************************************************************************************/
 app.controller('SparqlifyCtrl', function($scope, ConfigurationService) {
-	//Settings for Facete
+	//Settings for Sparqlilfy
 
 	$scope.namedGraphs = ConfigurationService.getAllNamedGraphs();
 	$scope.component = ConfigurationService.getComponent(":Sparqlify");
 	var services = ConfigurationService.getComponentServices(":Sparqlify");
+	
 	$scope.sparqlify = {
-		service   : ConfigurationService.getSPARQLEndpoint(),
+	 	service   : ConfigurationService.getSPARQLEndpoint(),
 	 	dataset   : $scope.namedGraphs[0].name,
 	}
 	$scope.url = "";
@@ -1133,7 +1134,7 @@ var TripleGeoCtrl = function($scope, $http, ConfigurationService, flash, ServerE
 						$scope.options.dbExample = false;
 						$scope.options.inputDisplay = true;
 						$scope.options.displayConfigUpload = true;
-						
+					
 						$scope.tripleGeoConfig = {
 								
 								 inputDisplay: $scope.databases[i].dbName,
@@ -1141,7 +1142,8 @@ var TripleGeoCtrl = function($scope, $http, ConfigurationService, flash, ServerE
 								 format :      $scope.options.format[0],
 								 targetStore : $scope.options.targetStore[0],
 								 
-								 dbtype: $scope.options.dbtype[0], //$scope.databases[i].dbtype.substring(3),
+								 
+								 dbtype: $scope.databases[i].dbType,
 								 dbName: $scope.databases[i].dbName,
 								 dbUserName: $scope.databases[i].dbUser,
 								 dbPassword: $scope.databases[i].dbPassword,
@@ -1165,46 +1167,46 @@ var TripleGeoCtrl = function($scope, $http, ConfigurationService, flash, ServerE
 				}
 			}
 			
-			if(example === "dbExample"){
-				for(var i=0; i<$scope.databases.length; i++){
-					if($scope.databases[i].label === name){
-						$scope.options.dataParams = false;
-						$scope.options.dbParams = true;
-						$scope.options.job = "db";
-						$scope.options.database = false;
-						$scope.options.inputDisplay = true;
-						$scope.options.displayConfigUpload = false;
+			// if(example === "dbExample"){
+			// 	for(var i=0; i<$scope.databases.length; i++){
+			// 		if($scope.databases[i].label === name){
+			// 			$scope.options.dataParams = false;
+			// 			$scope.options.dbParams = true;
+			// 			$scope.options.job = "db";
+			// 			$scope.options.database = false;
+			// 			$scope.options.inputDisplay = true;
+			// 			$scope.options.displayConfigUpload = false;
 						
-						$scope.tripleGeoConfig = {
+			// 			$scope.tripleGeoConfig = {
 								
-								 inputDisplay: $scope.databases[i].dbName,
+			// 					 inputDisplay: $scope.databases[i].dbName,
 								
-								 format :      $scope.options.format[4],
-								 targetStore : $scope.options.targetStore[1],
+			// 					 format :      $scope.options.format[4],
+			// 					 targetStore : $scope.options.targetStore[1],
 								 
-								 dbtype: $scope.options.dbtype[2], //$scope.databases[i].dbtype.substring(3),
-								 dbName: "athena",
-								 dbUserName: $scope.databases[i].dbUser,
-								 dbPassword: $scope.databases[i].dbPassword,
-								 dbHost: $scope.databases[i].dbHost,
-								 dbPort: $scope.databases[i].dbPort,
-								 resourceName: "points",
-								 tableName: "public.points",
-								 condition: "",
-								 labelColumnName: "osm_id",
-								 nameColumnName: "name",
-								 classColumnName: "type",
-								 geometryColumnName: "geom",
-								 ignore: "UNK",
+			// 					 dbtype: $scope.options.dbtype[2], //$scope.databases[i].dbtype.substring(3),
+			// 					 dbName: "athena",
+			// 					 dbUserName: $scope.databases[i].dbUser,
+			// 					 dbPassword: $scope.databases[i].dbPassword,
+			// 					 dbHost: $scope.databases[i].dbHost,
+			// 					 dbPort: $scope.databases[i].dbPort,
+			// 					 resourceName: "points",
+			// 					 tableName: "public.points",
+			// 					 condition: "",
+			// 					 labelColumnName: "osm_id",
+			// 					 nameColumnName: "name",
+			// 					 classColumnName: "type",
+			// 					 geometryColumnName: "geom",
+			// 					 ignore: "UNK",
 								 
-								 nsPrefix: "georesource",
-								 nsURI: "http://geoknow.eu/geodata#",
-								 ontologyNSPrefix: "geo",
-								 ontologyNS: "http://www.opengis.net/ont/geosparql#"
-						}
-					}
-				}
-			}
+			// 					 nsPrefix: "georesource",
+			// 					 nsURI: "http://geoknow.eu/geodata#",
+			// 					 ontologyNSPrefix: "geo",
+			// 					 ontologyNS: "http://www.opengis.net/ont/geosparql#"
+			// 			}
+			// 		}
+			// 	}
+			// }
 	}
 	
 	$scope.loadShapeFile = function($files){
