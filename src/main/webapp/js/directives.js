@@ -31,15 +31,25 @@ app.directive("modalIframe", function ($compile) {
                 width:'auto',
                 padding:'0px', 
                 height: function(){ 
-                    return $(window).height() - 160; 
+                    return $(window).height() - 60; 
                 }, 
             });
 
             $('#fullModal').modal('show');
-        }
+        };
     }
   };
 });
+
+app.directive("geoliftConfig", function ($compile) {
+	  return {
+	    template: '<iframe  id="mod-frame" src="{{url}}"></iframe>',
+	    restrict: 'E',
+	    link: function (scope, elm, attr) {
+	        
+	    }
+	  };
+	});
 
 app.directive('regexValidate', function() {
     var expressions = [];

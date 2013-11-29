@@ -558,7 +558,7 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErr
 		                 	"URI",
 							"SPARQL Endpoint"
   			                ]
-	}
+	};
 	
 	$scope.params = [{ 	
 		inputs : [], 
@@ -602,19 +602,25 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErr
 		}
 		$scope.startButton = true;
 		$scope.params[0].inputs.length = 0;
-	}
+	};
 	
 	$scope.URIExamples = [
 							{ 	label : "http://dbpedia.org/data/Nidau", 
 								params: [
 											{
 											index: "1",
-											module: "dereferencing predicate1 http://www.w3.org/2003/01/geo/wgs84_pos#geometry"
+											module: "nlp useFoxLight true"
 												},
 											{
 											index: "2",
-											module: "nlp useFoxLight false"
+											module: "nlp askEndPoint false"
 												},
+												/*
+											{
+											index: "2",
+											module: "dereferencing predicate1 http://www.w3.org/2003/01/geo/wgs84_pos#geometry"
+												},
+												*/
 									]
 							}
 					],
@@ -630,10 +636,12 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErr
 											index: "1",
 											module: "nlp askEndPoint false"
 												},
+												/*
 											{
 											index: "2",
 											module: "dereferencing predicate1 http://www.w3.org/2003/01/geo/wgs84_pos#geometry"
 												},
+												*/
 											{
 											index: "3",
 											module: "nlp LiteralProperty http://www.w3.org/2000/01/rdf-schema#comment"
@@ -661,10 +669,12 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErr
 															index: "1",
 															module: "nlp askEndPoint false"
 																},
+																/*
 															{
 															index: "2",
 															module: "dereferencing predicate1 http://www.w3.org/2003/01/geo/wgs84_pos#geometry"
 																},
+																*/
 															{
 															index: "3",
 															module: "nlp LiteralProperty http://www.w3.org/2000/01/rdf-schema#comment"
@@ -686,10 +696,12 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErr
 																			index: "1",
 																			module: "nlp useFoxLight true"
 																				},
+																				/*
 																			{
 																			index: "2",
 																			module: "dereferencing predicate1 http://www.w3.org/2003/01/geo/wgs84_pos#geometry"
 																				},
+																				*/
 																	]
 															},
 											/*	
@@ -712,7 +724,7 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErr
 		$scope.params[0].inputs.push( { idx : count++ } );
 		$scope.params[0].visible = true;
 		$scope.startButton = true;
-	}
+	};
 	
 	$scope.removeInput = function ( index ) {
 	  $scope.params[0].inputs.splice( index, 1 );
@@ -721,7 +733,7 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErr
 	  }
 	  if($scope.params[0].inputs.length === 0)
 	  	$scope.startButton = false;
-	}
+	};
 	
 	$scope.FillForm = function(example){
 		
@@ -832,14 +844,14 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErr
 			}
 		}
 		
-	}
+	};
 	
 	$scope.loadDataFile = function($files){
 		$scope.options.fileExamples = false;
 		$scope.options.configFile = true;
 		dataFile = $files[0].name;
 		$('#dummyGeoLiftInput').val(dataFile);
-		}
+		};
 	
 	$scope.loadConfigFile = function($files){
 	
@@ -888,7 +900,7 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErr
 			  }
 			}); 
 		}
-	}
+	};
 	
 	$scope.LaunchGeoLift = function(){
 		
@@ -904,7 +916,7 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErr
 		window.$windowScope = $scope;
 	 	var newWindow = $window.open('popup.html#/popup-geolift', 'frame', 'resizeable,height=600,width=800');
 		newWindow.params = params;
-	}
+	};
 	
 	$scope.StartGeoLift = function(){
 		
@@ -923,7 +935,7 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErr
 	  	},  function (response){ // in the case of an error      	
 			flash.error = ServerErrorResponse.getMessage(response.status);
 	  });		
-	}
+	};
 	
 	$scope.reviewGeoLiftResult = function(){
 		
@@ -947,7 +959,7 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErr
 	      				}, function (response){ // in the case of an error      	
 						 	flash.error = ServerErrorResponse.getMessage(response.status);
 	  });
-	}
+	};
 	
 	$scope.save = function(){
 		
@@ -978,7 +990,7 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErr
 	    flash.error = data;
 	  });
 	};
-}
+};
 
 /****************************************************************************************************
 *
