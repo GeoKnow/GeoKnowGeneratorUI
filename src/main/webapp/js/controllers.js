@@ -159,9 +159,21 @@ app.controller('OntoWikiCtrl', function($scope, ConfigurationService) {
 ***************************************************************************************************/
 app.controller('VirtuosoCtrl', function($scope, ConfigurationService) {
 
+	$scope.namedGraphs = ConfigurationService.getAllNamedGraphs();
 	$scope.component = ConfigurationService.getComponent(":Virtuoso");
-	$scope.services = ConfigurationService.getComponentServices(":Virtuoso", "lds:SPARQLEndPointService");
-	$scope.url = ConfigurationService.getSPARQLEndpoint();
+	// $scope.services = ConfigurationService.getComponentServices(":Virtuoso", "lds:SPARQLEndPointService");
+	$scope.virtuoso = {
+		service   : ConfigurationService.getSPARQLEndpoint(),
+	 	dataset   : $scope.namedGraphs[0].name,
+	}
+	$scope.url = "";
+	$scope.setUrl = function(){
+		$scope.url= $scope.virtuoso.service + 
+                '?default-graph-uri=' + $scope.virtuoso.dataset.replace(':',ConfigurationService.getUriBase()) + 
+								'&qtxt=select+distinct+%3FConcept+where+%7B%5B%5D+a+%3FConcept%7D+LIMIT+100' 
+								'&format=text%2Fhtml' +
+								'&timeout=30000';
+	};
 
 });
 
@@ -226,7 +238,12 @@ var LimesCtrl = function($scope, $http, ConfigurationService, flash, ServerError
 	var services = ConfigurationService.getComponentServices(":Limes");
 	var serviceUrl = services[0].serviceUrl;
 	
-	$scope.endpoints = ConfigurationService.getAllEndpoints();
+	// parameters for saving results
+	$scope.namedGraphs = ConfigurationService.getAllNamedGraphs();
+	$scope.defaultEndpoint = ConfigurationService.getSPARQLEndpoint();
+	$scope.uriBase = ConfigurationService.getUriBase();
+	$scope.importServiceUrl = serviceUrl+"/ImportRDF";
+
 	$scope.configOptions = true;
 	$scope.inputForm = true;
 	var uploadError = false;
@@ -345,10 +362,10 @@ var LimesCtrl = function($scope, $http, ConfigurationService, flash, ServerError
 		        dataType: "json",
 		        contentType: "application/json; charset=utf-8"
 	      }).then(function() {
-	      	// TODO: in fact here is the new window to open with the progress and the results
-		    	$scope.ReviewLimes();
+	      	// to get the file list of results instead of review 
+	      	$scope.ReviewLimes();
 	      }, function (response){ // in the case of an error      	
-	      		$scope.startLimes = false;
+	      	$scope.startLimes = false;
 		    	$scope.showProgress = false;
 		    	$scope.inputForm = true;
 		    	flash.error = ServerErrorResponse.getMessage(response.status);
@@ -892,13 +909,12 @@ var TripleGeoCtrl = function($scope, $http, ConfigurationService, flash, ServerE
 	
 	var services = ConfigurationService.getComponentServices(":TripleGeo");
 	var serviceUrl = services[0].serviceUrl;
-	$scope.endpoints = ConfigurationService.getAllEndpoints();
+	var configArray = new Array();
+
 	$scope.inputForm = true;
 	$scope.configOptions = true;
 	$scope.dbLogin = true;
-	$scope.configForm = false;
-	var configArray = new Array();
-	
+	$scope.configForm = false;	
 	$scope.endpoints = ConfigurationService.getAllEndpoints();
 	$scope.namedGraphs = ConfigurationService.getAllNamedGraphs();
 	$scope.databases = ConfigurationService.getAllDatabases();
@@ -1086,46 +1102,6 @@ var TripleGeoCtrl = function($scope, $http, ConfigurationService, flash, ServerE
 				}
 			}
 			
-			// if(example === "dbExample"){
-			// 	for(var i=0; i<$scope.databases.length; i++){
-			// 		if($scope.databases[i].label === name){
-			// 			$scope.options.dataParams = false;
-			// 			$scope.options.dbParams = true;
-			// 			$scope.options.job = "db";
-			// 			$scope.options.database = false;
-			// 			$scope.options.inputDisplay = true;
-			// 			$scope.options.displayConfigUpload = false;
-						
-			// 			$scope.tripleGeoConfig = {
-								
-			// 					 inputDisplay: $scope.databases[i].dbName,
-								
-			// 					 format :      $scope.options.format[4],
-			// 					 targetStore : $scope.options.targetStore[1],
-								 
-			// 					 dbtype: $scope.options.dbtype[2], //$scope.databases[i].dbtype.substring(3),
-			// 					 dbName: "athena",
-			// 					 dbUserName: $scope.databases[i].dbUser,
-			// 					 dbPassword: $scope.databases[i].dbPassword,
-			// 					 dbHost: $scope.databases[i].dbHost,
-			// 					 dbPort: $scope.databases[i].dbPort,
-			// 					 resourceName: "points",
-			// 					 tableName: "public.points",
-			// 					 condition: "",
-			// 					 labelColumnName: "osm_id",
-			// 					 nameColumnName: "name",
-			// 					 classColumnName: "type",
-			// 					 geometryColumnName: "geom",
-			// 					 ignore: "UNK",
-								 
-			// 					 nsPrefix: "georesource",
-			// 					 nsURI: "http://geoknow.eu/geodata#",
-			// 					 ontologyNSPrefix: "geo",
-			// 					 ontologyNS: "http://www.opengis.net/ont/geosparql#"
-			// 			}
-			// 		}
-			// 	}
-			// }
 	}
 	
 	$scope.loadShapeFile = function($files){

@@ -2,7 +2,7 @@
 
 
 <!-- Subscribe to all flash messages. -->
-<div flash-alert active-class="in" class="alert fade" duration="10000">
+<div flash-alert active-class="in" class="alert fade" duration="0">
 	<button type="button" class="close" ng-click="hide()">&times;</button>
   <span class="alert-message">{{flash.message}}</span>
 </div>
@@ -19,7 +19,9 @@
 		</div>
 	</div>
 	</form>
-
+<br/>
+<br/>
+<br/>
 	<!-- Import from file form -->
 	<div ng-show="fileElements" class="animate-show">
 		<form class="form-horizontal InputForm col-xs-11" role="form" name="fileForm" novalidate>

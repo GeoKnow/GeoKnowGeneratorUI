@@ -90,11 +90,13 @@
 :VirtuosoGeneratorEndpoint
       a       lds:SPARQLEndPointService ;
       rdfs:label "Virtuoso Generator Endpoint"^^xsd:string ;
+      ## This is to be the same URL as the configuration of the Generator
+      ## TODO: find a way to link both
       lds:serviceUrl <http://generator.geoknow.eu:8890/sparql> .
       
 :Sparqlify
       a       lds:StackComponent ;
-      rdfs:label "Facete"^^xsd:string ;
+      rdfs:label "Sparqlify"^^xsd:string ;
       lds:providesService
               [ a       lds:ExplorationService ;
                 lds:serviceUrl <http://144.76.166.111:8080/sparqlify/>

@@ -11,17 +11,21 @@
 
     <h4>Launch SPARQLEndPoint Services</h4>
 
-    <form name="virtuosoForm" class="form-horizontal InputForm col-xs-11"  role="form" novalidate>
-     <div class="form-group">
-        <label class="col-xs-2" for="availableEndponts">Endpoint</label>
-        <div class="col-xs-10">
-           <select id="availableEndponts" class="form-control" ng-model="url" 
-                ng-options="c.serviceUrl as (c.label + ': ' + c.serviceUrl) for c in services" required>
-          </select> 
-        </div>
+    <form name="virtuosoForm" class="form-horizontal InputForm" role="form" novalidate>
+      <div class="form-group">
+        <label for="Endpoint">Endpoint</label>
+        <input type="url" class="form-control" id="Endpoint" disabled="disabled" ng-model="virtuoso.service"></input>
       </div>
-
-      <a class="btn btn-success btn-large" data-toggle="modal" ng-click="openModal();">Launch</a>
+      <div class="form-group">
+        <label for="DataSet">DataSet</label>
+        <select id="DataSet" class="form-control" ng-model="virtuoso.dataset" ng-options="namedgraph.name as namedgraph.name for namedgraph in namedGraphs" required>
+        </select>
+      </div>
+      <div class="form-group">
+        <a class="btn btn-success btn-large" data-toggle="modal" ng-click="setUrl(); openModal();">Launch</a>
+      </div>
+   
+      <!-- <a class="btn btn-success btn-large" data-toggle="modal" ng-click="openModal();">Launch</a> -->
     </form>
 
   </div>
@@ -33,10 +37,7 @@
     </div>
     <div class="modal-body">
       <modal-iframe></modal-iframe>
-    </div>
-    <div class="modal-footer">
-      <button type="button" class="btn-sm btn-success" data-dismiss="modal">Close</button>
-    </div>       
+    </div>     
   </div><!-- /.modal -->  
 </div>
 

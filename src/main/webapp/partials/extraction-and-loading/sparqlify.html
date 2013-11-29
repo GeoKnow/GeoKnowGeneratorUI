@@ -1,10 +1,15 @@
 <div class="col-lg-8" ng-controller="SparqlifyCtrl">
-<h3 class="green bold">Sparqlify</h3>
 
- <b>Sparqlify is a scalable SPARQL-SQL rewriter. More about this tool <a href="{{component.homepage}}" target="_blank">here</a>.
-  <br>
-  <br>
-  <p>To get started select a data set from the drop down menu.</p>
+  <h3 class="green bold">{{component.label}}</h3>
+
+
+  <dl class="dl-horizontal">
+    <dt>Version:</dt><dd>{{component.version}}</dd>
+    <dt>Homepage:</dt><dd>{{component.homepage}}</dd>
+  </dl>
+
+  <p>Sparqlify is a scalable SPARQL-SQL rewriter. To get started select a data set from the drop down menu.</p>
+
   <form class="form-horizontal InputForm" role="form" >
 <!--     <div class="form-group">
       <label for="Endpoint">Endpoint</label>
@@ -28,10 +33,7 @@
     </div>
     <div class="modal-body">
       <modal-iframe></modal-iframe>
-    </div>
-    <div class="modal-footer">
-      <button type="button" class="btn-sm btn-success" data-dismiss="modal">Close</button>
-    </div>       
+    </div>    
 	</div><!-- /.modal -->
 </div>
 
