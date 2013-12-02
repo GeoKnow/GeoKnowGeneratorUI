@@ -10,7 +10,7 @@ Homepage: http://stack.linkeddata.org/
 
 Package: geoknow-generator-ui
 Architecture: all
-Depends: ${misc:Depends}
+Depends: tomcat7, ${misc:Depends}
 Description: Workbench to integrate tools of project GeoKnow.
  The GeoKnow Generator provides workbench that integrates of tools
  developed within [GeoKnow project](http://geoknow.eu/),
