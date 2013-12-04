@@ -576,6 +576,7 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErr
 			$scope.addParamButton = true;
 			$scope.options.epExamples = false;
 			$scope.options.fileExamples = true;
+			$scope.options.URIExamples = false;
 			$scope.options.endpoints = false;
 			$scope.options.inputFile = true;
 			$scope.options.configFile = false;
@@ -615,12 +616,12 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErr
 											index: "2",
 											module: "nlp askEndPoint false"
 												},
-												/*
+												
 											{
 											index: "2",
 											module: "dereferencing predicate1 http://www.w3.org/2003/01/geo/wgs84_pos#geometry"
 												},
-												*/
+												
 									]
 							}
 					],
@@ -636,12 +637,10 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErr
 											index: "1",
 											module: "nlp askEndPoint false"
 												},
-												/*
 											{
 											index: "2",
 											module: "dereferencing predicate1 http://www.w3.org/2003/01/geo/wgs84_pos#geometry"
 												},
-												*/
 											{
 											index: "3",
 											module: "nlp LiteralProperty http://www.w3.org/2000/01/rdf-schema#comment"
@@ -669,12 +668,10 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErr
 															index: "1",
 															module: "nlp askEndPoint false"
 																},
-																/*
 															{
 															index: "2",
 															module: "dereferencing predicate1 http://www.w3.org/2003/01/geo/wgs84_pos#geometry"
 																},
-																*/
 															{
 															index: "3",
 															module: "nlp LiteralProperty http://www.w3.org/2000/01/rdf-schema#comment"
@@ -696,15 +693,12 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErr
 																			index: "1",
 																			module: "nlp useFoxLight true"
 																				},
-																				/*
 																			{
 																			index: "2",
 																			module: "dereferencing predicate1 http://www.w3.org/2003/01/geo/wgs84_pos#geometry"
 																				},
-																				*/
 																	]
 															},
-											/*	
 											{ 	label : "Denmark Turtle File", 
 													params: [
 																			{
@@ -717,7 +711,6 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErr
 																				},
 																		]
 															}
-											*/
 									],
 	
 	$scope.appendInput = function(){
