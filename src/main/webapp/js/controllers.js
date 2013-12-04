@@ -241,6 +241,7 @@ var LimesCtrl = function($scope, $http, ConfigurationService, flash, ServerError
 	// parameters for saving results
 	$scope.namedGraphs = ConfigurationService.getAllNamedGraphs();
 	$scope.defaultEndpoint = ConfigurationService.getSPARQLEndpoint();
+	$scope.endpoints = ConfigurationService.getAllEndpoints();
 	$scope.uriBase = ConfigurationService.getUriBase();
 	$scope.importServiceUrl = serviceUrl+"/ImportRDF";
 

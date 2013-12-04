@@ -1,6 +1,6 @@
-# baseURI: http://linkeddata.org/integrated-stack-schema/
+# baseURI: http://stack.linkeddata.org/ldis-schema/
 
-@prefix :        <http://linkeddata.org/integrated-stack-schema/> .
+@prefix :        <http://stack.linkeddata.org/ldis-schema/> .
 @prefix d2rq:    <http://www.wiwiss.fu-berlin.de/suhl/bizer/D2RQ/0.1#> .
 @prefix dcmit:   <http://purl.org/dc/dcmitype/> .
 @prefix dcterms:  <http://purl.org/dc/terms/> .

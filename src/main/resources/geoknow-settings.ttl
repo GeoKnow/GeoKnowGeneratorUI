@@ -2,7 +2,7 @@
 @prefix d2rq:    <http://www.wiwiss.fu-berlin.de/suhl/bizer/D2RQ/0.1#> .
 @prefix dcmit:   <http://purl.org/dc/dcmitype/> .
 @prefix dcterms:  <http://purl.org/dc/terms/> .
-@prefix lds:     <http://linkeddata.org/integrated-stack-schema/> .
+@prefix lds:     <http://stack.linkeddata.org/ldis-schema/> .
 @prefix owl:     <http://www.w3.org/2002/07/owl#> .
 @prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
@@ -12,6 +12,13 @@
 @prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
 @prefix foaf:    <http://xmlns.com/foaf/0.1/> .
 @prefix gkg:     <http://generator.geoknow.eu/ontology/> .
+
+
+########### ABOUT THIS FILE #############################################################
+#  This is the default configuration for the demonstator on a local server
+# all components are supposed to be installed on the localhost. 
+# This file is mainly used for the VM
+# #######################################################################################
 
 
 ########### SERVICE DESCRIPTION #########################################################
@@ -46,7 +53,7 @@
               foaf:homepage <http://generator.geoknow.eu/#/settings>; 
               dcterms:modified "2013-09-12"^^xsd:date;
               dcterms:created "2013-09-12"^^xsd:date;
-              void:sparqlEndpoint <http://generator.geoknow.eu:8890/sparql>;
+              void:sparqlEndpoint <http://localhost:8890/sparql>;
           ];
 .
 
@@ -58,7 +65,7 @@
             dcterms:description "This is a graph to tes loading data"^^xsd:string;
             dcterms:modified "2013-09-12"^^xsd:date;
             dcterms:created "2013-09-12"^^xsd:date;
-            void:sparqlEndpoint <http://generator.geoknow.eu:8890/sparql>; 
+            void:sparqlEndpoint <http://localhost:8890/sparql>; 
       ];
 .
 
@@ -81,7 +88,7 @@
                 rdfs:label "Virtuoso Generator Conductor"^^xsd:string ;
                 lds:dbPassword "dba"^^xsd:string ;
                 lds:dbUser "dba"^^xsd:string ;
-                lds:serviceUrl <http://generator.geoknow.eu:8890/conductor>
+                lds:serviceUrl <http://localhost:8890/conductor>
               ] ;
       lds:providesService :VirtuosoGeneratorEndpoint ;
       lds:version "7.0"^^xsd:string ;
@@ -92,14 +99,14 @@
       rdfs:label "Virtuoso Generator Endpoint"^^xsd:string ;
       ## This is to be the same URL as the configuration of the Generator
       ## TODO: find a way to link both
-      lds:serviceUrl <http://generator.geoknow.eu:8890/sparql> .
+      lds:serviceUrl <http://localhost:8890/sparql> .
       
 :Sparqlify
       a       lds:StackComponent ;
       rdfs:label "Sparqlify"^^xsd:string ;
       lds:providesService
               [ a       lds:ExplorationService ;
-                lds:serviceUrl <http://144.76.166.111:8080/sparqlify/>
+                lds:serviceUrl <http://localhost:8080/sparqlify/>
               ] ;
       lds:version "0.1-SNAPSHOT"^^xsd:string ;
       foaf:homepage <http://aksw.org/Projects/Sparqlify.html> .
@@ -109,7 +116,7 @@
       rdfs:label "Facete"^^xsd:string ;
       lds:providesService
               [ a       lds:ExplorationService ;
-                lds:serviceUrl <http://144.76.166.111/facete/>
+                lds:serviceUrl <http://localhost/facete/>
               ] ;
       lds:version "0.1-SNAPSHOT"^^xsd:string ;
       foaf:homepage <http://aksw.org/Projects/Facete.html> .
@@ -119,7 +126,7 @@
       rdfs:label "Limes Linking Service"^^xsd:string ;
       lds:providesService
               [ a       lds:InterlinkingService ;
-                lds:serviceUrl <http://generator.geoknow.eu:8080/Limes-Service>
+                lds:serviceUrl <http://localhost:8080/Limes-Service>
               ] ;
       lds:version "0.6.4"^^xsd:string ;
       foaf:homepage <http://aksw.org/Projects/LIMES.html> .
@@ -129,7 +136,7 @@
       rdfs:label "TripleGeo"^^xsd:string ;
       lds:providesService
               [ a       lds:ExtractionService ;
-                lds:serviceUrl <http://generator.geoknow.eu:8080/TripleGeo-Service>
+                lds:serviceUrl <http://localhost:8080/TripleGeo-Service>
               ] ;
       lds:version "1.0"^^xsd:string ;
       foaf:homepage <https://web.imis.athena-innovation.gr/redmine/projects/geoknow_public/wiki/TripleGeo> .
@@ -139,7 +146,7 @@
       rdfs:label "GeoLift"^^xsd:string ;
       lds:providesService
               [ a       lds:EnrichmentService ;
-                lds:serviceUrl <http://generator.geoknow.eu:8080/GeoLift-Service>
+                lds:serviceUrl <http://localhost:8080/GeoLift-Service>
               ] ;
       lds:version "0.6.4"^^xsd:string ;
       foaf:homepage <https://github.com/AKSW/GeoLift> .
@@ -149,7 +156,7 @@
       rdfs:label "OntoWiki"^^xsd:string ;
       lds:providesService
               [ a       lds:AuthoringService ;
-                lds:serviceUrl <http://144.76.166.111/ontowiki>
+                lds:serviceUrl <http://localhost/ontowiki>
               ] ;
       lds:version "0.9.10-1"^^xsd:string ;
       foaf:homepage <http://aksw.org/Projects/OntoWiki.html> .

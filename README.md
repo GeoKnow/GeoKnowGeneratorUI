@@ -4,9 +4,11 @@ The GeoKnow Generator provides workbench that integrates of tools developed with
 
 ## Install
 
-You can use maven to package the souces in a war file and deploy it on a servlet container.
+* __From Debian package__: The GeoKnow Generator UI is available as a debuian package, to install follow [these](http://stack.linkeddata.org/documentation/installation-of-a-local-generator-demonstrator/) instructions.
 
-TODO: Describe installation with debian repository
+* __Form source__: You can use `maven pacakge` to package the souces in a war file and deploy it on a servlet container. 
+
+These option will not install any integrated component from the stack and you require to install each one. You can choose to use again Debian packages following [these](http://stack.linkeddata.org/documentation/installation-of-a-local-generator-demonstrator/) instructions, or manually visiting each developer's component installation guides.
 
 ## Configuration
 
@@ -45,6 +47,16 @@ If you have a Virtuoso Endpoint, you can configure the following:
 ### Using OntoWiki-Virtuoso
 
 In order that [OntoWiki](https://github.com/AKSW/OntoWiki) is able to access Virtuoso store, besides the installation of the OntoWiki-Virtuoso component you need to follow the instructions of OntoWiku using [Virtuoso Backend](https://github.com/AKSW/OntoWiki/wiki/VirtuosoBackend).
+
+
+## Issues
+
+If some components are installed on the same tomcat server as the Generator, it is better to increase the Java Heap space. Edit the file /etc/default/tomcat7 and perform the following change.
+
+	# The original options look something like this:
+	# JAVA_OPTS="-Djava.awt.headless=true -Xmx128m -XX:+UseConcMarkSweepGC"
+
+	JAVA_OPTS="-Djava.awt.headless=true -Xmx1g -XX:+UseConcMarkSweepGC"
 
 ## Licence
 
