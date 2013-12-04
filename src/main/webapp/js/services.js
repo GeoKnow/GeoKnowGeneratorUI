@@ -3,6 +3,65 @@
 var module = angular.module('app.services', []);
 
 
+module.factory('ImportService', function(){
+  var ImportService = {
+    post : function(serviceUrl, params){
+      console.log(serviceUrl);
+      console.log(params);
+
+           /*
+        
+    $http({
+      url: attrs.importServiceUrl,
+      method: "POST",
+      dataType: "json",
+      params: parameters,
+      contentType: "application/json; charset=utf-8"
+    })
+    .success(function (data, status, headers, config){
+     if(data.status=="FAIL"){
+        flash.error = data.message;
+        importing = false;
+      }
+      else{
+        flash.success = data.message;
+        console.log(data);
+        // add the graph metadata to settingsGraph
+        var now = DateService.getCurrentDate();
+        var newGraph = {  name:"" ,  graph: {
+            created : now, endpoint: ConfigurationService.getSPARQLEndpoint(), 
+            description: "", 
+            modified: now, label:"" 
+            }};
+          var sucess;
+        for (var res in data.result){
+          var graphName = data.result[res].replace(ConfigurationService.getUriBase() ,":");
+          if (graphName.indexOf("accepted") >= 0){
+            newGraph.name = graphName;
+            newGraph.graph.description = "Accepted results from LIMES";
+            newGraph.graph.label = "LIMES Accepted";
+            sucess  = ConfigurationService.addGraph(newGraph);
+            // TODO: handle succes/error
+          }
+            if (graphName.indexOf("review") >= 0){
+            newGraph.name = graphName;
+            newGraph.graph.description = "Results to review from LIMES";
+            newGraph.graph.label = "LIMES review";
+            sucess = ConfigurationService.addGraph(newGraph);
+            console.log(newGraph);
+            // TODO: handle succes/error
+          }
+        }
+        }
+      })
+      .error(function(data, status, headers, config) {
+        // flash.error = data;
+      });*/
+    }
+  }
+  return ImportService;
+});
+
 module.factory('DateService', function(){
   var DateService = {
     getCurrentDate : function(){

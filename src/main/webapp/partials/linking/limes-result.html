@@ -1,7 +1,7 @@
 <div class="contents" ng-controller="LimesCtrl" ng-init="StartLimes()">
 
 <!-- Subscribe to all flash messages. -->
-	<div flash-alert active-class="in" class="alert fade" duration="10000">
+	<div flash-alert active-class="in" class="alert fade" duration="0">
 		<button type="button" class="close" ng-click="hide()">&times;</button>
   	<span class="alert-message">{{flash.message}}</span>
 	</div>
@@ -55,7 +55,10 @@ TODO: add input text so user can provide the graph name
     </select>
 	</div>
 	<br>
- -->	<div class="row">
+ -->	
+
+
+  <div class="row">
 		<div class="pull-left" style="padding-left:0">
 			  <a class="btn btn-sm btn-success" ng-click="save()">Save results in new graphs</a>
 		</div>

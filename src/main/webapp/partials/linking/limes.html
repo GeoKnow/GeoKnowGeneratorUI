@@ -1,7 +1,12 @@
 <div class="contents" ng-controller="LimesCtrl">
 
+<save endpoint="{{defaultEndpoint}}" 
+			uri-base="{{uriBase}}" 
+			import-service-url="{{importServiceUrl}}"
+			dataset="{{}}"></save>
+
 	<!-- Subscribe to all flash messages. -->
-	<div flash-alert active-class="in" class="alert fade" duration="10000">
+	<div flash-alert active-class="in" class="alert fade" duration="0">
 		<button type="button" class="close" ng-click="hide()">&times;</button>
   	<span class="alert-message">{{flash.message}}</span>
 	</div>
