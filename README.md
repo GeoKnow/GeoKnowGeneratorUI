@@ -24,8 +24,8 @@ Note that the endpoint has to support [UPDATE](http://www.w3.org/TR/2013/REC-spa
 3. Edit and load the configuration files provided in `src/main/resources` these files stand for the follwing:
 	* ldsi-schema.ttl : a schema for integrating tools form the linked data stack
 	* generator-ontology.ttl : a schema for managing data sources and datasets in the GeoKnow Generator
-	* geoknow-settings.ttl : description of integrated services, this may depend on the integration you want to have in your application. It will provide required infomration about the stack components. 
-	* service-description.ttl : a basic dataset example using [Void](http://www.w3.org/TR/void/) and [Service Description](http://www.w3.org/TR/2013/REC-sparql11-service-description-20130321/) that is used by the generator to describe datasets and datasources.
+	* geoknow-settings.ttl : description of integrated services, this may depend on the integration you want to have in your application. It will provide required infomration about the stack components. This file also contains information about some data sources and graphs used in the application (i.e. GraphSettings)
+
 	
 ## Optional Extra Configutation
 
