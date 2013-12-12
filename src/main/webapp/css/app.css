@@ -215,7 +215,6 @@ a.accordion-toggle:hover{
 /* Buttons */
 
 .plusbutton{
-	padding-right: 6px;
 	padding-left: 6px;
 	padding-top: 3px;
 	color: #CCCCCC;
@@ -223,6 +222,18 @@ a.accordion-toggle:hover{
 }
 
 .plusbutton:hover{
+	cursor: pointer;
+	color: #000000;
+	opacity:0.5;
+}
+
+.removebutton{
+	padding:3px 0 0 6px;
+	color: #CCCCCC;
+	font-size: 12px;
+}
+
+.removebutton:hover{
 	cursor: pointer;
 	color: #000000;
 	opacity:0.5;

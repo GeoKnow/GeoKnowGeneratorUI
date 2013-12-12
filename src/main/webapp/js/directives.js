@@ -41,15 +41,70 @@ app.directive("modalIframe", function ($compile) {
   };
 });
 
-app.directive("geoliftConfig", function ($compile) {
+/****************************************************************************************************
+*
+* GEOLIFT Directives
+*
+***************************************************************************************************/
+
+app.directive("geoliftModule", function ($compile) {
+	  var count=0;
 	  return {
-	    template: '<iframe  id="mod-frame" src="{{url}}"></iframe>',
-	    restrict: 'E',
 	    link: function (scope, elm, attr) {
-	        
-	    }
-	  };
+	    	var useDirective = scope.useDirective;
+	    	if(useDirective == 1){
+	    			var params = scope.directiveParams;
+	        		elm.replaceWith( '<select class="form-control input-sm" ng-options="o.label for o in modOptions"'+ 
+	        				'id="module'+count+'" ng-model="modOption"><option>'+params[count].module+'</option></select>' );
+	        		if(count == (params.length-1)){
+	        			count = 0;
+	        		}else{
+	        			count++;
+	        		}
+	    		}
+	    	}
+	  	};
 	});
+
+app.directive("geoliftParam", function ($compile) {
+	  var count=0;
+	  return {
+	    link: function (scope, elm, attr) {
+	    	var useDirective = scope.useDirective;
+	    	if(useDirective == 1){
+	    			var params = scope.directiveParams;
+	        		elm.replaceWith( '<select class="form-control input-sm" ng-options="o.label for o in modOptions"'+ 
+	        				'id="parameter'+count+'" ng-model="paramOption"><option>'+params[count].parameter+'</option></select>' );
+	        		if(count == (params.length-1)){
+	        			count = 0;
+	        		}else{
+	        			count++;
+	        		}
+	    		}
+	    	}
+	  	}; 
+	});
+
+app.directive("geoliftValue", function ($compile) {
+	  var count=0;
+	  return {
+	    link: function (scope, elm, attr) {
+	    	var useDirective = scope.useDirective;
+	    	if(useDirective == 1){
+	    			var params = scope.directiveParams;
+	        		elm.replaceWith( '<select class="form-control input-sm" ng-options="o.label for o in modOptions"'+ 
+	        				'id="paramVal'+count+'" ng-model="paramVal"><option>'+params[count].value+'</option></select>' );
+	        		if(count == (params.length-1)){
+	        			count = 0;
+	        		}else{
+	        			count++;
+	        		}
+	    		}
+	    	}
+	  	};
+	});
+
+/****************************************************************************************************/
 
 app.directive('regexValidate', function() {
     var expressions = [];
@@ -89,4 +144,3 @@ app.directive('uniqueIdentifier', ['$compile', 'ConfigurationService', function(
         }
     }
  }]);
-

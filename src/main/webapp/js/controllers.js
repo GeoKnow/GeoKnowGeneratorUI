@@ -267,7 +267,7 @@ var LimesCtrl = function($scope, $http, ConfigurationService, flash, ServerError
 	
 	$scope.limes = { OutputFormat :    $scope.options[0].output[0],
 					 ExecType :        $scope.options[1].execType[0]
-	}
+	};
 	
 	$scope.FillForm = function(example){
 		
@@ -350,7 +350,7 @@ var LimesCtrl = function($scope, $http, ConfigurationService, flash, ServerError
  		var newWindow = $window.open('popup.html#/popup-limes', 'frame', 'resizeable,height=600,width=800');
 		//$window.open('popup.html#/popup-limes', 'frame', 'resizeable,top=100,left=100,height=400,width=400');
 		newWindow.params = params;
-	}
+	};
 		
 	$scope.StartLimes = function(){
 		var params = $window.params;
@@ -371,7 +371,7 @@ var LimesCtrl = function($scope, $http, ConfigurationService, flash, ServerError
 		    	flash.error = ServerErrorResponse.getMessage(response.status);
 	      });
 		
-	}
+	};
 	
 	$scope.ReviewLimes = function(){
 
@@ -542,12 +542,23 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErr
 	$scope.inputForm = true;
 	$scope.configOptions = true;
 	$scope.startButton = false;
+	$scope.directiveParams = {};
+	$scope.useDirective = 0;
 	var sourceInput = null;
 	var dataFile = null;
 	var uploadError = false;
 	var uploadedFiles = null;
-	var count = 0;
+	var count = 1;
+	var idx = 0;
 	var isCompletePath = 0;
+	
+	$scope.modOptions = [
+	                      { label: "Choose a module"},
+	                      { label: "nlp"},
+	 			          { label: "dereferencing"}
+	                     ],
+	
+	
 	
 	$scope.options = {
 			inputFile: false,
@@ -556,13 +567,9 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErr
 			datasource: [
 		                 	"File",
 		                 	"URI",
-							"SPARQL Endpoint"
+							//"SPARQL Endpoint"
   			                ]
 	};
-	
-	$scope.params = [{ 	
-		inputs : [], 
-    visible: false }];
 	
 	$scope.choice = function($name){
 		
@@ -580,12 +587,14 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErr
 			$scope.options.endpoints = false;
 			$scope.options.inputFile = true;
 			$scope.options.configFile = false;
+			$scope.inputDisplayRow = false;
 		}
 		if($name == "URI"){
 			isCompletePath = 1;
 			$scope.configOptions = true;
 			$scope.addParamButton = true;
 			$scope.options.URIExamples = true;
+			$scope.inputDisplayRow = true;
 			$scope.options.fileExamples = false;
 			$scope.options.endpoints = false;
 			$scope.options.inputFile = false;
@@ -610,16 +619,22 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErr
 								params: [
 											{
 											index: "1",
-											module: "nlp useFoxLight true"
+											module: "nlp",
+											parameter: "useFoxLight",
+											value: "true"
 												},
 											{
 											index: "2",
-											module: "nlp askEndPoint false"
+											module: "nlp",
+											parameter: "useFoxLight",
+											value: "true"
 												},
 												
 											{
 											index: "2",
-											module: "dereferencing predicate1 http://www.w3.org/2003/01/geo/wgs84_pos#geometry"
+											module: "dereferencing",
+											parameter: "predicate",
+											value: "http://www.w3.org/2003/01/geo/wgs84_pos#geometry"
 												},
 												
 									]
@@ -631,27 +646,39 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErr
 								params: [
 											{
 											index: "1",
-											module: "nlp useFoxLight true"
+											module: "nlp",
+											parameter: "useFoxLight",
+											value: "true"
 												},
 											{
 											index: "1",
-											module: "nlp askEndPoint false"
+											module: "nlp",
+											parameter: "askEndPoint",
+											value: "false"
 												},
 											{
 											index: "2",
-											module: "dereferencing predicate1 http://www.w3.org/2003/01/geo/wgs84_pos#geometry"
+											module: "dereferencing",
+											parameter: "predicate1",
+											value: "http://www.w3.org/2003/01/geo/wgs84_pos#geometry"
 												},
 											{
 											index: "3",
-											module: "nlp LiteralProperty http://www.w3.org/2000/01/rdf-schema#comment"
+											module: "nlp",
+											parameter: "LiteralProperty",
+											value: "http://www.w3.org/2000/01/rdf-schema#comment"
 												},
 											{
 											index: "3",
-											module: "nlp useFoxLight false"
+											module: "nlp",
+											parameter: "useFoxLight",
+											value: "false"
 												},
 											{
 											index: "4",
-											module: "nlp useFoxLight true"
+											module: "nlp",
+											parameter: "useFoxLight",
+											value: "true"
 												},
 									]
 							}
@@ -662,27 +689,39 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErr
 								params: [
 															{
 															index: "1",
-															module: "nlp useFoxLight true"
+															module: "nlp",
+															parameter: "useFoxLight",
+															value: "true"
 																},
 															{
 															index: "1",
-															module: "nlp askEndPoint false"
+															module: "nlp",
+															parameter: "askEndPoint",
+															value: "false"
 																},
 															{
 															index: "2",
-															module: "dereferencing predicate1 http://www.w3.org/2003/01/geo/wgs84_pos#geometry"
+															module: "dereferencing",
+															parameter: "predicate1",
+															value: "http://www.w3.org/2003/01/geo/wgs84_pos#geometry"
 																},
 															{
 															index: "3",
-															module: "nlp LiteralProperty http://www.w3.org/2000/01/rdf-schema#comment"
+															module: "nlp",
+															parameter: "LiteralProperty",
+															value: "http://www.w3.org/2000/01/rdf-schema#comment"
 																},
 															{
 															index: "3",
-															module: "nlp useFoxLight false"
+															module: "nlp",
+															parameter: "useFoxLight",
+															value: "false"
 																},
 															{
 															index: "4",
-															module: "nlp useFoxLight true"
+															module: "nlp",
+															parameter: "useFoxLight",
+															value: "true"
 																},
 													]
 											},
@@ -691,32 +730,103 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErr
 												params: [
 																			{
 																			index: "1",
-																			module: "nlp useFoxLight true"
+																			module: "nlp",
+																			parameter: "useFoxLight",
+																			value: "true"
 																				},
 																			{
 																			index: "2",
-																			module: "dereferencing predicate1 http://www.w3.org/2003/01/geo/wgs84_pos#geometry"
+																			module: "dereferencing",
+																			parameter: "predicate1",
+																			value: "http://www.w3.org/2003/01/geo/wgs84_pos#geometry"
 																				},
 																	]
 															},
-											{ 	label : "Denmark Turtle File", 
+											{ 	label : "Denmark RDF File", 
 													params: [
 																			{
 																			index: "1",
-																			module: "nlp useFoxLight true"
+																			module: "nlp",
+																			parameter: "useFoxLight",
+																			value: "true"
 																				},
 																			{
 																			index: "2",
-																			module: "dereferencing predicate1 http://www.w3.org/2003/01/geo/wgs84_pos#geometry"
+																			module: "dereferencing",
+																			parameter: "predicate1",
+																			value: "http://www.w3.org/2003/01/geo/wgs84_pos#geometry"
 																				},
 																		]
 															}
 									],
+									
+	$scope.params = [{
+						inputs : [],
+						visible: false 
+					}];
 	
 	$scope.appendInput = function(){
-		$scope.params[0].inputs.push( { idx : count++ } );
-		$scope.params[0].visible = true;
-		$scope.startButton = true;
+		//console.log($scope.params);
+		$scope.options.URIExamples = false;
+		$scope.options.fileExamples = false;
+		$scope.options.configFile = false;
+		$scope.addButton = true;
+			$scope.params[0].inputs.push( { 
+										idx : idx++, 
+										index : count++
+										} );
+
+			$scope.params[0].visible = true;
+			$scope.startButton = true;
+		};
+		
+	$scope.setParams = function(modOption, index){
+		/*
+		$('#module'+index).empty();
+		$('#modOption'+index).append('<option selected="selected value="'+modOption.label+'">'+modOption.label+'</option>');
+		*/
+		if(modOption.label === "nlp"){
+			$('#parameter'+index).empty();
+			$('#paramVal'+index).empty();
+			$('#parameter'+index).append('<option selected="selected" value="">Choose a parameter</option>');
+			$('#parameter'+index).append('<option value="LiteralProperty">LiteralProperty</option>');
+			$('#parameter'+index).append('<option value="useFoxLight">useFoxLight</option>');
+			$('#parameter'+index).append('<option value="askEndPoint">askEndPoint</option>');
+		}
+		
+		if(modOption.label === "dereferencing"){ 
+			$('#parameter'+index).empty();
+			$('#parameter'+index).append('<option selected="selected" value="LiteralProperty">predicate</option>');
+			$('#paramVal'+index).empty();
+			$('#paramVal'+index).append('<option selected="selected" value="">Choose a value</option>');
+			$('#paramVal'+index).append('<option value="http://www.w3.org/2003/01/geo/wgs84_pos#lat">http://www.w3.org/2003/01/geo/wgs84_pos#lat</option>');
+			$('#paramVal'+index).append('<option value="http://www.w3.org/2003/01/geo/wgs84_pos#lon">http://www.w3.org/2003/01/geo/wgs84_pos#lon</option>');
+			$('#paramVal'+index).append('<option value="http://www.w3.org/2003/01/geo/wgs84_pos#geometry">http://www.w3.org/2003/01/geo/wgs84_pos#geometry</option>');
+		}
+		
+	};
+	
+	$scope.setValue = function(paramOption, index){
+		if(paramOption === "LiteralProperty"){
+			$('#paramVal'+index).empty();
+			$('#paramVal'+index).append('<option selected="selected" value="">Choose a value</option>');
+			$('#paramVal'+index).append('<option value="http://www.w3.org/2000/01/rdf-schema#comment">http://www.w3.org/2000/01/rdf-schema#comment</option>');
+		}
+		
+		if(paramOption === "useFoxLight" || paramOption === "askEndPoint"){
+			$('#paramVal'+index).empty();
+			$('#paramVal'+index).append('<option selected="selected" value="">Choose a value</option>');
+			$('#paramVal'+index).append('<option value="true">true</option>');
+			$('#paramVal'+index).append('<option value="true">false</option>');
+		}
+	};
+	
+	$scope.addParams = function(paramOption, index){
+		for(var i=0; i<$scope.params[0].inputs.length; i++){
+			$scope.params[0].inputs[i].index = $('#indexid'+i).val();
+			count = parseInt($('#indexid'+i).val());
+		}
+		count++;
 	};
 	
 	$scope.removeInput = function ( index ) {
@@ -730,7 +840,13 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErr
 	
 	$scope.FillForm = function(example){
 		
+		//$scope.directiveParams = {};
 		$scope.params[0].inputs = [];
+		$scope.startButton = false;
+		count = 0;
+		$scope.useDirective = 1;
+		$scope.addParamButton = false;
+		$scope.addButton = false;
 		
 		if(example === "Dbpedia endpoint enrichment"){
 			
@@ -740,113 +856,132 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErr
 			$scope.inputDisplay = sourceInput;
 			$scope.options.endpoints = false;
 			$scope.endpointSelect = false;
-			$scope.inputDisplayRow = true;
+			$scope.inputDisplayRow = false;
 			
 			for(var i=0; i<$scope.epExamples[0].params.length; i++){
 				
 				$scope.params[0].inputs.push({
+					idx: i,
 					index: $scope.epExamples[0].params[i].index,
-					module: $scope.epExamples[0].params[i].module
+					module: $scope.epExamples[0].params[i].module,
+					parameter: "",
+					value: ""
 				});
 
 				$scope.params[0].visible = true;
 				$scope.startButton = true;
-				
+				count = $scope.epExamples[0].params[i].index;
 			}
 		}
 		
 		if(example === "http://dbpedia.org/data/Nidau"){
 			
 			isCompletePath = 1;
-			sourceInput = example;
-			$scope.inputDisplay = sourceInput;
+			$scope.inputDisplay = example;
 			$scope.options.endpoints = false;
 			$scope.endpointSelect = false;
-			$scope.inputDisplayRow = true;
+			$scope.inputDisplayRow = false;
+			$scope.exampleName = example;
+			$scope.directiveParams = $scope.URIExamples[0].params;
 			
 			for(var i=0; i<$scope.URIExamples[0].params.length; i++){
 				
 				$scope.params[0].inputs.push({
-					index: $scope.URIExamples[0].params[i].index,
-					module: $scope.URIExamples[0].params[i].module
+					idx: i,
+					index: $scope.URIExamples[0].params[i].index
 				});
-
+				
 				$scope.params[0].visible = true;
 				$scope.startButton = true;
-				
+				count = $scope.epExamples[0].params[i].index;
 			}
+			count = 3;
 		}
 		
 		if(example === "Berlin Turtle File"){
-			 
+			
 			isCompletePath = 0;
 			$scope.options.inputFile = false;
 			sourceInput = "berlin.ttl";
 			$scope.inputDisplay = sourceInput;
-			$scope.inputDisplayRow = true;
+			$scope.directiveParams = $scope.fileExamples[0].params;
 					
-			for(var i=0; i<$scope.epExamples[0].params.length; i++){
+			for(var i=0; i<$scope.fileExamples[0].params.length; i++){
 						
 				$scope.params[0].inputs.push({
+					idx: i,
 					index: $scope.fileExamples[0].params[i].index,
 					module: $scope.fileExamples[0].params[i].module
 				});
 		
 				$scope.params[0].visible = true;
-				$scope.startButton = true;			
+				$scope.startButton = true;
 			}
+			count = 5;
 		}
 		
 		if(example === "Berlin N Triples File"){
-			 
+			
 			isCompletePath = 0;
 			$scope.options.inputFile = false;
 			sourceInput = "berlin.n3";
 			$scope.inputDisplay = sourceInput;
-			$scope.inputDisplayRow = true;
+			$scope.directiveParams = $scope.fileExamples[1].params;
 					
-			for(var i=0; i<$scope.epExamples[1].params.length; i++){
+			for(var i=0; i<$scope.fileExamples[1].params.length; i++){
 						
 				$scope.params[0].inputs.push({
+					idx: i,
 					index: $scope.fileExamples[1].params[i].index,
 					module: $scope.fileExamples[1].params[i].module
 				});
 		
 				$scope.params[0].visible = true;
-				$scope.startButton = true;			
+				$scope.startButton = true;
+				count = $scope.epExamples[0].params[i].length;
 			}
+			count = 3;
 		}
 		
-		if(example === "Denmark Turtle File"){
-			 
+		if(example === "Denmark RDF File"){
+			
 			isCompletePath = 0;
 			$scope.options.inputFile = false;
-			sourceInput = "denmark.ttl";
+			sourceInput = "denmark.rdf";
 			$scope.inputDisplay = sourceInput;
-			$scope.inputDisplayRow = true;
+			$scope.directiveParams = $scope.fileExamples[2].params;
 					
-			for(var i=0; i<$scope.epExamples[2].params.length; i++){
+			for(var i=0; i<$scope.fileExamples[2].params.length; i++){
 						
 				$scope.params[0].inputs.push({
+					idx: i,
 					index: $scope.fileExamples[2].params[i].index,
 					module: $scope.fileExamples[2].params[i].module
 				});
 		
 				$scope.params[0].visible = true;
-				$scope.startButton = true;			
+				$scope.startButton = true;
+				count = $scope.epExamples[0].params[i].index;
 			}
+			count = 3;
 		}
-		
 	};
 	
 	$scope.loadDataFile = function($files){
 		$scope.options.fileExamples = false;
 		$scope.options.configFile = true;
 		dataFile = $files[0].name;
+		$scope.inputDisplay = dataFile;
+		isCompletePath = 2;
 		$('#dummyGeoLiftInput').val(dataFile);
 		};
 	
 	$scope.loadConfigFile = function($files){
+		
+		$scope.params[0].inputs = [];
+		
+		$scope.addParamButton = false;
+		$scope.useDirective = 1;
 	
 		for (var i = 0; i < $files.length; i++) {
 	    var $file = $files[i];
@@ -867,15 +1002,19 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErr
 						dataFile: dataFile}
 				 	})
 				.then(function(data) {
-					$scope.addParamButton = true;
-					sourceInput = data.data[0][0];
-				     		
+					$scope.inputDisplay = data.data[0][0];
+					isCompletePath = 1;
 					for(var i=1; i<data.data.length; i++){
 						$scope.params[0].inputs.push({
-					  	index: data.data[i][0],
-				 	  	module: data.data[i][1]
+							idx: i-1,
+						  	index: data.data[i][0],
+					 	  	module: data.data[i][1],
+					 	  	parameter: data.data[i][2],
+					 	  	value: data.data[i][3],
 						});
 					}
+					
+					$scope.directiveParams = $scope.params[0].inputs;
 					$scope.params[0].visible = true;
 					$scope.startButton = true;
 					      		
@@ -897,18 +1036,32 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErr
 	
 	$scope.LaunchGeoLift = function(){
 		
+		if(isCompletePath == 1){
+			sourceInput = $scope.inputDisplay;
+		}
+		
+		if(isCompletePath == 2){
+			sourceInput = $scope.inputDisplay;
+		}
+		
 		var params = {};
 		params[0] = $scope.params[0].inputs.length;
 		params[1] = sourceInput;
 		params[2] = isCompletePath;
-         
+		
 		for(var i=0; i<$scope.params[0].inputs.length; i++){
-		  params[i+3] = $scope.params[0].inputs[i].index + " " + $scope.params[0].inputs[i].module;
+			$scope.params[0].inputs[i].index = parseInt($('#indexid'+i).val());
+		}
+		
+		for(var i=0; i<$scope.params[0].inputs.length; i++){
+		  params[i+3] = $scope.params[0].inputs[i].index + " " + $('#module'+i+' option:selected').text() +
+		  " " + $('#parameter'+i+' option:selected').text() + " " + $('#paramVal'+i+' option:selected').text();
 		}
 			
 		window.$windowScope = $scope;
 	 	var newWindow = $window.open('popup.html#/popup-geolift', 'frame', 'resizeable,height=600,width=800');
 		newWindow.params = params;
+		
 	};
 	
 	$scope.StartGeoLift = function(){
@@ -940,9 +1093,9 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErr
 	        dataType: "json",
 	        contentType: "application/json; charset=utf-8"
 	      }).then(function(data){
-	    	  console.log(data);
+	    	  
 	    	  		var results = data.data[0];
-	    	  		results = results.substring(13,results.length-3);
+	    	  		//results = results.substring(13,results.length-3);
 	    	  		$scope.results = results;
 	    	  		
 	    		  	$scope.showProgress = false;

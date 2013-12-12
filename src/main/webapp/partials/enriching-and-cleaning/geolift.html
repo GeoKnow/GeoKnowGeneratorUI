@@ -1,3 +1,12 @@
+<script>
+	$( "#clickme" ).click(function() {
+		
+		$( this ).slideUp();
+		//$( "#module0" ).remove();
+		
+		});
+</script>
+
 <div class="contents" ng-controller="GeoliftCtrl">
 	<!-- Subscribe to all flash messages. -->
 	<div flash-alert active-class="in" class="alert fade" duration="10000">
@@ -114,10 +123,10 @@
 	
 	<div class="row below" ng-show="inputDisplayRow">
 			<div class="col-xs-2">
-			<label>Data Source</label>
+			<label>URI</label>
 			</div>
 			<div class="col-xs-10">
-				<input class="form-control input-sm" id="inputDisplay" ng-model="inputDisplay" readonly="readonly"></input>
+				<input class="form-control input-sm" id="inputDisplay" ng-model="inputDisplay"></input>
 			</div>
 	</div>
 	 
@@ -125,7 +134,8 @@
 			<div class="col-xs-2">
 		    </div>
 		    <div class="col-xs-2">
-				<a class="btn btn-sm btn-success btn-block" ng-click="appendInput()">Add Parameter</a>
+				<a class="btn btn-sm btn-success btn-block" 
+				ng-click="appendInput()">Add Parameter</a>
 	  		</div>
 	</div>
 	<br>
@@ -138,24 +148,55 @@
 	<div class="col-xs-10">
 	<span>
 		<div class="pull-left" style="width:5%"><label>Index</label></div>
-		<div class="pull-left" style="width:85%; margin-left:10px;"><label>Module</label></div>
+		<div class="pull-left" style="width:20%"><label>Module</label></div>
+		<div class="pull-left" style="width:25%"><label>Parameter</label></div>
+		<div class="pull-left" style="width:45%"><label>Value</label></div>
 	</span>
 	</div>
+	<!-- 
 	<div class="col-xs-10">
 	<div ng-repeat="param in params[0].inputs">
 	<span>
 		<div class="pull-left" style="width:5%"><input class="form-control input-sm" value="{{param.index}}"></input></div>
 		<div class="pull-left" style="width:85%"><input class="form-control input-sm" value="{{param.module}}"></input></div>
-		<span class="glyphicon glyphicon-plus plusbutton pull-left" ng-click="appendInput()" aria-hidden="true"></span>
+		<span class="glyphicon glyphicon-plus plusbutton pull-left" ng-click="appendInputs()" aria-hidden="true"></span>
 		<button type="button" class="close pull-left" ng-click="removeInput($index)" aria-hidden="true">&times;</button>
 	</span>
 	<br><br><br>
 	</div>
 	</div>
+	 -->
+	<div class="col-xs-10 below">
+	<div ng-repeat="param in params[0].inputs">
+	<span>
+		<div class="pull-left" style="width:5%">
+		<input id="indexid{{param.idx}}" class="form-control input-sm" value="{{param.index}}"></input>
+		</div>
+		<div class="pull-left" style="width:20%">
+		<select id="module{{param.idx}}" class="form-control input-sm" ng-init="modOption = modOptions[0]" 
+		ng-model="modOption"  ng-options="o.label for o in modOptions" 
+		ng-change="setParams(modOption, $index)" geolift-module>
+		</select>
+		</div>
+		<div class="pull-left" style="width:25%">
+		<select id="parameter{{param.idx}}" class="form-control input-sm" ng-model="paramOption"
+		ng-change="setValue(paramOption, $index)" geolift-param>
+		</select>
+		</div>
+		<div class="pull-left" style="width:45%">
+		<select id="paramVal{{param.idx}}" class="form-control input-sm" ng-model="paramVal"
+		ng-change="addParams(paramVal, $index)" geolift-value>
+		</select>
+		</div>
+		<span class="glyphicon glyphicon-minus removebutton pull-left" ng-click="removeInput($index)" aria-hidden="true"></span>
+		<span class="glyphicon glyphicon-plus plusbutton pull-left" ng-click="appendInput()" aria-hidden="true" ng-show="addButton"></span>	
+	</span>
+	<br><br><br>
+	</div>
 	</div>
 	
-	<div class="row" ng-show="startButton">
-		<div class="col-xs-2"></div>
+	<div class="col-xs-2"></div>
+	<div class="row col-xs-10" ng-show="startButton">
 		<div class="col-xs-2">
 		  <a class="btn btn-sm btn-success btn-block" ng-click="LaunchGeoLift()">Start GeoLift</a>
 		</div>
