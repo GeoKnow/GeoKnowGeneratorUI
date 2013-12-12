@@ -375,8 +375,7 @@ var LimesCtrl = function($scope, $http, ConfigurationService, flash, ServerError
 	    	flash.success = data.message;
 	    	// get the files inside data.results, and these are to be proposed to be downloaded
 	    	// in this case probably LimesReview is not required anymore...
-	    	console.log(data);
-				$scope.ReviewLimes();   
+			$scope.ReviewLimes();   
       }
       else {
         flash.error = data.message;
@@ -395,13 +394,13 @@ var LimesCtrl = function($scope, $http, ConfigurationService, flash, ServerError
 		$scope.reviewForm = false;
 
 	  $http({
-					url: serviceUrl+"/LimesReview",
+			url: serviceUrl+"/LimesReview",
 	        method: "POST",
 	        dataType: "json",
 	        contentType: "application/json; charset=utf-8"
 	      }).then(function(data){
 	    	  	var result = data.data[0];
-	  	  		result = result.substring(13,result.length-5);
+	  	  		//result = result.substring(13,result.length-5);
 	  	  		if (result.length<3){
 	  	  			$scope.limes.reviewResults = "No results to review";
 	  		  	}else{
@@ -409,7 +408,7 @@ var LimesCtrl = function($scope, $http, ConfigurationService, flash, ServerError
 	  		  	}
 	  	  		
 	  	  		result = data.data[1];
-	  	  		result = result.substring(13,result.length-5);
+	  	  		//result = result.substring(13,result.length-5);
 	  	  		if (result.length<3){
 	  	  			$scope.limes.acceptedResults = "No results meet the acceptance threshold";
 	  	  		}else{
@@ -1549,7 +1548,7 @@ var TripleGeoCtrl = function($scope, $http, ConfigurationService, flash, ServerE
 	        contentType: "application/json; charset=utf-8"
 	      }).then(function(data){
 	    	  		var results = data.data[0];
-  	  				results = results.substring(13,results.length-3);
+  	  				//results = results.substring(13,results.length-3);
 	    	  		$scope.results = results;
 	    		  	$scope.showProgress = false;
 	  	    		$scope.reviewForm = true;
@@ -1560,7 +1559,7 @@ var TripleGeoCtrl = function($scope, $http, ConfigurationService, flash, ServerE
 	    		$scope.reviewForm = false;
 				flash.error = ServerErrorResponse.getMessage(response.status);
 	    	});
-		}
+		};
 	
 	$scope.save = function(){
 		
