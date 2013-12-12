@@ -24,7 +24,7 @@ app.config(function($routeSegmentProvider, $routeProvider)
 
         .when('/home', 'default')
         .when('/account','account')
-        .when('/account/preferences', 'account.preferences')
+        // .when('/account/preferences', 'account.preferences')
         .when('/settings', 'settings')
         .when('/settings/data-sources', 'settings.data-sources')
         .when('/settings/datasets', 'settings.datasets')

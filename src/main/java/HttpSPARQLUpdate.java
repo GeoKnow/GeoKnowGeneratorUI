@@ -50,15 +50,17 @@ public class HttpSPARQLUpdate {
         connection.setRequestProperty("Content-Length", "" + Integer.toString(urlParameters.getBytes().length));
         connection.setUseCaches (false);
 
+        System.out.println("\nSending 'POST' request to URL : " + url);
+        
         DataOutputStream wr = new DataOutputStream(connection.getOutputStream ());
         wr.writeBytes(urlParameters);
         wr.flush();
 		wr.close();
  
 		int responseCode = connection.getResponseCode();
-//		System.out.println("\nSending 'POST' request to URL : " + url);
-//		System.out.println("Response Code : " + responseCode);
-//		System.out.println("Response Message : " + connection.getResponseMessage());
+		
+		System.out.println("Response Code : " + responseCode);
+		System.out.println("Response Message : " + connection.getResponseMessage());
 		
  		BufferedReader in = new BufferedReader(
 		        new InputStreamReader(connection.getInputStream()));

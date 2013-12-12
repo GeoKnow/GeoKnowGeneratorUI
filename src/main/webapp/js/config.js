@@ -33,26 +33,26 @@ angular.module("app.configuration", [])
 {
         $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded; charset=UTF-8";
 
-        var ENDPOINT  = "http://generator.geoknow.eu:8890/sparql";
-        // if new resorces are created they will use this name space, and it can be changed
-        var NS        = "http://generator.geoknow.eu/resource/";
+	var ENDPOINT  = "http://generator.geoknow.eu:8890/sparql";
+	// if new resorces are created they will use this name space, and it can be changed
+	var NS        = "http://generator.geoknow.eu/resource/";
   // this is the graph where settings are stored, it doesnt change, and independent on the Namespace
         var GRAPH_URI = "http://generator.geoknow.eu/resource/settingsGraph";
 
-        var namespaces =
-        {
-                "http://dbpedia.org/resource/"                     : "dbpedia:",
-                "http://purl.org/dc/elements/1.1/"                 : "dc:",
-                "http://purl.org/dc/terms/"                        : "dcterms:",
-                "http://xmlns.com/foaf/0.1/"                       : "foaf:",
-                "http://stack.linkeddata.org/ldis-schema/"   : "lds:",
-                "http://generator.geoknow.eu/ontology/"            : "gkg:",
-                "http://www.w3.org/1999/02/22-rdf-syntax-ns#"      : "rdf:",
-                "http://www.w3.org/2000/01/rdf-schema#"            : "rdfs:",
-                "http://www.w3.org/ns/sparql-service-description#" : "sd:",
-                "http://rdfs.org/ns/void#"                         : "void:"
-        };
-        namespaces[NS] = ":";
+	var namespaces =
+	{
+		"http://dbpedia.org/resource/"                     : "dbpedia:",
+		"http://purl.org/dc/elements/1.1/"                 : "dc:",
+		"http://purl.org/dc/terms/"                        : "dcterms:",
+		"http://xmlns.com/foaf/0.1/"                       : "foaf:",
+		"http://stack.linkeddata.org/ldis-schema/"   : "lds:",
+		"http://generator.geoknow.eu/ontology/"            : "gkg:",
+		"http://www.w3.org/1999/02/22-rdf-syntax-ns#"      : "rdf:",
+		"http://www.w3.org/2000/01/rdf-schema#"            : "rdfs:",
+		"http://www.w3.org/ns/sparql-service-description#" : "sd:",
+		"http://rdfs.org/ns/void#"                         : "void:"
+	};
+	namespaces[NS] = ":";
 
         var GRAPH    = "<" + GRAPH_URI + ">";
         var EOL      = "\n";
