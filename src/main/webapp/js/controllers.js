@@ -488,7 +488,7 @@ var LimesCtrl = function($scope, $http, ConfigurationService, flash, ServerError
 	$scope.save = function(){
 			
 		var parameters = { 
-      endpoint: ConfigurationService.getSPARQLEndpoint() , 
+        endpoint: ConfigurationService.getSPARQLEndpoint() , 
    		uriBase : ConfigurationService.getUriBase()
 		};
 				
@@ -1176,7 +1176,7 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErr
 		var parameters = {
 	    rdfFile: "result.ttl", 
 	    endpoint: ConfigurationService.getSPARQLEndpoint(), 
-	    graph: $scope.saveDataset, 
+	    graph: $scope.saveDataset.replace(':', ConfigurationService.getUriBase()), 
 	    uriBase : ConfigurationService.getUriBase()
 	 	};
 		
