@@ -1175,7 +1175,7 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErr
 		
 		var parameters = {
 	    rdfFile: "result.ttl", 
-	    endpoint: $scope.saveEndpoint, 
+	    endpoint: ConfigurationService.getSPARQLEndpoint(), 
 	    graph: $scope.saveDataset, 
 	    uriBase : ConfigurationService.getUriBase()
 	 	};
