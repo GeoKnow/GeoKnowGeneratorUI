@@ -36,15 +36,9 @@
 	</div>
 	<br>
 	<div class="row below">
-		<b>Select the endpoint and graph which you would like to save to.</b>
+		<b>Select the graph which you would like to save to.</b>
 	<br>
 	</div>
-	<div class="row">
-	<label>Endpoint</label>
-	<select class="form-control" ng-model="saveEndpoint" ng-options="c.endpoint as c.label for c in endpoints" required>
-    </select>
-	</div>
-	<br>
 	<div class="row below">
 	<label>Graph</label>
     <select class="form-control" ng-model="saveDataset" ng-options="namedgraph.name as namedgraph.name for namedgraph in namedGraphs" required>
@@ -53,6 +47,9 @@
 	<div class="row">
 		<div class="pull-left" style="padding-left:0">
 			  <a class="btn btn-sm btn-success" ng-click="save()">Save Results</a>
+		</div>
+		<div>
+			  <!-- <download-result></download-result> -->
 		</div>
 	</div>
 </form>

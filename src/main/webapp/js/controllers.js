@@ -559,6 +559,7 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErr
 	$scope.startButton = false;
 	$scope.directiveParams = {};
 	$scope.useDirective = 0;
+	$scope.resultURL = "";
 	var sourceInput = null;
 	var dataFile = null;
 	var uploadError = false;
@@ -650,6 +651,30 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErr
 											module: "dereferencing",
 											parameter: "predicate",
 											value: "http://www.w3.org/2003/01/geo/wgs84_pos#geometry"
+												},
+												
+									]
+							},
+							{ 	label : "http://dbpedia.org/data/Athens", 
+								params: [
+											{
+											index: "1",
+											module: "nlp",
+											parameter: "useFoxLight",
+											value: "true"
+												},
+											{
+											index: "2",
+											module: "nlp",
+											parameter: "useFoxLight",
+											value: "true"
+												},
+												
+											{
+											index: "2",
+											module: "dereferencing",
+											parameter: "predicate",
+											value: "http://www.w3.org/2003/01/geo/wgs84_pos#lon"
 												},
 												
 									]
@@ -913,6 +938,30 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErr
 			count = 3;
 		}
 		
+		if(example === "http://dbpedia.org/data/Athens"){
+					
+					isCompletePath = 1;
+					$scope.inputDisplay = example;
+					$scope.options.endpoints = false;
+					$scope.endpointSelect = false;
+					$scope.inputDisplayRow = false;
+					$scope.exampleName = example;
+					$scope.directiveParams = $scope.URIExamples[0].params;
+					
+					for(var i=0; i<$scope.URIExamples[0].params.length; i++){
+						
+						$scope.params[0].inputs.push({
+							idx: i,
+							index: $scope.URIExamples[0].params[i].index
+						});
+						
+						$scope.params[0].visible = true;
+						$scope.startButton = true;
+						count = $scope.epExamples[0].params[i].index;
+					}
+					count = 3;
+				}
+		
 		if(example === "Berlin Turtle File"){
 			
 			isCompletePath = 0;
@@ -1051,11 +1100,7 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErr
 	
 	$scope.LaunchGeoLift = function(){
 		
-		if(isCompletePath == 1){
-			sourceInput = $scope.inputDisplay;
-		}
-		
-		if(isCompletePath == 2){
+		if(isCompletePath == 1 || isCompletePath == 2){
 			sourceInput = $scope.inputDisplay;
 		}
 		
@@ -1108,14 +1153,16 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErr
 	        dataType: "json",
 	        contentType: "application/json; charset=utf-8"
 	      }).then(function(data){
-	    	  
+	    	  console.log(data);
 	    	  		var results = data.data[0];
+	    	  		$scope.resultURL = data.data[1];
 	    	  		//results = results.substring(13,results.length-3);
 	    	  		$scope.results = results;
 	    	  		
 	    		  	$scope.showProgress = false;
 	    		  	$scope.inputForm = false;
 	  	    		$scope.reviewForm = true;
+	  	    		$scope.showDownload();
 	  	    		
 	      				}, function (response){ // in the case of an error      	
 						 	flash.error = ServerErrorResponse.getMessage(response.status);
