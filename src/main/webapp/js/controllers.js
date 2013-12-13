@@ -1162,7 +1162,7 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErr
 	    		  	$scope.showProgress = false;
 	    		  	$scope.inputForm = false;
 	  	    		$scope.reviewForm = true;
-	  	    		$scope.showDownload();
+	  	    		//$scope.showDownload();
 	  	    		
 	      				}, function (response){ // in the case of an error      	
 						 	flash.error = ServerErrorResponse.getMessage(response.status);
