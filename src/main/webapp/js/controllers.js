@@ -247,6 +247,7 @@ var LimesCtrl = function($scope, $http, ConfigurationService, flash, ServerError
 
 	$scope.configOptions = true;
 	$scope.inputForm = true;
+	var importing = false;
 	var uploadError = false;
 	var uploadedFiles = null;
 	var params = {};
@@ -560,6 +561,7 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErr
 	$scope.directiveParams = {};
 	$scope.useDirective = 0;
 	$scope.resultURL = "";
+	var importing = false;
 	var sourceInput = null;
 	var dataFile = null;
 	var uploadError = false;
@@ -1223,6 +1225,7 @@ var TripleGeoCtrl = function($scope, $http, ConfigurationService, flash, ServerE
 	var uploadError = false;
 	var uploadedFiles = null;
 	var inputFileName = null;
+	var importing = false;
 	var fileType = null;
 	var params = {};
 	$('i').tooltip();
