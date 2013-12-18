@@ -1417,11 +1417,12 @@ var TripleGeoCtrl = function($scope, $http, ConfigurationService, flash, ServerE
 			$scope.options.displayConfigUpload = true;
 			inputFileName = $files[0].name;
 			inputFileName = inputFileName.split(".");
-			inputFileName = inputFileName+".shp";
-			$('#dummyShapeInput').val(inputFileName+".shp");
+			console.log(inputFileName[0]);
+			inputFileName = inputFileName[0]+".shp";
+			$('#dummyShapeInput').val(inputFileName);
 			$scope.configForm = true;
 			}
-		}
+		};
 
 	$scope.loadConfigFile = function($files){
 		
