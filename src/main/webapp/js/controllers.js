@@ -123,7 +123,7 @@ app.controller('ModalWindow', function ($scope) {
   // for the child($scope.$emit)/parent($scope.$broadcast) controller to be able to close the modal window
   $scope.$on('closeModal', function(event, args) {
   	$scope.close(args.id);
-  })        
+  });        
   
 });
 

@@ -287,12 +287,12 @@ module.factory('ConfigurationService', function(Config) {
           { name: "Authoring", id:"authoring" },
           { name: "Linking", id:"linking" },
           { name: "Enriching and Data Cleaning", id:"enriching-and-cleaning" }]
-      }
+      };
     },
 
     getComponent : function(uri){
       var component = Config.getSettings()[uri];
-      var results = this.elementToJson(uri, component)
+      var results = this.elementToJson(uri, component);
       return results; 
     },
 
