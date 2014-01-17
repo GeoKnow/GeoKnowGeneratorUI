@@ -37,6 +37,7 @@ function StackMenuCtrl($scope) {
 	   //    {name: 'Geospatial Exploration', route:'#/home/querying-and-exploration/geospatial', url:'/home/querying-and-exploration/geospatial' },
 	   //    {name: 'Google Maps', route:'#/home/querying-and-exploration/googlemap', url:'/home/querying-and-exploration/googlemap' },
 	       {name: 'Facete', route:'#/home/querying-and-exploration/facete', url:'/home/querying-and-exploration/facete' },
+	       {name: 'Mappify', route:'#/home/querying-and-exploration/mappify', url:'/home/querying-and-exploration/mappify' },
 	       {name: 'Virtuoso', route:'#/home/querying-and-exploration/virtuoso', url:'/home/querying-and-exploration/virtuoso' }]
 	    },
 	    {
@@ -192,13 +193,40 @@ app.controller('FaceteFormCtrl', function($scope, ConfigurationService) {
 	$scope.facete = {
 		service   : ConfigurationService.getSPARQLEndpoint(),
 	 	dataset   : $scope.namedGraphs[0].name,
-	}
+	};
+	
 	$scope.url = "";
 
 	$scope.setUrl = function(){
 		$scope.url= services[0].serviceUrl + 
 								'?service-uri='+ $scope.facete.service+
                 '&default-graph-uri=' + $scope.facete.dataset.replace(':',ConfigurationService.getUriBase());
+   
+
+	};
+});
+
+/****************************************************************************************************
+*
+* Mappify Controller
+*
+***************************************************************************************************/
+
+app.controller('MappifyFormCtrl', function($scope, ConfigurationService) {
+	//Settings for Facete
+
+	$scope.namedGraphs = ConfigurationService.getAllNamedGraphs();
+	$scope.component = ConfigurationService.getComponent(":Mappify");
+	var services = ConfigurationService.getComponentServices(":Mappify");
+	$scope.facete = {
+		service   : ConfigurationService.getSPARQLEndpoint(),
+	 	dataset   : $scope.namedGraphs[0].name,
+	};
+	
+	$scope.url = "";
+
+	$scope.setUrl = function(){
+		$scope.url= services[0].serviceUrl;
    
 
 	};
@@ -963,6 +991,30 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErr
 					}
 					count = 3;
 				}
+		
+		if(example === "http://dbpedia.org/data/Greece"){
+			
+			isCompletePath = 1;
+			$scope.inputDisplay = example;
+			$scope.options.endpoints = false;
+			$scope.endpointSelect = false;
+			$scope.inputDisplayRow = false;
+			$scope.exampleName = example;
+			$scope.directiveParams = $scope.URIExamples[0].params;
+			
+			for(var i=0; i<$scope.URIExamples[0].params.length; i++){
+				
+				$scope.params[0].inputs.push({
+					idx: i,
+					index: $scope.URIExamples[0].params[i].index
+				});
+				
+				$scope.params[0].visible = true;
+				$scope.startButton = true;
+				count = $scope.epExamples[0].params[i].index;
+			}
+			count = 3;
+		}
 		
 		if(example === "Berlin Turtle File"){
 			

@@ -37,6 +37,7 @@ app.config(function($routeSegmentProvider, $routeProvider)
         .when('/home/querying-and-exploration/geospatial', 'default.geospatial')
      /*   .when('/home/querying-and-exploration/googlemap', 'default.googlemap') */
         .when('/home/querying-and-exploration/facete', 'default.facete')
+        .when('/home/querying-and-exploration/mappify', 'default.mappify')
         .when('/home/querying-and-exploration/virtuoso', 'default.virtuoso')
         .when('/home/authoring/ontowiki', 'default.ontowiki')
         .when('/home/linking/limes', 'default.limes')
@@ -92,6 +93,8 @@ app.config(function($routeSegmentProvider, $routeProvider)
                     templateUrl: 'partials/querying-and-exploration/googlemap.html'}) */
                 .segment('facete', {
                     templateUrl: 'partials/querying-and-exploration/facete.html'})
+                .segment('mappify', {
+                    templateUrl: 'partials/querying-and-exploration/mappify.html'})
                 .segment('virtuoso', {
                     templateUrl: 'partials/querying-and-exploration/virtuoso.html'})
                 .segment('ontowiki', {
