@@ -34,6 +34,7 @@ app.config(function($routeSegmentProvider, $routeProvider)
         .when('/home/extraction-and-loading/sparqlify', 'default.sparqlify')
         .when('/home/extraction-and-loading/triplegeo', 'default.triplegeo')
         .when('/home/extraction-and-loading/triplegeo-result', 'default.triplegeo-result')
+        .when('/home/storage-querying/virtuoso', 'default.virtuoso')
         .when('/home/querying-and-exploration/geospatial', 'default.geospatial')
      /*   .when('/home/querying-and-exploration/googlemap', 'default.googlemap') */
         .when('/home/querying-and-exploration/facete', 'default.facete')

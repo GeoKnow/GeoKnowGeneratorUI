@@ -46,17 +46,17 @@
 			</div>
 	</div>
 	
-<!-- 	<div class="row below" ng-show="options.dbExample">
+ 	<div class="row below" ng-show="options.dbExample">
 			<div class="col-xs-2">
 			<label>Database Examples</label>
 			</div>
 			<div class="col-xs-8">
 			<select id="Example" class="form-control input-sm" ng-model="dbExample" 
-			ng-options="option for option in options.dbExamples" ng-change="FillForm('dbExample', dbExample); configForm = true;">
+			ng-options="option for option in options.dbExamples" ng-change="FillForm('dbExample', 'Wikimapia Extraction'); configForm = true;">
 			 <option value="">Choose an example</option>
 			</select>
 			</div>
-	</div> -->
+	</div>
 	
 	<div class="row below" ng-show="options.database">
 			<div class="col-xs-2">
@@ -208,7 +208,6 @@
 	<div class="col-xs-4">
 		<select class="form-control input-sm" ng-options="option for option in options.dbtype" 
 	    ng-model="tripleGeoConfig.dbtype" id="dbtype"></select>
-	    <option value="">Choose a database type</option>
 	</div>
 	<div class="col-xs-2">
 		<h5 class="green bold">Database Name</h5>

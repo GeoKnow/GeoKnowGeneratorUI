@@ -31,15 +31,11 @@ function StackMenuCtrl($scope) {
 	        {name: 'TripleGeo Extraction', route:'#/home/extraction-and-loading/triplegeo', url:'/home/extraction-and-loading/triplegeo' }]
 	    },
 	    {
-	      title: "Querying and Exploration",
-	      id:"querying-exploration",
-	      items: [
-	   //    {name: 'Geospatial Exploration', route:'#/home/querying-and-exploration/geospatial', url:'/home/querying-and-exploration/geospatial' },
-	   //    {name: 'Google Maps', route:'#/home/querying-and-exploration/googlemap', url:'/home/querying-and-exploration/googlemap' },
-	       {name: 'Facete', route:'#/home/querying-and-exploration/facete', url:'/home/querying-and-exploration/facete' },
-	       {name: 'Mappify', route:'#/home/querying-and-exploration/mappify', url:'/home/querying-and-exploration/mappify' },
-	       {name: 'Virtuoso', route:'#/home/querying-and-exploration/virtuoso', url:'/home/querying-and-exploration/virtuoso' }]
-	    },
+		      title: "Storage and Querying",
+		      id:"storage-querying",
+		      items: [
+		       {name: 'Virtuoso', route:'#/home/querying-and-exploration/virtuoso', url:'/home/querying-and-exploration/virtuoso' }]
+		    },
 	    {
 	      title: "Authoring",
 	      id:"authoring",
@@ -47,18 +43,24 @@ function StackMenuCtrl($scope) {
 	       {name: 'OntoWiki', route:'#/home/authoring/ontowiki', url:'/home/authoring/ontowiki' }]
 	    },
 	    {
-	      title: "Linking",
-	      id:"linking",
-	      items: [
-	       {name: 'LIMES', route:'#/home/linking/limes', url:'/home/linking/limes' }]
-	    },
-	    {
-	     title: "Enriching and Data Cleaning",
-	     id:"enriching-cleansing",
-	     items: [
-	       {name: 'GeoLift', route:'#/home/enriching-and-cleaning/geolift', url:'/home/enriching-and-cleaning/geolift' }]
-	    }
-
+		    title: "Linking and Fusion",
+		    id:"linking",
+		    items: [
+		     {name: 'LIMES', route:'#/home/linking/limes', url:'/home/linking/limes' }]
+		  },
+		{
+			 title: "Enrichment",
+			 id:"enriching-cleansing",
+			 items: [
+			   {name: 'GeoLift', route:'#/home/enriching-and-cleaning/geolift', url:'/home/enriching-and-cleaning/geolift' }]
+		  },
+		{
+		      title: "Exploration",
+		      id:"querying-exploration",
+		      items: [
+		       {name: 'Facete', route:'#/home/querying-and-exploration/facete', url:'/home/querying-and-exploration/facete' },
+		       {name: 'Mappify', route:'#/home/querying-and-exploration/mappify', url:'/home/querying-and-exploration/mappify' }]
+		    }
 	  ];
 
 	}
@@ -280,19 +282,29 @@ var LimesCtrl = function($scope, $http, ConfigurationService, flash, ServerError
 	var uploadedFiles = null;
 	var params = {};
 	
+	var demo = 1;
+	
 	$scope.examples = [
 	                { name : "Duplicate Dbpedia country entries for the CET time zone" },
-	                { name : "Geo Data" }
+	                { name : "Flights" }
 	];
 	
 	$scope.options = [{ 	output: [
 			                { output : "N3" },
-			                { output : "TAB" }]
+			                { output : "TAB" },
+			                { output : "TURTLE" }]
 							},
 					  { 	execType: [
 			                { execType : "SIMPLE" },
-			                { execType : "FILTER" }]
+			                { execType : "FILTER" },
+			                { execType : "OneToOne" }]
 						  },
+					  { 	granularity: [
+							{ granularity : "1" },
+							{ granularity : "2" },
+							{ granularity : "3" },
+							{ granularity : "4" }]
+										  },
 				     ];
 	
 	$scope.limes = { OutputFormat :    $scope.options[0].output[0],
@@ -330,44 +342,82 @@ var LimesCtrl = function($scope, $http, ConfigurationService, flash, ServerError
 				};
 		}
 		
-		if(example === "Geo Data"){
+		if(example === "Flights"){
 			
-			$scope.limes = { SourceServiceURI : "http://linkedgeodata.org/sparql",
-							 TargetServiceURI  : "http://linkedgeodata.org/sparql",
+			$scope.limes = { SourceServiceURI : "http://localhost:8890/sparql",
+							 TargetServiceURI  : "http://dbpedia.org/sparql",
 							 SourceVar: "?x",
 							 TargetVar: "?y",
-							 SourceSize: "2000",
-							 TargetSize: "2000",
-							 SourceRestr: "?x a lgdo:RelayBox",
-							 TargetRestr: "?y a lgdo:RelayBox",
-							 SourceProp: "geom:geometry/geos:asWKT RENAME polygon",
-							 TargetProp: "geom:geometry/geos:asWKT RENAME polygon",
-							 Metric: "hausdorff(x.polygon, y.polygon)",
-							 OutputFormat: $scope.options[0].output[0],
+							 SourceSize: "1000",
+							 TargetSize: "1000",
+							 SourceRestr: "",
+							 TargetRestr: "?y a dbpedia-owl:Airport",
+							 SourceProp: "dbpedia-owl:iataLocationIdentifier AS nolang->lowercase",
+							 TargetProp: "dbpedia-owl:iataLocationIdentifier AS nolang->lowercase",
+							 Metric: "Levenshtein(x.dbpedia-owl:iataLocationIdentifier,y.dbpedia-owl:iataLocationIdentifier)",
+							 OutputFormat: $scope.options[0].output[2],
 							 ExecType: $scope.options[1].execType[0],
-							 AcceptThresh: "0.9",
-							 ReviewThresh: "0.5",
-							 AcceptRelation: "lgdo:near",
-							 ReviewRelation: "lgdo:near" 
+							 AcceptThresh: "1",
+							 ReviewThresh: "1",
+							 AcceptRelation: "owl:sameAs",
+							 ReviewRelation: "owl:sameAs" 
 					};
 			}
 		
-	}
+	};
 	
 	$scope.LaunchLimes = function(){
 		
-		var params = { 
+		var sg = "empty";
+		if($scope.limes.SourceGraph != null){
+			sg = $scope.limes.SourceGraph.replace(':', ConfigurationService.getUriBase());
+		}
+		
+		var tg = "empty";
+		if($scope.limes.TargetGraph != null){
+			tg = $scope.limes.TargetGraph.replace(':', ConfigurationService.getUriBase());
+		}
+		console.log($scope.limes.SourceRestr.length);
+		var sr = "empty";
+		if($scope.limes.SourceRestr.length != 0){
+			sr = $scope.limes.SourceRestr;
+		}
+		
+		var tr = "empty";
+		if($scope.limes.TargetRestr.length != 0){
+			tr = $scope.limes.TargetRestr;
+		}
+		
+		var sp2 = "empty";
+		if($scope.limes.SourceProp2 != 0){
+			sp2 = $scope.limes.SourceProp2;
+		}
+		
+		var tp2 = "empty";
+		console.log($scope.limes.TargetProp2);
+		if($scope.limes.TargetProp2 != 0){
+			tp2 = $scope.limes.TargetProp2;
+		}
+		var params;
+		if(tp2 == "empty"){
+		params = { 
 					 SourceServiceURI: $scope.limes.SourceServiceURI,
 					 TargetServiceURI: $scope.limes.TargetServiceURI,
+					 SourceGraph: sg,
+					 TargetGraph: tg,
 					 SourceVar: $scope.limes.SourceVar,
 					 TargetVar: $scope.limes.TargetVar,
 					 SourceSize: $scope.limes.SourceSize,
 					 TargetSize: $scope.limes.TargetSize,
-					 SourceRestr: $scope.limes.SourceRestr,
-					 TargetRestr: $scope.limes.TargetRestr,
-					 SourceProp: $scope.limes.SourceProp,
-					 TargetProp: $scope.limes.TargetProp,
+					 SourceRestr: sr,
+					 TargetRestr: tr,
+					 SourceProp1: $scope.limes.SourceProp1,
+					 TargetProp1: $scope.limes.TargetProp1,
+					 oneProp: true,
+					 //SourceType: $scope.limes.SourceType,
+					 //TargetType: $scope.limes.TargetType,
 					 Metric: $scope.limes.Metric,
+					 Granularity: $scope.limes.Granularity.granularity,
 					 OutputFormat: $scope.limes.OutputFormat.output,
 					 ExecType: $scope.limes.ExecType.execType,
 					 AcceptThresh: $scope.limes.AcceptThresh,
@@ -375,7 +425,34 @@ var LimesCtrl = function($scope, $http, ConfigurationService, flash, ServerError
 					 AcceptRelation: $scope.limes.AcceptRelation,
 					 ReviewRelation: $scope.limes.ReviewRelation
 					 };
-		
+		}
+		if(tp2 != "empty"){
+		params = { 
+					 SourceServiceURI: $scope.limes.SourceServiceURI,
+					 TargetServiceURI: $scope.limes.TargetServiceURI,
+					 SourceGraph: sg,
+					 TargetGraph: tg,
+					 SourceVar: $scope.limes.SourceVar,
+					 TargetVar: $scope.limes.TargetVar,
+					 SourceSize: $scope.limes.SourceSize,
+					 TargetSize: $scope.limes.TargetSize,
+					 SourceRestr: sr,
+					 TargetRestr: tr,
+					 SourceProp1: $scope.limes.SourceProp1,
+					 TargetProp1: $scope.limes.TargetProp1,
+					 SourceProp2: sp2,
+					 TargetProp2: tp2,
+					 Metric: $scope.limes.Metric,
+					 Granularity: $scope.limes.Granularity.granularity,
+					 OutputFormat: $scope.limes.OutputFormat.output,
+					 ExecType: $scope.limes.ExecType.execType,
+					 AcceptThresh: $scope.limes.AcceptThresh,
+					 ReviewThresh: $scope.limes.ReviewThresh,
+					 AcceptRelation: $scope.limes.AcceptRelation,
+					 ReviewRelation: $scope.limes.ReviewRelation
+					 };
+		}
+		console.log(params);
 		$window.$windowScope = $scope;
  		var newWindow = $window.open('popup.html#/popup-limes', 'frame', 'resizeable,height=600,width=800');
 		//$window.open('popup.html#/popup-limes', 'frame', 'resizeable,top=100,left=100,height=400,width=400');
@@ -384,6 +461,10 @@ var LimesCtrl = function($scope, $http, ConfigurationService, flash, ServerError
 		
 	$scope.StartLimes = function(){
 		var params = $window.params;
+		console.log(params.oneProp);
+		if(params.oneProp){
+			console.log("yoooohoooooo");
+			console.log(params);
 		$scope.showProgress = true;
 		$http({
 				url: serviceUrl+"/LimesRun",
@@ -415,6 +496,42 @@ var LimesCtrl = function($scope, $http, ConfigurationService, flash, ServerError
       flash.error = ServerErrorResponse.getMessage(data.message);
       $scope.startLimes = false;
 	    $scope.showProgress = false;});
+		}
+		if(typeof params.SourceProp2 != 'undefined'){
+			console.log(params.SourceProp2);
+			console.log(params);
+			$scope.showProgress = true;
+			$http({
+					url: serviceUrl+"/LimesRun1",
+			        method: "POST",
+			        params: params,
+			        dataType: "json",
+			        contentType: "application/json; charset=utf-8"})
+		  .success(function (data, status, headers, config){
+	    	// to get the file list of results instead of review 
+	    	// $scope.ReviewLimes();
+	      // }, function (response){ // in the case of an error      	
+
+	      if(data.status=="SUCCESS"){
+	        
+	       	$scope.startLimes = false;
+		    	$scope.showProgress = false;
+		    	$scope.inputForm = true;
+		    	flash.success = data.message;
+		    	// get the files inside data.results, and these are to be proposed to be downloaded
+		    	// in this case probably LimesReview is not required anymore...
+				$scope.ReviewLimes();   
+	      }
+	      else {
+	        flash.error = data.message;
+	        $scope.startLimes = false;
+		    	$scope.showProgress = false;
+	      }})
+	    .error(function(data, status, headers, config) {
+	      flash.error = ServerErrorResponse.getMessage(data.message);
+	      $scope.startLimes = false;
+		    $scope.showProgress = false;});
+			}
 	};
 	
 	$scope.ReviewLimes = function(){
@@ -485,8 +602,10 @@ var LimesCtrl = function($scope, $http, ConfigurationService, flash, ServerError
 							TargetSize: data.data[1][2],
 							SourceRestr: data.data[0][3],
 							TargetRestr: data.data[1][3],
-							SourceProp: data.data[0][4],
-							TargetProp: data.data[1][4],
+							SourceProp1: data.data[0][4],
+							TargetProp1: data.data[1][4],
+							SourceProp2: "",
+							TargetProp2: "",
 							Metric: data.data[2],
 							OutputFormat: $scope.options[0].output[0],
 							ExecType: $scope.options[1].execType[0],
@@ -872,6 +991,9 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErr
 			$('#paramVal'+index).append('<option value="http://www.w3.org/2003/01/geo/wgs84_pos#lat">http://www.w3.org/2003/01/geo/wgs84_pos#lat</option>');
 			$('#paramVal'+index).append('<option value="http://www.w3.org/2003/01/geo/wgs84_pos#lon">http://www.w3.org/2003/01/geo/wgs84_pos#lon</option>');
 			$('#paramVal'+index).append('<option value="http://www.w3.org/2003/01/geo/wgs84_pos#geometry">http://www.w3.org/2003/01/geo/wgs84_pos#geometry</option>');
+			$('#paramVal'+index).append('<option value="http://www.w3.org/2000/01/rdf-schema#label">http://www.w3.org/2000/01/rdf-schema#label</option>');
+			$('#paramVal'+index).append('<option value="http://dbpedia.org/ontology/abstract">http://dbpedia.org/ontology/abstract</option>');
+			$('#paramVal'+index).append('<option value="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">http://www.w3.org/1999/02/22-rdf-syntax-ns#type</option>');
 		}
 		
 	};
@@ -881,6 +1003,7 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErr
 			$('#paramVal'+index).empty();
 			$('#paramVal'+index).append('<option selected="selected" value="">Choose a value</option>');
 			$('#paramVal'+index).append('<option value="http://www.w3.org/2000/01/rdf-schema#comment">http://www.w3.org/2000/01/rdf-schema#comment</option>');
+			$('#paramVal'+index).append('<option value="http://dbpedia.org/ontology/abstract">http://dbpedia.org/ontology/abstract</option>');
 		}
 		
 		if(paramOption === "useFoxLight" || paramOption === "askEndPoint"){
@@ -1338,14 +1461,18 @@ var TripleGeoCtrl = function($scope, $http, ConfigurationService, flash, ServerE
 											"Points shape file extraction"
 											],
 							dbExamples: [
+							             	"Wikimapia Extraction",
 						  		     		"GeospatialDB"
 						  		     		],
-				     		dbtype: [
+						    dbtype: [
 				     		         "MySQL",
 				     		         "Oracle",
 				     		         "PostGIS",
 				     		         "DB2"
-				     		         ]
+				     		         ],
+				     	    ex: [
+				     	         ""
+				     	         ]
 								};
 	
 	$scope.choice = function($name){
@@ -1430,7 +1557,7 @@ var TripleGeoCtrl = function($scope, $http, ConfigurationService, flash, ServerE
 								
 								 inputDisplay: $scope.databases[i].dbName,
 								
-								 format :      $scope.options.format[0],
+								 format :      $scope.options.format[2],
 								 targetStore : $scope.options.targetStore[0],
 								 
 								 
@@ -1456,6 +1583,48 @@ var TripleGeoCtrl = function($scope, $http, ConfigurationService, flash, ServerE
 						}
 					}
 				}
+			}
+			
+			if(example === "dbExample"  && name === "Wikimapia Extraction"){
+				
+						$scope.options.database = false;
+						$scope.options.dataParams = false;
+						$scope.options.dbParams = true;
+						$scope.options.job = "db";
+						$scope.options.dbExample = false;
+						$scope.options.inputDisplay = false;
+						$scope.options.displayConfigUpload = false;
+					
+						$scope.tripleGeoConfig = {
+								
+								 format :      $scope.options.format[2],
+								 targetStore : $scope.options.targetStore[0],
+								 
+								 
+								 dbtype: $scope.options.dbtype[2],
+								 dbName: "wikimapia",
+								 dbUserName: "gisuser",
+								 dbPassword: "admin",
+								 dbHost: "localhost",
+								 dbPort: "5432",
+								 resourceName: "points",
+								 tableName: "venue_london_buildings",
+								 condition: "",
+								 labelColumnName: "id",
+								 nameColumnName: "name",
+								 classColumnName: "type",
+								 geometryColumnName: "point",
+								 ignore: "",
+								 
+								 nsPrefix: "georesource",
+								 nsURI: "http://geoknow.eu/geodata#",
+								 ontologyNSPrefix: "geo",
+								 ontologyNS: "http://www.opengis.net/ont/geosparql#",
+									 
+								 sourceRS: "EPSG:4326",
+								 targetRS: "EPSG:4326"
+						};
+
 			}
 			
 	}
