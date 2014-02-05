@@ -191,6 +191,35 @@
 	    </div>
 	</div>
 	<br>
+	<div class="row below" ng-repeat="prop in props[0].inputs">
+		<div class="col-xs-2">
+	    <label>Property</label>
+	    </div>
+		<div class="col-xs-4">
+		<input class="form-control input-sm" id="SourceProp{{prop.idx}}" value="{{prop.source}}"></input>
+		</div>
+		<div class="col-xs-2">
+	    <label>Property</label>
+	    </div>
+		<div class="col-xs-4">
+		<input class="form-control input-sm" id="TargetProp{{prop.idx}}" value="{{prop.target}}"></input>
+		</select>
+		</div>
+	</div>
+	<div class="row below">
+		<div class="col-xs-4">
+		</div>
+		<div class="col-xs-4">
+		</div>
+			<div class="col-xs-2">
+			<a class="btn btn-sm btn-success btn-block" ng-click="appendInput()">Add Properties</a>
+			</div>
+		    <div class="col-xs-2">
+			<a class="btn btn-sm btn-success btn-block" ng-click="removeInput()" ng-show="deleteProp">Delete</a>
+			</div>
+	</div>
+	<!-- 
+	<br>
 	<div class="row">
 		<div class="col-xs-2">
 	    <label for="SourceProp1">Property</label>
@@ -220,7 +249,7 @@
 	    <input class="form-control input-sm" id="TargetProp" ng-model="limes.TargetProp2"></input>
 	    </div>
 	</div>
-	<!-- 
+	
 	<br>
 	<div class="row">
 		<div class="col-xs-2">
@@ -243,7 +272,7 @@
 	    <label for="Metric">Metric</label>
 	    </div>
 	    <div class="col-xs-10">
-	    <input class="form-control input-sm" id="Metric" ng-model="limes.Metric"></input>
+	    <input class="form-control input-sm" ng-model="limes.Metric"></input>
 	    </div>
 	</div>
 	<br>
@@ -252,8 +281,8 @@
 	    <label for="OutputFormat">Output Format</label>
 	    </div>
 	    <div class="col-xs-10">
-	    <select class="form-control input-sm" id="OutputFormat" ng-options="option as option.output for option in options[0].output" 
-	    ng-model="limes.OutputFormat"></select>
+	    <select class="form-control input-sm" ng-model="limes.OutputFormat"
+	    ng-options="option for option in options.output"></select>
 	    </div>
 	</div>
 	<br>
@@ -262,8 +291,8 @@
 	    <label for="ExecType">Execution</label>
 	    </div>
 	    <div class="col-xs-10">
-	    <select class="form-control input-sm" id="ExecType" ng-options="option as option.execType for option in options[1].execType"
-	    ng-model="limes.ExecType"></select>
+	    <select class="form-control input-sm" ng-model="limes.ExecType"
+	    ng-options="option for option in options.execType"></select>
 	    </div>
 	</div>
 	<br>
@@ -272,8 +301,8 @@
 	    <label for="Granularity">Granularity</label>
 	    </div>
 	    <div class="col-xs-10">
-	    <select class="form-control input-sm" id="Granularity" ng-options="option as option.granularity for option in options[2].granularity"
-	    ng-model="limes.Granularity"></select>
+	    <select class="form-control input-sm" ng-model="limes.Granularity"
+	    ng-options="option for option in options.granularity"></select>
 	    </div>
 	</div>
 	<br>
