@@ -587,14 +587,14 @@ $scope.LaunchLimes = function(){
 
 					.then(function(data) {
 						$scope.limes = { 
-							SourceServiceURI : data.data[0][1],
-							TargetServiceURI  : data.data[1][1],
-							SourceVar: data.data[0][2],
-							TargetVar: data.data[1][2],
-							SourceSize: data.data[0][3],
-							TargetSize: data.data[1][3],
-							SourceRestr: data.data[0][4],
-							TargetRestr: data.data[1][4],
+							SourceServiceURI : data.data[0][0],
+							TargetServiceURI  : data.data[1][0],
+							SourceVar: data.data[0][1],
+							TargetVar: data.data[1][1],
+							SourceSize: data.data[0][2],
+							TargetSize: data.data[1][2],
+							SourceRestr: data.data[0][3],
+							TargetRestr: data.data[1][3],
 							Metric: data.data[2],
 							OutputFormat: data.data[5],
 							ExecType: data.data[7],
