@@ -149,5 +149,5 @@ app.directive('uniqueIdentifier', ['$compile', 'ConfigurationService', function(
             return value;
           });
         }
-    }
+    };
  }]);

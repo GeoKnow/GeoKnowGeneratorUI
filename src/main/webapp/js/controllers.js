@@ -75,11 +75,11 @@ app.controller('NavbarCtrl', function($scope, $location) {
 		//}
 		$scope.getClass = function(path) {
 			if ($location.path().substr(0, path.length) === path) {
-			      return "active"
+			      return "active";
 			    } else {
-			      return ""
+			      return "";
 			    }
-			}
+			};
 	});
 
 app.controller('SidebarCtrl', function($scope, $location) {
@@ -137,7 +137,7 @@ var DataSourceTabCtrl = function($scope, $window, $location) {
   $scope.tabs.index = 0;
   $scope.tabs.active = function() { 
     return $scope.tabs[$scope.tabs.index]; 
-    }
+    };
   
 };
 
@@ -405,15 +405,16 @@ var LimesCtrl = function($scope, $http, ConfigurationService, flash, ServerError
 							          idx : 0,
 							          source: "geom:geometry/geos:asWKT RENAME polygon",
 							          target: "geom:geometry/geos:asWKT RENAME polygon"
-									},
+									}
+							/*
 									{
 								          idx : 1,
 								          source: "geom:geometry/geos:asWKT RENAME polygon",
 								          target: "geom:geometry/geos:asWKT RENAME polygon"
-										}]
+										}*/]
 							}];
-				idx++;
-				numberOfProps++;
+				//idx++;
+				//numberOfProps++;
 				
 			}
 		};
@@ -456,7 +457,6 @@ $scope.LaunchLimes = function(){
 		}
 		
 		numberOfProps = $scope.propsCopy[0].inputs.length;
-		console.log(numberOfProps);
 		
 		var params = {};
 		
@@ -540,6 +540,7 @@ $scope.LaunchLimes = function(){
 	        dataType: "json",
 	        contentType: "application/json; charset=utf-8"
 	      }).then(function(data){
+	    	    console.log(data);
 	    	  	var result = data.data[0];
 	  	  		if (result.length<3){
 	  	  			$scope.limes.reviewResults = "No results to review";
@@ -558,7 +559,8 @@ $scope.LaunchLimes = function(){
 	  		  	$scope.showProgress = false;
 	    			$scope.inputForm = false;
 		    		$scope.reviewForm = true;
-	  		 }, function (response){ // in the case of an error      	
+	  		 }, function (response){ // in the case of an error 
+	  			console.log(response);
 	  			$scope.startLimes = false;
 		    	$scope.showProgress = false;
 		    	$scope.inputForm = true;
@@ -586,6 +588,7 @@ $scope.LaunchLimes = function(){
 						params: {file : filename}})
 
 					.then(function(data) {
+						
 						$scope.limes = { 
 							SourceServiceURI : data.data[0][0],
 							TargetServiceURI  : data.data[1][0],
@@ -628,9 +631,9 @@ $scope.LaunchLimes = function(){
 						$scope.enterConfig = true;
 						$scope.startLimes = true;
 						
-					}, function (response){ // in the case of an error      	
-					    	flash.error = ServerErrorResponse.getMessage(response.status);
-		    });
+					}, function (response){ // in the case of an error
+						flash.error = "Invalid LIMES Configuration file: " +response.data;
+			  });
 			    	  
 			  if(response.data.status=="FAIL"){
 			    uploadError = true;
@@ -1299,9 +1302,19 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErr
 			$scope.params[0].inputs[i].index = parseInt($('#indexid'+i).val());
 		}
 		
+		var predicateCounter = 1;
+		var parameterText = null;
+		
 		for(var i=0; i<$scope.params[0].inputs.length; i++){
+		  if($('#parameter'+i+' option:selected').text() == "predicate"){
+			  parameterText = $('#parameter'+i+' option:selected').text()+predicateCounter++;
+		  }
+		  if($('#parameter'+i+' option:selected').text() != "predicate"){
+			  parameterText = $('#parameter'+i+' option:selected').text();
+		  }
 		  params[i+3] = $scope.params[0].inputs[i].index + " " + $('#module'+i+' option:selected').text() +
-		  " " + $('#parameter'+i+' option:selected').text() + " " + $('#paramVal'+i+' option:selected').text();
+		  " " + parameterText + " " + $('#paramVal'+i+' option:selected').text();
+		  console.log(params[i+3]);
 		}
 			
 		window.$windowScope = $scope;
@@ -1397,6 +1410,7 @@ var TripleGeoCtrl = function($scope, $http, ConfigurationService, flash, ServerE
 	var services = ConfigurationService.getComponentServices(":TripleGeo");
 	var serviceUrl = services[0].serviceUrl;
 	var configArray = new Array();
+	var dbConfigArray = new Array();
 
 	$scope.inputForm = true;
 	$scope.configOptions = true;
@@ -1430,15 +1444,39 @@ var TripleGeoCtrl = function($scope, $http, ConfigurationService, flash, ServerE
 	configArray[13] = ['targetRS', ''];
 	configArray[14] = ['defaultLang', ''];
 	
+	dbConfigArray[0]  = ['format', ''];
+	dbConfigArray[1]  = ['targetStore', ''];
+	dbConfigArray[2] = ['dbType', ''];
+	dbConfigArray[3] = ['dbName', ''];
+	dbConfigArray[4] = ['dbUserName', ''];
+	dbConfigArray[5] = ['dbPassword', ''];
+	dbConfigArray[6] = ['dbHost', ''];
+	dbConfigArray[7] = ['dbPort', ''];
+	dbConfigArray[8] = ['resourceName', ''];
+	dbConfigArray[9] = ['tableName', ''];
+	dbConfigArray[10] = ['condition', ''];
+	dbConfigArray[11] = ['labelColumnName', ''];
+	dbConfigArray[12] = ['nameColumnName', ''];
+	dbConfigArray[13] = ['classColumnName', ''];
+	dbConfigArray[14] = ['geometryColumnName', ''];
+	dbConfigArray[15] = ['ignore', ''];
+	dbConfigArray[16] = ['nsPrefix', ''];
+	dbConfigArray[17] = ['nsURI', ''];
+	dbConfigArray[18] = ['ontologyNSPrefix', ''];
+	dbConfigArray[19] = ['ontologyNS', ''];
+	dbConfigArray[20] = ['sourceRS', ''];
+	dbConfigArray[21] = ['targetRS', ''];
+	dbConfigArray[22] = ['defaultLang', ''];
+	
 	$scope.tooltips = { files: "When the file upload dialog opens, select the .shp, .shx, and .dbf files " +
 								"you wish to upload and process. Only these 3 files are necessary.",
 						data: "Change parameters to reflect the shapefile contents that will be extracted - case sensitive!",
 						ns: "Optional parameters. Change these parameters if you want to use different"+
-							"values for the namespaces and prefixes nsPrefix=georesource",
-						spatial: "Optional parameters. These fields should be filled in if a transformation between EPSG reference systems is needed"+
-								 "If not specified, geometries are assumedto be WGS84 reference system (EPSG:4326).",
+							" values for the namespaces and prefixes nsPrefix=georesource",
+						spatial: "Optional parameters. These fields should be filled in if a transformation between EPSG reference systems is needed. "+
+								 "If not specified, geometries are assumed to be WGS84 reference system (EPSG:4326).",
 						other: "Optional parameter. Default languages for the labels created in the output RDF. By default, the value is English - en."
-	}
+	};
 	
 	$scope.options = { 		
 							database: false,
@@ -1514,12 +1552,12 @@ var TripleGeoCtrl = function($scope, $http, ConfigurationService, flash, ServerE
 								
 			};
 		}
-	}
+	};
 	
 	$scope.FillForm = function(example, name){
 		
 			var params = {};
-			console.log(example + ' ' + name);
+			//console.log(example + ' ' + name);
 			
 			if(example === "fileExample" && name === "Points shape file extraction"){
 				
@@ -1549,7 +1587,7 @@ var TripleGeoCtrl = function($scope, $http, ConfigurationService, flash, ServerE
 						 nsURI: "http://geoknow.eu/geodata#",
 						 ontologyNSPrefix: "geo",
 						 ontologyNS: "http://www.opengis.net/ont/geosparql#"
-						}
+						};
 			}
 			
 			if(example === "database"){
@@ -1568,7 +1606,6 @@ var TripleGeoCtrl = function($scope, $http, ConfigurationService, flash, ServerE
 								
 								 format :      $scope.options.format[2],
 								 targetStore : $scope.options.targetStore[0],
-								 
 								 
 								 dbtype: $scope.databases[i].dbType,
 								 dbName: $scope.databases[i].dbName,
@@ -1589,7 +1626,7 @@ var TripleGeoCtrl = function($scope, $http, ConfigurationService, flash, ServerE
 								 nsURI: "http://geoknow.eu/geodata#",
 								 ontologyNSPrefix: "geo",
 								 ontologyNS: "http://www.opengis.net/ont/geosparql#"
-						}
+						};
 					}
 				}
 			}
@@ -1636,7 +1673,7 @@ var TripleGeoCtrl = function($scope, $http, ConfigurationService, flash, ServerE
 
 			}
 			
-	}
+	};
 	
 	$scope.loadShapeFile = function($files){
 		if($files.length!=3){
@@ -1675,6 +1712,7 @@ var TripleGeoCtrl = function($scope, $http, ConfigurationService, flash, ServerE
 									shp: inputFileName
 									}
 				      	}).then(function(data) {
+				      		if($scope.options.file == true){
 				      			for(var i=0; i<configArray.length; i++){
 					      			for(var j=0; j<data.data.length; j++){
 					      				if(configArray[i][0] === data.data[j][0]){
@@ -1704,7 +1742,62 @@ var TripleGeoCtrl = function($scope, $http, ConfigurationService, flash, ServerE
 										 targetRS: configArray[13][1],
 											 
 										 defaultLang: configArray[14][1],
-										}
+										};
+				      		}
+				      		
+				      		if($scope.options.database == true){
+				      			
+				      			for(var i=0; i<dbConfigArray.length; i++){
+					      			for(var j=0; j<data.data.length; j++){
+					      				if(dbConfigArray[i][0] === data.data[j][0]){
+					      					dbConfigArray[i][1] = data.data[j][1];
+					      				}
+					      			}
+				      			}
+				      			
+				      			var inputDisplay = $scope.tripleGeoConfig.inputDisplay;
+								
+					      		dbConfigArray[2][1] = $scope.tripleGeoConfig.dbtype;
+								dbConfigArray[3][1] = $scope.tripleGeoConfig.dbName;
+								dbConfigArray[4][1] = $scope.tripleGeoConfig.dbUserName;
+								dbConfigArray[5][1] = $scope.tripleGeoConfig.dbPassword;
+								dbConfigArray[6][1] = $scope.tripleGeoConfig.dbHost;
+								dbConfigArray[7][1] = $scope.tripleGeoConfig.dbPort;
+				      			
+						    	$scope.tripleGeoConfig = {
+						    			
+						    			 inputDisplay: inputDisplay,
+						    			
+										 format:      dbConfigArray[0][1],
+										 targetStore: dbConfigArray[1][1],
+										
+										 dbtype: dbConfigArray[2][1],
+										 dbName: dbConfigArray[3][1],
+										 dbUserName: dbConfigArray[4][1],
+										 dbPassword: dbConfigArray[5][1],
+										 dbHost: dbConfigArray[6][1],
+										 dbPort: dbConfigArray[7][1],
+										 
+										 resourceName: dbConfigArray[8][1],
+										 tableName: dbConfigArray[9][1],
+										 condition: dbConfigArray[10][1],
+										 labelColumnName: dbConfigArray[11][1],
+										 nameColumnName: dbConfigArray[12][1],
+										 classColumnName: dbConfigArray[13][1],
+										 geometryColumnName: dbConfigArray[14][1],
+										 ignore: dbConfigArray[15][1],
+										 
+										 nsPrefix: dbConfigArray[16][1],
+										 nsURI: dbConfigArray[17][1],
+										 ontologyNSPrefix: dbConfigArray[18][1],
+										 ontologyNS: dbConfigArray[19][1],
+										 
+										 sourceRS: dbConfigArray[20][1],
+										 targetRS: dbConfigArray[21][1],
+											 
+										 defaultLang: dbConfigArray[22][1],
+										};
+				      		}
 						    	
 					      }, function (response){ // in the case of an error      	
 						    	flash.error = ServerErrorResponse.getMessage(response.status);
@@ -1720,7 +1813,7 @@ var TripleGeoCtrl = function($scope, $http, ConfigurationService, flash, ServerE
 		        }
 		      }); 
 		    }
-	}
+	};
 	
 	$scope.LaunchTripleGeo = function(){
 			
@@ -1789,7 +1882,7 @@ var TripleGeoCtrl = function($scope, $http, ConfigurationService, flash, ServerE
  		var newWindow = $window.open('popup.html#/popup-triplegeo', 'frame', 'resizeable,height=600,width=800');
 		//$window.open('popup.html#/popup-limes', 'frame', 'resizeable,top=100,left=100,height=400,width=400');
 		newWindow.params = params;
-		}
+		};
 	
 	$scope.startTripleGeo= function(){
 	  
@@ -1813,7 +1906,7 @@ var TripleGeoCtrl = function($scope, $http, ConfigurationService, flash, ServerE
 						flash.error = ServerErrorResponse.getMessage(response.status);
 	    		});
 			
-		}
+		};
 	
 	$scope.reviewTripleGeoResult = function(filetype){
 			
@@ -1874,7 +1967,7 @@ var TripleGeoCtrl = function($scope, $http, ConfigurationService, flash, ServerE
 	      });
 	  };
 	
-}
+};
 
 
 /****************************************************************************************************
@@ -2040,7 +2133,7 @@ var ImportFormCtrl = function($scope, $http, ConfigurationService, flash) {
     $scope.importFile = {file:"", graph:"?"};
     $scope.importUrl = {url:"", graph:"?"};
     $scope.importSparql = {endpoint:"", sparqlQuery:"", graph:"?"};
-  }
+  };
 };
 
 
