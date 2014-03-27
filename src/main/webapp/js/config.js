@@ -29,15 +29,18 @@
 "use strict";
 
 angular.module("app.configuration", [])
-.factory("Config", function($q, $http, flash)
+.factory("Config", function($q, $http, flash, AccountService)
 {
         $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded; charset=UTF-8";
 
-        var ENDPOINT  = "http://generator.geoknow.eu:8890/sparql";
+        var ENDPOINT  = "http://localhost:8890/sparql-auth";
+        var PUBLIC_ENDPOINT = "http://localhost:8890/sparql";
         // if new resorces are created they will use this name space, and it can be changed
         var NS        = "http://generator.geoknow.eu/resource/";
   // this is the graph where settings are stored, it doesnt change, and independent on the Namespace
-        var GRAPH_URI = "http://generator.geoknow.eu/resource/settingsGraph";
+        var DEFAULT_GRAPH_URI = "http://generator.geoknow.eu/resource/settingsGraph";
+        var GRAPH_URI = DEFAULT_GRAPH_URI;
+        var GROUPS_GRAPH_URI = "http://generator.geoknow.eu/resource/graphGroups";
 
         var namespaces =
         {
@@ -50,7 +53,8 @@ angular.module("app.configuration", [])
                 "http://www.w3.org/1999/02/22-rdf-syntax-ns#"      : "rdf:",
                 "http://www.w3.org/2000/01/rdf-schema#"            : "rdfs:",
                 "http://www.w3.org/ns/sparql-service-description#" : "sd:",
-                "http://rdfs.org/ns/void#"                         : "void:"
+                "http://rdfs.org/ns/void#"                         : "void:",
+                "http://www.w3.org/ns/auth/acl#"                   : "acl:"
         };
         namespaces[NS] = ":";
 
@@ -63,15 +67,11 @@ angular.module("app.configuration", [])
         var settings = {};
         var isLoaded = false;
 
-        var request = function(query, success)
+        var request = function(url, data, success)
         {
                 var deferred = $q.defer();
 
-                $http.post(ENDPOINT, $.param(
-                {
-                        format: "application/sparql-results+json",
-                        query:  query
-                }))
+                $http.post(url, $.param(data))
                 .success(function(data)
                 {
                         try
@@ -137,6 +137,17 @@ angular.module("app.configuration", [])
                 return GRAPH_URI;
         };
 
+        var setGraph = function(uri) {
+            GRAPH_URI = uri;
+            GRAPH = "<" + GRAPH_URI + ">";
+            isLoaded = false;
+            read();
+        };
+
+        var restoreDefault = function() {
+            return setGraph(DEFAULT_GRAPH_URI);
+        };
+
         var getSettings = function()
         {
                 return settings;
@@ -182,6 +193,49 @@ angular.module("app.configuration", [])
                 return elements;
         };
 
+        var parseSparqlResults = function(data) {
+            var bindings = data.results.bindings;
+            var triples  = [];
+
+            for (var i in bindings)
+            {
+                var binding = bindings[i];
+                triples.push([ ns(binding.s), ns(binding.p), ns(binding.o) ]);
+            }
+
+            var result = {};
+
+            var bnodes = {};
+
+            for (var i in triples)
+            {
+                var triple = triples[i],
+                    s = triple[0],
+                    p = triple[1],
+                    o = triple[2];
+
+                if (/^nodeID:\/\//.test(s))
+                {
+                    var id  = s.slice(9),
+                    map = bnodes[id] = bnodes[id] || {};
+                }
+                else
+                {
+                    var map = result[s] || (result[s] = {});
+                }
+
+                if (/^nodeID:\/\//.test(o))
+                {
+                    var id = o.slice(9);
+                    o = bnodes[id] = bnodes[id] || {};
+                }
+
+                (map[p] || (map[p] = [])).push(o);
+            }
+
+            return result;
+        };
+
         var read = function()
         {
                 if (isLoaded)
@@ -191,53 +245,20 @@ angular.module("app.configuration", [])
                         return deferred.promise;
                 }
 
-                return request("SELECT * FROM " + GRAPH + EOL
-                +        "WHERE { ?s ?p ?o }" + EOL
-                +        "ORDER BY ?s ?p ?o",
+                var requestData = {
+                    format: "application/sparql-results+json",
+                    query: "SELECT * FROM " + GRAPH + EOL
+                            + "WHERE { ?s ?p ?o }" + EOL
+                            + "ORDER BY ?s ?p ?o",
+                    mode: "settings"
+                };
+
+                return request("RdfStoreProxy", requestData,
                         function(data)
                         {
-                                var bindings = data.results.bindings;
-                                var triples  = [];
-
-                                for (var i in bindings)
-                                {
-                                        var binding = bindings[i];
-                                        triples.push([ ns(binding.s), ns(binding.p), ns(binding.o) ]);
-                                }
-
-                                settings = {};
-
-                                var bnodes = {};
-
-                                for (var i in triples)
-                                {
-                                        var triple = triples[i],
-                                                s = triple[0],
-                                                p = triple[1],
-                                                o = triple[2];
-
-                                        if (/^nodeID:\/\//.test(s))
-                                        {
-                                                var id  = s.slice(9),
-                                                map = bnodes[id] = bnodes[id] || {};
-                                        }
-                                        else
-                                        {
-                                                var map = settings[s] || (settings[s] = {});
-                                        }
-
-                                        if (/^nodeID:\/\//.test(o))
-                                        {
-                                                var id = o.slice(9);
-                                                o = bnodes[id] = bnodes[id] || {};
-                                        }
-
-                                        (map[p] || (map[p] = [])).push(o);
-                                }
-
-                                isLoaded = true;
-
-                                return settings;
+                            settings = parseSparqlResults(data);
+                            isLoaded = true;
+                            return settings;
                         }
                 );
         };
@@ -275,35 +296,79 @@ angular.module("app.configuration", [])
                 for (var s in settings)
                         walk(s, settings[s]);
 
-                return request(PREFIXES
-                +        "DROP SILENT GRAPH "   + GRAPH + EOL
-                +        "CREATE SILENT GRAPH " + GRAPH + EOL
-                +        "INSERT INTO "         + GRAPH + EOL
-                +        "{" + EOL
-                +        data
-                +        "}");
+                var requestData = {
+                    format: "application/sparql-results+json",
+                    query: PREFIXES
+                            + "DROP SILENT GRAPH "   + GRAPH + EOL
+                            + "CREATE SILENT GRAPH " + GRAPH + EOL
+                            + "INSERT INTO " + GRAPH + EOL
+                            + "{" + EOL
+                            +        data
+                            + "}",
+                    mode: "settings"
+                };
+
+                return request("RdfStoreProxy", requestData);
         };
 
-        var createGraph = function(name)
+        var createGraph = function(name, permissions)
         {
-                return request("CREATE SILENT GRAPH <" + name + ">");
+            var requestData = {
+                format: "application/sparql-results+json",
+                mode: "create",
+                graph: name,
+                permissions: permissions,
+                username: AccountService.getUsername()
+            }
+            return request("GraphManagerServlet", requestData);
         };
 
         var dropGraph = function(name)
         {
-                return request("DROP SILENT GRAPH <" + name + ">");
+            var requestData = {
+                format: "application/sparql-results+json",
+                mode: "drop",
+                graph: name,
+                username: AccountService.getUsername()
+            }
+            return request("GraphManagerServlet", requestData);
+        };
+
+        var setGraphPermissions = function(name, permissions) {
+            var requestData = {
+                format: "application/sparql-results+json",
+                graph: name,
+                mode: "update",
+                permissions: permissions,
+                username: AccountService.getUsername()
+            };
+            return request("GraphManagerServlet", requestData);
+        };
+
+        var getPublicEndpoint = function() {
+            return PUBLIC_ENDPOINT;
+        };
+
+        var getGroupsGraph = function() {
+            return GROUPS_GRAPH_URI;
         };
 
         return {
-                setEndpoint : setEndpoint,
-                getEndpoint : getEndpoint,
-                getNS       : getNS,
-                getGraph    : getGraph,
-                getSettings : getSettings,
-                select      : select,
-                read        : read,
-                write       : write,
-                createGraph : createGraph,
-                dropGraph   : dropGraph
+                setEndpoint         : setEndpoint,
+                getEndpoint         : getEndpoint,
+                getNS               : getNS,
+                getGraph            : getGraph,
+                setGraph            : setGraph,
+                restoreDefault      : restoreDefault,
+                getSettings         : getSettings,
+                select              : select,
+                read                : read,
+                write               : write,
+                createGraph         : createGraph,
+                dropGraph           : dropGraph,
+                setGraphPermissions : setGraphPermissions,
+                parseSparqlResults  : parseSparqlResults,
+                getPublicEndpoint   : getPublicEndpoint,
+                getGroupsGraph      : getGroupsGraph
         };
 });

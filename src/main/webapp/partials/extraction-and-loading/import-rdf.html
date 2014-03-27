@@ -27,12 +27,15 @@
 		<form class="form-horizontal InputForm col-xs-11" role="form" name="fileForm" novalidate>
 			<div class="form-group">
 				<label for="graph" class="col-xs-2 control-label">To a dataset </label>
-				<div class="col-xs-10">
-		      <select id="graph" name= "graph" class="form-control" ng-model="importFile.graph"
-		      				ng-options="c.name as c.graph.label for c in namedGraphs" required>
-		      </select>
-		    </div>
-	  	</div>
+				<div class="input-group col-xs-10">
+                    <select id="graph" name= "graph" class="form-control" ng-model="importFile.graph" ng-options="c.name as c.graph.label for c in namedGraphs" required></select>
+                    <span class="input-group-btn">
+                        <button type="button" class="btn btn-link reset" ng-click="refreshGraphList()">
+                            <i class="glyphicon glyphicon-refresh" aria-hidden="false"></i>
+                        </button>
+                    </span>
+                </div>
+	  	    </div>
 			<div class="form-group">
 	    	<label for="inputFile" class="col-xs-2 control-label">File input</label>
 	    	<div class="col-xs-10">
@@ -56,12 +59,15 @@
 		<form class="form-horizontal InputForm col-xs-11" role="form" name="urlForm" novalidate>
 			<div class="form-group">
 				<label for="graph" class="col-xs-2 control-label">To a dataset </label>
-				<div class="col-xs-10">
-		      <select id="graph" class="form-control" ng-model="importUrl.graph"
-		      				ng-options="c.name as c.graph.label for c in namedGraphs" required>
-		      </select>
-		    </div>
-	  	</div>
+				<div class="input-group col-xs-10">
+                    <select id="graph" class="form-control" ng-model="importUrl.graph" ng-options="c.name as c.graph.label for c in namedGraphs" required></select>
+                    <span class="input-group-btn">
+                        <button type="button" class="btn btn-link reset" ng-click="refreshGraphList()">
+                            <i class="glyphicon glyphicon-refresh" aria-hidden="false"></i>
+                        </button>
+                    </span>
+		        </div>
+	  	    </div>
 			<div class="form-group">
 	    	<label for="inputUrl" class="col-xs-2 control-label">Url input</label>
 		    <div class="col-xs-10">
@@ -86,11 +92,14 @@
 		<form class="form-horizontal InputForm col-xs-11" role="form" name="sparqlForm" novalidate>
 			<div class="form-group">
 				<label for="graph" class="col-xs-2 control-label">To a dataset </label>
-				<div class="col-xs-10">
-		      <select id="graph" class="form-control" ng-model="importSparql.graph"
-		      				ng-options="c.name as c.graph.label for c in namedGraphs" required>
-		      </select>
-		    </div>
+				<div class="input-group col-xs-10">
+                    <select id="graph" class="form-control" ng-model="importSparql.graph" ng-options="c.name as c.graph.label for c in namedGraphs" required></select>
+                    <span class="input-group-btn">
+                        <button type="button" class="btn btn-link reset" ng-click="refreshGraphList()">
+                            <i class="glyphicon glyphicon-refresh" aria-hidden="false"></i>
+                        </button>
+                    </span>
+		        </div>
 	  	</div>
 			<div class="form-group">
 	    	<label for="endPoint" class="col-xs-2 control-label">SPARQL EndPoint</label>

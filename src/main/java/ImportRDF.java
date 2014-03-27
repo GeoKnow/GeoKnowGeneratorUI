@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import accounts.FrameworkUserManager;
+import authentication.FrameworkConfiguration;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import com.hp.hpl.jena.query.Query;
@@ -22,6 +24,8 @@ import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
+import rdf.RdfStoreManager;
+import util.HttpUtils;
 
 
 public class ImportRDF extends HttpServlet {
@@ -40,13 +44,15 @@ public class ImportRDF extends HttpServlet {
 	private static String jdbcConnection;
 	private static String jdbcUser;
 	private static String jdbcPassword;
+    private String username;
+    private String token;
 	
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 	      doPost(request, response);
 	}
 
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		
+
 		response.setContentType("application/json");
 	    
 		PrintWriter out = response.getWriter();
@@ -69,7 +75,9 @@ public class ImportRDF extends HttpServlet {
 	    rdfFiles = request.getParameter("rdfFiles");
 	    rdfQuery    = request.getParameter("rdfQuery");
 	    rdfQueryEndpoint = request.getParameter("rdfQueryEndpoint");
-	    
+        username = request.getParameter("username");
+        token = HttpUtils.getCookieValue(request, "token");
+
 //	    boolean useJDBC= false;
 //	    System.out.println("rdfUrl   " +rdfUrl);
 //	    System.out.println("rdfFiles " +rdfFiles);
@@ -127,7 +135,7 @@ public class ImportRDF extends HttpServlet {
 //		ujdbc.loadLocalFile(file, graph);
 //	}
 
-	private static int queryImport(String destEndpoint, String graph, String sourceEndpoint, String sparql) throws Exception{
+	private int queryImport(String destEndpoint, String graph, String sourceEndpoint, String sparql) throws Exception{
 		 Query query = QueryFactory.create(sparql);
 	     QueryExecution qexec = QueryExecutionFactory.sparqlService(sourceEndpoint, query);
 	     Model model = qexec.execConstruct();
@@ -136,7 +144,13 @@ public class ImportRDF extends HttpServlet {
 	     return inserted;
 	}
 	
-	private static int httpUpdate(String endpoint, String graph, Model model) throws Exception{
+	private int httpUpdate(String endpoint, String graph, Model model) throws Exception{
+        RdfStoreManager rdfStoreManager = null;
+        if (username!=null && !username.isEmpty() && token!=null && !token.isEmpty()) {
+            FrameworkUserManager frameworkUserManager = FrameworkConfiguration.getInstance().getFrameworkUserManager();
+            if (frameworkUserManager.checkToken(username, token))
+                rdfStoreManager = frameworkUserManager.getRdfStoreManager(username);
+        }
 		
 		// generate queries of 100 lines each
 		StmtIterator stmts = model.listStatements();
@@ -189,15 +203,22 @@ public class ImportRDF extends HttpServlet {
 				
 				ByteArrayOutputStream os = new ByteArrayOutputStream();
 				tmpModel.write(os, "N-TRIPLES");
-				String queryString = "INSERT {  " + os.toString() + "}";
-				os.close();
-				
-				HttpSPARQLUpdate p = new HttpSPARQLUpdate();
-		        p.setEndpoint(endpoint);
-		        p.setGraph(graph);
-		        p.setUpdateString(queryString);
-		        
-		        if (! p.execute())  throw new Exception("UPDATE/SPARQL failed: " + queryString);
+
+                if (rdfStoreManager!=null) {
+                    String queryString = "INSERT DATA { GRAPH <" + graph + "> { " + os.toString() + " } }";
+                    os.close();
+                    rdfStoreManager.execute(queryString, null);
+                } else {
+                    String queryString = "INSERT {  " + os.toString() + "}";
+                    os.close();
+
+                    HttpSPARQLUpdate p = new HttpSPARQLUpdate();
+                    p.setEndpoint(endpoint);
+                    p.setGraph(graph);
+                    p.setUpdateString(queryString);
+
+                    if (! p.execute())  throw new Exception("UPDATE/SPARQL failed: " + queryString);
+                }
 				
 				total += linesCount;
 				linesCount = 0;			
@@ -210,15 +231,22 @@ public class ImportRDF extends HttpServlet {
 		
 			ByteArrayOutputStream os = new ByteArrayOutputStream();
 			tmpModel.write(os, "N-TRIPLES");
-			String queryString = "INSERT {  " + os.toString() + "}";
-			os.close();			
 
-			HttpSPARQLUpdate p = new HttpSPARQLUpdate();
-	        p.setEndpoint(endpoint);
-	        p.setGraph(graph);
-	        p.setUpdateString(queryString);
-	        
-	        if (!p.execute())  throw new Exception("UPDATE/SPARQL failed: " + queryString);
+            if (rdfStoreManager!=null) {
+                String queryString = "INSERT DATA { GRAPH <" + graph + "> { " + os.toString() + "} }";
+                os.close();
+                rdfStoreManager.execute(queryString, null);
+            } else {
+                String queryString = "INSERT {  " + os.toString() + "}";
+                os.close();
+
+                HttpSPARQLUpdate p = new HttpSPARQLUpdate();
+                p.setEndpoint(endpoint);
+                p.setGraph(graph);
+                p.setUpdateString(queryString);
+
+                if (!p.execute())  throw new Exception("UPDATE/SPARQL failed: " + queryString);
+            }
 			
 	        total += linesCount;
 	        

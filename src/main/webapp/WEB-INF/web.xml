@@ -65,6 +65,54 @@
      <url-pattern>/UploadServlet</url-pattern>
   </servlet-mapping>
 
+  <servlet>
+      <servlet-name>AuthenticationServlet</servlet-name>
+      <servlet-class>authentication.web.AuthenticationServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+      <servlet-name>AuthenticationServlet</servlet-name>
+      <url-pattern>/AuthenticationServlet</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+      <servlet-name>RdfStoreProxy</servlet-name>
+      <servlet-class>authentication.web.RdfStoreProxy</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+      <servlet-name>RdfStoreProxy</servlet-name>
+      <url-pattern>/RdfStoreProxy</url-pattern>
+  </servlet-mapping>
+
+    <servlet>
+        <servlet-name>VirtuosoProxy</servlet-name>
+        <servlet-class>authentication.web.VirtuosoProxy</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>VirtuosoProxy</servlet-name>
+        <url-pattern>/VirtuosoProxy</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>GraphManagerServlet</servlet-name>
+        <servlet-class>authentication.web.GraphManagerServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>GraphManagerServlet</servlet-name>
+        <url-pattern>/GraphManagerServlet</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>UserManagerServlet</servlet-name>
+        <servlet-class>authentication.web.UserManagerServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>UserManagerServlet</servlet-name>
+        <url-pattern>/UserManagerServlet</url-pattern>
+    </servlet-mapping>
 
   <mime-mapping>
     <extension>n3</extension>

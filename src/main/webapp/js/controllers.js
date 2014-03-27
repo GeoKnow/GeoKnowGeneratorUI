@@ -1,14 +1,21 @@
 'use strict';
 
-function SettingsMenuCtrl($scope) {
+function SettingsMenuCtrl($scope, AccountService) {
   $scope.oneAtATime = true;
   // these data can be replaced later with the configuration
   $scope.items = [
-  	{ name: "Data Sources", route:'#/settings/data-sources', url:'/settings/data-sources' },
-  	{ name: "Datasets", route:'#/settings/datasets', url:'/settings/datasets' },
+  	{ name: "Data Sources", route:'#/settings/data-sources', url:'/settings/data-sources', admin: false },
+  	{ name: "Datasets", route:'#/settings/datasets', url:'/settings/datasets', admin: false },
     // { name: "Namespaces", route:'#/settings/namespaces', url:'/settings/namespaces' },
-  	{ name: "Components", route:'#/settings/components', url:'/settings/components' }
+  	{ name: "Components", route:'#/settings/components', url:'/settings/components', admin: false },
+    { name: "Users", route:'#/settings/users', url:'/settings/users', admin: true }
   ];
+
+  $scope.showAdmin = AccountService.isAdmin();
+
+  $scope.$watch( function() { return AccountService.isAdmin(); }, function() {
+    $scope.showAdmin = AccountService.isAdmin();
+  }, true);
 }
 
 function AccountMenuCtrl($scope) {
@@ -66,8 +73,79 @@ function StackMenuCtrl($scope) {
 	}
 
 
-function LoginCtrl() {}
-LoginCtrl.$inject = [];
+function LoginCtrl($scope, flash, AccountService, LoginService, ServerErrorResponse) {
+    $scope.currentAccount = angular.copy(AccountService.getAccount());
+
+    $scope.login = {
+        username : null,
+        password : null
+    };
+
+    $scope.login = function() {
+        LoginService.login($scope.login.username, $scope.login.password)
+            .then(function(data) {
+                $scope.currentAccount = angular.copy(AccountService.getAccount());
+                $scope.login.username = null;
+                $scope.login.password = null;
+            }, function(response) {
+                flash.error = ServerErrorResponse.getMessage(response.status);
+                $scope.login.username = null;
+                $scope.login.password = null;
+            });
+    };
+
+    $scope.logout = function() {
+        LoginService.logout()
+            .then(function(data) {
+                $scope.currentAccount = angular.copy(AccountService.getAccount());
+            });
+    };
+
+    $scope.createAccount = function() {
+        LoginService.createAccount($scope.signUp.username, $scope.signUp.email)
+            .then(function(response) {
+                $('#modalSignUp').modal('hide');
+                flash.success = response.data.message;
+            }, function(response) {
+                $('#modalSignUp').modal('hide');
+                flash.error = ServerErrorResponse.getMessage(response.status);
+            });
+    };
+
+    $scope.restorePassword = function() {
+        LoginService.restorePassword($scope.restorePassword.username)
+            .then(function(response) {
+                $('#modalRestorePassword').modal('hide');
+                flash.success = response.data.message;
+            }, function(response) {
+                $('#modalRestorePassword').modal('hide');
+                flash.error = ServerErrorResponse.getMessage(response.status);
+            });
+    };
+
+    $scope.new = function(){
+        $scope.signUpForm.$setPristine();
+  	};
+}
+
+function AccountCtrl($scope, flash, AccountService, LoginService, ServerErrorResponse) {
+    $scope.currentAccount = angular.copy(AccountService.getAccount());
+
+    $scope.changePassword = function() {
+        LoginService.changePassword($scope.password.oldPassword, $scope.password.newPassword)
+            .then(function(response) {
+                $('#modalChangePassword').modal('hide');
+                flash.success = response.data.message;
+            }, function(response) {
+                $('#modalChangePassword').modal('hide');
+                flash.error = ServerErrorResponse.getMessage(response.status);
+            });
+    };
+
+    $scope.$watch( function() { return AccountService.getAccount(); }, function() {
+        $scope.currentAccount = angular.copy(AccountService.getAccount());
+    }, true);
+}
 
 app.controller('NavbarCtrl', function($scope, $location) {
 		//if($location.path === "/"){
@@ -160,23 +238,50 @@ app.controller('OntoWikiCtrl', function($scope, ConfigurationService) {
 * Virtuoso Controller
 *
 ***************************************************************************************************/
-app.controller('VirtuosoCtrl', function($scope, ConfigurationService) {
+app.controller('VirtuosoCtrl', function($scope, ConfigurationService, AccountService, GraphService, GraphGroupService) {
 
-	$scope.namedGraphs = ConfigurationService.getAllNamedGraphs();
+	$scope.namedGraphs = [];
 	$scope.component = ConfigurationService.getComponent(":Virtuoso");
 	// $scope.services = ConfigurationService.getComponentServices(":Virtuoso", "lds:SPARQLEndPointService");
 	$scope.virtuoso = {
-		service   : ConfigurationService.getSPARQLEndpoint(),
-	 	dataset   : $scope.namedGraphs[0].name,
+		service   : AccountService.getUsername()==null ? ConfigurationService.getPublicSPARQLEndpoint() : ConfigurationService.getSPARQLEndpoint(),
+	 	dataset   : "",
 	}
+
+    $scope.refreshGraphList = function() {
+	    GraphService.getAccessibleGraphs(false, false, true).then(function(graphs) {
+       	    var ngraphs = graphs;
+       	    GraphGroupService.getAllGraphGroups(true).then(function(groups) {
+       	        ngraphs = ngraphs.concat(groups);
+       	        $scope.namedGraphs = ngraphs;
+       	        $scope.virtuoso.dataset = $scope.namedGraphs[0];
+       	    });
+       	});
+	};
+
+	$scope.refreshGraphList();
+
 	$scope.url = "";
 	$scope.setUrl = function(){
-		$scope.url= $scope.virtuoso.service + 
-                '?default-graph-uri=' + $scope.virtuoso.dataset.replace(':',ConfigurationService.getUriBase()) + 
-								'&qtxt=select+distinct+%3FConcept+where+%7B%5B%5D+a+%3FConcept%7D+LIMIT+100' 
-								'&format=text%2Fhtml' +
-								'&timeout=30000';
+	    if (AccountService.getUsername()==null) { //user is not authorized
+	        $scope.url= $scope.virtuoso.service +
+	            '?default-graph-uri=' + $scope.virtuoso.dataset.replace(':',ConfigurationService.getUriBase()) +
+	            '&qtxt=select+distinct+%3FConcept+where+%7B%5B%5D+a+%3FConcept%7D+LIMIT+100'
+	            '&format=text%2Fhtml' +
+	            '&timeout=30000';
+	    } else {
+            $scope.url= "VirtuosoProxy" +
+                    '?default-graph-uri=' + $scope.virtuoso.dataset.replace(':',ConfigurationService.getUriBase()) +
+                                    '&qtxt=select+distinct+%3FConcept+where+%7B%5B%5D+a+%3FConcept%7D+LIMIT+100' +
+                                    '&format=text%2Fhtml' +
+                                    '&timeout=30000' +
+                                    '&username=' + AccountService.getUsername();
+        }
 	};
+
+	$scope.$watch( function () { return AccountService.getUsername(); }, function () {
+	    $scope.refreshGraphList();
+    });
 
 });
 
@@ -186,16 +291,25 @@ app.controller('VirtuosoCtrl', function($scope, ConfigurationService) {
 *
 ***************************************************************************************************/
 
-app.controller('FaceteFormCtrl', function($scope, ConfigurationService) {
+app.controller('FaceteFormCtrl', function($scope, ConfigurationService, GraphService) {
 	//Settings for Facete
 
-	$scope.namedGraphs = ConfigurationService.getAllNamedGraphs();
+	$scope.namedGraphs = [];
 	$scope.component = ConfigurationService.getComponent(":Facete");
 	var services = ConfigurationService.getComponentServices(":Facete");
 	$scope.facete = {
 		service   : ConfigurationService.getSPARQLEndpoint(),
-	 	dataset   : $scope.namedGraphs[0].name,
+	 	dataset   : "",
 	};
+
+	$scope.refreshGraphList = function() {
+        GraphService.getAccessibleGraphs(false, false, true).then(function(graphs) {
+            $scope.namedGraphs = graphs;
+            $scope.facete.dataset = $scope.namedGraphs[0];
+        });
+    };
+
+    $scope.refreshGraphList();
 	
 	$scope.url = "";
 
@@ -203,9 +317,13 @@ app.controller('FaceteFormCtrl', function($scope, ConfigurationService) {
 		$scope.url= services[0].serviceUrl + 
 								'?service-uri='+ $scope.facete.service+
                 '&default-graph-uri=' + $scope.facete.dataset.replace(':',ConfigurationService.getUriBase());
-   
+
 
 	};
+
+	$scope.$watch( function () { return AccountService.getUsername(); }, function () {
+	    $scope.refreshGraphList();
+	});
 });
 
 /****************************************************************************************************
@@ -214,16 +332,21 @@ app.controller('FaceteFormCtrl', function($scope, ConfigurationService) {
 *
 ***************************************************************************************************/
 
-app.controller('MappifyFormCtrl', function($scope, ConfigurationService) {
+app.controller('MappifyFormCtrl', function($scope, ConfigurationService, GraphService) {
 	//Settings for Facete
 
-	$scope.namedGraphs = ConfigurationService.getAllNamedGraphs();
+	$scope.namedGraphs = [];
 	$scope.component = ConfigurationService.getComponent(":Mappify");
 	var services = ConfigurationService.getComponentServices(":Mappify");
 	$scope.facete = {
 		service   : ConfigurationService.getSPARQLEndpoint(),
-	 	dataset   : $scope.namedGraphs[0].name,
+	 	dataset   : "",
 	};
+
+	GraphService.getAccessibleGraphs(false, false, true).then(function(graphs) {
+	    $scope.namedGraphs = graphs;
+        $scope.facete.dataset = $scope.namedGraphs[0];
+    });
 	
 	$scope.url = "";
 
@@ -239,17 +362,23 @@ app.controller('MappifyFormCtrl', function($scope, ConfigurationService) {
 * SPARQLIFY Controller
 *
 ***************************************************************************************************/
-app.controller('SparqlifyCtrl', function($scope, ConfigurationService) {
+app.controller('SparqlifyCtrl', function($scope, ConfigurationService, GraphService) {
 	//Settings for Sparqlilfy
 
-	$scope.namedGraphs = ConfigurationService.getAllNamedGraphs();
+	$scope.namedGraphs = [];
 	$scope.component = ConfigurationService.getComponent(":Sparqlify");
 	var services = ConfigurationService.getComponentServices(":Sparqlify");
 	
 	$scope.sparqlify = {
 	 	service   : ConfigurationService.getSPARQLEndpoint(),
-	 	dataset   : $scope.namedGraphs[0].name,
+	 	dataset   : "",
 	}
+
+    GraphService.getAccessibleGraphs(false, false, true).then(function(graphs) {
+	    $scope.namedGraphs = graphs;
+    	$scope.sparqlify.dataset = $scope.namedGraphs[0];
+    });
+
 	$scope.url = "";
 
 	$scope.setUrl = function(){
@@ -263,13 +392,16 @@ app.controller('SparqlifyCtrl', function($scope, ConfigurationService) {
 * LIMES Controller
 *
 ***************************************************************************************************/
-var LimesCtrl = function($scope, $http, ConfigurationService, flash, ServerErrorResponse, $window, DateService){
+var LimesCtrl = function($scope, $http, ConfigurationService, flash, ServerErrorResponse, $window, DateService, GraphService){
 	
 	var services = ConfigurationService.getComponentServices(":Limes");
 	var serviceUrl = services[0].serviceUrl;
 	
 	// parameters for saving results
-	$scope.namedGraphs = ConfigurationService.getAllNamedGraphs();
+	$scope.namedGraphs = [];
+    GraphService.getAccessibleGraphs(false, false, true).then(function(graphs) {
+	    $scope.namedGraphs = graphs;
+    });
 	$scope.defaultEndpoint = ConfigurationService.getSPARQLEndpoint();
 	$scope.endpoints = ConfigurationService.getAllEndpoints();
 	$scope.uriBase = ConfigurationService.getUriBase();
@@ -709,13 +841,16 @@ $scope.LaunchLimes = function(){
 *
 ***************************************************************************************************/
 
-var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErrorResponse, $window){
+var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErrorResponse, $window, AccountService, GraphService){
 	
 	var services = ConfigurationService.getComponentServices(":GeoLift");
 	var serviceUrl = services[0].serviceUrl;
 	
 	$scope.endpoints = ConfigurationService.getAllEndpoints();
-	$scope.namedGraphs = ConfigurationService.getAllNamedGraphs();
+	$scope.namedGraphs = [];
+    GraphService.getAccessibleGraphs(true, false, true).then(function(graphs) {
+	    $scope.namedGraphs = graphs;
+    });
 	
 	$scope.inputForm = true;
 	$scope.configOptions = true;
@@ -1374,7 +1509,8 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErr
 	    rdfFile: "result.ttl", 
 	    endpoint: ConfigurationService.getSPARQLEndpoint(), 
 	    graph: $scope.saveDataset.replace(':', ConfigurationService.getUriBase()), 
-	    uriBase : ConfigurationService.getUriBase()
+	    uriBase : ConfigurationService.getUriBase(),
+        username: AccountService.getUsername()
 	 	};
 		
 		$http({
@@ -1405,7 +1541,7 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErr
 *
 ***************************************************************************************************/
 
-var TripleGeoCtrl = function($scope, $http, ConfigurationService, flash, ServerErrorResponse, $window){
+var TripleGeoCtrl = function($scope, $http, ConfigurationService, flash, ServerErrorResponse, $window, AccountService, GraphService){
 	
 	var services = ConfigurationService.getComponentServices(":TripleGeo");
 	var serviceUrl = services[0].serviceUrl;
@@ -1417,7 +1553,10 @@ var TripleGeoCtrl = function($scope, $http, ConfigurationService, flash, ServerE
 	$scope.dbLogin = true;
 	$scope.configForm = false;	
 	$scope.endpoints = ConfigurationService.getAllEndpoints();
-	$scope.namedGraphs = ConfigurationService.getAllNamedGraphs();
+	$scope.namedGraphs = [];
+    GraphService.getAccessibleGraphs(true, false, true).then(function(graphs) {
+	    $scope.namedGraphs = graphs;
+    });
 	$scope.databases = ConfigurationService.getAllDatabases();
 
 	var uploadError = false;
@@ -1942,7 +2081,8 @@ var TripleGeoCtrl = function($scope, $http, ConfigurationService, flash, ServerE
 		        fileType: fileType,
 		        endpoint: ConfigurationService.getSPARQLEndpoint() , 
 		        graph: $scope.saveDataset.replace(':', ConfigurationService.getUriBase()), 
-		        uriBase : ConfigurationService.getUriBase()
+		        uriBase : ConfigurationService.getUriBase(),
+		        username: AccountService.getUsername()
 		      	};
 		console.log(parameters);
 		console.log(serviceUrl+"/ImportRDF");
@@ -1976,9 +2116,15 @@ var TripleGeoCtrl = function($scope, $http, ConfigurationService, flash, ServerE
 *
 ***************************************************************************************************/
 
-var ImportFormCtrl = function($scope, $http, ConfigurationService, flash) {
+var ImportFormCtrl = function($scope, $http, ConfigurationService, flash, AccountService, GraphService) {
 
-	$scope.namedGraphs = ConfigurationService.getAllNamedGraphs();
+	$scope.namedGraphs = [];
+    $scope.refreshGraphList = function() {
+        GraphService.getAccessibleGraphs(true, false, true).then(function(graphs) {
+            $scope.namedGraphs = graphs;
+        });
+    };
+    $scope.refreshGraphList();
 	$scope.endpoints = ConfigurationService.getAllEndpoints();
 	$scope.uploadMessage = '';
 		  
@@ -2074,7 +2220,8 @@ var ImportFormCtrl = function($scope, $http, ConfigurationService, flash) {
         rdfFiles: uploadedFiles, 
         endpoint: ConfigurationService.getSPARQLEndpoint(), 
         graph: $scope.importFile.graph.replace(':',ConfigurationService.getUriBase()), 
-        uriBase : ConfigurationService.getUriBase()
+        uriBase : ConfigurationService.getUriBase(),
+        username : AccountService.getUsername()
       };
       
     }
@@ -2083,7 +2230,8 @@ var ImportFormCtrl = function($scope, $http, ConfigurationService, flash) {
         rdfUrl: $scope.importUrl.inputUrl, 
         endpoint: ConfigurationService.getSPARQLEndpoint(), 
         graph: $scope.importUrl.graph.replace(':',ConfigurationService.getUriBase()), 
-        uriBase : ConfigurationService.getUriBase() 
+        uriBase : ConfigurationService.getUriBase(),
+        username : AccountService.getUsername()
       };
 
     }
@@ -2091,9 +2239,10 @@ var ImportFormCtrl = function($scope, $http, ConfigurationService, flash) {
       parameters ={
         rdfQuery: $scope.importSparql.sparqlQuery,
         rdfQueryEndpoint: $scope.importSparql.endPoint, 
-        endpoint: ConfigurationService.getSPARQLEndpoint(), 
+        endpoint: AccountService.getUsername()==null ? ConfigurationService.getPublicSPARQLEndpoint() : ConfigurationService.getSPARQLEndpoint(),
         graph: $scope.importSparql.graph.replace(':',ConfigurationService.getUriBase()), 
-        uriBase : ConfigurationService.getUriBase() 
+        uriBase : ConfigurationService.getUriBase(),
+        username : AccountService.getUsername()
       };
     }
     $http({
@@ -2134,6 +2283,11 @@ var ImportFormCtrl = function($scope, $http, ConfigurationService, flash) {
     $scope.importUrl = {url:"", graph:"?"};
     $scope.importSparql = {endpoint:"", sparqlQuery:"", graph:"?"};
   };
+
+  $scope.$watch( function () { return AccountService.getUsername(); }, function () {
+    $scope.refreshGraphList();
+  });
+
 };
 
 

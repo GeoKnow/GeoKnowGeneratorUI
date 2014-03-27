@@ -18,8 +18,14 @@
       </div>
       <div class="form-group">
         <label for="DataSet">DataSet</label>
-        <select id="DataSet" class="form-control" ng-model="virtuoso.dataset" ng-options="namedgraph.name as namedgraph.name for namedgraph in namedGraphs" required>
-        </select>
+        <div class="input-group">
+            <select id="DataSet" class="form-control" ng-model="virtuoso.dataset" ng-options="namedgraph.name as namedgraph.name for namedgraph in namedGraphs" required></select>
+            <span class="input-group-btn">
+                <button type="button" class="btn btn-link reset" ng-click="refreshGraphList()">
+                    <i class="glyphicon glyphicon-refresh" aria-hidden="false"></i>
+                </button>
+            </span>
+        </div>
       </div>
       <div class="form-group">
         <a class="btn btn-success btn-large" data-toggle="modal" ng-click="setUrl(); openModal();">Launch</a>

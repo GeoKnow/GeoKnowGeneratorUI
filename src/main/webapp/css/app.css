@@ -264,3 +264,7 @@ a.accordion-toggle:hover{
 	color: red;
 }
 
+/* Modal dialogs */
+.modal-body {
+    overflow: auto;
+}
