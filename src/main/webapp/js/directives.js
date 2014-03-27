@@ -118,7 +118,7 @@ app.directive('regexValidate', function() {
     expressions['url']            =  /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/;
     expressions['uri']            =  /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/;
     expressions['identifier']     =  /^[a-zA-Z0-9_]*$/ ;
-    expressions['sparqlEndpoint'] =  /^https?:\/\/[^\/]+\/sparql\/?$/;
+    expressions['sparqlEndpoint'] =  /^https?:\/\/.+\/sparql\/?$/; // /^https?:\/\/[^\/]+\/sparql\/?$/
     return {
         restrict: 'A',
         require: 'ngModel',
