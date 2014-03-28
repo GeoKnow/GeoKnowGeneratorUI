@@ -1,6 +1,7 @@
 'use strict';
 
-var app = angular.module('app', ['ngRoute', 
+var app = angular.module('app', ['ngRoute',
+                                 'ngCookies',
                                  'app.services', 
                                  'app.directives', 
                                  'app.configuration',

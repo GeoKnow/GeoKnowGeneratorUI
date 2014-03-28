@@ -33,11 +33,11 @@ angular.module("app.configuration", [])
 {
         $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded; charset=UTF-8";
 
-        var ENDPOINT  = "http://localhost:8890/sparql-auth";
-        var PUBLIC_ENDPOINT = "http://localhost:8890/sparql";
+        var ENDPOINT  = "http://generator.geoknow.eu:8890/sparql-auth";
+        var PUBLIC_ENDPOINT = "http://generator.geoknow.eu:8890/sparql";
         // if new resorces are created they will use this name space, and it can be changed
         var NS        = "http://generator.geoknow.eu/resource/";
-  // this is the graph where settings are stored, it doesnt change, and independent on the Namespace
+        // this is the graph where settings are stored, it doesnt change, and independent on the Namespace
         var DEFAULT_GRAPH_URI = "http://generator.geoknow.eu/resource/settingsGraph";
         var GRAPH_URI = DEFAULT_GRAPH_URI;
         var GROUPS_GRAPH_URI = "http://generator.geoknow.eu/resource/graphGroups";

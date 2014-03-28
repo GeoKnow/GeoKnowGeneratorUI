@@ -73,16 +73,28 @@ function StackMenuCtrl($scope) {
 	}
 
 
-function LoginCtrl($scope, flash, AccountService, LoginService, ServerErrorResponse) {
+function LoginCtrl($scope, flash, AccountService, LoginService, ServerErrorResponse, Base64) {
     $scope.currentAccount = angular.copy(AccountService.getAccount());
+    if($scope.currentAccount.user != null){
+    	LoginService.login($scope.currentAccount.user, $scope.currentAccount.pass)
+        .then(function(data) {
+            $scope.currentAccount = angular.copy(AccountService.getAccount());
+            $scope.login.username = null;
+            $scope.login.password = null;
+        }, function(response) {
+            flash.error = ServerErrorResponse.getMessage(response.status);
+            $scope.login.username = null;
+            $scope.login.password = null;
+        });
+    }
 
     $scope.login = {
         username : null,
-        password : null
-    };
+        password : null //$scope.currentAccount.user, $scope.currentAccount.pass
+    }; 
 
     $scope.login = function() {
-        LoginService.login($scope.login.username, $scope.login.password)
+        LoginService.login(Base64.encode($scope.login.username), Base64.encode($scope.login.password))
             .then(function(data) {
                 $scope.currentAccount = angular.copy(AccountService.getAccount());
                 $scope.login.username = null;
