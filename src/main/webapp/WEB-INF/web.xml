@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+
+<web-app xmlns="http://java.sun.com/xml/ns/j2ee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
+    version="2.4">
+
+  <display-name>GeoKnow Generator</display-name>
+  
+  <!-- File Upload parameters  -->
+  <context-param> 
+    <description>Location to store uploaded file</description> 
+    <param-name>file-upload</param-name> 
+    <param-value>/uploads/</param-value> 
+  </context-param>
+  <context-param> 
+    <description>Maximum file size to be uploaded 1024 * 1024 * 5</description> 
+    <param-name>max-file-size</param-name> 
+    <param-value>524288000</param-value> 
+  </context-param>
+  <context-param> 
+    <description>Maximum size that will be stored in memory 20 * 1024</description> 
+    <param-name>max-mem-size</param-name> 
+    <param-value>2048000</param-value>
+  </context-param>
+  <context-param> 
+    <description>Location to save data that is larger than maxMemSize</description> 
+    <param-name>temp-data</param-name> 
+    <param-value>/uploads/tmp/</param-value> 
+  </context-param>
+  
+<!--   <context-param> 
+    <description>Virtuoso server</description> 
+    <param-name>virtuoso-jdbc</param-name> 
+    <param-value>jdbc:virtuoso://localhost:1111/</param-value> 
+  </context-param>
+  <context-param> 
+    <description>Virtuoso server user</description> 
+    <param-name>virtuoso-user</param-name> 
+    <param-value>dba</param-value> 
+  </context-param>
+    <context-param> 
+    <description>Virtuoso server password</description> 
+    <param-name>virtuoso-password</param-name> 
+    <param-value>dba</param-value> 
+  </context-param> -->
+  
+  <servlet>
+     <servlet-name>ImportRDF</servlet-name>
+     <servlet-class>ImportRDF</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+     <servlet-name>ImportRDF</servlet-name>
+     <url-pattern>/ImportRDF</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+     <servlet-name>UploadServlet</servlet-name>
+     <servlet-class>UploadServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+     <servlet-name>UploadServlet</servlet-name>
+     <url-pattern>/UploadServlet</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+      <servlet-name>AuthenticationServlet</servlet-name>
+      <servlet-class>authentication.web.AuthenticationServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+      <servlet-name>AuthenticationServlet</servlet-name>
+      <url-pattern>/AuthenticationServlet</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+      <servlet-name>RdfStoreProxy</servlet-name>
+      <servlet-class>authentication.web.RdfStoreProxy</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+      <servlet-name>RdfStoreProxy</servlet-name>
+      <url-pattern>/RdfStoreProxy</url-pattern>
+  </servlet-mapping>
+
+    <servlet>
+        <servlet-name>VirtuosoProxy</servlet-name>
+        <servlet-class>authentication.web.VirtuosoProxy</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>VirtuosoProxy</servlet-name>
+        <url-pattern>/VirtuosoProxy</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>GraphManagerServlet</servlet-name>
+        <servlet-class>authentication.web.GraphManagerServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>GraphManagerServlet</servlet-name>
+        <url-pattern>/GraphManagerServlet</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>UserManagerServlet</servlet-name>
+        <servlet-class>authentication.web.UserManagerServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>UserManagerServlet</servlet-name>
+        <url-pattern>/UserManagerServlet</url-pattern>
+    </servlet-mapping>
+
+  <mime-mapping>
+    <extension>n3</extension>
+    <mime-type>text/n3</mime-type>
+  </mime-mapping>
+
+  <mime-mapping>
+    <extension>ttl</extension>
+    <mime-type>text/turtle</mime-type>
+  </mime-mapping>
+
+  <mime-mapping>
+    <extension>rdf</extension>
+    <mime-type>application/rdf+xml</mime-type>
+  </mime-mapping>
+
+</web-app> 

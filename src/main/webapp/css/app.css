@@ -1,0 +1,326 @@
+/* app css stylesheet */
+
+html, body{
+	height:100%;
+	font: .87em Arial,Helvetica,sans-serif;
+	background-color:#f8f8f8;
+}
+
+#contents{
+	position:relative;
+	top:10px;
+	bottom:0;
+	width:100%;
+	max-width:1920px;
+	padding-left:20px;
+}
+
+.contents{
+	height:100%;
+}
+
+h1, h2, h3, h4, h5, h6
+{ 
+	font-weight: normal;
+	clear: both;
+	color: #0072bc;
+}
+
+/* Navbar and elements */
+
+.navbar{
+	padding:0 40px 0 40px;
+	background-image: linear-gradient(#e4e4e4, #e4e4e4);
+	box-shadow: 0 1px 2px #888888, 0 -1px 0 rgba(0, 0, 0, 0.1) inset;
+	border:0;
+	background-repeat: repeat-x;
+	font-weight:bold;
+	letter-spacing:0.08em;
+}
+
+.navbar-nav{
+	height:55px;
+}
+
+a.navbar-brand{
+	width:170px;
+	height:55px;
+	margin:0 15px 0 0;
+	background:transparent url('../img/ontos-logo-web.png') center center no-repeat;
+}
+
+a.navbar-brand:hover{
+	background:transparent url('../img/ontos-logo-web.png') center center no-repeat;
+	
+}
+
+.navbar-brand{
+	width:170px;
+	height:55px;
+	background:transparent url('../img/ontos-logo-web.png') center center no-repeat;
+}
+
+.navbar .navbar-nav > .active > a {
+    background: none;
+    height:55px;
+}
+
+.navbar .nav > li > a {
+	color:#000000;
+	text-shadow:none;
+	line-height: 20px;
+	height:55px;
+}
+
+.navbar .nav > li > div > button {
+	margin-top:10px;
+}
+
+.navbar .nav > li > a:hover{
+	color: #0072bc;
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #BFCAE0), color-stop(100%, #E4E4E4));
+	background-image: -webkit-linear-gradient(top, #BFCAE0, #E4E4E4);
+	background-image: -moz-linear-gradient(top, #BFCAE0, #E4E4E4);
+	background-image: -ms-linear-gradient(top, #BFCAE0, #E4E4E4);
+	background-image: -o-linear-gradient(top, #BFCAE0, #E4E4E4);
+	background-image: linear-gradient(top, #BFCAE0, #E4E4E4);filter:progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr=#BFCAE0, endColorstr=#E4E4E4);
+	box-shadow: #B4B5B5 0 0 4px  inset;
+}
+
+.navbar .nav > li > a:active{
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #BFCAE0), color-stop(100%, #E4E4E4));
+	background-image: -webkit-linear-gradient(top, #BFCAE0, #E4E4E4);
+	background-image: -moz-linear-gradient(top, #BFCAE0, #E4E4E4);
+	background-image: -ms-linear-gradient(top, #BFCAE0, #E4E4E4);
+	background-image: -o-linear-gradient(top, #BFCAE0, #E4E4E4);
+	background-image: linear-gradient(top, #BFCAE0, #E4E4E4);filter:progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr=#BFCAE0, endColorstr=#E4E4E4);
+	box-shadow: #B4B5B5 0 0 4px  inset;
+}
+
+.navbar .nav > li > a {
+    color:#000000;
+}
+
+.navbar .nav > li.active{
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #BFCAE0), color-stop(100%, #E4E4E4));
+	background-image: -webkit-linear-gradient(top, #BFCAE0, #E4E4E4);
+	background-image: -moz-linear-gradient(top, #BFCAE0, #E4E4E4);
+	background-image: -ms-linear-gradient(top, #BFCAE0, #E4E4E4);
+	background-image: -o-linear-gradient(top, #BFCAE0, #E4E4E4);
+	background-image: linear-gradient(top, #BFCAE0, #E4E4E4);filter:progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr=#BFCAE0, endColorstr=#E4E4E4);
+	box-shadow: #B4B5B5 0 0 4px  inset;
+}
+
+.navbar .nav > li.active a{
+	color: #EF7D00;
+}
+
+/* Sidebar Menu */
+
+.sidebar{
+	padding-left:10px;
+	padding-bottom:15px;
+}
+
+.list-group-item{
+	border:none;
+}
+
+.list-item a{
+	border:1px solid #FFFFFF;
+	background: none;
+}
+
+.list-item h6{
+	margin-top:3px;
+	margin-bottom:3px;
+}
+
+.list-item.selected{
+	background-color: #f5f5f5;
+	border-top-right-radius: 4px;
+	border-top-left-radius: 4px;
+	border-bottom-right-radius: 4px;
+	border-bottom-left-radius: 4px;
+}
+
+.list-item.selected a{
+	color: #0072bc;
+	border:1px solid #EF7D00;
+}
+
+.list-item.selected h6{
+	margin-top:3px;
+	margin-bottom:3px;
+}
+
+a.list-group-item:hover{
+	background-color: #f5f5f5;
+	border:1px solid #0072bc;
+	color: #EF7D00;
+}
+
+a.accordion-toggle:hover{
+	cursor:pointer;
+	color:#EF7D00;
+	text-decoration:none;
+}
+	
+.accordion-toggle:hover{
+	cursor:pointer;
+	color:#EF7D00;
+}
+
+.panel-default > .panel-heading {
+    background-color: #DDDADA;
+    border-color: #DDDEEE;
+    color: #333333;
+}
+	
+/* Typography */
+
+/*
+.green.bold{
+	color:#84BB41;
+	font-weight:bold;
+	margin-top: 0;
+}
+
+.green .bold{
+	color:#84BB41;
+	font-weight:bold;
+}
+*/
+
+.bold{
+	font-weight:bold;
+}
+
+.boldtext{
+	font-weight:bold;
+}
+	
+/* Map pages */
+
+#map{
+	width:100%;
+	height:100%;
+}
+
+/* General rules */
+
+#mainwindow{
+	height:100%;
+}
+
+#main-frame{
+	  height: 100%;
+	  width: 100%;
+}
+
+/* Modal iframe */
+
+#mod-frame{
+	  position: absolute;
+	  top: 0;
+	  height: 100%;
+	  width: 100%;
+}
+
+.accountModal{
+	margin-top:20px;
+}
+
+/* Forms */
+
+form{
+	background-color:white;
+}
+
+.InputForm{
+	  	margin-left: 0;
+		margin-right: 0;
+		border: 1px solid #ddd;
+		border-radius: 4px 4px 4px 4px;
+		box-shadow: none;
+		padding:20px 40px 20px 40px;
+}
+
+.below{
+	margin-bottom:20px;
+}
+
+/* Selects */
+
+#DataSet {
+    background-color: #FFFFFF;
+    border: 1px solid #CCCCCC;
+    border-radius: 4px 4px 4px 4px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;
+    color: #666666;
+    display: block;
+    font-size: 14px;
+    height: 38px;
+    line-height: 1.42857;
+    padding: 8px 12px;
+    transition: border-color 0.15s ease-in-out 0s, box-shadow 0.15s ease-in-out 0s;
+    vertical-align: middle;
+    width: 100%;
+}
+
+/* Buttons */
+
+.plusbutton{
+	padding-left: 6px;
+	padding-top: 3px;
+	color: #CCCCCC;
+	font-size: 12px;
+}
+
+.plusbutton:hover{
+	cursor: pointer;
+	color: #000000;
+	opacity:0.5;
+}
+
+.removebutton{
+	padding:3px 0 0 6px;
+	color: #CCCCCC;
+	font-size: 12px;
+}
+
+.removebutton:hover{
+	cursor: pointer;
+	color: #000000;
+	opacity:0.5;
+}
+
+.reset {
+	float: right;
+	text-shadow:none;
+	color: #000000;
+    font-size: 21px;
+    font-weight: bold;
+    line-height: 1;
+    opacity: 0.2;
+    box-shadow: 0 0 0 rgba(0, 0, 0, 0) inset;
+    outline: 0 none;
+}
+
+.reset:hover{
+	color:black;
+	box-shadow: 0 0 0 rgba(0, 0, 0, 0) inset;
+	opacity: 0.6;
+}
+
+/* Glyphicons */
+
+.glyphicon-warning-sign {
+	font-size: 1.4em;
+	color: red;
+}
+
+/* Modal dialogs */
+.modal-body {
+    overflow: auto;
+}

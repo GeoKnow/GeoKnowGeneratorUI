@@ -1,0 +1,34 @@
+
+<h3 class="green bold">Components Management</h3>
+
+
+<p>Current workbench configuration has integrated the following components.</p>
+
+<table class="table table-striped" ng-controller="ComponentCtrl">
+<thead>
+  <tr>
+  	<th>URI</th>
+    <th>Name</th>
+    <th>Homepage</th>
+    <th>Services</th>
+    <th>Version</th>
+  </tr>
+</thead>
+<tbody>
+  <tr ng-repeat="component in components">
+  	<td>{{component.uri}}</td>
+    <td>{{component.label}}</td>
+    <td>{{component.homepage}}</td>
+    <td>
+      <div ng-controller="ComponentServicesCtrl" ng-init="getServices(component.uri)">
+        <ul ng-repeat="service in services">
+          <li>{{service.type}}</li>
+          <li>{{service.serviceUrl}}</li>
+        </ul>
+      </div>
+    </td>
+    <td>{{component.version}}</td>
+  </tr>
+</tbody>
+</table>
+

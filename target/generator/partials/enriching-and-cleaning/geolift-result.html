@@ -1,0 +1,56 @@
+<div class="contents" ng-controller="GeoliftCtrl" ng-init="StartGeoLift()">
+	<!-- Subscribe to all flash messages. -->
+	<div flash-alert active-class="in" class="alert fade" duration="0">
+		<button type="button" class="close" ng-click="hide()">&times;</button>
+	  <span class="alert-message">{{flash.message}}</span>
+	</div>
+
+	<h3 class="green bold">GeoLift</h3>
+	<b>Framework to Enrich Geographic Content in the Semantic Web</b>
+	<br>
+	<br>
+	
+<form class="form-inline InputForm col-xs-11" role="form" ng-show="inputForm">
+	<div class="row">
+		<div class="col-xs-11">
+		<div class="progress progress-striped active" ng-show="showProgress">
+		<div class="progress-bar progress-bar-success"  role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+		</div>
+		</div>
+		</div>
+	</div>
+	<div class="row">
+	<div class="col-xs-11" ng-show="showProgress">
+		<b>This might take a while... Please keep this browser window open. You can view and save the results here when execution is complete.</b>
+	</div>
+	</div>
+</form>
+
+<form class="form-horizontal InputForm col-xs-11" role="form" ng-show="reviewForm">
+	<div class="row">
+		<h5 class="green bold">Results</h5>
+	</div>
+	<br>
+	<div class="row below">
+	    <textarea class="form-control boldtext" id="ReviewResults" ng-model="results"></textarea>
+	</div>
+	<br>
+	<div class="row below">
+		<b>Select the graph which you would like to save to.</b>
+	<br>
+	</div>
+	<div class="row below">
+	<label>Graph</label>
+    <select class="form-control" ng-model="saveDataset" ng-options="namedgraph.name as namedgraph.name for namedgraph in namedGraphs" required>
+    </select>
+    </div>
+	<div class="row">
+		<div class="pull-left" style="padding-left:0">
+			  <a class="btn btn-sm btn-success" ng-click="save()">Save Results</a>
+		</div>
+		<div>
+			  <!-- <download-result></download-result> -->
+		</div>
+	</div>
+</form>
+</div>

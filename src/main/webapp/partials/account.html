@@ -1,0 +1,87 @@
+
+<div class="row contents">
+  	<div class="col-xs-2">
+			
+<!-- 			<div class="panel-group" id="accordion" ng-controller="AccountMenuCtrl">
+			  <div class="panel panel-default" ng-repeat="item in items">
+				  <div class="panel-heading" ng-controller="SidebarCtrl">
+					  <h5 ng-class="{selected:isSelected('{{item.url}}')}" class="panel-title">
+				        <a class="accordion-toggle" href="{{item.route}}">{{item.name}}</a>
+				      </h5>
+				  </div>
+			  	</div>
+			</div>
+ -->			
+		</div>
+
+<div class="col-xs-4" app-view-segment="1" ng-controller="AccountCtrl">
+    <!-- Subscribe to all flash messages. -->
+    <div flash-alert active-class="in" class="alert fade" duration="0">
+        <button type="button" class="close" ng-click="hide()">&times;</button>
+        <span class="alert-message">{{flash.message}}</span>
+    </div>
+
+<h3 class="green bold below">User Account</h3>
+
+<!--dl class="dl-horizontal">
+  <dt>WebId:</dt><dd>https://my-profile.eu/people/alegrm/card#me</dd>
+  <dt>Name:</dt><dd>Alejandra Garcia Rojas M.</dd>
+  <dt>Role:</dt><dd>administrator</dd>
+</dl>
+
+<h2>Account activity</h2>
+<dl class="dl-horizontal">
+  <dt>Last access:</dt><dd>Today at 9:55 AM</dd>
+  <dt>From countries:</dt><dd>Switzerland, France</dd>
+</dl-->
+
+    <table class="table table-bordered" ng-if="currentAccount.username">
+    	<tr>
+        <td>Username:</td><td>{{currentAccount.username}}</td>
+        </tr>
+        <tr>
+        <td>E-mail address:</td><td>{{currentAccount.email}}</td>
+        </tr>
+    </table>
+    <button type="button" class="btn-sm btn-primary" data-toggle="modal" data-target="#modalChangePassword" ng-if="currentAccount.username">Change password</button>
+
+    <div class="modal fade" id="modalChangePassword">
+    <div class="modal-dialog">
+    <div class="modal-content">
+        <form name="changePasswordForm" class="form-horizontal InputForm" role="form">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h5 class="modal-title green bold">Change password</h5>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="oldPassword" class="col-lg-2 control-label">Old password</label>
+                    <div class="col-lg-10">
+                        <input type="password" id="oldPassword" name="oldPassword" class="form-control" placeholder="Old password" ng-model="password.oldPassword" required/>
+                        <div class="error"  ng-show="changePasswordForm.oldPassword.$dirty && changePasswordForm.oldPassword.$invalid">Invalid:
+                            <span ng-show="changePasswordForm.oldPassword.$error.required">Specify old password</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="newPassword" class="col-lg-2 control-label">New password</label>
+                    <div class="col-lg-10">
+                        <input type="password" id="newPassword" name="newPassword" class="form-control" placeholder="New password" ng-model="password.newPassword" required/>
+                        <div class="error"  ng-show="changePasswordForm.newPassword.$dirty && changePasswordForm.newPassword.$invalid">Invalid:
+                            <span ng-show="changePasswordForm.newPassword.$error.required">Specify new password</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn-sm btn-primary" ng-click="changePassword();" ng-disabled="changePasswordForm.$invalid">Change</button>
+                <button type="button" class="btn-sm btn-default" data-dismiss="modal">Cancel</button>
+            </div>
+        </form>
+        </div>
+        </div>
+    </div>
+
+</div>
+</div>
+
