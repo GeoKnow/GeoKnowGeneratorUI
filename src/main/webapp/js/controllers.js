@@ -74,7 +74,6 @@ function StackMenuCtrl($scope) {
 
 
 function LoginCtrl($scope, flash, AccountService, LoginService, ServerErrorResponse, Base64) {
-	$scope.loggedIn = false;
     $scope.currentAccount = angular.copy(AccountService.getAccount());
     if($scope.currentAccount.user != null){
     	LoginService.login($scope.currentAccount.user, $scope.currentAccount.pass)
@@ -82,7 +81,6 @@ function LoginCtrl($scope, flash, AccountService, LoginService, ServerErrorRespo
             $scope.currentAccount = angular.copy(AccountService.getAccount());
             $scope.login.username = null;
             $scope.login.password = null;
-            $scope.loggedIn = true;
         }, function(response) {
             flash.error = ServerErrorResponse.getMessage(response.status);
             $scope.login.username = null;
@@ -101,39 +99,34 @@ function LoginCtrl($scope, flash, AccountService, LoginService, ServerErrorRespo
                 $scope.currentAccount = angular.copy(AccountService.getAccount());
                 $scope.login.username = null;
                 $scope.login.password = null;
-                $scope.loggedIn = true;
-                $('#modalLogin').modal('hide');
-              	$('body').removeClass('modal-open');
-              	$('.modal-backdrop').slideUp();
-              	$('.modal-scrollable').slideUp();
             }, function(response) {
                 flash.error = ServerErrorResponse.getMessage(response.status);
                 $scope.login.username = null;
                 $scope.login.password = null;
             });
     };
+    
+    $scope.close = function(modalID) {
+    	$(modalID).modal('hide');
+        $('body').removeClass('modal-open');
+      	$('.modal-backdrop').slideUp();
+      	$('.modal-scrollable').slideUp();
+    };
 
     $scope.logout = function() {
         LoginService.logout()
             .then(function(data) {
                 $scope.currentAccount = angular.copy(AccountService.getAccount());
-                $scope.loggedIn = false;
             });
     };
 
     $scope.createAccount = function() {
         LoginService.createAccount($scope.signUp.username, $scope.signUp.email)
             .then(function(response) {
-                $('#modalSignUp').modal('hide');
-                $('body').removeClass('modal-open');
-              	$('.modal-backdrop').slideUp();
-              	$('.modal-scrollable').slideUp();
+            	$scope.close('#modalSignUp');
                 flash.success = response.data.message;
             }, function(response) {
-                $('#modalSignUp').modal('hide');
-                $('body').removeClass('modal-open');
-              	$('.modal-backdrop').slideUp();
-              	$('.modal-scrollable').slideUp();
+            	$scope.close('#modalSignUp');
                 flash.error = ServerErrorResponse.getMessage(response.status);
             });
     };
@@ -141,16 +134,10 @@ function LoginCtrl($scope, flash, AccountService, LoginService, ServerErrorRespo
     $scope.restorePassword = function() {
         LoginService.restorePassword($scope.restorePassword.username)
             .then(function(response) {
-                $('#modalRestorePassword').modal('hide');
-                $('body').removeClass('modal-open');
-              	$('.modal-backdrop').slideUp();
-              	$('.modal-scrollable').slideUp();
+            	$scope.close('#modalRestorePassword');
                 flash.success = response.data.message;
             }, function(response) {
-                $('#modalRestorePassword').modal('hide');
-                $('body').removeClass('modal-open');
-              	$('.modal-backdrop').slideUp();
-              	$('.modal-scrollable').slideUp();
+            	$scope.close('#modalRestorePassword');
                 flash.error = ServerErrorResponse.getMessage(response.status);
             });
     };

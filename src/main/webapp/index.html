@@ -65,8 +65,8 @@
     <div class="modal-content">
 	<form name="loginForm" class="form-horizontal InputForm" role="form" ng-show="currentAccount.username==null">
 			<div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h5 class="modal-title bold">Login</h5>
+                <button type="button" class="close" ng-click="close('#modalLogin')" aria-hidden="true">&times;</button>
+                <h5 class="modal-title green bold">Login</h5>
             </div>
             <div class="modal-body">
             
@@ -87,8 +87,8 @@
              </div>
              
              <div class="modal-footer">
-                <button type="submit" class="btn-sm btn-primary" ng-click="login();" ng-disabled="loginForm.$invalid">Sign in</button>
-                <button type="button" class="btn-sm btn-default" data-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn-sm btn-success" ng-click="login();" ng-disabled="loginForm.$invalid">Sign in</button>
+                <button type="button" class="btn-sm btn-default" ng-click="close('#modalLogin')">Cancel</button>
             </div>
     </form>
     </div>
@@ -100,7 +100,7 @@
     <div class="modal-content">
         <form name="signUpForm" class="form-horizontal InputForm" role="form">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <button type="button" class="close" ng-click="close('#modalSignUp')" aria-hidden="true">&times;</button>
                 <h5 class="modal-title green bold">Register</h5>
             </div>
             <div class="modal-body">
@@ -126,7 +126,7 @@
             </div>
             <div class="modal-footer">
                 <button type="submit" class="btn-sm btn-success" ng-click="createAccount();" ng-disabled="signUpForm.$invalid">Register</button>
-                <button type="button" class="btn-sm btn-default" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn-sm btn-default" ng-click="close('#modalSignUp')">Cancel</button>
             </div>
         </form>
     </div>
@@ -138,7 +138,7 @@
     	<div class="modal-content">
           <form name="restorePasswordForm" class="form-horizontal InputForm" role="form">
               <div class="modal-header">
-                  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                  <button type="button" class="close" ng-click="close('#modalRestorePassword')" aria-hidden="true">&times;</button>
                   <h5 class="modal-title green bold">Request password</h5>
               </div>
               <div class="modal-body">
@@ -154,13 +154,12 @@
               </div>
               <div class="modal-footer">
                   <button type="submit" class="btn-sm btn-success" ng-click="restorePassword();" ng-disabled="restorePasswordForm.$invalid">Request password</button>
-                  <button type="button" class="btn-sm btn-default" data-dismiss="modal">Cancel</button>
+                  <button type="button" class="btn-sm btn-default" ng-click="close('#modalRestorePassword')">Cancel</button>
               </div>
           </form>
       </div>
    	  </div>
       </div>
-
 
     <div id="contents" app-view-segment="0"></div>
     
