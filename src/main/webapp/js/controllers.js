@@ -103,6 +103,9 @@ function LoginCtrl($scope, flash, AccountService, LoginService, ServerErrorRespo
                 $scope.login.password = null;
                 $scope.loggedIn = true;
                 $('#modalLogin').modal('hide');
+              	$('body').removeClass('modal-open');
+              	$('.modal-backdrop').slideUp();
+              	$('.modal-scrollable').slideUp();
             }, function(response) {
                 flash.error = ServerErrorResponse.getMessage(response.status);
                 $scope.login.username = null;
@@ -122,9 +125,15 @@ function LoginCtrl($scope, flash, AccountService, LoginService, ServerErrorRespo
         LoginService.createAccount($scope.signUp.username, $scope.signUp.email)
             .then(function(response) {
                 $('#modalSignUp').modal('hide');
+                $('body').removeClass('modal-open');
+              	$('.modal-backdrop').slideUp();
+              	$('.modal-scrollable').slideUp();
                 flash.success = response.data.message;
             }, function(response) {
                 $('#modalSignUp').modal('hide');
+                $('body').removeClass('modal-open');
+              	$('.modal-backdrop').slideUp();
+              	$('.modal-scrollable').slideUp();
                 flash.error = ServerErrorResponse.getMessage(response.status);
             });
     };
@@ -133,9 +142,15 @@ function LoginCtrl($scope, flash, AccountService, LoginService, ServerErrorRespo
         LoginService.restorePassword($scope.restorePassword.username)
             .then(function(response) {
                 $('#modalRestorePassword').modal('hide');
+                $('body').removeClass('modal-open');
+              	$('.modal-backdrop').slideUp();
+              	$('.modal-scrollable').slideUp();
                 flash.success = response.data.message;
             }, function(response) {
                 $('#modalRestorePassword').modal('hide');
+                $('body').removeClass('modal-open');
+              	$('.modal-backdrop').slideUp();
+              	$('.modal-scrollable').slideUp();
                 flash.error = ServerErrorResponse.getMessage(response.status);
             });
     };
@@ -152,9 +167,15 @@ function AccountCtrl($scope, flash, AccountService, LoginService, ServerErrorRes
         LoginService.changePassword($scope.password.oldPassword, $scope.password.newPassword)
             .then(function(response) {
                 $('#modalChangePassword').modal('hide');
+                $('body').removeClass('modal-open');
+              	$('.modal-backdrop').slideUp();
+              	$('.modal-scrollable').slideUp();
                 flash.success = response.data.message;
             }, function(response) {
                 $('#modalChangePassword').modal('hide');
+                $('body').removeClass('modal-open');
+              	$('.modal-backdrop').slideUp();
+              	$('.modal-scrollable').slideUp();
                 flash.error = ServerErrorResponse.getMessage(response.status);
             });
     };

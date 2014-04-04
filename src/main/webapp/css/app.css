@@ -4,6 +4,7 @@ html, body{
 	height:100%;
 	font: .87em Arial,Helvetica,sans-serif;
 	background-color:#f8f8f8;
+	overflow-y: scroll;
 }
 
 #contents{
@@ -227,8 +228,13 @@ a.accordion-toggle:hover{
 	  width: 100%;
 }
 
-.accountModal{
-	margin-top:20px;
+body.modal-open {
+	overflow-y: scroll;
+	margin: 0;
+}
+
+.modal {
+	overflow: auto;
 }
 
 /* Forms */
