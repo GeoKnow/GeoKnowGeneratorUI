@@ -3,6 +3,7 @@
 html, body{
 	height:100%;
 	font: .87em Helvetica, arial, freesans, clean, sans-serif;
+	overflow-y: scroll;
 }
 
 #contents{
@@ -46,6 +47,10 @@ a.navbar-brand:hover{
 
 .navbar .navbar-nav > .active > a {
     background: none;
+}
+
+.navbar .nav > li > div > button {
+	margin-top:10px;
 }
 
 .navbar .nav > li > a {
@@ -179,6 +184,16 @@ a.accordion-toggle:hover{
 	  height: 100%;
 	  width: 100%;
 }
+
+body.modal-open {
+	overflow-y: scroll;
+	margin: 0;
+}
+
+.modal {
+	overflow: auto;
+}
+
 /* Forms */
 
 .InputForm{

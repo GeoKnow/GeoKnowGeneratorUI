@@ -105,6 +105,13 @@ function LoginCtrl($scope, flash, AccountService, LoginService, ServerErrorRespo
                 $scope.login.password = null;
             });
     };
+    
+    $scope.close = function(modalID) {
+    	$(modalID).modal('hide');
+        $('body').removeClass('modal-open');
+      	$('.modal-backdrop').slideUp();
+      	$('.modal-scrollable').slideUp();
+    };
 
     $scope.logout = function() {
         LoginService.logout()
@@ -116,10 +123,10 @@ function LoginCtrl($scope, flash, AccountService, LoginService, ServerErrorRespo
     $scope.createAccount = function() {
         LoginService.createAccount($scope.signUp.username, $scope.signUp.email)
             .then(function(response) {
-                $('#modalSignUp').modal('hide');
+            	$scope.close('#modalSignUp');
                 flash.success = response.data.message;
             }, function(response) {
-                $('#modalSignUp').modal('hide');
+            	$scope.close('#modalSignUp');
                 flash.error = ServerErrorResponse.getMessage(response.status);
             });
     };
@@ -127,10 +134,10 @@ function LoginCtrl($scope, flash, AccountService, LoginService, ServerErrorRespo
     $scope.restorePassword = function() {
         LoginService.restorePassword($scope.restorePassword.username)
             .then(function(response) {
-                $('#modalRestorePassword').modal('hide');
+            	$scope.close('#modalRestorePassword');
                 flash.success = response.data.message;
             }, function(response) {
-                $('#modalRestorePassword').modal('hide');
+            	$scope.close('#modalRestorePassword');
                 flash.error = ServerErrorResponse.getMessage(response.status);
             });
     };
@@ -147,9 +154,15 @@ function AccountCtrl($scope, flash, AccountService, LoginService, ServerErrorRes
         LoginService.changePassword($scope.password.oldPassword, $scope.password.newPassword)
             .then(function(response) {
                 $('#modalChangePassword').modal('hide');
+                $('body').removeClass('modal-open');
+              	$('.modal-backdrop').slideUp();
+              	$('.modal-scrollable').slideUp();
                 flash.success = response.data.message;
             }, function(response) {
                 $('#modalChangePassword').modal('hide');
+                $('body').removeClass('modal-open');
+              	$('.modal-backdrop').slideUp();
+              	$('.modal-scrollable').slideUp();
                 flash.error = ServerErrorResponse.getMessage(response.status);
             });
     };
