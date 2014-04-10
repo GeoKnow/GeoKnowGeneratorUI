@@ -1,0 +1,15 @@
+<h3 class="green bold">D2RQ</h3>
+
+<!-- Subscribe to all flash messages. -->
+<div flash-alert active-class="in" class="alert fade" duration="0">
+    <button type="button" class="close" ng-click="hide()">&times;</button>
+    <span class="alert-message">{{flash.message}}</span>
+</div>
+
+<ul class="nav nav-tabs" ng-controller="D2RQMenuCtrl">
+    <li ng-class="{active:isActive('{{item.id}}')}" ng-repeat="item in items">
+        <a href="{{item.route}}">{{item.name}}</a>
+    </li>
+</ul>
+
+<div app-view-segment="2"></div>

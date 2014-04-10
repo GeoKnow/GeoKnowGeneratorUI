@@ -1,0 +1,91 @@
+<div ng-controller="OntologyCtrl">
+    <button type="button" class="btn btn-success btn-large" data-toggle="modal" data-target="#modalOntology" ng-click="new();">Add new ontology</button>
+
+    <div class="modal fade" id="modalOntology">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h5 class="modal-title green bold">Add ontology</h5>
+        </div>
+
+        <div class="modal-body">
+            <form class="form-horizontal InputForm col-xs-11" role="form" name="typeForm">
+                <div class="row">
+                    <label for="source-type" class="col-xs-2 control-label">Import from a </label>
+                    <div class="col-xs-10">
+                        <select id="source-type" class="form-control" ng-model="sourceType" ng-options="c.label for c in sourceTypes" ng-change="updateForm()" required></select>
+                    </div>
+                </div>
+            </form>
+
+            <!-- Import from file form -->
+            <div ng-show="fileElements" class="animate-show">
+                <form class="form-horizontal InputForm col-xs-11" role="form" name="fileForm" novalidate>
+                    <div class="form-group">
+                        <label class="col-xs-2 control-label">File input</label>
+                        <div class="col-xs-10">
+                            <input type="file" ng-file-select="onFileSelect($files)" name="fileName" accept=".ttl, .rdf">
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Import from URL form  -->
+            <div ng-show="urlElements" class="animate-show">
+                <form name="urlForm" class="form-horizontal InputForm col-xs-11" role="form" novalidate>
+                    <div class="form-group">
+                        <label class="col-xs-2 control-label">URI</label>
+                        <div class="col-xs-10">
+                            <input type="text" class="form-control" id="uri" name="uri" placeholder="URI" ng-model="ontology.uri" required unique-identifier/>
+                            <div class="error"  ng-show="urlForm.uri.$dirty && urlForm.uri.$invalid">Invalid:
+                                <span ng-show="urlForm.uri.$error.required">Specify URI</span>
+                                <span ng-show="urlForm.uri.$error.uniqueIdentifier">This identifier already exist</span>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="modal-footer">
+            <button type="submit" class="btn-sm btn-success" ng-click="add();">Add</button>
+            <button type="button" class="btn-sm btn-default" data-dismiss="modal">Cancel</button>
+        </div>
+    </div>
+
+    <h4>
+        <span class="btn-group">
+            <button type="button" class="btn btn-link reset" ng-click="refreshOntologies()">
+                <i class="glyphicon glyphicon-refresh" aria-hidden="true"></i>
+            </button>
+        </span>
+        Ontologies
+    </h4>
+
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>Action</th>
+            <th>URI</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="onto in ontologies">
+            <td>
+                <button type="button" class="btn btn-default btn-xs" ng-click="delete('{{onto}}')"><span class="glyphicon glyphicon-trash"></span></button>
+                <button type="button" class="btn btn-default btn-xs" data-toggle="modal" ng-click="setUrl('{{onto}}'); openModal();"><span class="glyphicon glyphicon-edit"></span></button>
+            </td>
+            <td>{{onto}}</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div class="modal fade" id="fullModal">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h5 class="modal-title green bold">MiniDix</h5>
+        </div>
+        <div class="modal-body">
+            <modal-iframe></modal-iframe>
+        </div>
+    </div>
+</div>
