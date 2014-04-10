@@ -172,8 +172,16 @@
                                                         <th>{{prop.join.table2}}</th>
                                                     </tr>
                                                     <tr>
-                                                        <td><select ng-model="prop.join.columns[0].first" ng-options="c for c in tableColumns | orderBy:'toString()'"></select></td>
-                                                        <td><select ng-model="prop.join.columns[0].second" ng-options="c for c in prop.ref.dataStructure | orderBy:'toString()'"></select></td>
+                                                        <td>
+                                                            <select ng-model="prop.join.columns[0].first" ng-options="c for c in tableColumns | orderBy:'toString()'">
+                                                                <option></option>
+                                                            </select>
+                                                        </td>
+                                                        <td>
+                                                            <select ng-model="prop.join.columns[0].second" ng-options="c for c in prop.ref.dataStructure | orderBy:'toString()'">
+                                                                <option></option>
+                                                            </select>
+                                                        </td>
                                                     </tr>
                                                 </table>
                                             </div>
