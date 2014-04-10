@@ -268,3 +268,8 @@ a.accordion-toggle:hover{
 .modal-body {
     overflow: auto;
 }
+
+.modal {
+    margin-top: 0px !important;
+    width: 1100px !important;
+}
