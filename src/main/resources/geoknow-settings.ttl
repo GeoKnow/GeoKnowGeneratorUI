@@ -161,6 +161,22 @@
       lds:version "0.9.10-1"^^xsd:string ;
       foaf:homepage <http://aksw.org/Projects/OntoWiki.html> .
 
+:D2RQ
+      a       lds:StackComponent ;
+      rdfs:label "D2RQ"^^xsd:string ;
+      lds:providesService
+              [ a       lds:ExtractionService ;
+                lds:serviceUrl <http://localhost:8080/d2rq-mapper-web-service/api>
+              ] .
+
+:MiniDix
+      a       lds:StackComponent ;
+      rdfs:label "OntoWiki"^^xsd:string ;
+      lds:providesService
+              [ a       lds:AuthoringService ;
+                lds:serviceUrl <http://localhost:8080/minidix-web>
+              ] .
+
 
 ########### DATA SOURCES ################################################################
 # Following triples  describes the Data sources (Endpoints and Databases)

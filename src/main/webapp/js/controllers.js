@@ -2375,7 +2375,13 @@ var GoogleMapWindow = function ($scope, $timeout, $log) {
 * Ontologies Controller
 *
 ***************************************************************************************************/
-var OntologyCtrl = function($scope, $http, flash, ServerErrorResponse, AccountService, OntologyService) {
+var OntologyCtrl = function($scope, $http, flash, ServerErrorResponse, AccountService, OntologyService, ConfigurationService) {
+    var miniDixServices = ConfigurationService.getComponentServices(":MiniDix");
+	var miniDixServiceUrl = miniDixServices[0].serviceUrl;
+
+	var d2rqServices = ConfigurationService.getComponentServices(":D2RQ");
+	var d2rqServiceUrl = d2rqServices[0].serviceUrl;
+
     $scope.ontologies = OntologyService.getAllOntologies();
 
     $scope.refreshOntologies = function() {
@@ -2410,7 +2416,7 @@ var OntologyCtrl = function($scope, $http, flash, ServerErrorResponse, AccountSe
         if (type=="url") {
             var data = {uri: $scope.ontology.uri, user: AccountService.getUsername()}; //todo unauthorized user
             $http({
-                url: "http://localhost:8080/d2rq-mapper-web-service/api/ontologies/add",
+                url: d2rqServiceUrl+ "/api/ontologies/add",
                 method: "POST",
                 dataType: "json",
                 data: data,
@@ -2424,7 +2430,7 @@ var OntologyCtrl = function($scope, $http, flash, ServerErrorResponse, AccountSe
             });
         } else if (type=="file") {
             $http.uploadFile({
-                url: "http://localhost:8080/d2rq-mapper-web-service/api/ontologies/upload",
+                url: d2rqServiceUrl + "/ontologies/upload",
                 file: $scope.ontology.file,
                 data: {user: AccountService.getUsername()} //todo unauthorized user
             }).then(function(response) {
@@ -2440,7 +2446,7 @@ var OntologyCtrl = function($scope, $http, flash, ServerErrorResponse, AccountSe
     $scope.delete = function(ontology) {
         var data = {uri: ontology, user: AccountService.getUsername()}; //todo unauthorized user
         $http({
-            url: "http://localhost:8080/d2rq-mapper-web-service/api/ontologies/delete",
+            url: d2rqServiceUrl + "/ontologies/delete",
             method: "POST",
             dataType: "json",
             data: data,
@@ -2466,7 +2472,7 @@ var OntologyCtrl = function($scope, $http, flash, ServerErrorResponse, AccountSe
 
     $scope.url = "";
 	$scope.setUrl = function(ontology){
-	    $scope.url= "http://localhost:8080/minidix-web/?ontology=" + ontology + "&newConceptsOntology=" + ontology + "&writableOntologies=" + ontology + "&locale=en";
+	    $scope.url= miniDixServiceUrl + "/?ontology=" + ontology + "&newConceptsOntology=" + ontology + "&writableOntologies=" + ontology + "&locale=en";
 	};
 
 	$scope.onFileSelect = function($files) {
@@ -2483,6 +2489,9 @@ var OntologyCtrl = function($scope, $http, flash, ServerErrorResponse, AccountSe
 *
 ***************************************************************************************************/
 var D2RQTaskCtrl = function($scope, $http, $q, flash, ServerErrorResponse, AccountService, GraphService, ConfigurationService, D2RQService) {
+    var services = ConfigurationService.getComponentServices(":D2RQ");
+	var d2rqServiceUrl = services[0].serviceUrl;
+
     $scope.tasks = D2RQService.getAllTasks();
 
     $scope.refreshTasks = function() {
@@ -2497,7 +2506,7 @@ var D2RQTaskCtrl = function($scope, $http, $q, flash, ServerErrorResponse, Accou
     $scope.namedgraphs = [];
 
     var readDatasets = function() {
-        return $http.get("http://localhost:8080/d2rq-mapper-web-service/api/datasets/metadata/get")
+        return $http.get(d2rqServiceUrl+"/datasets/metadata/get")
             .then(function(response) {
                 $scope.datasets = response.data;
             });
@@ -2517,7 +2526,7 @@ var D2RQTaskCtrl = function($scope, $http, $q, flash, ServerErrorResponse, Accou
         $scope.taskForm.$setPristine();
         $scope.task = angular.copy(emptyTask);
         adding = false;
-        $http.get("http://localhost:8080/d2rq-mapper-web-service/api/mappings/groups/metadata/get")
+        $http.get(d2rqServiceUrl+"/mappings/groups/metadata/get")
             .then(function(response) {
                 $scope.mappings = response.data;
             });
@@ -2535,7 +2544,7 @@ var D2RQTaskCtrl = function($scope, $http, $q, flash, ServerErrorResponse, Accou
                     , readonly: false
                     , owner: AccountService.getUsername()}; //todo unauthorized user
         return $http({
-            url: "http://localhost:8080/d2rq-mapper-web-service/api/datasets/add",
+            url: d2rqServiceUrl+"/datasets/add",
             method: "POST",
             data: data,
             dataType: "json",
@@ -2577,7 +2586,7 @@ var D2RQTaskCtrl = function($scope, $http, $q, flash, ServerErrorResponse, Accou
                             , dataset: $scope.task.dataset.id
                             , user: AccountService.getUsername()}; //todo unauthorized user
                 $http({
-                    url: "http://localhost:8080/d2rq-mapper-web-service/api/tasks/add",
+                    url: d2rqServiceUrl+"/tasks/add",
                     method: "POST",
                     data: data,
                     dataType: "json",
@@ -2596,7 +2605,7 @@ var D2RQTaskCtrl = function($scope, $http, $q, flash, ServerErrorResponse, Accou
 
     $scope.delete = function(id) {
         $http({
-            url: "http://localhost:8080/d2rq-mapper-web-service/api/tasks/" + id + "/delete",
+            url: d2rqServiceUrl+"/tasks/" + id + "/delete",
             method: "POST",
             dataType: "json",
             headers: {"Content-Type":"application/json; charset=utf-8"}
@@ -2610,7 +2619,7 @@ var D2RQTaskCtrl = function($scope, $http, $q, flash, ServerErrorResponse, Accou
 
     $scope.execute = function(id) {
         var data = {
-            targetUrl: "http://localhost:8080/d2rq-mapper-web-service/api/tasks/" + id + "/execute",
+            targetUrl: d2rqServiceUrl+"/tasks/" + id + "/execute",
             user: AccountService.getUsername()
         };
         $http({
@@ -2629,6 +2638,9 @@ var D2RQTaskCtrl = function($scope, $http, $q, flash, ServerErrorResponse, Accou
 };
 
 var D2RQMappingCtrl = function($scope, $http, $q, flash, ServerErrorResponse, AccountService, ConfigurationService, D2RQService) {
+    var services = ConfigurationService.getComponentServices(":D2RQ");
+	var d2rqServiceUrl = services[0].serviceUrl;
+
     var supportedDatabases = ["MySQL", "PostgreSQL", "HSQL", "Oracle", "MicrosoftSQLServer"];
 
     //mapping groups
@@ -2681,7 +2693,7 @@ var D2RQMappingCtrl = function($scope, $http, $q, flash, ServerErrorResponse, Ac
     };
 
     var readDatasources = function() {
-        return $http.get("http://localhost:8080/d2rq-mapper-web-service/api/data/groups/metadata/get")
+        return $http.get(d2rqServiceUrl+"/data/groups/metadata/get")
             .then(function(response) {
                 $scope.datasources = response.data;
             });
@@ -2695,7 +2707,7 @@ var D2RQMappingCtrl = function($scope, $http, $q, flash, ServerErrorResponse, Ac
         $scope.mappingGroupForm.$setPristine();
         $scope.mgroup = angular.copy(emptyMappingGroup);
         adding = false;
-        $http.get("http://localhost:8080/d2rq-mapper-web-service/api/ontologies/metadata/get")
+        $http.get(d2rqServiceUrl+"/ontologies/metadata/get")
             .then(function(response) {
                 $scope.ontologies = response.data;
             });
@@ -2717,7 +2729,7 @@ var D2RQMappingCtrl = function($scope, $http, $q, flash, ServerErrorResponse, Ac
                     , tables: []
                     , user: AccountService.getUsername()}; //todo unauthorized user
         return $http({
-            url: "http://localhost:8080/d2rq-mapper-web-service/api/data/groups/add",
+            url: d2rqServiceUrl+"/data/groups/add",
             method: "POST",
             data: data,
             dataType: "json",
@@ -2749,7 +2761,7 @@ var D2RQMappingCtrl = function($scope, $http, $q, flash, ServerErrorResponse, Ac
                         , compositeData: $scope.mgroup.source.id
                         , user: AccountService.getUsername()}; //todo unauthorized user
             $http({
-                url: "http://localhost:8080/d2rq-mapper-web-service/api/mappings/groups/add",
+                url: d2rqServiceUrl+"/mappings/groups/add",
                 method: "POST",
                 data: data,
                 dataType: "json",
@@ -2768,7 +2780,7 @@ var D2RQMappingCtrl = function($scope, $http, $q, flash, ServerErrorResponse, Ac
 
     $scope.deleteMappingGroup = function(id) {
         $http({
-            url: "http://localhost:8080/d2rq-mapper-web-service/api/mappings/groups/" + id + "/delete",
+            url: d2rqServiceUrl+"/mappings/groups/" + id + "/delete",
             method: "POST",
             dataType: "json",
             headers: {"Content-Type":"application/json; charset=utf-8"}
@@ -2796,7 +2808,7 @@ var D2RQMappingCtrl = function($scope, $http, $q, flash, ServerErrorResponse, Ac
 
     $scope.updateColumns = function() {
         $http({
-            url: "http://localhost:8080/d2rq-mapper-web-service/api/database/columns/get",
+            url: d2rqServiceUrl+"/database/columns/get",
             method: "GET",
             params: {connection: $scope.datasource.dbConnection, table: $scope.mapping.table},
             dataType: "json",
@@ -2884,13 +2896,13 @@ var D2RQMappingCtrl = function($scope, $http, $q, flash, ServerErrorResponse, Ac
 
         $scope.mapping.group = mappingGroup;
 
-        $http.get("http://localhost:8080/d2rq-mapper-web-service/api/data/groups/" + mappingGroup.compositeData + "/metadata/get")
+        $http.get(d2rqServiceUrl+"/data/groups/" + mappingGroup.compositeData + "/metadata/get")
             .then(function(response) {
                 $scope.datasource = response.data;
 
                 //get tables
                 $http({
-                    url: "http://localhost:8080/d2rq-mapper-web-service/api/database/tables/get",
+                    url: d2rqServiceUrl+"/database/tables/get",
                     method: "GET",
                     params: {connection: $scope.datasource.dbConnection},
                     dataType: "json",
@@ -2911,7 +2923,7 @@ var D2RQMappingCtrl = function($scope, $http, $q, flash, ServerErrorResponse, Ac
                 $scope.datasource = {data:[]};
             });
 
-        $http.get("http://localhost:8080/d2rq-mapper-web-service/api/ontologies/" + mappingGroup.ontology + "/classes/mappingscheme/get")
+        $http.get(d2rqServiceUrl+"d2rqServiceUrl+/ontologies/" + mappingGroup.ontology + "/classes/mappingscheme/get")
             .then(function(response) {
                 $scope.ontologyClasses = response.data;
             }, function(response) {
@@ -2921,7 +2933,7 @@ var D2RQMappingCtrl = function($scope, $http, $q, flash, ServerErrorResponse, Ac
 
     var setTableStructure = function(mapping, dbConnection) {
         $http({
-            url: "http://localhost:8080/d2rq-mapper-web-service/api/database/columns/get",
+            url: d2rqServiceUrl+"/database/columns/get",
             method: "GET",
             params: {connection: dbConnection, table: mapping.classMappingTable.table},
             dataType: "json",
@@ -2947,13 +2959,13 @@ var D2RQMappingCtrl = function($scope, $http, $q, flash, ServerErrorResponse, Ac
         $scope.mapping.name = mapping.name;
         $scope.mapping.group = mappingGroup;
 
-        $http.get("http://localhost:8080/d2rq-mapper-web-service/api/data/groups/" + mappingGroup.compositeData + "/metadata/get")
+        $http.get(d2rqServiceUrl+"/data/groups/" + mappingGroup.compositeData + "/metadata/get")
             .then(function(response) {
                 $scope.datasource = response.data;
 
                 //get tables
                 $http({
-                    url: "http://localhost:8080/d2rq-mapper-web-service/api/database/tables/get",
+                    url: d2rqServiceUrl+"/database/tables/get",
                     method: "GET",
                     params: {connection: $scope.datasource.dbConnection},
                     dataType: "json",
@@ -2984,7 +2996,7 @@ var D2RQMappingCtrl = function($scope, $http, $q, flash, ServerErrorResponse, Ac
                 $scope.datasource = {data:[]};
             });
 
-        $http.get("http://localhost:8080/d2rq-mapper-web-service/api/ontologies/" + mappingGroup.ontology + "/classes/mappingscheme/get")
+        $http.get(d2rqServiceUrl+"/ontologies/" + mappingGroup.ontology + "/classes/mappingscheme/get")
             .then(function(response) {
                 $scope.ontologyClasses = response.data;
                 //set mapping class
@@ -3032,7 +3044,7 @@ var D2RQMappingCtrl = function($scope, $http, $q, flash, ServerErrorResponse, Ac
                     $scope.mapping.objectProperties.push({id: id, property: property,
                                                             mappingType: op.uriColumn==null ? "ref" : "column",
                                                             column: op.uriColumn==null ? null : up.uriColumn.second, ref: ref,
-                                                            join: op.tableJoinConditions==null || op.tableJoinConditions.length==0 ? {table1:mapping.classMappingTable.table, table2:"", columns:[{first:"", second:""}], type:"EQ"} : op.tableJoinConditions[0]});
+                                                            join: op.tableJoinConditions==null || op.tableJoinConditions.length==0 ? {table1:mapping.classMappingTable.table, table2:ref==null ? null : ref.classMappingTable.table, columns:[{first:"", second:""}], type:"EQ"} : op.tableJoinConditions[0]});
                     id = id+1;
                 }
                 if ($scope.mapping.objectProperties.length==0) {
@@ -3097,7 +3109,11 @@ var D2RQMappingCtrl = function($scope, $http, $q, flash, ServerErrorResponse, Ac
     $scope.removeObjectProperty = function(prop) {
         var index = $scope.mapping.objectProperties.indexOf(prop);
         $scope.mapping.objectProperties.splice(index, 1);
-        if ($scope.mapping.objectProperties.length==0) $scope.mapping.objectProperties.push(angular.copy(emptyObjectProperty));
+        if ($scope.mapping.objectProperties.length==0) {
+            var emptyProp = angular.copy(emptyObjectProperty);
+            emptyProp.table1 = $scope.mapping.table;
+            $scope.mapping.objectProperties.push(emptyProp);
+        }
     };
 
     var findData = function(table) {
@@ -3116,7 +3132,7 @@ var D2RQMappingCtrl = function($scope, $http, $q, flash, ServerErrorResponse, Ac
             user: AccountService.getUsername()
         };
         return $http({
-                url: "http://localhost:8080/d2rq-mapper-web-service/api/data/add",
+                url: d2rqServiceUrl+"/data/add",
                 method: "POST",
                 dataType: "json",
                 data: data,
@@ -3128,7 +3144,7 @@ var D2RQMappingCtrl = function($scope, $http, $q, flash, ServerErrorResponse, Ac
         var d = findData(table);
         if (d==null) {
             return createData(table).then(function(response) {
-                return $http.get("http://localhost:8080/d2rq-mapper-web-service/api/data/groups/" + $scope.datasource.id + "/metadata/get").then(function(response) {
+                return $http.get(d2rqServiceUrl+"/data/groups/" + $scope.datasource.id + "/metadata/get").then(function(response) {
                     $scope.datasource = response.data;
                     return findData(table);
                 });
@@ -3173,12 +3189,18 @@ var D2RQMappingCtrl = function($scope, $http, $q, flash, ServerErrorResponse, Ac
                         , uriColumn: {first: $scope.mapping.table, second: op.column}
                     });
                 } else if (op.mappingType=="ref" && op.ref!=null) {
-                    mappingTable.objectProperties.push({
-                        uri: op.property.uri
-                        , refersMappingId: op.ref.id
-                        , range: "http://www.w3.org/2002/07/owl#Thing" //range is not really used in d2rq mapping generation (in case of mapping reference) byt must be not null
-                        , tableJoinConditions: [op.join]
-                    });
+                    var p = {uri: op.property.uri
+                                , refersMappingId: op.ref.id
+                                , range: "http://www.w3.org/2002/07/owl#Thing" //range is not really used in d2rq mapping generation (in case of mapping reference) byt must be not null
+                                , tableJoinConditions: []
+                    };
+                    var joinCondRes = {table1:op.join.table1, table2:op.join.table2, columns:[], type:op.join.type};
+                    for (var jci in op.join.columns) {
+                        if (op.join.columns[jci].first!="" && op.join.columns[jci].first!=null && op.join.columns[jci].second!="" && op.join.columns[jci].second!=null)
+                            joinCondRes.columns.push(op.join.columns[jci]);
+                    }
+                    if (joinCondRes.columns.length>0) p.tableJoinConditions.push(joinCondRes);
+                    mappingTable.objectProperties.push(p);
                 }
             }
         }
@@ -3195,7 +3217,7 @@ var D2RQMappingCtrl = function($scope, $http, $q, flash, ServerErrorResponse, Ac
                 };
 
                 $http({
-                    url: "http://localhost:8080/d2rq-mapper-web-service/api/mappings/add",
+                    url: d2rqServiceUrl+"/mappings/add",
                     method: "POST",
                     dataType: "json",
                     data: data,
@@ -3212,7 +3234,7 @@ var D2RQMappingCtrl = function($scope, $http, $q, flash, ServerErrorResponse, Ac
             });
         } else {
             $http({
-                url: "http://localhost:8080/d2rq-mapper-web-service/api/mappings/" + $scope.mapping.id + "/update",
+                url: d2rqServiceUrl+"/mappings/" + $scope.mapping.id + "/update",
                 method: "POST",
                 dataType: "json",
                 data: {mappingTable: mappingTable},
@@ -3230,7 +3252,7 @@ var D2RQMappingCtrl = function($scope, $http, $q, flash, ServerErrorResponse, Ac
     };
 
     $scope.deleteMapping = function(id) {
-        $http.post("http://localhost:8080/d2rq-mapper-web-service/api/mappings/" + id + "/delete")
+        $http.post(d2rqServiceUrl+"/mappings/" + id + "/delete")
             .then(function(response) {
                 $scope.refreshMappingGroups();
             }, function(response) {

@@ -102,6 +102,9 @@ app.config(function($routeSegmentProvider, $routeProvider)
                             resolve: {
                                     mappingGroups: function(D2RQService) {
                                         return D2RQService.readMappingGroups();
+                                    },
+                                    settings: function (Config) {
+                                        return Config.read();
                                     }
                                 }
                             })
@@ -110,6 +113,9 @@ app.config(function($routeSegmentProvider, $routeProvider)
                             resolve: {
                                     tasks: function(D2RQService) {
                                         return D2RQService.readTasks();
+                                    },
+                                    settings: function (Config) {
+                                        return Config.read();
                                     }
                                 }
                             })
@@ -131,6 +137,9 @@ app.config(function($routeSegmentProvider, $routeProvider)
                     resolve: {
                             ontologies: function (OntologyService) {
                                 return OntologyService.readOntologies();
+                            },
+                            settings: function (Config) {
+                                return Config.read();
                             }
                         }
                     })
