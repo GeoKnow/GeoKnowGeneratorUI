@@ -2936,7 +2936,7 @@ var D2RQMappingCtrl = function($scope, $http, $q, flash, ServerErrorResponse, Ac
                 $scope.datasource = {data:[]};
             });
 
-        $http.get(d2rqServiceUrl+"d2rqServiceUrl+/ontologies/" + mappingGroup.ontology + "/classes/mappingscheme/get")
+        $http.get(d2rqServiceUrl+"/ontologies/" + mappingGroup.ontology + "/classes/mappingscheme/get")
             .then(function(response) {
                 $scope.ontologyClasses = response.data;
             }, function(response) {
