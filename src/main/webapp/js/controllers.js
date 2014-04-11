@@ -2429,7 +2429,7 @@ var OntologyCtrl = function($scope, $http, flash, ServerErrorResponse, AccountSe
         if (type=="url") {
             var data = {uri: $scope.ontology.uri, user: AccountService.getUsername()}; //todo unauthorized user
             $http({
-                url: d2rqServiceUrl+ "/api/ontologies/add",
+                url: d2rqServiceUrl+ "/ontologies/add",
                 method: "POST",
                 dataType: "json",
                 data: data,
