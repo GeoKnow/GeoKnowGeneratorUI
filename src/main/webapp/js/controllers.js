@@ -2807,6 +2807,8 @@ var D2RQMappingCtrl = function($scope, $http, $q, flash, ServerErrorResponse, Ac
 
     //mappings
 
+    $scope.modaltitle = "";
+
     $scope.datasource = null; //data source group object
     $scope.ontologyClasses = []; //array of objects
 
@@ -2900,6 +2902,8 @@ var D2RQMappingCtrl = function($scope, $http, $q, flash, ServerErrorResponse, Ac
     $scope.isNew = false;
 
     $scope.newMapping = function(mappingGroup) {
+        $scope.modaltitle = "New mapping";
+
         $scope.isNew = true;
 
         adding = false;
@@ -2962,6 +2966,8 @@ var D2RQMappingCtrl = function($scope, $http, $q, flash, ServerErrorResponse, Ac
     };
 
     $scope.editMapping = function(mapping, mappingGroup) {
+        $scope.modaltitle = "Edit mapping";
+
         $scope.isNew = false;
 
         $scope.mappingForm.$setPristine();
