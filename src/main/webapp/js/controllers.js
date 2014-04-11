@@ -3056,7 +3056,7 @@ var D2RQMappingCtrl = function($scope, $http, $q, flash, ServerErrorResponse, Ac
                     }
                     $scope.mapping.objectProperties.push({id: id, property: property,
                                                             mappingType: op.uriColumn==null ? "ref" : "column",
-                                                            column: op.uriColumn==null ? null : up.uriColumn.second, ref: ref,
+                                                            column: op.uriColumn==null ? null : op.uriColumn.second, ref: ref,
                                                             join: op.tableJoinConditions==null || op.tableJoinConditions.length==0 ? {table1:mapping.classMappingTable.table, table2:ref==null ? null : ref.classMappingTable.table, columns:[{first:"", second:""}], type:"EQ"} : op.tableJoinConditions[0]});
                     id = id+1;
                 }
