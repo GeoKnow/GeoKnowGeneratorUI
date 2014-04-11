@@ -35,7 +35,8 @@ function StackMenuCtrl($scope) {
 	      items: [
 	        {name: 'Import RDF data', route:'#/home/extraction-and-loading/import-rdf',  url:'/home/extraction-and-loading/import-rdf' },
 	        {name: 'Sparqlify Extraction', route:'#/home/extraction-and-loading/sparqlify', url:'/home/extraction-and-loading/sparqlify' },
-	        {name: 'TripleGeo Extraction', route:'#/home/extraction-and-loading/triplegeo', url:'/home/extraction-and-loading/triplegeo' }]
+	        {name: 'TripleGeo Extraction', route:'#/home/extraction-and-loading/triplegeo', url:'/home/extraction-and-loading/triplegeo' },
+	        {name: 'D2RQ Extraction', route:'#/home/extraction-and-loading/d2rq', url:'/home/extraction-and-loading/d2rq' }]
 	    },
 	    {
 		      title: "Storage and Querying",
@@ -47,7 +48,8 @@ function StackMenuCtrl($scope) {
 	      title: "Authoring",
 	      id:"authoring",
 	      items: [
-	       {name: 'OntoWiki', route:'#/home/authoring/ontowiki', url:'/home/authoring/ontowiki' }]
+	       {name: 'OntoWiki', route:'#/home/authoring/ontowiki', url:'/home/authoring/ontowiki' },
+	       {name: "Ontologies", route:'#/home/authoring/ontology', url:'/home/authoring/ontology' }]
 	    },
 	    {
 		    title: "Linking and Fusion",
@@ -72,15 +74,28 @@ function StackMenuCtrl($scope) {
 
 	}
 
+function D2RQMenuCtrl($scope, $routeSegment) {
+    $scope.items = [
+  	    { name: "Mappings", route:'#/home/extraction-and-loading/d2rq/mapping', id:'mapping' },
+        { name: "Tasks", route:'#/home/extraction-and-loading/d2rq/task', id:'task' }
+    ];
+
+    $scope.isActive = function(id) {
+        return $routeSegment.contains(id);
+    };
+}
 
 function LoginCtrl($scope, flash, AccountService, LoginService, ServerErrorResponse, Base64) {
     $scope.currentAccount = angular.copy(AccountService.getAccount());
+    $scope.loggedIn = false;
     if($scope.currentAccount.user != null){
     	LoginService.login($scope.currentAccount.user, $scope.currentAccount.pass)
         .then(function(data) {
             $scope.currentAccount = angular.copy(AccountService.getAccount());
+            $scope.close('#modalLogin');
             $scope.login.username = null;
             $scope.login.password = null;
+            $scope.loggedIn = true;
         }, function(response) {
             flash.error = ServerErrorResponse.getMessage(response.status);
             $scope.login.username = null;
@@ -97,8 +112,10 @@ function LoginCtrl($scope, flash, AccountService, LoginService, ServerErrorRespo
         LoginService.login(Base64.encode($scope.login.username), Base64.encode($scope.login.password))
             .then(function(data) {
                 $scope.currentAccount = angular.copy(AccountService.getAccount());
+                $scope.close('#modalLogin');
                 $scope.login.username = null;
                 $scope.login.password = null;
+                $scope.loggedIn = true;
             }, function(response) {
                 flash.error = ServerErrorResponse.getMessage(response.status);
                 $scope.login.username = null;
@@ -117,6 +134,7 @@ function LoginCtrl($scope, flash, AccountService, LoginService, ServerErrorRespo
         LoginService.logout()
             .then(function(data) {
                 $scope.currentAccount = angular.copy(AccountService.getAccount());
+                $scope.loggedIn = false;
             });
     };
 
@@ -153,16 +171,10 @@ function AccountCtrl($scope, flash, AccountService, LoginService, ServerErrorRes
     $scope.changePassword = function() {
         LoginService.changePassword($scope.password.oldPassword, $scope.password.newPassword)
             .then(function(response) {
-                $('#modalChangePassword').modal('hide');
-                $('body').removeClass('modal-open');
-              	$('.modal-backdrop').slideUp();
-              	$('.modal-scrollable').slideUp();
+                $scope.close('#modalChangePassword');
                 flash.success = response.data.message;
             }, function(response) {
-                $('#modalChangePassword').modal('hide');
-                $('body').removeClass('modal-open');
-              	$('.modal-backdrop').slideUp();
-              	$('.modal-scrollable').slideUp();
+                $scope.close('#modalChangePassword');
                 flash.error = ServerErrorResponse.getMessage(response.status);
             });
     };
@@ -2371,3 +2383,898 @@ var GoogleMapWindow = function ($scope, $timeout, $log) {
 };
 */
 
+/****************************************************************************************************
+*
+* Ontologies Controller
+*
+***************************************************************************************************/
+var OntologyCtrl = function($scope, $http, flash, ServerErrorResponse, AccountService, OntologyService, ConfigurationService) {
+    var miniDixServices = ConfigurationService.getComponentServices(":MiniDix");
+	var miniDixServiceUrl = miniDixServices[0].serviceUrl;
+
+	var d2rqServices = ConfigurationService.getComponentServices(":D2RQ");
+	var d2rqServiceUrl = d2rqServices[0].serviceUrl;
+
+    $scope.ontologies = OntologyService.getAllOntologies();
+
+    $scope.refreshOntologies = function() {
+        OntologyService.refreshOntologies().then(function(response) {
+            $scope.ontologies = OntologyService.getAllOntologies();
+        });
+    };
+
+    $scope.sourceTypes = [
+        {value:'file', label:'File'},
+    	{value:'url', label:'URL'},
+    ];
+    var type = '';
+
+    $scope.fileElements = false;
+    $scope.urlElements = false;
+
+    $scope.updateForm = function() {
+        if ($scope.sourceType.value == 'file') {
+            $scope.fileElements = true;
+    		$scope.urlElements = false;
+        } else if($scope.sourceType.value == 'url') {
+        	$scope.fileElements = false;
+    		$scope.urlElements = true;
+        }
+        type = $scope.sourceType.value;
+    };
+
+    $scope.ontology = {uri: "", file:""};
+
+    $scope.add = function() {
+        if (type=="url") {
+            var data = {uri: $scope.ontology.uri, user: AccountService.getUsername()}; //todo unauthorized user
+            $http({
+                url: d2rqServiceUrl+ "/api/ontologies/add",
+                method: "POST",
+                dataType: "json",
+                data: data,
+                headers: {"Content-Type":"application/json; charset=utf-8"}
+            }).then(function(response) {
+                $scope.refreshOntologies();
+                $('#modalOntology').modal('hide');
+            }, function(response) {
+                flash.error = ServerErrorResponse.getMessage(response.status);
+                $scope.refreshOntologies();
+            });
+        } else if (type=="file") {
+            $http.uploadFile({
+                url: d2rqServiceUrl + "/ontologies/upload",
+                file: $scope.ontology.file,
+                data: {user: AccountService.getUsername()} //todo unauthorized user
+            }).then(function(response) {
+                $scope.refreshOntologies();
+                $('#modalOntology').modal('hide');
+            }, function(response) {
+                flash.error = ServerErrorResponse.getMessage(response.status);
+                $scope.refreshOntologies();
+            });
+        }
+    };
+
+    $scope.delete = function(ontology) {
+        var data = {uri: ontology, user: AccountService.getUsername()}; //todo unauthorized user
+        $http({
+            url: d2rqServiceUrl + "/ontologies/delete",
+            method: "POST",
+            dataType: "json",
+            data: data,
+            headers: {"Content-Type":"application/json; charset=utf-8"}
+        }).then(function(response) {
+            $scope.refreshOntologies();
+        }, function(response) {
+            flash.error = ServerErrorResponse.getMessage(response.status);
+            $scope.refreshOntologies();
+        });
+    };
+
+    $scope.new = function(){
+        $scope.urlForm.$setPristine();
+        $scope.fileForm.$setPristine();
+        $scope.typeForm.$setPristine();
+        $scope.ontology = {uri: "", file:""};
+        type = '';
+        $scope.sourceType = null;
+        $scope.fileElements = false;
+        $scope.urlElements = false;
+    };
+
+    $scope.url = "";
+	$scope.setUrl = function(ontology){
+	    $scope.url= miniDixServiceUrl + "/?ontology=" + ontology + "&newConceptsOntology=" + ontology + "&writableOntologies=" + ontology + "&locale=en";
+	};
+
+	$scope.onFileSelect = function($files) {
+	    if ($files.length==0)
+	        $scope.ontology.file = null;
+        else
+            $scope.ontology.file = $files[0];
+    };
+};
+
+/****************************************************************************************************
+*
+* D2RQ Controllers
+*
+***************************************************************************************************/
+var D2RQTaskCtrl = function($scope, $http, $q, flash, ServerErrorResponse, AccountService, GraphService, ConfigurationService, D2RQService) {
+    var services = ConfigurationService.getComponentServices(":D2RQ");
+	var d2rqServiceUrl = services[0].serviceUrl;
+
+    $scope.tasks = D2RQService.getAllTasks();
+
+    $scope.refreshTasks = function() {
+        return D2RQService.refreshTasks().then(function(response) {
+            $scope.tasks = D2RQService.getAllTasks();
+        });
+    };
+
+    $scope.mappings = [];
+    $scope.datasets = [];
+
+    $scope.namedgraphs = [];
+
+    var readDatasets = function() {
+        return $http.get(d2rqServiceUrl+"/datasets/metadata/get")
+            .then(function(response) {
+                $scope.datasets = response.data;
+            });
+    };
+
+    var adding = false;
+
+    $scope.isAdding = function() {
+        return adding;
+    };
+
+    var emptyTask = {name:"", mapping:null, dataset:null, namedgraph:null};
+
+    $scope.task = angular.copy(emptyTask);
+
+    $scope.new = function() {
+        $scope.taskForm.$setPristine();
+        $scope.task = angular.copy(emptyTask);
+        adding = false;
+        $http.get(d2rqServiceUrl+"/mappings/groups/metadata/get")
+            .then(function(response) {
+                $scope.mappings = response.data;
+            });
+        readDatasets();
+        GraphService.getAccessibleGraphs(true, false, true).then(function(result) {
+            $scope.namedgraphs = result;
+        });
+    };
+
+    var createDataset = function() {
+        var data = {name: $scope.task.namedgraph.graph.label
+                    , graph: $scope.task.namedgraph.name.replace(':',ConfigurationService.getUriBase())
+                    , httpEndpoint: $scope.task.namedgraph.graph.endpoint
+                    , ontology: $scope.task.mapping.ontology
+                    , readonly: false
+                    , owner: AccountService.getUsername()}; //todo unauthorized user
+        return $http({
+            url: d2rqServiceUrl+"/datasets/add",
+            method: "POST",
+            data: data,
+            dataType: "json",
+            headers: {"Content-Type":"application/json; charset=utf-8"}
+        });
+    };
+
+    var findDataset = function(ontology, endpoint, graph) {
+        for (var ind in $scope.datasets) {
+            var ds = $scope.datasets[ind];
+            if (ds.graph==graph && ds.httpEndpoint==endpoint && ds.ontology==ontology)
+                return ds;
+        }
+        return null;
+    };
+
+    var findOrCreateDataset = function(ontology, endpoint, graph) {
+        var ds = findDataset(ontology, endpoint, graph);
+        if (ds!=null) {
+            var deferred = $q.defer();
+            deferred.resolve(ds);
+            return deferred.promise;
+        } else {
+            return createDataset().then(function(response) {
+                return readDatasets().then(function(response) {
+                    return findDataset(ontology, endpoint, graph);
+                });
+            });
+        }
+    };
+
+    $scope.add = function() {
+        adding = true;
+        findOrCreateDataset($scope.task.mapping.ontology, $scope.task.namedgraph.graph.endpoint, $scope.task.namedgraph.name.replace(':',ConfigurationService.getUriBase()))
+            .then(function(ds) {
+                $scope.task.dataset = ds;
+                var data = {name: $scope.task.name
+                            , compositeMapping: $scope.task.mapping.id
+                            , dataset: $scope.task.dataset.id
+                            , user: AccountService.getUsername()}; //todo unauthorized user
+                $http({
+                    url: d2rqServiceUrl+"/tasks/add",
+                    method: "POST",
+                    data: data,
+                    dataType: "json",
+                    headers: {"Content-Type":"application/json; charset=utf-8"}
+                }).then(function(response) {
+                    $scope.refreshTasks().then(function(response) {
+                        $('#modalTask').modal('hide');
+                        adding = false;
+                    });
+                }, function(response) {
+                    flash.error = ServerErrorResponse.getMessage(response.status);
+                    $('#modalTask').modal('hide');
+                });
+            });
+    };
+
+    $scope.delete = function(id) {
+        $http({
+            url: d2rqServiceUrl+"/tasks/" + id + "/delete",
+            method: "POST",
+            dataType: "json",
+            headers: {"Content-Type":"application/json; charset=utf-8"}
+        }).then(function(response) {
+            $scope.refreshTasks();
+        }, function(response) {
+            flash.error = ServerErrorResponse.getMessage(response.status);
+            $scope.refreshTasks();
+        });
+    };
+
+    $scope.execute = function(id) {
+        var data = {
+            targetUrl: d2rqServiceUrl+"/tasks/" + id + "/execute",
+            user: AccountService.getUsername()
+        };
+        $http({
+            url: "ExecuteD2RQTaskServlet",
+            method: "POST",
+            dataType: "json",
+            params: data,
+            headers: {"Content-Type":"application/json; charset=utf-8"}
+        }).then(function(response) {
+            $scope.refreshTasks();
+        }, function(response) {
+            flash.error = ServerErrorResponse.getMessage(response.status);
+            $scope.refreshTasks();
+        });
+    };
+};
+
+var D2RQMappingCtrl = function($scope, $http, $q, flash, ServerErrorResponse, AccountService, ConfigurationService, D2RQService) {
+    var services = ConfigurationService.getComponentServices(":D2RQ");
+	var d2rqServiceUrl = services[0].serviceUrl;
+
+    var supportedDatabases = ["MySQL", "PostgreSQL", "HSQL", "Oracle", "MicrosoftSQLServer"];
+
+    //mapping groups
+
+    $scope.mgroups = D2RQService.getAllMappingGroups();
+
+    $scope.refreshMappingGroups = function() {
+        return D2RQService.refreshMappingGroups().then(function(response) {
+            $scope.mgroups = D2RQService.getAllMappingGroups();
+        });
+    };
+
+    var adding = false;
+
+    $scope.isAdding = function() {
+        return adding;
+    };
+
+    $scope.databases = ConfigurationService.getAllDatabases();
+
+    $scope.dbFilter = function(database) {
+        return supportedDatabases.indexOf(database.dbType) > -1;
+    };
+
+    $scope.datasources = []; //data groups
+    $scope.ontologies = [];
+
+    $scope.updateConnection = function() {
+        if ($scope.mgroup.database.dbType=="MySQL") {
+            $scope.mgroup.connection = "jdbc:mysql://" + $scope.mgroup.database.dbUser + ":" + $scope.mgroup.database.dbPassword
+                                            + "@" + $scope.mgroup.database.dbHost + ":" + $scope.mgroup.database.dbPort
+                                            + "/" + $scope.mgroup.database.dbName;
+        } else if ($scope.mgroup.database.dbType=="PostgreSQL") {
+            $scope.mgroup.connection = "jdbc:postgresql://" + $scope.mgroup.database.dbUser + ":" + $scope.mgroup.database.dbPassword
+                                            + "@" + $scope.mgroup.database.dbHost + ":" + $scope.mgroup.database.dbPort
+                                            + "/" + $scope.mgroup.database.dbName;
+        } else if ($scope.mgroup.database.dbType=="HSQL") {
+            $scope.mgroup.connection = "jdbc:hsqldb:hsql://" + $scope.mgroup.database.dbUser + ":" + $scope.mgroup.database.dbPassword
+                                            + "@" + $scope.mgroup.database.dbHost + ":" + $scope.mgroup.database.dbPort
+                                            + "/" + $scope.mgroup.database.dbName;
+        } else if ($scope.mgroup.database.dbType=="Oracle") {
+            $scope.mgroup.connection = "jdbc:oracle:thin://" + $scope.mgroup.database.dbUser + ":" + $scope.mgroup.database.dbPassword
+                                            + "@" + $scope.mgroup.database.dbHost + ":" + $scope.mgroup.database.dbPort
+                                            + "/" + $scope.mgroup.database.dbName;
+        } else if ($scope.mgroup.database.dbType=="MicrosoftSQLServer") {
+            $scope.mgroup.connection = "jdbc:jtds:sqlserver://" + $scope.mgroup.database.dbUser + ":" + $scope.mgroup.database.dbPassword
+                                            + "@" + $scope.mgroup.database.dbHost + ":" + $scope.mgroup.database.dbPort
+                                            + ";" + $scope.mgroup.database.dbName;
+        }
+    };
+
+    var readDatasources = function() {
+        return $http.get(d2rqServiceUrl+"/data/groups/metadata/get")
+            .then(function(response) {
+                $scope.datasources = response.data;
+            });
+    };
+
+    var emptyMappingGroup = {name:"", ontology:null, source:null, connection:"", database:null};
+
+    $scope.mgroup = angular.copy(emptyMappingGroup);
+
+    $scope.newMappingGroup = function() {
+        $scope.mappingGroupForm.$setPristine();
+        $scope.mgroup = angular.copy(emptyMappingGroup);
+        adding = false;
+        $http.get(d2rqServiceUrl+"/ontologies/metadata/get")
+            .then(function(response) {
+                $scope.ontologies = response.data;
+            });
+        readDatasources();
+    };
+
+    var findDatasource = function(conn) {
+        for (var ind in $scope.datasources) {
+            var ds = $scope.datasources[ind];
+            if (ds.dbConnection==conn)
+                return ds;
+        }
+        return null;
+    };
+
+    var createDatasource = function() {
+        var data = {name: $scope.mgroup.database.label
+                    , connection: $scope.mgroup.connection
+                    , tables: []
+                    , user: AccountService.getUsername()}; //todo unauthorized user
+        return $http({
+            url: d2rqServiceUrl+"/data/groups/add",
+            method: "POST",
+            data: data,
+            dataType: "json",
+            headers: {"Content-Type":"application/json; charset=utf-8"}
+        });
+    };
+
+    var findOrCreateDatasource = function(conn) {
+        var ds = findDatasource(conn);
+        if (ds==null) {
+            return createDatasource().then(function(response) {
+                return readDatasources().then(function(response) {
+                    return findDatasource(conn);
+                });
+            });
+        } else {
+            var deferred = $q.defer();
+            deferred.resolve(ds);
+            return deferred.promise;
+        }
+    };
+
+    $scope.addMappingGroup = function() {
+        adding = true;
+        findOrCreateDatasource($scope.mgroup.connection).then(function(ds) {
+            $scope.mgroup.source = ds;
+            var data = {name: $scope.mgroup.name
+                        , ontology: $scope.mgroup.ontology.uri
+                        , compositeData: $scope.mgroup.source.id
+                        , user: AccountService.getUsername()}; //todo unauthorized user
+            $http({
+                url: d2rqServiceUrl+"/mappings/groups/add",
+                method: "POST",
+                data: data,
+                dataType: "json",
+                headers: {"Content-Type":"application/json; charset=utf-8"}
+            }).then(function(response) {
+                $scope.refreshMappingGroups().then(function(response) {
+                    $('#modalMappingGroup').modal('hide');
+                    adding = false;
+                });
+            }, function(response) {
+                $('#modalMappingGroup').modal('hide');
+                flash.error = ServerErrorResponse.getMessage(response.status);
+            });
+        });
+    };
+
+    $scope.deleteMappingGroup = function(id) {
+        $http({
+            url: d2rqServiceUrl+"/mappings/groups/" + id + "/delete",
+            method: "POST",
+            dataType: "json",
+            headers: {"Content-Type":"application/json; charset=utf-8"}
+        }).then(function(response) {
+            $scope.refreshMappingGroups();
+        }, function(response) {
+            flash.error = ServerErrorResponse.getMessage(response.status);
+            $scope.refreshMappingGroups();
+        });
+    };
+
+    //mappings
+
+    $scope.datasource = null; //data source group object
+    $scope.ontologyClasses = []; //array of objects
+
+    $scope.patternTypes = [
+        {value:'uriColumn', label:'URI Column'},
+    	{value:'patternColumns', label:'Pattern Columns'},
+    ];
+
+    $scope.tables = [];
+
+    $scope.tableColumns = []; // array of string
+
+    $scope.updateColumns = function() {
+        $http({
+            url: d2rqServiceUrl+"/database/columns/get",
+            method: "GET",
+            params: {connection: $scope.datasource.dbConnection, table: $scope.mapping.table},
+            dataType: "json",
+            headers: {"Content-Type":"application/json; charset=utf-8"}
+        }).then(function(response) {
+            var result = response.data;
+            $scope.tableColumns = [];
+            for (var ind in result) {
+                $scope.tableColumns.push(result[ind].column);
+            }
+            //refresh properties
+            for (var ind in $scope.mapping.dataProperties) {
+                var dp = $scope.mapping.dataProperties[ind];
+                if ($scope.tableColumns.indexOf(dp.column)==-1)
+                    dp.column = null;
+            }
+            for (var ind in $scope.mapping.objectProperties) {
+                var op = $scope.mapping.objectProperties[ind];
+                if ($scope.tableColumns.indexOf(op.column)==-1)
+                    op.column = null;
+                op.join.table1 = $scope.mapping.table;
+                for (var i in op.join.columns) {
+                    if ($scope.tableColumns.indexOf(op.join.columns[i].first)==-1)
+                        op.join.columns[i].first = null;
+                }
+            }
+        }, function(response) {
+        //todo
+        });
+    };
+
+    $scope.updateRefTable = function(property) {
+        property.join.table2 = property.ref.classMappingTable.table;
+    };
+
+    $scope.togglePatternColumn = function(column) {
+        var index = $scope.mapping.patternColumns.indexOf(column);
+        if (index > -1) { // is currently selected
+            $scope.mapping.patternColumns.splice(index, 1);
+        } else { // is newly selected
+            $scope.mapping.patternColumns.push(column);
+        }
+    };
+
+    $scope.objectPropMappingTypes = [
+        {value:"column", label:"URI Column"},
+        {value:"ref", label:"Mapping Reference"}
+    ];
+
+    var emptyDataProperty = {id: 0
+                             , property: null //ontology class property object
+                             , column: null //column name (string)
+    };
+    var emptyObjectProperty = {id: 0
+                                , property: null //ontology class property object
+                                , mappingType:"" //string ($scope.objectPropMappingTypes)
+                                , column: null //string
+                                , ref:null //mapping object
+                                , join:{table1:"", table2:"", columns:[{first:"", second:""}], type:"EQ"}
+    };
+    var emptyMapping = {name:""
+                        , group: null //mapping group object
+                        , source: null //data source object
+                        , class: null //ontology class object
+                        , ptype:"" //pattern type ($scope.patternTypes)
+                        , uriColumn:"" //column name (string)
+                        , patternColumns:[] //array of column names (strings)
+                        , dataProperties: []
+                        , objectProperties: []
+    };
+    emptyMapping.dataProperties.push(angular.copy(emptyDataProperty));
+    emptyMapping.objectProperties.push(angular.copy(emptyObjectProperty));
+
+    $scope.mapping = angular.copy(emptyMapping);
+
+    $scope.isNew = false;
+
+    $scope.newMapping = function(mappingGroup) {
+        $scope.isNew = true;
+
+        adding = false;
+
+        $scope.mappingForm.$setPristine();
+        $scope.mapping = angular.copy(emptyMapping);
+
+        $scope.mapping.group = mappingGroup;
+
+        $http.get(d2rqServiceUrl+"/data/groups/" + mappingGroup.compositeData + "/metadata/get")
+            .then(function(response) {
+                $scope.datasource = response.data;
+
+                //get tables
+                $http({
+                    url: d2rqServiceUrl+"/database/tables/get",
+                    method: "GET",
+                    params: {connection: $scope.datasource.dbConnection},
+                    dataType: "json",
+                    headers: {"Content-Type":"application/json; charset=utf-8"}
+                }).then(function(response) {
+                    var result = response.data;
+                    $scope.tables = [];
+                    for (var ind in result) {
+                        $scope.tables.push(result[ind].table);
+                    }
+                });
+
+                //get tables structure
+                for (var ind in $scope.mapping.group.mappings) {
+                    setTableStructure($scope.mapping.group.mappings[ind], $scope.datasource.dbConnection);
+                }
+            }, function(response) {
+                $scope.datasource = {data:[]};
+            });
+
+        $http.get(d2rqServiceUrl+"d2rqServiceUrl+/ontologies/" + mappingGroup.ontology + "/classes/mappingscheme/get")
+            .then(function(response) {
+                $scope.ontologyClasses = response.data;
+            }, function(response) {
+                //todo
+            });
+    };
+
+    var setTableStructure = function(mapping, dbConnection) {
+        $http({
+            url: d2rqServiceUrl+"/database/columns/get",
+            method: "GET",
+            params: {connection: dbConnection, table: mapping.classMappingTable.table},
+            dataType: "json",
+            headers: {"Content-Type":"application/json; charset=utf-8"}
+        }).then(function(response) {
+            var result = response.data;
+            mapping.dataStructure = [];
+            for (var ci in result)
+                mapping.dataStructure.push(result[ci].column);
+        }, function(response) {
+            mapping.dataStructure = [];
+        });
+    };
+
+    $scope.editMapping = function(mapping, mappingGroup) {
+        $scope.isNew = false;
+
+        $scope.mappingForm.$setPristine();
+
+        $scope.mapping = angular.copy(emptyMapping);
+
+        $scope.mapping.id = mapping.id;
+        $scope.mapping.name = mapping.name;
+        $scope.mapping.group = mappingGroup;
+
+        $http.get(d2rqServiceUrl+"/data/groups/" + mappingGroup.compositeData + "/metadata/get")
+            .then(function(response) {
+                $scope.datasource = response.data;
+
+                //get tables
+                $http({
+                    url: d2rqServiceUrl+"/database/tables/get",
+                    method: "GET",
+                    params: {connection: $scope.datasource.dbConnection},
+                    dataType: "json",
+                    headers: {"Content-Type":"application/json; charset=utf-8"}
+                }).then(function(response) {
+                    var result = response.data;
+                    $scope.tables = [];
+                    for (var ind in result) {
+                        $scope.tables.push(result[ind].table);
+                    }
+                });
+
+                //get table structure
+                for (var ind in $scope.mapping.group.mappings) {
+                    setTableStructure($scope.mapping.group.mappings[ind], $scope.datasource.dbConnection);
+                }
+
+                //set mapping data source
+                for (var ind in $scope.datasource.data) {
+                    if ($scope.datasource.data[ind].id==mapping.data) {
+                        $scope.mapping.source = $scope.datasource.data[ind];
+                        $scope.mapping.table = $scope.mapping.source.table;
+                        $scope.updateColumns();
+                        break;
+                    }
+                }
+            }, function(response) {
+                $scope.datasource = {data:[]};
+            });
+
+        $http.get(d2rqServiceUrl+"/ontologies/" + mappingGroup.ontology + "/classes/mappingscheme/get")
+            .then(function(response) {
+                $scope.ontologyClasses = response.data;
+                //set mapping class
+                for (var ind in $scope.ontologyClasses) {
+                    if ($scope.ontologyClasses[ind].uri==mapping.classMappingTable.uri) {
+                        $scope.mapping.class = $scope.ontologyClasses[ind];
+                        break;
+                    }
+                }
+                //data properties
+                var id = 0;
+                $scope.mapping.dataProperties = [];
+                for (var ind in mapping.classMappingTable.dataProperties) {
+                    var dp = mapping.classMappingTable.dataProperties[ind];
+                    for (var pi in $scope.mapping.class.properties) {
+                        if ($scope.mapping.class.properties[pi].uri == dp.uri) {
+                            $scope.mapping.dataProperties.push({id: id, property: $scope.mapping.class.properties[pi], column: dp.tableColumn.second});
+                            break;
+                        }
+                    }
+                    id = id+1;
+                }
+                if ($scope.mapping.dataProperties.length==0) $scope.mapping.dataProperties.push(angular.copy(emptyDataProperty));
+                //object properties
+                id = 0;
+                $scope.mapping.objectProperties = [];
+                for (var ind in mapping.classMappingTable.objectProperties) {
+                    var op = mapping.classMappingTable.objectProperties[ind];
+                    var property = null;
+                    for (var pi in $scope.mapping.class.properties) {
+                        if ($scope.mapping.class.properties[pi].uri == op.uri) {
+                            property = $scope.mapping.class.properties[pi];
+                            break;
+                        }
+                    }
+                    var ref = null;
+                    if (op.refersMappingId!=null) {
+                        for (var mi in $scope.mapping.group.mappings) {
+                            if ($scope.mapping.group.mappings[mi].id==op.refersMappingId) {
+                                ref = $scope.mapping.group.mappings[mi];
+                                break;
+                            }
+                        }
+                    }
+                    $scope.mapping.objectProperties.push({id: id, property: property,
+                                                            mappingType: op.uriColumn==null ? "ref" : "column",
+                                                            column: op.uriColumn==null ? null : up.uriColumn.second, ref: ref,
+                                                            join: op.tableJoinConditions==null || op.tableJoinConditions.length==0 ? {table1:mapping.classMappingTable.table, table2:ref==null ? null : ref.classMappingTable.table, columns:[{first:"", second:""}], type:"EQ"} : op.tableJoinConditions[0]});
+                    id = id+1;
+                }
+                if ($scope.mapping.objectProperties.length==0) {
+                    $scope.mapping.objectProperties.push(angular.copy(emptyObjectProperty));
+                    $scope.mapping.objectProperties[0].join.table1 = mapping.classMappingTable.table;
+                }
+            }, function(response) {
+                //todo
+            });
+
+        $scope.mapping.ptype = mapping.classMappingTable.uriColumn==null ? "patternColumns" : "uriColumn";
+        $scope.mapping.uriColumn = mapping.classMappingTable.uriColumn;
+        $scope.mapping.patternColumns = mapping.classMappingTable.patternColumns==null ? [] : mapping.classMappingTable.patternColumns;
+    };
+
+    $scope.updateProperties = function() { //todo compare by uri
+        var classProps = $scope.mapping.class.properties;
+        for (var ind in $scope.mapping.dataProperties) {
+            var dp = $scope.mapping.dataProperties[ind];
+            if (classProps.indexOf(dp.property)==-1)
+                dp.property = null;
+        }
+        for (var ind in $scope.mapping.objectProperties) {
+            var op = $scope.mapping.objectProperties[ind];
+            if (classProps.indexOf(op.property)==-1)
+                op.property = null;
+        }
+    };
+
+    $scope.isDataProperty = function(property) {
+        return property.propertyType=="ANNOTATION_PROPERTY" || property.propertyType=="DATA_PROPERTY";
+    };
+
+    $scope.isObjectProperty = function(property) {
+        return property.propertyType=="OBJECT_PROPERTY";
+    };
+
+    $scope.showAddDataProp = function(prop) {
+        return prop.id===$scope.mapping.dataProperties[$scope.mapping.dataProperties.length-1].id;
+    };
+
+    $scope.showAddObjectProp = function(prop) {
+        return prop.id===$scope.mapping.objectProperties[$scope.mapping.objectProperties.length-1].id;
+    };
+
+    $scope.addNewDataProperty = function() {
+        var id = $scope.mapping.dataProperties[$scope.mapping.dataProperties.length-1].id+1;
+        $scope.mapping.dataProperties.push({id: id, property: null, column: null});
+    };
+
+    $scope.addNewObjectProperty = function() {
+        var id = $scope.mapping.objectProperties[$scope.mapping.objectProperties.length-1].id+1;
+        $scope.mapping.objectProperties.push({id: id, property: null, mappingType:"", column: null, ref:null});
+    };
+
+    $scope.removeDataProperty = function(prop) {
+        var index = $scope.mapping.dataProperties.indexOf(prop);
+        $scope.mapping.dataProperties.splice(index, 1);
+        if ($scope.mapping.dataProperties.length==0) $scope.mapping.dataProperties.push(angular.copy(emptyDataProperty));
+    };
+
+    $scope.removeObjectProperty = function(prop) {
+        var index = $scope.mapping.objectProperties.indexOf(prop);
+        $scope.mapping.objectProperties.splice(index, 1);
+        if ($scope.mapping.objectProperties.length==0) {
+            var emptyProp = angular.copy(emptyObjectProperty);
+            emptyProp.table1 = $scope.mapping.table;
+            $scope.mapping.objectProperties.push(emptyProp);
+        }
+    };
+
+    var findData = function(table) {
+        for (var ind in $scope.datasource.data) {
+            var d = $scope.datasource.data[ind];
+            if (d.table==table)
+                return d;
+        }
+        return null;
+    };
+
+    var createData = function(table) {
+        var data = {
+            tables: [table],
+            groupId: $scope.datasource.id,
+            user: AccountService.getUsername()
+        };
+        return $http({
+                url: d2rqServiceUrl+"/data/add",
+                method: "POST",
+                dataType: "json",
+                data: data,
+                headers: {"Content-Type":"application/json; charset=utf-8"}
+            });
+    };
+
+    var findOrCreateData = function(table) {
+        var d = findData(table);
+        if (d==null) {
+            return createData(table).then(function(response) {
+                return $http.get(d2rqServiceUrl+"/data/groups/" + $scope.datasource.id + "/metadata/get").then(function(response) {
+                    $scope.datasource = response.data;
+                    return findData(table);
+                });
+            });
+        } else {
+            var deferred = $q.defer();
+            deferred.resolve(d);
+            return deferred.promise;
+        }
+    };
+
+    $scope.save = function() {
+        adding = true;
+        var mappingTable = {
+            table: $scope.mapping.table
+            , uri: $scope.mapping.class.uri
+            , patternColumns: null
+            , uriColumn: null
+            , dataProperties: []
+            , objectProperties: []
+            , blankNode: false
+        };
+        if ($scope.mapping.ptype=="uriColumn")
+            mappingTable.uriColumn = $scope.mapping.uriColumn;
+        else if ($scope.mapping.ptype=="patternColumns")
+            mappingTable.patternColumns = $scope.mapping.patternColumns;
+        for (var ind in $scope.mapping.dataProperties) {
+            var dp = $scope.mapping.dataProperties[ind];
+            if (dp.property!=null && dp.column!=null) {
+                mappingTable.dataProperties.push({
+                    uri: dp.property.uri,
+                    tableColumn: {first: $scope.mapping.table, second: dp.column}
+                });
+            }
+        }
+        for (var ind in $scope.mapping.objectProperties) {
+            var op = $scope.mapping.objectProperties[ind];
+            if (op.property!=null) {
+                if (op.mappingType=="column" && op.column!=null) {
+                    mappingTable.objectProperties.push({
+                        uri: op.property.uri
+                        , uriColumn: {first: $scope.mapping.table, second: op.column}
+                    });
+                } else if (op.mappingType=="ref" && op.ref!=null) {
+                    var p = {uri: op.property.uri
+                                , refersMappingId: op.ref.id
+                                , range: "http://www.w3.org/2002/07/owl#Thing" //range is not really used in d2rq mapping generation (in case of mapping reference) byt must be not null
+                                , tableJoinConditions: []
+                    };
+                    var joinCondRes = {table1:op.join.table1, table2:op.join.table2, columns:[], type:op.join.type};
+                    for (var jci in op.join.columns) {
+                        if (op.join.columns[jci].first!="" && op.join.columns[jci].first!=null && op.join.columns[jci].second!="" && op.join.columns[jci].second!=null)
+                            joinCondRes.columns.push(op.join.columns[jci]);
+                    }
+                    if (joinCondRes.columns.length>0) p.tableJoinConditions.push(joinCondRes);
+                    mappingTable.objectProperties.push(p);
+                }
+            }
+        }
+
+        if ($scope.isNew) {
+            findOrCreateData(mappingTable.table).then(function(sd) {
+                $scope.mapping.source = sd;
+                var data = {
+                    name: $scope.mapping.name
+                    , mappingTable: mappingTable
+                    , data: $scope.mapping.source.id
+                    , user: AccountService.getUsername()
+                    , compositeMapping: $scope.mapping.group.id
+                };
+
+                $http({
+                    url: d2rqServiceUrl+"/mappings/add",
+                    method: "POST",
+                    dataType: "json",
+                    data: data,
+                    headers: {"Content-Type":"application/json; charset=utf-8"}
+                }).then(function(response) {
+                    $scope.refreshMappingGroups().then(function(response) {
+                        $('#modalMapping').modal('hide');
+                        adding = false;
+                    });
+                }, function(response) {
+                    $('#modalMapping').modal('hide');
+                    flash.error = ServerErrorResponse.getMessage(response.status);
+                });
+            });
+        } else {
+            $http({
+                url: d2rqServiceUrl+"/mappings/" + $scope.mapping.id + "/update",
+                method: "POST",
+                dataType: "json",
+                data: {mappingTable: mappingTable},
+                headers: {"Content-Type":"application/json; charset=utf-8"}
+            }).then(function(response) {
+                $scope.refreshMappingGroups().then(function(response) {
+                    $('#modalMapping').modal('hide');
+                    adding = false;
+                });
+            }, function(response) {
+                $('#modalMapping').modal('hide');
+                flash.error = ServerErrorResponse.getMessage(response.status);
+            });
+        }
+    };
+
+    $scope.deleteMapping = function(id) {
+        $http.post(d2rqServiceUrl+"/mappings/" + id + "/delete")
+            .then(function(response) {
+                $scope.refreshMappingGroups();
+            }, function(response) {
+                flash.error = ServerErrorResponse.getMessage(response.status);
+                $scope.refreshMappingGroups();
+            });
+    };
+
+    $scope.notCurrent = function(mapping) {
+        return $scope.isNew || mapping.id != $scope.mapping.id;
+    };
+};

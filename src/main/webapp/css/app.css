@@ -4,6 +4,10 @@ html, body{
 	height:100%;
 	font: .87em Arial,Helvetica,sans-serif;
 	background-color:#f8f8f8;
+	/*overflow-y: scroll;*/
+}
+
+body{
 	overflow-y: scroll;
 }
 
@@ -234,7 +238,7 @@ body.modal-open {
 }
 
 .modal {
-	overflow: auto;
+	overflow-y: auto;
 }
 
 /* Forms */
@@ -329,4 +333,10 @@ form{
 /* Modal dialogs */
 .modal-body {
     overflow: auto;
+	font: .87em Helvetica, arial, freesans, clean, sans-serif;
+}
+
+.modal {
+    margin-top: 0px !important;
+    width: 1100px !important;
 }

@@ -36,6 +36,9 @@ app.config(function($routeSegmentProvider, $routeProvider)
         .when('/home/extraction-and-loading/sparqlify', 'default.sparqlify')
         .when('/home/extraction-and-loading/triplegeo', 'default.triplegeo')
         .when('/home/extraction-and-loading/triplegeo-result', 'default.triplegeo-result')
+        .when('/home/extraction-and-loading/d2rq', 'default.d2rq.mapping')
+        .when('/home/extraction-and-loading/d2rq/mapping', 'default.d2rq.mapping')
+        .when('/home/extraction-and-loading/d2rq/task', 'default.d2rq.task')
         .when('/home/storage-querying/virtuoso', 'default.virtuoso')
         .when('/home/querying-and-exploration/geospatial', 'default.geospatial')
      /*   .when('/home/querying-and-exploration/googlemap', 'default.googlemap') */
@@ -43,6 +46,7 @@ app.config(function($routeSegmentProvider, $routeProvider)
         .when('/home/querying-and-exploration/mappify', 'default.mappify')
         .when('/home/querying-and-exploration/virtuoso', 'default.virtuoso')
         .when('/home/authoring/ontowiki', 'default.ontowiki')
+        .when('/home/authoring/ontology', 'default.ontology')
         .when('/home/linking/limes', 'default.limes')
         .when('/home/enriching-and-cleaning/geolift', 'default.geolift')
 
@@ -90,6 +94,32 @@ app.config(function($routeSegmentProvider, $routeProvider)
                     templateUrl: 'partials/extraction-and-loading/triplegeo.html' })
                 .segment('triplegeo-result', {
                     templateUrl: 'partials/extraction-and-loading/triplegeo-result.html' })
+                .segment('d2rq', {
+                    templateUrl: 'partials/extraction-and-loading/d2rq.html' })
+                    .within()
+                        .segment('mapping', {
+                            templateUrl: 'partials/extraction-and-loading/d2rq-mapping.html',
+                            resolve: {
+                                    mappingGroups: function(D2RQService) {
+                                        return D2RQService.readMappingGroups();
+                                    },
+                                    settings: function (Config) {
+                                        return Config.read();
+                                    }
+                                }
+                            })
+                        .segment('task', {
+                            templateUrl: 'partials/extraction-and-loading/d2rq-task.html',
+                            resolve: {
+                                    tasks: function(D2RQService) {
+                                        return D2RQService.readTasks();
+                                    },
+                                    settings: function (Config) {
+                                        return Config.read();
+                                    }
+                                }
+                            })
+                    .up()
                 .segment('geospatial', {
                     templateUrl: 'partials/querying-and-exploration/geospatial.html'})
      /*           .segment('googlemap', {
@@ -102,6 +132,17 @@ app.config(function($routeSegmentProvider, $routeProvider)
                     templateUrl: 'partials/querying-and-exploration/virtuoso.html'})
                 .segment('ontowiki', {
                     templateUrl: 'partials/authoring/ontowiki.html' })
+                .segment('ontology', {
+                    templateUrl: 'partials/authoring/ontology.html',
+                    resolve: {
+                            ontologies: function (OntologyService) {
+                                return OntologyService.readOntologies();
+                            },
+                            settings: function (Config) {
+                                return Config.read();
+                            }
+                        }
+                    })
                 .segment('geolift', {
                     templateUrl: 'partials/enriching-and-cleaning/geolift.html' })
                 .segment('limes', {

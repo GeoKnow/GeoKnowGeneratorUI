@@ -21,7 +21,7 @@
 # #######################################################################################
 
 :GeoKnowGeneratorService a sd:Service;
-    sd:endpoint <http://10.0.0.85:8890/sparql>;
+    sd:endpoint <http://localhost:8890/sparql>;
     sd:supportedLanguage sd:SPARQL11Query ;
     sd:defaultDataset :default-dataset;
     .
@@ -56,7 +56,7 @@
                 rdfs:label "Virtuoso Generator Conductor"^^xsd:string ;
                 lds:dbPassword "dba"^^xsd:string ;
                 lds:dbUser "dba"^^xsd:string ;
-                lds:serviceUrl <http://10.0.0.85:8890/conductor>
+                lds:serviceUrl <http://localhost:8890/conductor>
               ] ;
       lds:providesService :VirtuosoGeneratorEndpoint ;
       lds:version "7.0"^^xsd:string ;
@@ -65,17 +65,93 @@
 :VirtuosoGeneratorEndpoint
       a       lds:SPARQLEndPointService ;
       rdfs:label "Virtuoso Generator Endpoint"^^xsd:string ;
-      lds:serviceUrl <http://10.0.0.85:8890/sparql> .
+      lds:serviceUrl <http://localhost:8890/sparql> .
+      
+:Sparqlify
+      a       lds:StackComponent ;
+      rdfs:label "Sparqlify"^^xsd:string ;
+      lds:providesService
+              [ a       lds:ExplorationService ;
+                lds:serviceUrl <http://144.76.166.111:8080/sparqlify/>
+              ] ;
+      lds:version "0.1-SNAPSHOT"^^xsd:string ;
+      foaf:homepage <http://aksw.org/Projects/Sparqlify.html> .
+
+:Facete
+      a       lds:StackComponent ;
+      rdfs:label "Facete"^^xsd:string ;
+      lds:providesService
+              [ a       lds:ExplorationService ;
+                lds:serviceUrl <http://cstadler.aksw.org/facete2/>
+              ] ;
+      lds:version "0.1-SNAPSHOT"^^xsd:string ;
+      foaf:homepage <http://aksw.org/Projects/Facete.html> .
 
 :Limes
       a       lds:StackComponent ;
       rdfs:label "Limes Linking Service"^^xsd:string ;
       lds:providesService
               [ a       lds:InterlinkingService ;
-                lds:serviceUrl <http://10.0.0.85:8080/Limes-Service>
+                lds:serviceUrl <http://localhost:8080/Limes-Service>
               ] ;
       lds:version "0.6.4"^^xsd:string ;
       foaf:homepage <http://aksw.org/Projects/LIMES.html> .
+      
+:TripleGeo
+      a       lds:StackComponent ;
+      rdfs:label "TripleGeo"^^xsd:string ;
+      lds:providesService
+              [ a       lds:ExtractionService ;
+                lds:serviceUrl <http://localhost:8080/TripleGeo-Service>
+              ] ;
+      lds:version "1.0"^^xsd:string ;
+      foaf:homepage <https://web.imis.athena-innovation.gr/redmine/projects/geoknow_public/wiki/TripleGeo> .
+      
+:GeoLift
+      a       lds:StackComponent ;
+      rdfs:label "GeoLift"^^xsd:string ;
+      lds:providesService
+              [ a       lds:EnrichmentService ;
+                lds:serviceUrl <http://localhost:8080/GeoLift-Service>
+              ] ;
+      lds:version "0.6.4"^^xsd:string ;
+      foaf:homepage <https://github.com/AKSW/GeoLift> .
+
+:OntoWiki
+      a       lds:StackComponent ;
+      rdfs:label "OntoWiki"^^xsd:string ;
+      lds:providesService
+              [ a       lds:AuthoringService ;
+                lds:serviceUrl <http://144.76.166.111/ontowiki>
+              ] ;
+      lds:version "0.9.10-1"^^xsd:string ;
+      foaf:homepage <http://aksw.org/Projects/OntoWiki.html> .
+
+:Mappify
+      a       lds:StackComponent ;
+      rdfs:label "Mappify"^^xsd:string ;
+      lds:providesService
+              [ a       lds:AuthoringService ;
+                lds:serviceUrl <http://cstadler.aksw.org/mappify2/>
+              ] ;
+      lds:version "0.9.10-1"^^xsd:string ;
+      foaf:homepage <https://github.com/GeoKnow/Mappify> .
+
+:D2RQ
+      a       lds:StackComponent ;
+      rdfs:label "D2RQ"^^xsd:string ;
+      lds:providesService
+              [ a       lds:ExtractionService ;
+                lds:serviceUrl <http://localhost:8080/d2rq-mapper-web-service/api>
+              ] .
+
+:MiniDix
+      a       lds:StackComponent ;
+      rdfs:label "OntoWiki"^^xsd:string ;
+      lds:providesService
+              [ a       lds:AuthoringService ;
+                lds:serviceUrl <http://localhost:8080/minidix-web>
+              ] .
 
 
 ########### DATA SOURCES ################################################################

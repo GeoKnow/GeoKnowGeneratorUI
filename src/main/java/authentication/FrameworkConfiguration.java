@@ -14,8 +14,8 @@ public class FrameworkConfiguration {
     private String virtuosoDbaPassword = "dba";
 
     //virtuoso sparql
-    private String sparqlEndpoint = "http://localhost:8890/sparql-auth";
-    private String publicSparqlEndpoint = "http://localhost:8890/sparql";
+    private String sparqlEndpoint = "http://10.0.0.85:8890/sparql-auth";
+    private String publicSparqlEndpoint = "http://10.0.0.85:8890/sparql";
     private String sparqlFrameworkLogin = "generator";
     private String sparqlFrameworkPassword = "generator";
 
@@ -35,9 +35,9 @@ public class FrameworkConfiguration {
     private String smtpTLSPort = "587";
     private String smtpSSLPort = "465";
     //set this parameters before run
-    private String emailAddress = "";
-    private String emailUsername = "";
-    private String emailPassword = "";
+    private String emailAddress = "jonjay.legrange@ontos.com";
+    private String emailUsername = "jonjay.legrange@ontos.com";
+    private String emailPassword = "J1CQwfywgPevbgUj5Rgn";
 
     private static FrameworkConfiguration instance;
 

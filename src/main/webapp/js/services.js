@@ -1145,3 +1145,100 @@ module.factory("GraphGroupService", function($http, $q, Config, AccountService) 
         deleteGraphGroup    : deleteGraphGroup
     };
 });
+
+module.factory("OntologyService", function($http, $q) {
+    var ontologies = [];
+    var isLoaded = false;
+
+    var readOntologies = function() {
+        if (isLoaded) {
+            var deferred = $q.defer();
+            deferred.resolve(ontologies);
+            return deferred.promise;
+        } else {
+            return $http.get("http://localhost:8080/d2rq-mapper-web-service/api/ontologies/uris/get")
+                .then(function(response) {
+                    ontologies = response.data;
+                    isLoaded = true;
+                });
+        }
+    };
+
+    var refreshOntologies = function() {
+        isLoaded = false;
+        return readOntologies();
+    };
+
+    var getAllOntologies = function() {
+        return ontologies;
+    };
+
+    return {
+        readOntologies      : readOntologies,
+        refreshOntologies   : refreshOntologies,
+        getAllOntologies    : getAllOntologies
+    };
+});
+
+module.factory("D2RQService", function($http, $q) {
+    var mappingGroups = [];
+    var tasks = [];
+
+    var mappingGroupsLoaded = false;
+    var tasksLoaded = false;
+
+    var readMappingGroups = function() {
+        if (mappingGroupsLoaded) {
+            var deferred = $q.defer();
+            deferred.resolve(mappingGroups);
+            return deferred.promise;
+        } else {
+            return $http.get("http://localhost:8080/d2rq-mapper-web-service/api/mappings/groups/metadata/get")
+                .then(function(response) {
+                    mappingGroups = response.data;
+                    mappingGroupsLoaded = true;
+                });
+        }
+    };
+
+    var refreshMappingGroups = function() {
+        mappingGroupsLoaded = false;
+        return readMappingGroups();
+    };
+
+    var getAllMappingGroups = function() {
+        return mappingGroups;
+    };
+
+    var readTasks = function() {
+        if (tasksLoaded) {
+            var deferred = $q.defer();
+            deferred.resolve(tasks);
+            return deferred.promise;
+        } else {
+            return $http.get("http://localhost:8080/d2rq-mapper-web-service/api/tasks/metadata/get")
+                .then(function(response) {
+                    tasks = response.data;
+                    tasksLoaded = true;
+                });
+        }
+    };
+
+    var refreshTasks = function() {
+        tasksLoaded = false;
+        return readTasks();
+    };
+
+    var getAllTasks = function() {
+        return tasks;
+    };
+
+    return {
+        readMappingGroups   : readMappingGroups,
+        refreshMappingGroups: refreshMappingGroups,
+        getAllMappingGroups : getAllMappingGroups,
+        readTasks           : readTasks,
+        refreshTasks        : refreshTasks,
+        getAllTasks         : getAllTasks
+    };
+});
