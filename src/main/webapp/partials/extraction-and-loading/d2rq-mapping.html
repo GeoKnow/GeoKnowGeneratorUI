@@ -1,9 +1,11 @@
 <div ng-controller="D2RQMappingCtrl">
-    <br/>
-
+    <div class="row below">
     <button type="button" class="btn btn-primary btn-large" data-toggle="modal" data-target="#modalMappingGroup" ng-click="newMappingGroup();">Add new mapping group</button>
-
+	</div>
+	
     <div class="modal fade" id="modalMappingGroup">
+    <div class="modal-dialog">
+    <div class="modal-content">
         <form name="mappingGroupForm" class="form-horizontal InputForm" role="form" novalidate>
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -43,6 +45,8 @@
                 </div>
             </div>
         </form>
+    </div>
+    </div>
     </div>
 
     <div class="modal fade" id="modalMapping">
@@ -206,7 +210,8 @@
             </div>
         </form>
     </div>
-
+	
+	<div class="row below">
     <h4>
         <span class="btn-group">
             <button type="button" class="btn btn-link reset" ng-click="refreshMappingGroups()">
@@ -247,4 +252,5 @@
         </tr>
         </tbody>
     </table>
+    </div>
 </div>
