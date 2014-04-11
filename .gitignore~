@@ -1,0 +1,22 @@
+<<<<<<< HEAD
+/target
+.classpath
+.project
+.settings/
+=======
+#Mac
+.DS_Store
+
+# Eclipse
+.classpath
+.settings/
+.project
+
+# Maven
+/target
+/logs
+
+# Vaadin cache dir
+/src/main/webapp/VAADIN/gwt-unitCache
+/src/main/webapp/VAADIN/widgetsets
+>>>>>>> refs/remotes/origin/ontodics
