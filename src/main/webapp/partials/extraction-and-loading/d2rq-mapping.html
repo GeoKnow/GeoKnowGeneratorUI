@@ -1,9 +1,11 @@
 <div ng-controller="D2RQMappingCtrl">
-    <br/>
-
-    <button type="button" class="btn btn-success btn-large" data-toggle="modal" data-target="#modalMappingGroup" ng-click="newMappingGroup();">Add new mapping group</button>
-
+    <div class="row below">
+    <button type="button" class="btn btn-primary btn-large" data-toggle="modal" data-target="#modalMappingGroup" ng-click="newMappingGroup();">Add new mapping group</button>
+	</div>
+	
     <div class="modal fade" id="modalMappingGroup">
+    <div class="modal-dialog">
+    <div class="modal-content">
         <form name="mappingGroupForm" class="form-horizontal InputForm" role="form" novalidate>
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -38,11 +40,13 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn-sm btn-success" ng-click="addMappingGroup();" ng-disabled="mappingGroupForm.$invalid || isAdding()">Add</button>
+                    <button type="submit" class="btn-sm btn-primary" ng-click="addMappingGroup();" ng-disabled="mappingGroupForm.$invalid || isAdding()">Add</button>
                     <button type="button" class="btn-sm btn-default" data-dismiss="modal">Cancel</button>
                 </div>
             </div>
         </form>
+    </div>
+    </div>
     </div>
 
     <div class="modal fade" id="modalMapping">
@@ -130,7 +134,7 @@
                         </div>
                     </div>
                     <div class="row">
-                        <button type="button" ng-click="addNewDataProperty()" class="btn-sm btn-success col-lg-offset-3">Add New Data Property</button>
+                        <button type="button" ng-click="addNewDataProperty()" class="btn-sm btn-primary col-lg-offset-3">Add New Data Property</button>
                     </div>
                 </div>
 
@@ -195,18 +199,19 @@
                         </div>
                     </div>
                     <div class="row">
-                        <button type="button" ng-click="addNewObjectProperty()" class="btn-sm btn-success col-lg-offset-3">Add New Object Property</button>
+                        <button type="button" ng-click="addNewObjectProperty()" class="btn-sm btn-primary col-lg-offset-3">Add New Object Property</button>
                     </div>
                 </div>
 
                 <div class="modal-footer">
-                    <button type="submit" class="btn-sm btn-success" ng-click="save();" ng-disabled="mappingForm.$invalid || isAdding()">Save</button>
+                    <button type="submit" class="btn-sm btn-primary" ng-click="save();" ng-disabled="mappingForm.$invalid || isAdding()">Save</button>
                     <button type="button" class="btn-sm btn-default" data-dismiss="modal">Cancel</button>
                 </div>
             </div>
         </form>
     </div>
-
+	
+	<div class="row below">
     <h4>
         <span class="btn-group">
             <button type="button" class="btn btn-link reset" ng-click="refreshMappingGroups()">
@@ -247,4 +252,5 @@
         </tr>
         </tbody>
     </table>
+    </div>
 </div>

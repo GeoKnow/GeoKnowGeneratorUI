@@ -1,7 +1,8 @@
 <div ng-controller="OntologyCtrl">
-    <button type="button" class="btn btn-success btn-large" data-toggle="modal" data-target="#modalOntology" ng-click="new();">Add new ontology</button>
 
     <div class="modal fade" id="modalOntology">
+    <div class="modal-dialog">
+    <div class="modal-content">
         <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
             <h5 class="modal-title green bold">Add ontology</h5>
@@ -47,19 +48,22 @@
         </div>
 
         <div class="modal-footer">
-            <button type="submit" class="btn-sm btn-success" ng-click="add();">Add</button>
+            <button type="submit" class="btn-sm btn-primary" ng-click="add();">Add</button>
             <button type="button" class="btn-sm btn-default" data-dismiss="modal">Cancel</button>
         </div>
     </div>
+    </div>
+    </div>
 
-    <h4>
+<div class="row below">
+    <h3 class="green bold">
         <span class="btn-group">
             <button type="button" class="btn btn-link reset" ng-click="refreshOntologies()">
                 <i class="glyphicon glyphicon-refresh" aria-hidden="true"></i>
             </button>
         </span>
         Ontologies
-    </h4>
+    </h3>
 
     <table class="table table-striped">
         <thead>
@@ -78,8 +82,12 @@
         </tr>
         </tbody>
     </table>
+    
+    <button type="button" class="btn btn-primary btn-large" data-toggle="modal" data-target="#modalOntology" ng-click="new();">Add new ontology</button>
 
     <div class="modal fade" id="fullModal">
+    <div class="modal-dialog">
+    <div class="modal-content">
         <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
             <h5 class="modal-title green bold">MiniDix</h5>
@@ -87,5 +95,8 @@
         <div class="modal-body">
             <modal-iframe></modal-iframe>
         </div>
+    </div>
+    </div>
+    </div>
     </div>
 </div>

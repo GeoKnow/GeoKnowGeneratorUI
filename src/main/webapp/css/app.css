@@ -8,7 +8,7 @@ html, body{
 }
 
 body{
-	overflow-y: scroll;
+	overflow-y: hidden;
 }
 
 #contents{
@@ -233,12 +233,12 @@ a.accordion-toggle:hover{
 }
 
 body.modal-open {
-	overflow-y: scroll;
+	/* overflow-y: scroll; */
 	margin: 0;
 }
 
 .modal {
-	overflow-y: auto;
+	overflow-y: hidden;
 }
 
 /* Forms */
