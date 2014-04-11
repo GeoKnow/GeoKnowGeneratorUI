@@ -1,9 +1,11 @@
 <div ng-controller="D2RQTaskCtrl">
-    <br/>
-
+    <div class="row below">
     <button type="button" class="btn btn-primary btn-large" data-toggle="modal" data-target="#modalTask" ng-click="new();">Add new task</button>
-
+	</div>
+	
     <div class="modal fade" id="modalTask">
+    <div class="modal-dialog">
+    <div class="modal-content">
         <form name="taskForm" class="form-horizontal InputForm" role="form" novalidate>
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -44,7 +46,10 @@
             </div>
         </form>
     </div>
-
+    </div>
+    </div>
+    
+	<div class="row below">
     <h4>
         <span class="btn-group">
             <button type="button" class="btn btn-link reset" ng-click="refreshTasks()">
@@ -77,4 +82,5 @@
         </tr>
         </tbody>
     </table>
+    </div>
 </div>
