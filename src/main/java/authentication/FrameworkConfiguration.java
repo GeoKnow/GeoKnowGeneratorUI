@@ -9,13 +9,13 @@ import util.TLSEmailSender;
 
 public class FrameworkConfiguration {
     //virtuoso jdbc
-    private String virtuosoJdbcConnString = "jdbc:virtuoso://10.0.0.85:1111";
+    private String virtuosoJdbcConnString = "jdbc:virtuoso://localhost:1111";
     private String virtuosoDbaUser = "dba";
     private String virtuosoDbaPassword = "dba";
 
     //virtuoso sparql
-    private String sparqlEndpoint = "http://10.0.0.85:8890/sparql-auth";
-    private String publicSparqlEndpoint = "http://10.0.0.85:8890/sparql";
+    private String sparqlEndpoint = "http://localhost:8890/sparql-auth";
+    private String publicSparqlEndpoint = "http://localhost:8890/sparql";
     private String sparqlFrameworkLogin = "generator";
     private String sparqlFrameworkPassword = "generator";
 
@@ -35,9 +35,9 @@ public class FrameworkConfiguration {
     private String smtpTLSPort = "587";
     private String smtpSSLPort = "465";
     //set this parameters before run
-    private String emailAddress = "jonjay.legrange@ontos.com";
-    private String emailUsername = "jonjay.legrange@ontos.com";
-    private String emailPassword = "J1CQwfywgPevbgUj5Rgn";
+    private String emailAddress = "";
+    private String emailUsername = "";
+    private String emailPassword = "";
 
     private static FrameworkConfiguration instance;
 
