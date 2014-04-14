@@ -337,6 +337,7 @@ form{
 }
 
 .modal {
+    overflow: auto;
     margin-top: 0px !important;
     width: 1100px !important;
 }
