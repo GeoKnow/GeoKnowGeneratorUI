@@ -1146,7 +1146,10 @@ module.factory("GraphGroupService", function($http, $q, Config, AccountService) 
     };
 });
 
-module.factory("OntologyService", function($http, $q) {
+module.factory("OntologyService", function($http, $q, ConfigurationService) {
+    var d2rqServices = ConfigurationService.getComponentServices(":D2RQ");
+    var d2rqServiceUrl = d2rqServices[0].serviceUrl;
+
     var ontologies = [];
     var isLoaded = false;
 
@@ -1156,7 +1159,7 @@ module.factory("OntologyService", function($http, $q) {
             deferred.resolve(ontologies);
             return deferred.promise;
         } else {
-            return $http.get("http://localhost:8080/d2rq-mapper-web-service/api/ontologies/uris/get")
+            return $http.get(d2rqServiceUrl + "/ontologies/uris/get")
                 .then(function(response) {
                     ontologies = response.data;
                     isLoaded = true;
@@ -1180,7 +1183,10 @@ module.factory("OntologyService", function($http, $q) {
     };
 });
 
-module.factory("D2RQService", function($http, $q) {
+module.factory("D2RQService", function($http, $q, ConfigurationService) {
+    var d2rqServices = ConfigurationService.getComponentServices(":D2RQ");
+    var d2rqServiceUrl = d2rqServices[0].serviceUrl;
+
     var mappingGroups = [];
     var tasks = [];
 
@@ -1193,7 +1199,7 @@ module.factory("D2RQService", function($http, $q) {
             deferred.resolve(mappingGroups);
             return deferred.promise;
         } else {
-            return $http.get("http://localhost:8080/d2rq-mapper-web-service/api/mappings/groups/metadata/get")
+            return $http.get(d2rqServiceUrl + "/mappings/groups/metadata/get")
                 .then(function(response) {
                     mappingGroups = response.data;
                     mappingGroupsLoaded = true;
@@ -1216,7 +1222,7 @@ module.factory("D2RQService", function($http, $q) {
             deferred.resolve(tasks);
             return deferred.promise;
         } else {
-            return $http.get("http://localhost:8080/d2rq-mapper-web-service/api/tasks/metadata/get")
+            return $http.get(d2rqServiceUrl + "/tasks/metadata/get")
                 .then(function(response) {
                     tasks = response.data;
                     tasksLoaded = true;

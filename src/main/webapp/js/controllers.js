@@ -2432,7 +2432,7 @@ var OntologyCtrl = function($scope, $http, flash, ServerErrorResponse, AccountSe
         if (type=="url") {
             var data = {uri: $scope.ontology.uri, user: AccountService.getUsername()}; //todo unauthorized user
             $http({
-                url: d2rqServiceUrl+ "/api/ontologies/add",
+                url: d2rqServiceUrl+ "/ontologies/add",
                 method: "POST",
                 dataType: "json",
                 data: data,
@@ -2808,7 +2808,24 @@ var D2RQMappingCtrl = function($scope, $http, $q, flash, ServerErrorResponse, Ac
         });
     };
 
+    $scope.actualizeMappingGroup = function(id) {
+        $http({
+            url: d2rqServiceUrl+"/mappings/groups/" + id + "/actualize",
+            method: "POST",
+            data: {user: AccountService.getUsername()},
+            dataType: "json",
+            headers: {"Content-Type":"application/json; charset=utf-8"}
+        }).then(function(response) {
+            $scope.refreshMappingGroups();
+        }, function(response) {
+            flash.error = ServerErrorResponse.getMessage(response.status);
+            $scope.refreshMappingGroups();
+        });
+    };
+
     //mappings
+
+    $scope.modaltitle = "";
 
     $scope.datasource = null; //data source group object
     $scope.ontologyClasses = []; //array of objects
@@ -2818,11 +2835,36 @@ var D2RQMappingCtrl = function($scope, $http, $q, flash, ServerErrorResponse, Ac
     	{value:'patternColumns', label:'Pattern Columns'},
     ];
 
+    $scope.joinConditionTypes = [
+        {value:'fk', label:'Foreign Key'},
+        {value:'linkingTable', label:'Linking Table'},
+    ];
+
+    var table2columns = {}; //property - table name, value - columns list
+
     $scope.tables = [];
 
     $scope.tableColumns = []; // array of string
 
+    var updatePropertiesColumns = function() {
+        for (var ind in $scope.mapping.dataProperties) {
+            var dp = $scope.mapping.dataProperties[ind];
+            if ($scope.tableColumns.indexOf(dp.column)==-1) dp.column = null;
+        }
+        for (var ind in $scope.mapping.objectProperties) {
+            var op = $scope.mapping.objectProperties[ind];
+            if ($scope.tableColumns.indexOf(op.column)==-1) op.column = null;
+            op.join.table1 = $scope.mapping.table;
+            if ($scope.tableColumns.indexOf(op.join.table1column)==-1) op.join.table1column = null;
+        }
+    };
+
     $scope.updateColumns = function() {
+        if ($scope.tableColumns[$scope.mapping.table] != undefined) {
+            $scope.tableColumns = $scope.tableColumns[$scope.mapping.table];
+            updatePropertiesColumns();
+            return;
+        }
         $http({
             url: d2rqServiceUrl+"/database/columns/get",
             method: "GET",
@@ -2831,26 +2873,41 @@ var D2RQMappingCtrl = function($scope, $http, $q, flash, ServerErrorResponse, Ac
             headers: {"Content-Type":"application/json; charset=utf-8"}
         }).then(function(response) {
             var result = response.data;
-            $scope.tableColumns = [];
+            var columns = []
             for (var ind in result) {
-                $scope.tableColumns.push(result[ind].column);
+                columns.push(result[ind].column);
             }
-            //refresh properties
-            for (var ind in $scope.mapping.dataProperties) {
-                var dp = $scope.mapping.dataProperties[ind];
-                if ($scope.tableColumns.indexOf(dp.column)==-1)
-                    dp.column = null;
+            $scope.tableColumns = columns;
+            $scope.tableColumns[$scope.mapping.table] = columns;
+            updatePropertiesColumns();
+        }, function(response) {
+        //todo
+        });
+    };
+
+    $scope.updateLinkingTable = function(property) {
+        if ($scope.tableColumns[property.join.linkingTable] != undefined) {
+            property.join.linkingTableStructure = $scope.tableColumns[property.join.linkingTable];
+            if (property.join.linkingTableStructure.indexOf(property.join.linkingTableColumn1)==-1) property.join.linkingTableColumn1 = null;
+            if (property.join.linkingTableStructure.indexOf(property.join.linkingTableColumn2)==-1) property.join.linkingTableColumn2 = null;
+            return;
+        }
+        $http({
+            url: d2rqServiceUrl+"/database/columns/get",
+            method: "GET",
+            params: {connection: $scope.datasource.dbConnection, table: property.join.linkingTable},
+            dataType: "json",
+            headers: {"Content-Type":"application/json; charset=utf-8"}
+        }).then(function(response) {
+            var result = response.data;
+            var columns = []
+            for (var ind in result) {
+                columns.push(result[ind].column);
             }
-            for (var ind in $scope.mapping.objectProperties) {
-                var op = $scope.mapping.objectProperties[ind];
-                if ($scope.tableColumns.indexOf(op.column)==-1)
-                    op.column = null;
-                op.join.table1 = $scope.mapping.table;
-                for (var i in op.join.columns) {
-                    if ($scope.tableColumns.indexOf(op.join.columns[i].first)==-1)
-                        op.join.columns[i].first = null;
-                }
-            }
+            $scope.tableColumns[$scope.mapping.table] = columns;
+            property.join.linkingTableStructure = columns;
+            if (property.join.linkingTableStructure.indexOf(property.join.linkingTableColumn1)==-1) property.join.linkingTableColumn1 = null;
+            if (property.join.linkingTableStructure.indexOf(property.join.linkingTableColumn2)==-1) property.join.linkingTableColumn2 = null;
         }, function(response) {
         //todo
         });
@@ -2878,12 +2935,13 @@ var D2RQMappingCtrl = function($scope, $http, $q, flash, ServerErrorResponse, Ac
                              , property: null //ontology class property object
                              , column: null //column name (string)
     };
+    var emptyJoinConditions = {type:"", table1:"", table2:"", linkingTable:"", table1column:"", table2column:"", linkingTableColumn1:"", linkingTableColumn2:""};
     var emptyObjectProperty = {id: 0
                                 , property: null //ontology class property object
                                 , mappingType:"" //string ($scope.objectPropMappingTypes)
                                 , column: null //string
                                 , ref:null //mapping object
-                                , join:{table1:"", table2:"", columns:[{first:"", second:""}], type:"EQ"}
+                                , join:angular.copy(emptyJoinConditions)
     };
     var emptyMapping = {name:""
                         , group: null //mapping group object
@@ -2903,6 +2961,8 @@ var D2RQMappingCtrl = function($scope, $http, $q, flash, ServerErrorResponse, Ac
     $scope.isNew = false;
 
     $scope.newMapping = function(mappingGroup) {
+        $scope.modaltitle = "New mapping";
+
         $scope.isNew = true;
 
         adding = false;
@@ -2965,6 +3025,8 @@ var D2RQMappingCtrl = function($scope, $http, $q, flash, ServerErrorResponse, Ac
     };
 
     $scope.editMapping = function(mapping, mappingGroup) {
+        $scope.modaltitle = "Edit mapping";
+
         $scope.isNew = false;
 
         $scope.mappingForm.$setPristine();
@@ -2975,7 +3037,7 @@ var D2RQMappingCtrl = function($scope, $http, $q, flash, ServerErrorResponse, Ac
         $scope.mapping.name = mapping.name;
         $scope.mapping.group = mappingGroup;
 
-        $http.get(d2rqServiceUrl+"/data/groups/" + mappingGroup.compositeData + "/metadata/get")
+        var dataRequest = $http.get(d2rqServiceUrl+"/data/groups/" + mappingGroup.compositeData + "/metadata/get")
             .then(function(response) {
                 $scope.datasource = response.data;
 
@@ -3012,7 +3074,7 @@ var D2RQMappingCtrl = function($scope, $http, $q, flash, ServerErrorResponse, Ac
                 $scope.datasource = {data:[]};
             });
 
-        $http.get(d2rqServiceUrl+"/ontologies/" + mappingGroup.ontology + "/classes/mappingscheme/get")
+        var ontoRequest = $http.get(d2rqServiceUrl+"/ontologies/" + mappingGroup.ontology + "/classes/mappingscheme/get")
             .then(function(response) {
                 $scope.ontologyClasses = response.data;
                 //set mapping class
@@ -3057,10 +3119,34 @@ var D2RQMappingCtrl = function($scope, $http, $q, flash, ServerErrorResponse, Ac
                             }
                         }
                     }
-                    $scope.mapping.objectProperties.push({id: id, property: property,
-                                                            mappingType: op.uriColumn==null ? "ref" : "column",
-                                                            column: op.uriColumn==null ? null : up.uriColumn.second, ref: ref,
-                                                            join: op.tableJoinConditions==null || op.tableJoinConditions.length==0 ? {table1:mapping.classMappingTable.table, table2:ref==null ? null : ref.classMappingTable.table, columns:[{first:"", second:""}], type:"EQ"} : op.tableJoinConditions[0]});
+                    var joinConditions = angular.copy(emptyJoinConditions);
+                    joinConditions.table1 = mapping.classMappingTable.table;
+                    joinConditions.table2 = ref==null ? null : ref.classMappingTable.table;
+                    if (op.tableJoinConditions!=null) {
+                        if (op.tableJoinConditions.length==1) {
+                            joinConditions.type = "fk";
+                            joinConditions.table1column = op.tableJoinConditions[0].columns[0].first;
+                            joinConditions.table2column = op.tableJoinConditions[0].columns[0].second;
+                        } else if (op.tableJoinConditions.length==2) {
+                            joinConditions.type = "linkingTable";
+                            if (op.tableJoinConditions[0].table1==joinConditions.table1) {
+                                joinConditions.linkingTable = op.tableJoinConditions[0].table2;
+                                joinConditions.table1column = op.tableJoinConditions[0].columns[0].first;
+                                joinConditions.linkingTableColumn1 = op.tableJoinConditions[0].columns[0].second;
+                                joinConditions.linkingTableColumn2 = op.tableJoinConditions[1].columns[0].first;
+                                joinConditions.table2column = op.tableJoinConditions[1].columns[0].second;
+                            } else if (op.tableJoinConditions[1].table1==joinConditions.table1) {
+                                joinConditions.linkingTable = op.tableJoinConditions[1].table2;
+                                joinConditions.table1column = op.tableJoinConditions[1].columns[0].first;
+                                joinConditions.linkingTableColumn1 = op.tableJoinConditions[1].columns[0].second;
+                                joinConditions.linkingTableColumn2 = op.tableJoinConditions[0].columns[0].first;
+                                joinConditions.table2column = op.tableJoinConditions[0].columns[0].second;
+                            }
+                        }
+                    }
+                    var mappingObjectProp = {id: id, property: property, mappingType: op.uriColumn==null ? "ref" : "column",
+                                                column: op.uriColumn==null ? null : op.uriColumn.second, ref: ref, join: joinConditions};
+                    $scope.mapping.objectProperties.push(mappingObjectProp);
                     id = id+1;
                 }
                 if ($scope.mapping.objectProperties.length==0) {
@@ -3070,6 +3156,14 @@ var D2RQMappingCtrl = function($scope, $http, $q, flash, ServerErrorResponse, Ac
             }, function(response) {
                 //todo
             });
+
+        $q.all([dataRequest, ontoRequest]).then(function(values) {
+            for (var ind in $scope.mapping.objectProperties) {
+                if ($scope.mapping.objectProperties[ind].join.type=="linkingTable") {
+                    $scope.updateLinkingTable($scope.mapping.objectProperties[ind]);
+                }
+            }
+        });
 
         $scope.mapping.ptype = mapping.classMappingTable.uriColumn==null ? "patternColumns" : "uriColumn";
         $scope.mapping.uriColumn = mapping.classMappingTable.uriColumn;
@@ -3127,7 +3221,7 @@ var D2RQMappingCtrl = function($scope, $http, $q, flash, ServerErrorResponse, Ac
         $scope.mapping.objectProperties.splice(index, 1);
         if ($scope.mapping.objectProperties.length==0) {
             var emptyProp = angular.copy(emptyObjectProperty);
-            emptyProp.table1 = $scope.mapping.table;
+            emptyProp.join.table1 = $scope.mapping.table;
             $scope.mapping.objectProperties.push(emptyProp);
         }
     };
@@ -3210,12 +3304,19 @@ var D2RQMappingCtrl = function($scope, $http, $q, flash, ServerErrorResponse, Ac
                                 , range: "http://www.w3.org/2002/07/owl#Thing" //range is not really used in d2rq mapping generation (in case of mapping reference) byt must be not null
                                 , tableJoinConditions: []
                     };
-                    var joinCondRes = {table1:op.join.table1, table2:op.join.table2, columns:[], type:op.join.type};
-                    for (var jci in op.join.columns) {
-                        if (op.join.columns[jci].first!="" && op.join.columns[jci].first!=null && op.join.columns[jci].second!="" && op.join.columns[jci].second!=null)
-                            joinCondRes.columns.push(op.join.columns[jci]);
+                    if (op.join.table1column!=null && op.join.table1column!="" && op.join.table2column!=null && op.join.table2column!="") {
+                        if (op.join.linkingTable==null || op.join.linkingTable=="") {
+                            var joinCondRes = {table1:op.join.table1, table2:op.join.table2, columns:[{first:op.join.table1column, second:op.join.table2column}], type:"EQ"};
+                            p.tableJoinConditions.push(joinCondRes);
+                        } else {
+                            if (op.join.linkingTableColumn1!=null && op.join.linkingTableColumn1!="" && op.join.linkingTableColumn2!=null && op.join.linkingTableColumn2!="") {
+                                var joinCondRes1 = {table1:op.join.table1, table2:op.join.linkingTable, columns:[{first:op.join.table1column, second:op.join.linkingTableColumn1}], type:"EQ"};
+                                var joinCondRes2 = {table1:op.join.linkingTable, table2:op.join.table2, columns:[{first:op.join.linkingTableColumn2, second:op.join.table2column}], type:"EQ"};
+                                p.tableJoinConditions.push(joinCondRes1);
+                                p.tableJoinConditions.push(joinCondRes2);
+                            }
+                        }
                     }
-                    if (joinCondRes.columns.length>0) p.tableJoinConditions.push(joinCondRes);
                     mappingTable.objectProperties.push(p);
                 }
             }
@@ -3253,7 +3354,7 @@ var D2RQMappingCtrl = function($scope, $http, $q, flash, ServerErrorResponse, Ac
                 url: d2rqServiceUrl+"/mappings/" + $scope.mapping.id + "/update",
                 method: "POST",
                 dataType: "json",
-                data: {mappingTable: mappingTable},
+                data: {name: $scope.mapping.name, mappingTable: mappingTable},
                 headers: {"Content-Type":"application/json; charset=utf-8"}
             }).then(function(response) {
                 $scope.refreshMappingGroups().then(function(response) {
