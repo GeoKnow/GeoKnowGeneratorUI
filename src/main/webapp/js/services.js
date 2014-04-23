@@ -719,7 +719,7 @@ module.factory("LoginService", function($http, $location, $cookieStore, AccountS
                     $http.defaults.headers.common.Authorization = 'User ' + encodedUser + ' Pass ' + encodedPass;
                     $cookieStore.put('User', encodedUser);
                     $cookieStore.put('Pass', encodedPass);
-                    console.log($http.defaults.headers.common);
+                    //console.log($http.defaults.headers.common);
                     
                 }, function(response) {
                     //todo

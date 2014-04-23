@@ -3,7 +3,10 @@
 html, body{
 	height:100%;
 	font: .87em Helvetica, arial, freesans, clean, sans-serif;
-	overflow-y: scroll;
+}
+
+body{
+	overflow-y: auto;
 }
 
 #contents{
@@ -186,12 +189,11 @@ a.accordion-toggle:hover{
 }
 
 body.modal-open {
-	overflow-y: scroll;
 	margin: 0;
 }
 
 .modal {
-	overflow: auto;
+	overflow-y: hidden;
 }
 
 /* Forms */

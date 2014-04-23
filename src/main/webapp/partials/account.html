@@ -34,18 +34,24 @@
   <dt>Last access:</dt><dd>Today at 9:55 AM</dd>
   <dt>From countries:</dt><dd>Switzerland, France</dd>
 </dl-->
-
-    <dl class="dl-horizontal" ng-if="currentAccount.username">
-        <dt>Name:</dt><dd>{{currentAccount.username}}</dd>
-        <dt>E-mail:</dt><dd>{{currentAccount.email}}</dd>
-    </dl>
+<div class="col-lg-8">
+    <table class="table table-bordered" ng-if="currentAccount.username">
+    	<tr>
+        <td>Username:</td><td>{{currentAccount.username}}</td>
+        </tr>
+        <tr>
+        <td>E-mail address:</td><td>{{currentAccount.email}}</td>
+        </tr>
+    </table>
 
     <button type="button" class="btn-sm btn-success" data-toggle="modal" data-target="#modalChangePassword" ng-if="currentAccount.username">Change password</button>
-
+</div>
     <div class="modal fade" id="modalChangePassword">
+    <div class="modal-dialog">
+    <div class="modal-content">
         <form name="changePasswordForm" class="form-horizontal InputForm" role="form">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <button type="button" class="close" ng-click="close('#modalLogin')" aria-hidden="true">&times;</button>
                 <h5 class="modal-title green bold">Change password</h5>
             </div>
             <div class="modal-body">
@@ -70,11 +76,13 @@
             </div>
             <div class="modal-footer">
                 <button type="submit" class="btn-sm btn-success" ng-click="changePassword();" ng-disabled="changePasswordForm.$invalid">Change</button>
-                <button type="button" class="btn-sm btn-default" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn-sm btn-default" ng-click="close('#modalLogin')">Cancel</button>
             </div>
         </form>
     </div>
 
+</div>
+</div>
 </div>
 </div>
 

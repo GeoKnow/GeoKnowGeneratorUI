@@ -75,12 +75,15 @@ function StackMenuCtrl($scope) {
 
 function LoginCtrl($scope, flash, AccountService, LoginService, ServerErrorResponse, Base64) {
     $scope.currentAccount = angular.copy(AccountService.getAccount());
+    $scope.loggedIn = false;
     if($scope.currentAccount.user != null){
     	LoginService.login($scope.currentAccount.user, $scope.currentAccount.pass)
         .then(function(data) {
             $scope.currentAccount = angular.copy(AccountService.getAccount());
+            $scope.close('#modalLogin');
             $scope.login.username = null;
             $scope.login.password = null;
+            $scope.loggedIn = true;
         }, function(response) {
             flash.error = ServerErrorResponse.getMessage(response.status);
             $scope.login.username = null;
@@ -97,12 +100,17 @@ function LoginCtrl($scope, flash, AccountService, LoginService, ServerErrorRespo
         LoginService.login(Base64.encode($scope.login.username), Base64.encode($scope.login.password))
             .then(function(data) {
                 $scope.currentAccount = angular.copy(AccountService.getAccount());
+                $scope.close('#modalLogin');
                 $scope.login.username = null;
                 $scope.login.password = null;
+                if($scope.currentAccount.user != null){
+                	$scope.loggedIn = true;
+                }
             }, function(response) {
                 flash.error = ServerErrorResponse.getMessage(response.status);
                 $scope.login.username = null;
                 $scope.login.password = null;
+                $scope.loggedIn = false;
             });
     };
     
@@ -117,6 +125,7 @@ function LoginCtrl($scope, flash, AccountService, LoginService, ServerErrorRespo
         LoginService.logout()
             .then(function(data) {
                 $scope.currentAccount = angular.copy(AccountService.getAccount());
+                $scope.loggedIn = false;
             });
     };
 
@@ -316,34 +325,30 @@ app.controller('VirtuosoCtrl', function($scope, ConfigurationService, AccountSer
 *
 ***************************************************************************************************/
 
-app.controller('FaceteFormCtrl', function($scope, ConfigurationService, GraphService) {
+app.controller('FaceteFormCtrl', function($scope, ConfigurationService, GraphService, AccountService) {
 	//Settings for Facete
 
 	$scope.namedGraphs = [];
 	$scope.component = ConfigurationService.getComponent(":Facete");
 	var services = ConfigurationService.getComponentServices(":Facete");
-	$scope.facete = {
-		service   : ConfigurationService.getSPARQLEndpoint(),
-	 	dataset   : "",
-	};
 
 	$scope.refreshGraphList = function() {
         GraphService.getAccessibleGraphs(false, false, true).then(function(graphs) {
             $scope.namedGraphs = graphs;
-            $scope.facete.dataset = $scope.namedGraphs[0];
+            $scope.facete = {
+            		service   : ConfigurationService.getSPARQLEndpoint(),
+            	 	dataset   : $scope.namedGraphs[0].name,
+            	};
         });
     };
 
     $scope.refreshGraphList();
-	
 	$scope.url = "";
 
 	$scope.setUrl = function(){
 		$scope.url= services[0].serviceUrl + 
 								'?service-uri='+ $scope.facete.service+
-                '&default-graph-uri=' + $scope.facete.dataset.replace(':',ConfigurationService.getUriBase());
-
-
+                '&default-graph-uri=' + $scope.facete.dataset.name.replace(':',ConfigurationService.getUriBase());
 	};
 
 	$scope.$watch( function () { return AccountService.getUsername(); }, function () {

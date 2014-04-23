@@ -11,8 +11,10 @@
     ng-click="new();" data-toggle="modal" data-target="#modalEndpoint">Add new Endpoint</button>
 
   <div class="modal fade" id="modalEndpoint">
+  <div class="modal-dialog">
+    <div class="modal-content">
     <div class="modal-header">
-      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+      <button type="button" class="close" ng-click="close('#modalLogin')" aria-hidden="true">&times;</button>
       <h5 class="modal-title green bold">{{modaltitle}}</h5>
     </div>
     <div class="modal-body">
@@ -58,7 +60,9 @@
     </div>
     <div class="modal-footer">
       <button type="submit" class="btn-sm btn-success" ng-click="save()" ng-disabled="endpointForm.$invalid || isUnchanged(endpoint)">Save</button>
-      <button type="button" class="btn-sm btn-default" data-dismiss="modal" >Cancel</button>
+      <button type="button" class="btn-sm btn-default" ng-click="close('#modalLogin')">Cancel</button>
+    </div>
+    </div>
     </div>
   </div><!-- /.modal window -->
 
@@ -97,8 +101,10 @@
     ng-click="new();" data-toggle="modal" data-target="#modalDatabase">Add new Database</button>
 
   <div class="modal fade" id="modalDatabase">
+  <div class="modal-dialog">
+    <div class="modal-content">
     <div class="modal-header">
-      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+      <button type="button" class="close" ng-click="close('#modalLogin')" aria-hidden="true">&times;</button>
       <h5 class="modal-title green bold">{{modaltitle}}</h5>
     </div>
     <div class="modal-body">
@@ -180,7 +186,9 @@
     </div>
     <div class="modal-footer">
       <button type="submit" class="btn-sm btn-success" ng-click="save()" ng-disabled="databaseForm.$invalid || isUnchanged(database)">Save</button>
-      <button type="button" class="btn-sm btn-default" data-dismiss="modal">Cancel</button>
+      <button type="button" class="btn-sm btn-default" ng-click="close('#modalLogin')">Cancel</button>
+    </div>
+    </div>
     </div>
   </div>
 

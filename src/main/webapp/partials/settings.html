@@ -17,11 +17,17 @@
 	  
     <h3 class="green bold">Generator Settings</h3>
 
-		<dl class="dl-horizontal">
-      <dt>URI Base:</dt><dd>{{settings.uriBase}}</dd>
-      <dt>Settings Graph:</dt><dd>{{settings.settingsGraph}}</dd>
-      <dt>Generator Endpoint:</dt><dd>{{settings.endpointService}}</dd>
-    </dl>
+	<table class="table table-bordered" ng-if="currentAccount.username" style="width:60%">
+    	<tr>
+        <td>URI Base:</td><td>{{settings.uriBase}}</td>
+        </tr>
+        <tr>
+        <td>Settings Graph:</td><td>{{settings.settingsGraph}}</td>
+        </tr>
+        <tr>
+        <td>Generator Endpoint:</td><td>{{settings.endpointService}}</td>
+        </tr>
+    </table>
 <!--  			<div class="form-group">
 		    <label class="col-xs-2" for="uriBase">Uri base</label>
 		    <div class="col-xs-10">

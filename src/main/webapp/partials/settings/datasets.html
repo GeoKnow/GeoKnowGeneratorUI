@@ -5,9 +5,11 @@
   <button type="button" class="btn btn-success btn-large" data-toggle="modal" data-target="#modalGraph" ng-click="new();">Add new dataset</button>
 
   <div class="modal fade" id="modalGraph">
+  <div class="modal-dialog">
+    <div class="modal-content">
     <form name="graphForm" class="form-horizontal InputForm" role="form" novalidate>
       <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <button type="button" class="close" ng-click="close('#modalLogin')" aria-hidden="true">&times;</button>
         <h5 class="modal-title green bold">{{modaltitle}}</h5>
       </div>
 
@@ -90,9 +92,11 @@
       </div>
       <div class="modal-footer">
         <button type="submit" class="btn-sm btn-success" ng-click="save();" ng-disabled="graphForm.$invalid || isUnchanged(namedgraph)">Save</button>
-        <button type="button" class="btn-sm btn-default" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn-sm btn-default" ng-click="close('#modalLogin')">Cancel</button>
       </div>      
     </form>
+ 	</div>
+ 	</div>
  	</div>
 
   <h4>User Graphs</h4>
@@ -229,9 +233,11 @@
   <button type="button" class="btn btn-success btn-large" data-toggle="modal" data-target="#modalGroup" ng-click="newGroup();">Add new graph group</button>
 
   <div class="modal fade" id="modalGroup">
+  <div class="modal-dialog">
+    <div class="modal-content">
       <form name="groupForm" class="form-horizontal InputForm" role="form" novalidate>
           <div class="modal-header">
-              <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+              <button type="button" class="close" ng-click="close('#modalLogin')" aria-hidden="true">&times;</button>
               <h5 class="modal-title green bold">{{modaltitle}}</h5>
           </div>
 
@@ -287,9 +293,11 @@
           </div>
           <div class="modal-footer">
               <button type="submit" class="btn-sm btn-success" ng-click="saveGroup();" ng-disabled="groupForm.$invalid || isUnchanged(graphgroup)">Save</button>
-              <button type="button" class="btn-sm btn-default" data-dismiss="modal">Cancel</button>
+              <button type="button" class="btn-sm btn-default" ng-click="close('#modalLogin')">Cancel</button>
           </div>
       </form>
+      </div>
+      </div>
   </div>
 
   <h4>
