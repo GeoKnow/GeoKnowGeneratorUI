@@ -331,7 +331,7 @@ app.controller('VirtuosoCtrl', function($scope, ConfigurationService, AccountSer
 *
 ***************************************************************************************************/
 
-app.controller('FaceteFormCtrl', function($scope, ConfigurationService, GraphService) {
+app.controller('FaceteFormCtrl', function($scope, ConfigurationService, GraphService, AccountService) {
 	//Settings for Facete
 
 	$scope.namedGraphs = [];
