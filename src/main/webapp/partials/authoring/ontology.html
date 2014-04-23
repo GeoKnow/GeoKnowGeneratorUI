@@ -1,6 +1,36 @@
 <div ng-controller="OntologyCtrl">
 
-    <div class="modal fade" id="modalOntology">
+<div class="row below">
+    <h3 class="green bold">
+        <span class="btn-group">
+            <button type="button" class="btn btn-link reset" ng-click="refreshOntologies()">
+                <i class="glyphicon glyphicon-refresh" aria-hidden="true"></i>
+            </button>
+        </span>
+        Ontologies
+    </h3>
+
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>Action</th>
+            <th>URI</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="onto in ontologies">
+            <td>
+                <button type="button" class="btn btn-default btn-xs" ng-click="delete('{{onto}}')"><span class="glyphicon glyphicon-trash"></span></button>
+                <button type="button" class="btn btn-default btn-xs" data-toggle="modal" ng-click="setUrl('{{onto}}'); openModal();"><span class="glyphicon glyphicon-edit"></span></button>
+            </td>
+            <td>{{onto}}</td>
+        </tr>
+        </tbody>
+    </table>
+    
+    <button type="button" class="btn btn-primary btn-large" data-toggle="modal" data-target="#modalOntology" ng-click="new();">Add new ontology</button>
+
+<div class="modal fade" id="modalOntology">
     <div class="modal-dialog">
     <div class="modal-content">
         <div class="modal-header">
@@ -54,36 +84,6 @@
     </div>
     </div>
     </div>
-
-<div class="row below">
-    <h3 class="green bold">
-        <span class="btn-group">
-            <button type="button" class="btn btn-link reset" ng-click="refreshOntologies()">
-                <i class="glyphicon glyphicon-refresh" aria-hidden="true"></i>
-            </button>
-        </span>
-        Ontologies
-    </h3>
-
-    <table class="table table-striped">
-        <thead>
-        <tr>
-            <th>Action</th>
-            <th>URI</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr ng-repeat="onto in ontologies">
-            <td>
-                <button type="button" class="btn btn-default btn-xs" ng-click="delete('{{onto}}')"><span class="glyphicon glyphicon-trash"></span></button>
-                <button type="button" class="btn btn-default btn-xs" data-toggle="modal" ng-click="setUrl('{{onto}}'); openModal();"><span class="glyphicon glyphicon-edit"></span></button>
-            </td>
-            <td>{{onto}}</td>
-        </tr>
-        </tbody>
-    </table>
-    
-    <button type="button" class="btn btn-primary btn-large" data-toggle="modal" data-target="#modalOntology" ng-click="new();">Add new ontology</button>
 
     <div class="modal fade" id="fullModal">
     <div class="modal-dialog">

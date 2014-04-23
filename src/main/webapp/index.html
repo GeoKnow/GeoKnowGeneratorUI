@@ -44,7 +44,7 @@
 	                        
 	                        <ul class="nav navbar-nav navbar-right">
                             <li>
-                            <div class="navbar-form" ng-show="currentAccount.username">
+                            <div ng-show="currentAccount.username">
                                         <span class="strong">You are logged in as <strong>{{currentAccount.username}}</strong></span> <button class="btn-sm btn-primary" ng-click="logout()">Logout</button>
                             </div>
                             <div ng-hide="loggedIn">

@@ -8,7 +8,7 @@ html, body{
 }
 
 body{
-	overflow-y: hidden;
+	overflow-y: auto;
 }
 
 #contents{
@@ -331,6 +331,7 @@ form{
 }
 
 /* Modal dialogs */
+/*
 .modal-body {
     overflow: auto;
 	font: .87em Helvetica, arial, freesans, clean, sans-serif;
@@ -340,3 +341,4 @@ form{
     margin-top: 0px !important;
     width: 1100px !important;
 }
+*/
