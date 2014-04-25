@@ -2719,6 +2719,8 @@ var D2RQMappingCtrl = function($scope, $http, $q, flash, ServerErrorResponse, Ac
     $scope.newMappingGroup = function() {
         $scope.mappingGroupForm.$setPristine();
         $scope.mgroup = angular.copy(emptyMappingGroup);
+        $scope.ontologies = [];
+        $scope.datasources = [];
         adding = false;
         $http.get(d2rqServiceUrl+"/ontologies/metadata/get")
             .then(function(response) {
@@ -2897,7 +2899,7 @@ var D2RQMappingCtrl = function($scope, $http, $q, flash, ServerErrorResponse, Ac
             headers: {"Content-Type":"application/json; charset=utf-8"}
         }).then(function(response) {
             var result = response.data;
-            var columns = []
+            var columns = [];
             for (var ind in result) {
                 columns.push(result[ind].column);
             }
@@ -2966,6 +2968,10 @@ var D2RQMappingCtrl = function($scope, $http, $q, flash, ServerErrorResponse, Ac
 
         $scope.mappingForm.$setPristine();
         $scope.mapping = angular.copy(emptyMapping);
+
+        $scope.ontologyClasses = [];
+        $scope.tables = [];
+        $scope.tableColumns = [];
 
         $scope.mapping.group = mappingGroup;
 
