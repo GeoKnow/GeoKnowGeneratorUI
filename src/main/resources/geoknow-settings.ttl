@@ -27,7 +27,7 @@
 # #######################################################################################
 
 :GeoKnowGeneratorService a sd:Service;
-    sd:endpoint <http://localhost:8890/sparql>;
+    sd:endpoint <http://10.0.0.85:8890/sparql>;
     sd:supportedLanguage sd:SPARQL11Query ;
     sd:defaultDataset :default-dataset;
     .
@@ -53,7 +53,7 @@
               foaf:homepage <http://generator.geoknow.eu/#/settings>; 
               dcterms:modified "2013-09-12"^^xsd:date;
               dcterms:created "2013-09-12"^^xsd:date;
-              void:sparqlEndpoint <http://localhost:8890/sparql>;
+              void:sparqlEndpoint <http://10.0.0.85:8890/sparql>;
           ];
 .
 
@@ -76,7 +76,7 @@
                 rdfs:label "Virtuoso Generator Conductor"^^xsd:string ;
                 lds:dbPassword "dba"^^xsd:string ;
                 lds:dbUser "dba"^^xsd:string ;
-                lds:serviceUrl <http://localhost:8890/conductor>
+                lds:serviceUrl <http://10.0.0.85:8890/conductor>
               ] ;
       lds:providesService :VirtuosoGeneratorEndpoint ;
       lds:version "7.0"^^xsd:string ;
@@ -87,14 +87,14 @@
       rdfs:label "Virtuoso Generator Endpoint"^^xsd:string ;
       ## This is to be the same URL as the configuration of the Generator
       ## TODO: find a way to link both
-      lds:serviceUrl <http://localhost:8890/sparql> .
+      lds:serviceUrl <http://10.0.0.85:8890/sparql> .
       
 :Sparqlify
       a       lds:StackComponent ;
       rdfs:label "Sparqlify"^^xsd:string ;
       lds:providesService
               [ a       lds:ExplorationService ;
-                lds:serviceUrl <http://localhost:8080/sparqlify/>
+                lds:serviceUrl <http://10.0.0.85:8080/sparqlify/>
               ] ;
       lds:version "0.1-SNAPSHOT"^^xsd:string ;
       foaf:homepage <http://aksw.org/Projects/Sparqlify.html> .
@@ -144,7 +144,7 @@
       rdfs:label "OntoWiki"^^xsd:string ;
       lds:providesService
               [ a       lds:AuthoringService ;
-                lds:serviceUrl <http://localhost/ontowiki>
+                lds:serviceUrl <http://10.0.0.85/ontowiki>
               ] ;
       lds:version "0.9.10-1"^^xsd:string ;
       foaf:homepage <http://aksw.org/Projects/OntoWiki.html> .

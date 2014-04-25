@@ -14,17 +14,15 @@
   </div>
   <!-- Modal -->
   <div class="modal fade" id="fullModal" >
-  <div class="modal-dialog">
     <div class="modal-content">
     <div class="modal-header">
-      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+      <button type="button" class="close" ng-click="close('#modalLogin')" aria-hidden="true">&times;</button>
       <h5 class="modal-title green bold">{{component.label}}</h5>
     </div>
     <div class="modal-body">
       <modal-iframe></modal-iframe>
     </div>     
   </div><!-- /.modal -->
-  </div>
   </div>
 </div>
 

@@ -115,11 +115,14 @@ function LoginCtrl($scope, flash, AccountService, LoginService, ServerErrorRespo
                 $scope.close('#modalLogin');
                 $scope.login.username = null;
                 $scope.login.password = null;
-                $scope.loggedIn = true;
+                if($scope.currentAccount.user != null){
+                	$scope.loggedIn = true;
+                }
             }, function(response) {
                 flash.error = ServerErrorResponse.getMessage(response.status);
                 $scope.login.username = null;
                 $scope.login.password = null;
+                $scope.loggedIn = false;
             });
     };
     
@@ -328,7 +331,7 @@ app.controller('VirtuosoCtrl', function($scope, ConfigurationService, AccountSer
 *
 ***************************************************************************************************/
 
-app.controller('FaceteFormCtrl', function($scope, ConfigurationService, GraphService) {
+app.controller('FaceteFormCtrl', function($scope, ConfigurationService, GraphService, AccountService) {
 	//Settings for Facete
 
 	$scope.namedGraphs = [];
