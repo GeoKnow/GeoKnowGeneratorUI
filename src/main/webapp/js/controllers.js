@@ -33,24 +33,29 @@ function StackMenuCtrl($scope) {
 	      title: "Extraction and Loading",
 	      id:"extraction-loading",
 	      items: [
-	        {name: 'Import RDF data', route:'#/home/extraction-and-loading/import-rdf',  url:'/home/extraction-and-loading/import-rdf' },
-	        {name: 'Sparqlify Extraction', route:'#/home/extraction-and-loading/sparqlify', url:'/home/extraction-and-loading/sparqlify' },
-	        {name: 'TripleGeo Extraction', route:'#/home/extraction-and-loading/triplegeo', url:'/home/extraction-and-loading/triplegeo' },
-	        {name: 'D2RQ Extraction', route:'#/home/extraction-and-loading/d2rq', url:'/home/extraction-and-loading/d2rq' }]
+//	        {name: 'Import RDF data', route:'#/home/extraction-and-loading/import-rdf',  url:'/home/extraction-and-loading/import-rdf' },
+//	        {name: 'Sparqlify Extraction', route:'#/home/extraction-and-loading/sparqlify', url:'/home/extraction-and-loading/sparqlify' },
+//	        {name: 'TripleGeo Extraction', route:'#/home/extraction-and-loading/triplegeo', url:'/home/extraction-and-loading/triplegeo' },
+//	        {name: 'D2RQ Extraction', route:'#/home/extraction-and-loading/d2rq', url:'/home/extraction-and-loading/d2rq' },
+            {name: 'Upload new Files', route:'#/home/extraction-and-loading/upload-file', url:'/home/extraction-and-loading/upload-file' }]
 	    },
+	    /*
 	    {
 		      title: "Storage and Querying",
 		      id:"storage-querying",
 		      items: [
 		       {name: 'Virtuoso', route:'#/home/querying-and-exploration/virtuoso', url:'/home/querying-and-exploration/virtuoso' }]
 		    },
+		    */
 	    {
 	      title: "Authoring",
 	      id:"authoring",
 	      items: [
-	       {name: 'OntoWiki', route:'#/home/authoring/ontowiki', url:'/home/authoring/ontowiki' },
-	       {name: "Ontologies", route:'#/home/authoring/ontology', url:'/home/authoring/ontology' }]
+//	       {name: 'OntoWiki', route:'#/home/authoring/ontowiki', url:'/home/authoring/ontowiki' },
+	       {name: "Thesaurus Management", route:'#/home/authoring/ontology', url:'/home/authoring/ontology' },
+	       {name: "Edit Uploads", route:'#/home/authoring/edit-uploads', url:'/home/authoring/edit-uploads' }]
 	    },
+	    /*
 	    {
 		    title: "Linking and Fusion",
 		    id:"linking",
@@ -63,12 +68,14 @@ function StackMenuCtrl($scope) {
 			 items: [
 			   {name: 'GeoLift', route:'#/home/enriching-and-cleaning/geolift', url:'/home/enriching-and-cleaning/geolift' }]
 		  },
+		  */
 		{
 		      title: "Exploration",
 		      id:"querying-exploration",
 		      items: [
-		       {name: 'Facete', route:'#/home/querying-and-exploration/facete', url:'/home/querying-and-exploration/facete' },
-		       {name: 'Mappify', route:'#/home/querying-and-exploration/mappify', url:'/home/querying-and-exploration/mappify' }]
+//		       {name: 'Facete', route:'#/home/querying-and-exploration/facete', url:'/home/querying-and-exploration/facete' },
+//		       {name: 'Mappify', route:'#/home/querying-and-exploration/mappify', url:'/home/querying-and-exploration/mappify' },
+               {name: 'Search', route:'#/home/querying-and-exploration/search', url:'/home/querying-and-exploration/search' }]
 		    }
 	  ];
 

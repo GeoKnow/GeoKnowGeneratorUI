@@ -39,14 +39,17 @@ app.config(function($routeSegmentProvider, $routeProvider)
         .when('/home/extraction-and-loading/d2rq', 'default.d2rq.mapping')
         .when('/home/extraction-and-loading/d2rq/mapping', 'default.d2rq.mapping')
         .when('/home/extraction-and-loading/d2rq/task', 'default.d2rq.task')
+        .when('/home/extraction-and-loading/upload-file', 'default.upload-file')
         .when('/home/storage-querying/virtuoso', 'default.virtuoso')
         .when('/home/querying-and-exploration/geospatial', 'default.geospatial')
      /*   .when('/home/querying-and-exploration/googlemap', 'default.googlemap') */
         .when('/home/querying-and-exploration/facete', 'default.facete')
         .when('/home/querying-and-exploration/mappify', 'default.mappify')
+        .when('/home/querying-and-exploration/search', 'default.search')
         .when('/home/querying-and-exploration/virtuoso', 'default.virtuoso')
         .when('/home/authoring/ontowiki', 'default.ontowiki')
         .when('/home/authoring/ontology', 'default.ontology')
+        .when('/home/authoring/edit-uploads', 'default.edit-uploads')
         .when('/home/linking/limes', 'default.limes')
         .when('/home/enriching-and-cleaning/geolift', 'default.geolift')
 
@@ -120,6 +123,8 @@ app.config(function($routeSegmentProvider, $routeProvider)
                                 }
                             })
                     .up()
+                .segment('upload-file', {
+                    templateUrl: 'partials/extraction-and-loading/upload-file.html' })
                 .segment('geospatial', {
                     templateUrl: 'partials/querying-and-exploration/geospatial.html'})
      /*           .segment('googlemap', {
@@ -128,6 +133,8 @@ app.config(function($routeSegmentProvider, $routeProvider)
                     templateUrl: 'partials/querying-and-exploration/facete.html'})
                 .segment('mappify', {
                     templateUrl: 'partials/querying-and-exploration/mappify.html'})
+                .segment('search', {
+                    templateUrl: 'partials/querying-and-exploration/search.html'})
                 .segment('virtuoso', {
                     templateUrl: 'partials/querying-and-exploration/virtuoso.html'})
                 .segment('ontowiki', {
@@ -143,6 +150,8 @@ app.config(function($routeSegmentProvider, $routeProvider)
                             }
                         }
                     })
+                .segment('edit-uploads', {
+                    templateUrl: 'partials/authoring/edit-uploads.html' })
                 .segment('geolift', {
                     templateUrl: 'partials/enriching-and-cleaning/geolift.html' })
                 .segment('limes', {
