@@ -343,3 +343,9 @@ form{
     width: 1100px !important;
 }
 */
+
+.nav, .pagination, .carousel, .panel-title a { cursor: pointer; }
+
+.scrollable {
+    overflow: auto;
+}

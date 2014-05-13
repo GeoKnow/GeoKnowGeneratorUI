@@ -1248,3 +1248,179 @@ module.factory("D2RQService", function($http, $q, ConfigurationService) {
         getAllTasks         : getAllTasks
     };
 });
+
+module.factory("DocumentsService", function($http, $q, Config) {
+    var GRAPH = Config.getDocumentsGraph();
+
+    var documents = {};
+    var documentsLoaded = false;
+
+    var projects = {};
+    var projectsLoaded = false;
+
+    var readDocuments = function() {
+        var requestData = {
+            format: "application/sparql-results+json",
+            query: "prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>"
+                    + " prefix acc: <" + Config.getDocumentsNS() + ">"
+                    + " SELECT ?s ?p ?o FROM <" + GRAPH + "> "
+                    + " WHERE {?s ?p ?o . ?s rdf:type acc:AccDocument . FILTER(NOT EXISTS {?s acc:pageNumber ?pn}) } "
+                    + " ORDER BY ?s ?p ?o",
+            mode: "settings"
+        };
+        return $http.post("RdfStoreProxy", $.param(requestData)).then(function(response) {
+            documents = Config.parseSparqlResults(response.data);
+            documentsLoaded = true;
+            return documents;
+        });
+    };
+
+    var reloadDocuments = function() {
+        var documentsPromise = readDocuments();
+        var projectsPromise = readProjects();
+        return $q.all([documentsPromise, projectsPromise]).then(function(data) {
+            return getAllDocuments();
+        });
+    };
+
+    var getAllDocuments = function() {
+        var results = [];
+        for (var resource in documents) {
+            var res = getDocument(resource);
+            results.push(res);
+        }
+        return results;
+    };
+
+    var getDocument = function(uri) {
+        var doc = documents[uri];
+        var res = {
+            uri: uri,
+            uuid: doc["acc:uuid"][0],
+            accDocumentNumber: doc["acc:accDocumentNumber"][0],
+            accDocumentIteration: doc["acc:accDocumentIteration"][0],
+            hasProject: [],
+            documentType: doc["acc:documentType"][0],
+            ownerDocumentName: doc["acc:ownerDocumentName"]==undefined ? null : doc["acc:ownerDocumentName"][0],
+            ownerDocumentRevision: doc["acc:ownerDocumentRevision"]==undefined ? null : doc["acc:ownerDocumentRevision"][0],
+            ownerDocumentRevisionData: doc["acc:ownerDocumentRevisionData"]==undefined ? null : doc["acc:ownerDocumentRevisionData"][0],
+            isApplicable: doc["acc:isApplicable"][0],
+            accDescription: doc["acc:accDescription"][0],
+            accNote: doc["acc:accNote"]==undefined ? null : doc["acc:accNote"][0],
+            dateReceived: doc["acc:dateReceived"][0],
+            uploader: doc["acc:uploader"][0],
+            dateUploaded: doc["acc:dateUploaded"][0]
+        };
+        if (res.isApplicable=="1") res.isApplicable = true;
+        else if (res.isApplicable=="0") res.isApplicable = false;
+        for (var ind in doc["acc:hasProject"]) {
+            var projUri = doc["acc:hasProject"][ind];
+            var proj = {
+                uri: projUri,
+                name: projects[projUri]["acc:name"][0]
+            };
+            res.hasProject.push(proj);
+        }
+        return res;
+    };
+
+    var deleteDocument = function(id) {
+        var query = "prefix acc: <" + Config.getDocumentsNS() + "> WITH <" + GRAPH + "> DELETE {?s ?p ?o} WHERE {?s acc:uuid \"" + id + "\" . ?s ?p ?o .}";
+        var requestData = {
+            format: "application/sparql-results+json",
+            query: query,
+            mode: "settings"
+        };
+        return $http.post("RdfStoreProxy", $.param(requestData));
+    };
+
+    var updateDocument = function(document) {
+        var hasProjectTriples = "";
+        for (var ind in document.hasProject) {
+            hasProjectTriples += " ?s acc:hasProject <" + document.hasProject[ind].uri + "> . ";
+        }
+        var query = "prefix acc: <" + Config.getDocumentsNS() + "> "
+                    + " WITH <" + GRAPH + "> "
+                    + " DELETE {?s acc:accDocumentNumber ?adn . "
+                            + " ?s acc:accDocumentIteration ?adi . "
+                            + " ?s acc:hasProject ?proj . "
+                            + " ?s acc:documentType ?dt . "
+                            + " ?s acc:ownerDocumentName ?odn . "
+                            + " ?s acc:ownerDocumentRevision ?odr . "
+                            + " ?s acc:ownerDocumentRevisionData ?odrd . "
+                            + " ?s acc:isApplicable ?a . "
+                            + " ?s acc:accDescription ?descr . "
+                            + " ?s acc:accNote ?note . "
+                            + " ?s acc:dateReceived ?dr .} "
+                    + " INSERT {?s acc:accDocumentNumber \"" + document.accDocumentNumber + "\" . "
+                            + " ?s acc:accDocumentIteration \"" + document.accDocumentIteration + "\" . "
+                            + hasProjectTriples
+                            + " ?s acc:documentType \"" + document.documentType + "\" . "
+                            + (document.ownerDocumentName==null || document.ownerDocumentName=="" ? "" : " ?s acc:ownerDocumentName \"" + document.ownerDocumentName + "\" . ")
+                            + (document.ownerDocumentRevision==null || document.ownerDocumentRevision=="" ? "" : " ?s acc:ownerDocumentRevision \"" + document.ownerDocumentRevision + "\" . ")
+                            + (document.ownerDocumentRevisionData==null || document.ownerDocumentRevisionData=="" ? "" : " ?s acc:ownerDocumentRevisionData \"" + document.ownerDocumentRevisionData + "\" . ")
+                            + " ?s acc:isApplicable \"" + document.isApplicable + "\" . "
+                            + " ?s acc:accDescription \"" + document.accDescription + "\" . "
+                            + (document.accNote==null || document.accNote=="" ? "" : " ?s acc:accNote \"" + document.accNote + "\" . ")
+                            + " ?s acc:dateReceived \"" + document.dateReceived + "\" .} "
+                    + " WHERE {?s acc:uuid \"" + document.uuid + "\" . "
+                            + " ?s acc:accDocumentNumber ?adn . "
+                            + " ?s acc:accDocumentIteration ?adi . "
+                            + " ?s acc:hasProject ?proj . "
+                            + " ?s acc:documentType ?dt . "
+                            + " optional {?s acc:ownerDocumentName ?odn .} "
+                            + " optional {?s acc:ownerDocumentRevision ?odr .} "
+                            + " optional {?s acc:ownerDocumentRevisionData ?odrd .} "
+                            + " ?s acc:isApplicable ?a . "
+                            + " ?s acc:accDescription ?descr . "
+                            + " optional {?s acc:accNote ?note .} "
+                            + " ?s acc:dateReceived ?dr .} ";
+        var requestData = {
+            format: "application/sparql-results+json",
+            query: query,
+            mode: "settings"
+        };
+        return $http.post("RdfStoreProxy", $.param(requestData));
+    };
+
+    var readProjects = function() {
+        var requestData = {
+            format: "application/sparql-results+json",
+            query: "prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n"
+                    + "prefix acc: <" + Config.getDocumentsNS() + ">\n"
+                    + "SELECT ?s ?p ?o FROM <" + GRAPH + "> "
+                    + " WHERE { ?s ?p ?o . ?s rdf:type acc:AccProject } "
+                    + " ORDER BY ?s ?p ?o",
+            mode: "settings"
+        };
+        return $http.post("RdfStoreProxy", $.param(requestData)).then(function(response) {
+            projects = Config.parseSparqlResults(response.data);
+            projectsLoaded = true;
+            return projects;
+        });
+    };
+
+    var getAllProjects = function() {
+        var results = [];
+        for (var resource in projects) {
+            var proj = projects[resource];
+            var res = {
+                    uri: resource,
+                    name: proj["acc:name"][0]
+            };
+            results.push(res);
+        }
+        return results;
+    };
+
+    return {
+        readDocuments   : readDocuments,
+        reloadDocuments : reloadDocuments,
+        getAllDocuments : getAllDocuments,
+        getDocument     : getDocument,
+        deleteDocument  : deleteDocument,
+        updateDocument  : updateDocument,
+        readProjects    : readProjects,
+        getAllProjects  : getAllProjects
+    };
+});

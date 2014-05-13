@@ -151,7 +151,16 @@ app.config(function($routeSegmentProvider, $routeProvider)
                         }
                     })
                 .segment('edit-uploads', {
-                    templateUrl: 'partials/authoring/edit-uploads.html' })
+                    templateUrl: 'partials/authoring/edit-uploads.html',
+                    resolve: {
+                            documents: function(DocumentsService) {
+                                return DocumentsService.readDocuments();
+                            },
+                            projects: function(DocumentsService) {
+                                return DocumentsService.readProjects();
+                            }
+                        }
+                    })
                 .segment('geolift', {
                     templateUrl: 'partials/enriching-and-cleaning/geolift.html' })
                 .segment('limes', {

@@ -1,3 +1,178 @@
-<div>
+<div ng-controller="UploadedDocsCtrl">
     <h3 class="green bold">Edit Uploads</h3>
+
+    <h4>
+        <span class="btn-group">
+            <button type="button" class="btn btn-link reset" ng-click="refreshDocuments()">
+                <i class="glyphicon glyphicon-refresh" aria-hidden="true"></i>
+            </button>
+        </span>
+        Uploaded Documents
+    </h4>
+
+    Search: <input ng-model="searchText" ng-change="filter(searchText)">
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>Action</th>
+            <th>Id</th>
+            <th>Project Name</th>
+            <th>Uploaded</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="d in curPageDocs">
+            <td>
+                <button type="button" class="btn btn-default btn-xs" ng-click="delete('{{d.uuid}}')"><span class="glyphicon glyphicon-trash"></span></button>
+                <button type="button" class="btn btn-default btn-xs" data-toggle="modal" data-target="#modalDocument" ng-click="edit('{{d.uri}}')"><span class="glyphicon glyphicon-edit"></span></button>
+            </td>
+            <td>{{d.accDocumentNumber}}-{{d.accDocumentIteration}}</td>
+            <td>
+                <ul class="list-unstyled">
+                    <li ng-repeat="project in d.hasProject">{{project.name}}</li>
+                </ul>
+            </td>
+            <td>{{d.dateUploaded}}</td>
+        </tr>
+        </tbody>
+    </table>
+    <pagination total-items="totalDocs" items-per-page="itemsPerPage" page="curPageNum" max-size="5" class="pagination-sm" boundary-links="true" rotate="false" num-pages="numPages"></pagination>
+
+
+    <div class="modal fade scrollable" id="modalDocument">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form name="documentForm" class="form-horizontal InputForm" role="form" novalidate>
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h5 class="modal-title green bold">Edit Document</h5>
+                    </div>
+
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="number" class="col-lg-4 control-label">accDocumentNumber</label>
+                            <div class="col-lg-6">
+                                <input type="text" class="form-control" id="number" ng-model="document.accDocumentNumber" required />
+                                <div class="error" ng-show="documentForm.number.$dirty && documentForm.number.$invalid">Invalid:
+                                    <span ng-show="documentForm.number.$error.required">Specify ACC document number</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="iteration" class="col-lg-4 control-label">accDocumentIteration</label>
+                            <div class="col-lg-6">
+                                <input type="text" class="form-control" id="iteration" ng-model="document.accDocumentIteration" required />
+                                <div class="error" ng-show="documentForm.iteration.$dirty && documentForm.iteration.$invalid">Invalid:
+                                    <span ng-show="documentForm.iteration.$error.required">Specify ACC document iteration</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="row">
+                                <label class="col-lg-4 control-label">Assigned projects</label>
+                                <div class="col-lg-6">
+                                    <table class="table table-striped">
+                                        <!--tr>
+                                            <th>Project</th>
+                                            <th>Action</th>
+                                        </tr-->
+                                        <tr ng-repeat="p in document.hasProject">
+                                            <td>
+                                                <p class="form-control-static">{{p.name}}</p>
+                                            </td>
+                                            <td>
+                                                <button type="button" class="btn btn-default btn-xs" ng-click="removeProject(p)"><span class="glyphicon glyphicon-remove"></span></button>
+                                            </td>
+                                        </tr>
+                                        <tr ng-repeat="np in document.newAssignedProjects">
+                                            <td>
+                                                <select ng-model="np.project" ng-options="p as p.name for p in projects | filter:notAssigned | orderBy:'name'" ng-change="assignProject()"></select>
+                                            </td>
+                                            <td></td>
+                                        </tr>
+                                    </table>
+                                    <div class="error" ng-show="document.hasProject.length==0">Invalid:
+                                        <span>At least one assigned document expected</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="type" class="col-lg-4 control-label">documentType</label>
+                            <div class="col-lg-6">
+                                <input type="text" class="form-control" id="type" ng-model="document.documentType" required />
+                                <div class="error" ng-show="documentForm.type.$dirty && documentForm.type.$invalid">Invalid:
+                                    <span ng-show="documentForm.type.$error.required">Specify document type</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="name" class="col-lg-4 control-label">ownerDocumentName</label>
+                            <div class="col-lg-6">
+                                <input type="text" class="form-control" id="name" ng-model="document.ownerDocumentName" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="revision" class="col-lg-4 control-label">ownerDocumentRevision</label>
+                            <div class="col-lg-6">
+                                <input type="text" class="form-control" id="revision" ng-model="document.ownerDocumentRevision" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="data" class="col-lg-4 control-label">ownerDocumentRevisionData</label>
+                            <div class="col-lg-6">
+                                <input type="text" class="form-control" id="data" ng-model="document.ownerDocumentRevisionData" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="applicable" class="col-lg-4 control-label">isApplicable </label>
+                            <div class="col-lg-6">
+                                <input type="checkbox" id="applicable" ng-model="document.isApplicable" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="description" class="col-lg-4 control-label">accDescription</label>
+                            <div class="col-lg-6">
+                                <input type="text" class="form-control" id="description" ng-model="document.accDescription" required />
+                                <div class="error" ng-show="documentForm.description.$dirty && documentForm.description.$invalid">Invalid:
+                                    <span ng-show="documentForm.description.$error.required">Specify description</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="note" class="col-lg-4 control-label">accNote</label>
+                            <div class="col-lg-6">
+                                <input type="text" class="form-control" id="note" ng-model="document.accNote" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="received" class="col-lg-4 control-label">dateReceived</label>
+                            <div class="col-lg-6">
+                                <input type="text" class="form-control" id="received" ng-model="document.dateReceived" required />
+                                <div class="error" ng-show="documentForm.received.$dirty && documentForm.received.$invalid">Invalid:
+                                    <span ng-show="documentForm.received.$error.required">Specify received date</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-4 control-label">uploader</label>
+                            <div class="col-lg-6">
+                                <p class="form-control-static">{{document.uploader}}</p>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-4 control-label">dateUploaded</label>
+                            <div class="col-lg-6">
+                                <p class="form-control-static">{{document.dateUploaded}}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn-sm btn-primary" ng-click="save();" ng-disabled="documentForm.$invalid || document.hasProject.length==0 || isUnchanged(document)">Save</button>
+                        <button type="button" class="btn-sm btn-default" data-dismiss="modal">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>

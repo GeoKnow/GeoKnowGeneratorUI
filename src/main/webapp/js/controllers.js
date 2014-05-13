@@ -3393,3 +3393,83 @@ var D2RQMappingCtrl = function($scope, $http, $q, flash, ServerErrorResponse, Ac
         return $scope.isNew || mapping.id != $scope.mapping.id;
     };
 };
+
+var UploadedDocsCtrl = function($scope, filterFilter, DocumentsService) {
+    $scope.documents = DocumentsService.getAllDocuments();
+    $scope.projects = DocumentsService.getAllProjects();
+
+    $scope.filteredDocuments = angular.copy($scope.documents);
+
+    $scope.curPageNum = 1;
+    $scope.itemsPerPage = 5;
+    $scope.curPageDocs = [];
+    $scope.totalDocs = $scope.filteredDocuments.length;
+
+    var fillPage = function() {
+        $scope.curPageDocs = [];
+        for (var i = ($scope.curPageNum-1)*$scope.itemsPerPage; i < Math.min($scope.curPageNum*$scope.itemsPerPage, $scope.filteredDocuments.length); i++) {
+            $scope.curPageDocs.push($scope.filteredDocuments[i]);
+        }
+    };
+
+    fillPage();
+
+    $scope.$watch('curPageNum', function() {
+        fillPage();
+    }, true);
+
+    $scope.filter = function(text) {
+        $scope.filteredDocuments = filterFilter($scope.documents, text);
+        $scope.totalDocs = $scope.filteredDocuments.length;
+        fillPage();
+    };
+
+    $scope.refreshDocuments = function() {
+        DocumentsService.reloadDocuments().then(function(result) {
+            $scope.documents = result;
+            $scope.filteredDocuments = angular.copy($scope.documents);
+            $scope.totalDocs = $scope.filteredDocuments.length;
+            fillPage();
+            $scope.projects = DocumentsService.getAllProjects();
+        });
+    };
+
+    $scope.edit = function(uri) {
+        $scope.document = angular.copy(DocumentsService.getDocument(uri));
+        $scope.document.newAssignedProjects = [{project: null}];
+    };
+
+    $scope.save = function() {
+        DocumentsService.updateDocument($scope.document).then(function(response) {
+            $scope.refreshDocuments();
+            $('#modalDocument').modal('hide');
+        });
+    };
+
+    $scope.delete = function(id) {
+        DocumentsService.deleteDocument(id).then(function(response) {
+            $scope.refreshDocuments();
+        });
+    };
+
+    $scope.removeProject = function(project) {
+        var index = $scope.document.hasProject.indexOf(project);
+        if (index > -1) $scope.document.hasProject.splice(index, 1);
+    };
+
+    $scope.assignProject = function() {
+        var project = $scope.document.newAssignedProjects[0].project;
+        if (project != null && $scope.document.hasProject.indexOf(project) == -1) {
+            $scope.document.hasProject.push(project);
+            $scope.document.newAssignedProjects = [{project: null}];
+        }
+    };
+
+    $scope.notAssigned = function(project) {
+        for (var ind in $scope.document.hasProject) {
+            if ($scope.document.hasProject[ind].uri==project.uri)
+                return false;
+        }
+        return true;
+    };
+};

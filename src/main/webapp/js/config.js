@@ -42,6 +42,8 @@ angular.module("app.configuration", [])
         var DEFAULT_GRAPH_URI = "http://generator.geoknow.eu/resource/settingsGraph";
         var GRAPH_URI = DEFAULT_GRAPH_URI;
         var GROUPS_GRAPH_URI = "http://generator.geoknow.eu/resource/graphGroups";
+        var DOCUMENTS_GRAPH = "http://acc.ontos.com/dataschema/v1/schema";
+        var DOCUMENTS_NS = "http://acc.ontos.com/dataschema/v1/schema#";
 
         var namespaces =
         {
@@ -55,7 +57,8 @@ angular.module("app.configuration", [])
                 "http://www.w3.org/2000/01/rdf-schema#"            : "rdfs:",
                 "http://www.w3.org/ns/sparql-service-description#" : "sd:",
                 "http://rdfs.org/ns/void#"                         : "void:",
-                "http://www.w3.org/ns/auth/acl#"                   : "acl:"
+                "http://www.w3.org/ns/auth/acl#"                   : "acl:",
+                "http://acc.ontos.com/dataschema/v1/schema#"       : "acc:"
         };
         namespaces[NS] = ":";
 
@@ -354,6 +357,14 @@ angular.module("app.configuration", [])
             return GROUPS_GRAPH_URI;
         };
 
+        var getDocumentsGraph = function() {
+            return DOCUMENTS_GRAPH;
+        };
+
+        var getDocumentsNS = function() {
+            return DOCUMENTS_NS;
+        };
+
         return {
                 setEndpoint         : setEndpoint,
                 getEndpoint         : getEndpoint,
@@ -370,6 +381,8 @@ angular.module("app.configuration", [])
                 setGraphPermissions : setGraphPermissions,
                 parseSparqlResults  : parseSparqlResults,
                 getPublicEndpoint   : getPublicEndpoint,
-                getGroupsGraph      : getGroupsGraph
+                getGroupsGraph      : getGroupsGraph,
+                getDocumentsGraph   : getDocumentsGraph,
+                getDocumentsNS      : getDocumentsNS
         };
 });
