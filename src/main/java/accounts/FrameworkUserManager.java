@@ -23,11 +23,14 @@ public class FrameworkUserManager implements UserManager {
     private String prefixes = null;
     private UserManager rdfStoreUserManager;
     private RdfStoreManager rdfStoreManager;
-    private FrameworkConfiguration frameworkConfig = FrameworkConfiguration.getInstance();
+    private FrameworkConfiguration frameworkConfig;
+    
+//    private FrameworkConfiguration frameworkConfig = FrameworkConfiguration.getInstance();
 
-    public FrameworkUserManager(UserManager rdfStoreUserManager, RdfStoreManager rdfStoreManager) {
+    public FrameworkUserManager(UserManager rdfStoreUserManager, RdfStoreManager rdfStoreManager, FrameworkConfiguration frameworkConfig) {
         this.rdfStoreUserManager = rdfStoreUserManager;
         this.rdfStoreManager = rdfStoreManager;
+        this.frameworkConfig = frameworkConfig;
     }
 
     public void createUser(String name, String password, String email) throws Exception {
@@ -431,7 +434,7 @@ public class FrameworkUserManager implements UserManager {
         if (username==null || username.isEmpty())
             throw new IllegalArgumentException("username cannot be null");
         ObjectPair<String, String> rdfStoreUser = getRdfStoreUser(username);
-        return new SecureRdfStoreManagerImpl(frameworkConfig.getSparqlEndpoint(), rdfStoreUser.getFirst(), rdfStoreUser.getSecond());
+        return new SecureRdfStoreManagerImpl(frameworkConfig.getAuthSparqlEndpoint(), rdfStoreUser.getFirst(), rdfStoreUser.getSecond());
     }
 
     //todo username must be not null (may be null now - for VirtuosoProxy)

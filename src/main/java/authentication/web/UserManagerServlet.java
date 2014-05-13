@@ -27,7 +27,7 @@ public class UserManagerServlet extends HttpServlet {
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        frameworkUserManager = FrameworkConfiguration.getInstance().getFrameworkUserManager();
+        frameworkUserManager = FrameworkConfiguration.getInstance(getServletContext()).getFrameworkUserManager();
     }
 
     @Override
@@ -103,7 +103,7 @@ public class UserManagerServlet extends HttpServlet {
             }
 
             //send email with login and password
-            EmailSender emailSender = FrameworkConfiguration.getInstance().getDefaultEmailSender();
+            EmailSender emailSender = FrameworkConfiguration.getInstance(getServletContext()).getDefaultEmailSender();
             try {
                 emailSender.send(email, "GeoKnow registration", "Your login: " + username + ", password: " + password);
             } catch (MessagingException e) {

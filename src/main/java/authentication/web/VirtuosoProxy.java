@@ -20,7 +20,7 @@ public class VirtuosoProxy extends HttpServlet {
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        frameworkUserManager = FrameworkConfiguration.getInstance().getFrameworkUserManager();
+        frameworkUserManager = FrameworkConfiguration.getInstance(getServletContext()).getFrameworkUserManager();
     }
 
     @Override
@@ -46,7 +46,7 @@ public class VirtuosoProxy extends HttpServlet {
 
         try {
             ObjectPair<String, String> rdfStoreUser = frameworkUserManager.getRdfStoreUser(username, token);
-            String result = HttpRequestManager.executePost(FrameworkConfiguration.getInstance().getSparqlEndpoint(),
+            String result = HttpRequestManager.executePost(FrameworkConfiguration.getInstance(getServletContext()).getAuthSparqlEndpoint(),
                     urlParameters.toString(), rdfStoreUser.getFirst(), rdfStoreUser.getSecond());
             resp.getWriter().print(result);
         } catch (Exception e) {

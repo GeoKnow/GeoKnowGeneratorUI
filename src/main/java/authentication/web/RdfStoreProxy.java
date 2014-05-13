@@ -15,15 +15,20 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class RdfStoreProxy extends HttpServlet {
-    private FrameworkUserManager frameworkUserManager;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
+	private FrameworkUserManager frameworkUserManager;
     private RdfStoreManager frameworkRdfStoreManager;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        FrameworkConfiguration frameworkConf = FrameworkConfiguration.getInstance();
+        FrameworkConfiguration frameworkConf = FrameworkConfiguration.getInstance(getServletContext());
         frameworkUserManager = frameworkConf.getFrameworkUserManager();
-        frameworkRdfStoreManager = new SecureRdfStoreManagerImpl(frameworkConf.getSparqlEndpoint(),
+        frameworkRdfStoreManager = new SecureRdfStoreManagerImpl(frameworkConf.getAuthSparqlEndpoint(),
                 frameworkConf.getSparqlFrameworkLogin(), frameworkConf.getSparqlFrameworkPassword());
     }
 
@@ -40,17 +45,21 @@ public class RdfStoreProxy extends HttpServlet {
         String mode = req.getParameter("mode");
         String query = req.getParameter("query");
 
+        System.out.println(query);
         try {
             RdfStoreManager rdfStoreManager;
             if ("settings".equals(mode)) { // framework manages settings graphs (public setting for unauthorized user)
+            	 System.out.println("mode" + mode);
                 rdfStoreManager = frameworkRdfStoreManager;
             } else if (username!=null && !username.isEmpty()) {
+            	System.out.println("username:" + username);
                 boolean valid = frameworkUserManager.checkToken(username, token);
                 if (!valid)
                     throw new ServletException("invalid token");
                 rdfStoreManager = frameworkUserManager.getRdfStoreManager(username);
             } else {
-                rdfStoreManager = new RdfStoreManagerImpl(FrameworkConfiguration.getInstance().getPublicSparqlEndpoint());
+            	System.out.println("new RdfStoreManagerImpl");
+                rdfStoreManager = new RdfStoreManagerImpl(FrameworkConfiguration.getInstance(getServletContext()).getPublicSparqlEndpoint());
             }
             String result = rdfStoreManager.execute(query, responseFormat);
             resp.setContentType(responseFormat);

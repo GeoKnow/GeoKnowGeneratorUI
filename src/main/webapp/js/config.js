@@ -33,14 +33,18 @@ angular.module("app.configuration", [])
 {
         $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded; charset=UTF-8";
 
-        var ENDPOINT  = "http://generator.geoknow.eu:8890/sparql-auth";
-        var PUBLIC_ENDPOINT = "http://generator.geoknow.eu:8890/sparql";
+        // the public and authenticated enpoints that will be used by the application
+        var AUTH_ENDPOINT               = "http://generator.geoknow.eu:8890/sparql-auth";
+        var PUBLIC_ENDPOINT             = "http://generator.geoknow.eu:8890/sparql";
         // if new resorces are created they will use this name space, and it can be changed
-        var NS        = "http://generator.geoknow.eu/resource/";
+        var NS                          = "http://generator.geoknow.eu/resource/";
         // this is the graph where settings are stored, it doesnt change, and independent on the Namespace
-        var DEFAULT_GRAPH_URI = "http://generator.geoknow.eu/resource/settingsGraph";
-        var GRAPH_URI = DEFAULT_GRAPH_URI;
-        var GROUPS_GRAPH_URI = "http://generator.geoknow.eu/resource/graphGroups";
+        var DEFAULT_SETTINGS_GRAPH_URI  = "http://generator.geoknow.eu/resource/settingsGraph";
+        // SETTINGS_GRAPH_URI is initalized with DEFAULT_SETTINGS_GRAPH_URI, but can be changed with setGraph, 
+        var SETTINGS_GRAPH_URI          = DEFAULT_SETTINGS_GRAPH_URI;
+        // Create a graph for groups of users
+        var GROUPS_GRAPH_URI            = "http://generator.geoknow.eu/resource/groupsGraph";
+        
 
         var namespaces =
         {
@@ -58,7 +62,7 @@ angular.module("app.configuration", [])
         };
         namespaces[NS] = ":";
 
-        var GRAPH    = "<" + GRAPH_URI + ">";
+        var GRAPH    = "<" + SETTINGS_GRAPH_URI + ">";
         var EOL      = "\n";
         var PREFIXES = "";
         for (var namespace in namespaces)
@@ -86,7 +90,7 @@ angular.module("app.configuration", [])
                 })
                 .error(function(data, status)
                 {
-                        var message = data || ENDPOINT + " not found";
+                        var message = data || AUTH_ENDPOINT + " not found";
                         deferred.reject(message);
                         flash.error = message;
                 });
@@ -114,12 +118,12 @@ angular.module("app.configuration", [])
 
         var setEndpoint = function(url)
         {
-                ENDPOINT = url;
+                AUTH_ENDPOINT = url;
         };
 
         var getEndpoint = function()
         {
-                return ENDPOINT;
+                return AUTH_ENDPOINT;
         };
         
         var setNS = function(ns)
@@ -134,18 +138,18 @@ angular.module("app.configuration", [])
 
         var getGraph = function()
         {
-                return GRAPH_URI;
+                return SETTINGS_GRAPH_URI;
         };
 
         var setGraph = function(uri) {
-            GRAPH_URI = uri;
-            GRAPH = "<" + GRAPH_URI + ">";
+            SETTINGS_GRAPH_URI = uri;
+            GRAPH = "<" + SETTINGS_GRAPH_URI + ">";
             isLoaded = false;
             read();
         };
 
         var restoreDefault = function() {
-            return setGraph(DEFAULT_GRAPH_URI);
+            return setGraph(DEFAULT_SETTINGS_GRAPH_URI);
         };
 
         var getSettings = function()

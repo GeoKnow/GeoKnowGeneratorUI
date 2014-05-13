@@ -28,7 +28,7 @@ public class GraphManagerServlet extends HttpServlet {
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        FrameworkConfiguration frameworkConfig = FrameworkConfiguration.getInstance();
+        FrameworkConfiguration frameworkConfig = FrameworkConfiguration.getInstance(getServletContext());
         frameworkUserManager = frameworkConfig.getFrameworkUserManager();
         virtuosoUserManager = frameworkConfig.getVirtuosoUserManager();
         virtuosoGraphGroupManager = new VirtuosoGraphGroupManager(frameworkConfig.getVirtuosoJdbcConnString(),
@@ -70,7 +70,7 @@ public class GraphManagerServlet extends HttpServlet {
                 String permissions = req.getParameter("permissions");
                 RdfStoreManager rdfStoreManager;
                 if (unauthorizedUser) {
-                    rdfStoreManager = new RdfStoreManagerImpl(FrameworkConfiguration.getInstance().getPublicSparqlEndpoint());
+                    rdfStoreManager = new RdfStoreManagerImpl(FrameworkConfiguration.getInstance(getServletContext()).getPublicSparqlEndpoint());
                     virtuosoUserManager.setDefaultGraphPermissions(graph, 3); //unauthorized user can create only public writable graph
                 } else {
                     rdfStoreManager = frameworkUserManager.getRdfStoreManager(username);
@@ -85,7 +85,7 @@ public class GraphManagerServlet extends HttpServlet {
                 //get rdf store manager
                 RdfStoreManager rdfStoreManager;
                 if (unauthorizedUser)
-                    rdfStoreManager = new RdfStoreManagerImpl(FrameworkConfiguration.getInstance().getPublicSparqlEndpoint());
+                    rdfStoreManager = new RdfStoreManagerImpl(FrameworkConfiguration.getInstance(getServletContext()).getPublicSparqlEndpoint());
                 else
                     rdfStoreManager = frameworkUserManager.getRdfStoreManager(username);
 
@@ -93,8 +93,8 @@ public class GraphManagerServlet extends HttpServlet {
                 result = rdfStoreManager.execute("DROP SILENT GRAPH <" + graph + ">", responseFormat);
 
                 //remove graph from graph groups descriptions
-                FrameworkConfiguration frameworkConf = FrameworkConfiguration.getInstance();
-                RdfStoreManager frameworkRdfStoreManager = new SecureRdfStoreManagerImpl(frameworkConf.getSparqlEndpoint(),
+                FrameworkConfiguration frameworkConf = FrameworkConfiguration.getInstance(getServletContext());
+                RdfStoreManager frameworkRdfStoreManager = new SecureRdfStoreManagerImpl(frameworkConf.getAuthSparqlEndpoint(),
                         frameworkConf.getSparqlFrameworkLogin(), frameworkConf.getSparqlFrameworkPassword());
                 String query = "PREFIX sd: <http://www.w3.org/ns/sparql-service-description#> "
                         + " WITH <" + frameworkConf.getGroupsGraph() + "> DELETE {?s sd:namedGraph <" + graph + ">} "
@@ -132,8 +132,8 @@ public class GraphManagerServlet extends HttpServlet {
                 String settingsGraph = frameworkUserManager.getDescribedIn(graphURI);
 
                 //update metadata
-                FrameworkConfiguration frameworkConf = FrameworkConfiguration.getInstance();
-                RdfStoreManager frameworkRdfStoreManager = new SecureRdfStoreManagerImpl(frameworkConf.getSparqlEndpoint(),
+                FrameworkConfiguration frameworkConf = FrameworkConfiguration.getInstance(getServletContext());
+                RdfStoreManager frameworkRdfStoreManager = new SecureRdfStoreManagerImpl(frameworkConf.getAuthSparqlEndpoint(),
                         frameworkConf.getSparqlFrameworkLogin(), frameworkConf.getSparqlFrameworkPassword());
 
                 String graphLabel = graphNode.path("graph").path("label").getTextValue();
@@ -182,8 +182,8 @@ public class GraphManagerServlet extends HttpServlet {
 
                 //drop graph metadata
                 String settingsGraph = frameworkUserManager.getDescribedIn(graph);
-                FrameworkConfiguration frameworkConf = FrameworkConfiguration.getInstance();
-                RdfStoreManager frameworkRdfStoreManager = new SecureRdfStoreManagerImpl(frameworkConf.getSparqlEndpoint(),
+                FrameworkConfiguration frameworkConf = FrameworkConfiguration.getInstance(getServletContext());
+                RdfStoreManager frameworkRdfStoreManager = new SecureRdfStoreManagerImpl(frameworkConf.getAuthSparqlEndpoint(),
                         frameworkConf.getSparqlFrameworkLogin(), frameworkConf.getSparqlFrameworkPassword());
                 String query = "PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>\n"
                         + "PREFIX gkg: <http://generator.geoknow.eu/ontology/>\n"

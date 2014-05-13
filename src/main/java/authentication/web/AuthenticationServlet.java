@@ -22,14 +22,14 @@ import java.util.UUID;
 
 public class AuthenticationServlet extends HttpServlet {
     private FrameworkUserManager frameworkUserManager;
-
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        frameworkUserManager = FrameworkConfiguration.getInstance().getFrameworkUserManager();
+        frameworkUserManager = FrameworkConfiguration.getInstance(getServletContext()).getFrameworkUserManager();
+        
     }
 
-    @Override
+	@Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         doGet(req, resp);
     }
@@ -96,7 +96,7 @@ public class AuthenticationServlet extends HttpServlet {
                 throw new ServletException("Failed to create account " + username, e);
             }
 
-            EmailSender emailSender = FrameworkConfiguration.getInstance().getDefaultEmailSender();
+            EmailSender emailSender = FrameworkConfiguration.getInstance(getServletContext()).getDefaultEmailSender();
             try {
                 emailSender.send(email, "GeoKnow registration", "Your login: " + username + ", password: " + password);
             } catch (MessagingException e) {
@@ -152,7 +152,7 @@ public class AuthenticationServlet extends HttpServlet {
             }
 
             //send new password to user
-            EmailSender emailSender = FrameworkConfiguration.getInstance().getDefaultEmailSender();
+            EmailSender emailSender = FrameworkConfiguration.getInstance(getServletContext()).getDefaultEmailSender();
             try {
                 emailSender.send(userProfile.getEmail(), "GeoKnow restore password", "Your login: " + username + ", password: " + password);
             } catch (MessagingException e) {

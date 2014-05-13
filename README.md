@@ -12,21 +12,35 @@ These option will not install any integrated component from the stack and you re
 
 ## Configuration
 
-1. Edit the `src/webapp/js/config.js` and modify variables:
+### Application configuration
 
-		var ENDPOINT  = "http://localhost:8890/sparql";
-		var NS        = "http://localhost/resource/";
-		var GRAPH_URI = "http://localhost/resource/settingsGraph";
+1. You can editt the following default variables in `src/webapp/js/config.js`:
+
+			// the public and authenticated enpoints that will be used by the application
+      var AUTH_ENDPOINT           = "http://generator.geoknow.eu:8890/sparql-auth";
+      var PUBLIC_ENDPOINT         = "http://generator.geoknow.eu:8890/sparql";
+      // if new resorces are created they will use this name space, and it can be changed
+      var NS                      = "http://generator.geoknow.eu/resource/";
+      // this is the graph where settings are stored, it doesnt change, and independent on the Namespace
+      var DEFAULT_SETTINGS_GRAPH  = "http://generator.geoknow.eu/resource/settingsGraph";
+      // SETTINGS_GRAPH is initalized with DEFAULT_SETTINGS_GRAPH, but can be changed with setGraph, 
+      var SETTINGS_GRAPH          = DEFAULT_SETTINGS_GRAPH;
+      // Create a graph for groups of users
+      var GROUPS_GRAPH        = "http://generator.geoknow.eu/resource/groupsGraph";
 
 Note that the endpoint has to support [UPDATE](http://www.w3.org/TR/2013/REC-sparql11-update-20130321/) service and [Graph Store HTTP Protocol](http://www.w3.org/TR/2013/REC-sparql11-http-rdf-update-20130321/) 
 	
-2. Create a graph named as the GRAPH_URI variable in the application ENDPOINT
-3. Edit and load the configuration files provided in `src/main/resources` these files stand for the follwing:
+2. Create the DEFAULT_SETTINGS_GRAPH in the application ENDPOINT
+
+3. Edit the configuration files provided in `src/main/resources` these files stand for the follwing:
 	* ldsi-schema.ttl : a schema for integrating tools form the linked data stack
 	* generator-ontology.ttl : a schema for managing data sources and datasets in the GeoKnow Generator
-	* geoknow-settings.ttl : description of integrated services, this may depend on the integration you want to have in your application. It will provide required infomration about the stack components. This file also contains information about some data sources and graphs used in the application (i.e. GraphSettings)
+	* geoknow-initial-settings.ttl : description of integrated services, this may depend on the integration you want to have in your application. It will provide required infomration about the stack components. This file also contains information about some data sources and graphs used in the application (i.e. GraphSettings)
 
-	
+	And load these files in the DEFAULT_SETTINGS_GRAPH
+
+4. Load the generator-accounts-ontology.ttl in to the GROUPS_GRAPH.
+
 ## Optional Extra Configutation
 
 Depending on the components you use in the Generator some extra configurations may be required.  
@@ -42,6 +56,9 @@ If you have a Virtuoso Endpoint, you can configure the following:
 		GRANT EXECUTE ON DB.DBA.L_O_LOOK TO "SPARQL"
 
 2. [Enable CORS for Virtuoso](http://virtuoso.openlinksw.com/dataspace/dav/wiki/Main/VirtTipsAndTricksCORsEnableSPARQLURLs) SPARQL endpoint.
+
+### Authentication configuration
+
 
 
 ### Using OntoWiki-Virtuoso

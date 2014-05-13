@@ -28,23 +28,89 @@
     <param-name>temp-data</param-name> 
     <param-value>/uploads/tmp/</param-value> 
   </context-param>
-  
-<!--   <context-param> 
+  <!-- FrameWork Configuration parameters  -->
+  <!-- Virtuoso server and users  -->
+  <context-param> 
     <description>Virtuoso server</description> 
-    <param-name>virtuoso-jdbc</param-name> 
-    <param-value>jdbc:virtuoso://localhost:1111/</param-value> 
+    <param-name>virtuoso-jdbc-conn-string</param-name> 
+    <param-value>jdbc:virtuoso://192.168.2.17:1111/</param-value> 
   </context-param>
   <context-param> 
     <description>Virtuoso server user</description> 
-    <param-name>virtuoso-user</param-name> 
+    <param-name>virtuoso-dba-user</param-name> 
     <param-value>dba</param-value> 
   </context-param>
-    <context-param> 
+  <context-param> 
     <description>Virtuoso server password</description> 
-    <param-name>virtuoso-password</param-name> 
+    <param-name>virtuoso-dba-password</param-name> 
     <param-value>dba</param-value> 
-  </context-param> -->
-  
+  </context-param>
+
+  <!-- FrameWork SPARQL Endpoints and settings graph  -->
+  <context-param>
+    <description>SPARQL Public Endpoint</description> 
+    <param-name>sparql-public-endpoint</param-name> 
+    <param-value>http://192.168.2.17:8890/sparql</param-value> 
+  </context-param>
+  <context-param>
+    <description>SPARQL Auth Endpoint</description> 
+    <param-name>sparql-auth-endpoint</param-name> 
+    <param-value>http://192.168.2.17:8890/sparql</param-value> 
+  </context-param>
+  <context-param> 
+    <description>Settings Graph</description> 
+    <param-name>settings-graph</param-name> 
+    <param-value>http://generator.geoknow.eu/resource/settingsGraph</param-value> 
+  </context-param>
+
+  <!-- Authentication credentals and default graphs   -->
+  <context-param> 
+    <description>Framework User</description> 
+    <param-name>framework-user</param-name> 
+    <param-value>generator</param-value> 
+  </context-param>
+  <context-param> 
+    <description>Framework Password</description> 
+    <param-name>framework-password</param-name> 
+    <param-value>generator</param-value> 
+  </context-param>
+  <context-param> 
+    <description>Initial Settings for new users</description> 
+    <param-name>new-user-settings</param-name> 
+    <param-value>http://generator.geoknow.eu/resource/newUuserSettings</param-value> 
+  </context-param>
+  <context-param> 
+    <description>Groups Graph</description> 
+    <param-name>groups-graph</param-name> 
+    <param-value>http://generator.geoknow.eu/resource/graphGroups</param-value> 
+  </context-param>
+  <context-param> 
+    <description>Users Accounts Graph</description> 
+    <param-name>users-accounts-graph</param-name> 
+    <param-value>http://generator.geoknow.eu/resource/accountsGraph</param-value> 
+  </context-param>
+  <context-param> 
+    <description>Guest Settings Graph</description> 
+    <param-name>guest-settings-graph</param-name> 
+    <param-value>http://generator.geoknow.eu/resource/guestSettingsGraph</param-value> 
+  </context-param>
+  <!-- Namespaces -->
+  <context-param> 
+    <description>Users Accounts Namespace</description> 
+    <param-name>users-accounts-ns</param-name> 
+    <param-value>http://generator.geoknow.eu/accounts/</param-value> 
+  </context-param>
+  <context-param> 
+    <description>User Accounts Ontology</description> 
+    <param-name>users-accounts-ontology</param-name> 
+    <param-value>http://generator.geoknow.eu/accounts/ontology/</param-value> 
+  </context-param>
+  <context-param> 
+    <description>Framework Default Namespace</description> 
+    <param-name>framework-ns</param-name> 
+    <param-value>http://generator.geoknow.eu/resource/</param-value> 
+  </context-param>
+
   <servlet>
      <servlet-name>ImportRDF</servlet-name>
      <servlet-class>ImportRDF</servlet-class>
@@ -85,34 +151,34 @@
       <url-pattern>/RdfStoreProxy</url-pattern>
   </servlet-mapping>
 
-    <servlet>
-        <servlet-name>VirtuosoProxy</servlet-name>
-        <servlet-class>authentication.web.VirtuosoProxy</servlet-class>
-    </servlet>
+  <servlet>
+      <servlet-name>VirtuosoProxy</servlet-name>
+      <servlet-class>authentication.web.VirtuosoProxy</servlet-class>
+  </servlet>
 
-    <servlet-mapping>
-        <servlet-name>VirtuosoProxy</servlet-name>
-        <url-pattern>/VirtuosoProxy</url-pattern>
-    </servlet-mapping>
+  <servlet-mapping>
+      <servlet-name>VirtuosoProxy</servlet-name>
+      <url-pattern>/VirtuosoProxy</url-pattern>
+  </servlet-mapping>
 
-    <servlet>
-        <servlet-name>GraphManagerServlet</servlet-name>
-        <servlet-class>authentication.web.GraphManagerServlet</servlet-class>
-    </servlet>
+  <servlet>
+      <servlet-name>GraphManagerServlet</servlet-name>
+      <servlet-class>authentication.web.GraphManagerServlet</servlet-class>
+  </servlet>
 
-    <servlet-mapping>
-        <servlet-name>GraphManagerServlet</servlet-name>
-        <url-pattern>/GraphManagerServlet</url-pattern>
-    </servlet-mapping>
+  <servlet-mapping>
+      <servlet-name>GraphManagerServlet</servlet-name>
+      <url-pattern>/GraphManagerServlet</url-pattern>
+  </servlet-mapping>
 
-    <servlet>
-        <servlet-name>UserManagerServlet</servlet-name>
-        <servlet-class>authentication.web.UserManagerServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>UserManagerServlet</servlet-name>
-        <url-pattern>/UserManagerServlet</url-pattern>
-    </servlet-mapping>
+  <servlet>
+      <servlet-name>UserManagerServlet</servlet-name>
+      <servlet-class>authentication.web.UserManagerServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+      <servlet-name>UserManagerServlet</servlet-name>
+      <url-pattern>/UserManagerServlet</url-pattern>
+  </servlet-mapping>
 
   <mime-mapping>
     <extension>n3</extension>
