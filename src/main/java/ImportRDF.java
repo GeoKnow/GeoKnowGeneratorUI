@@ -13,6 +13,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 
 import rdf.RdfStoreManager;
 import util.HttpUtils;
+import util.JsonResponse;
 import accounts.FrameworkUserManager;
 import authentication.FrameworkConfiguration;
 
@@ -41,9 +42,6 @@ public class ImportRDF extends HttpServlet {
 	private String graph;
 	private String rdfQuery;
 	private String rdfQueryEndpoint;
-	private static String jdbcConnection;
-	private static String jdbcUser;
-	private static String jdbcPassword;
 	private String username;
 	private String token;
 
@@ -117,7 +115,7 @@ public class ImportRDF extends HttpServlet {
 			}	  
 			else{
 				int inserted = queryImport(endpoint, graph, rdfQueryEndpoint, rdfQuery);
-				res.setStatus("ßSUCESS");
+				res.setStatus("SUCESS");
 				res.setMessage("Data Imported "+ inserted + " triples");
 			}
 		} catch (Exception e) {

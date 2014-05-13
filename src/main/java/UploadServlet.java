@@ -18,6 +18,8 @@ import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.codehaus.jackson.map.ObjectMapper;
 
+import util.JsonResponse;
+
 public class UploadServlet extends HttpServlet {
 
    private static final long serialVersionUID = 1L;
