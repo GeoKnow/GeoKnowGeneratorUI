@@ -50,7 +50,7 @@
 
                     <div class="modal-body">
                         <div class="form-group">
-                            <label for="number" class="col-lg-4 control-label">accDocumentNumber</label>
+                            <label for="number" class="col-lg-4 control-label">ACC document number</label>
                             <div class="col-lg-6">
                                 <input type="text" class="form-control" id="number" ng-model="document.accDocumentNumber" required />
                                 <div class="error" ng-show="documentForm.number.$dirty && documentForm.number.$invalid">Invalid:
@@ -59,7 +59,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="iteration" class="col-lg-4 control-label">accDocumentIteration</label>
+                            <label for="iteration" class="col-lg-4 control-label">ACC document iteration</label>
                             <div class="col-lg-6">
                                 <input type="text" class="form-control" id="iteration" ng-model="document.accDocumentIteration" required />
                                 <div class="error" ng-show="documentForm.iteration.$dirty && documentForm.iteration.$invalid">Invalid:
@@ -72,10 +72,6 @@
                                 <label class="col-lg-4 control-label">Assigned projects</label>
                                 <div class="col-lg-6">
                                     <table class="table table-striped">
-                                        <!--tr>
-                                            <th>Project</th>
-                                            <th>Action</th>
-                                        </tr-->
                                         <tr ng-repeat="p in document.hasProject">
                                             <td>
                                                 <p class="form-control-static">{{p.name}}</p>
@@ -98,7 +94,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="type" class="col-lg-4 control-label">documentType</label>
+                            <label for="type" class="col-lg-4 control-label">Document type</label>
                             <div class="col-lg-6">
                                 <input type="text" class="form-control" id="type" ng-model="document.documentType" required />
                                 <div class="error" ng-show="documentForm.type.$dirty && documentForm.type.$invalid">Invalid:
@@ -125,13 +121,13 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="applicable" class="col-lg-4 control-label">isApplicable </label>
+                            <label for="applicable" class="col-lg-4 control-label">Applicable </label>
                             <div class="col-lg-6">
                                 <input type="checkbox" id="applicable" ng-model="document.isApplicable" />
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="description" class="col-lg-4 control-label">accDescription</label>
+                            <label for="description" class="col-lg-4 control-label">Description</label>
                             <div class="col-lg-6">
                                 <input type="text" class="form-control" id="description" ng-model="document.accDescription" required />
                                 <div class="error" ng-show="documentForm.description.$dirty && documentForm.description.$invalid">Invalid:
@@ -140,13 +136,13 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="note" class="col-lg-4 control-label">accNote</label>
+                            <label for="note" class="col-lg-4 control-label">Note</label>
                             <div class="col-lg-6">
                                 <input type="text" class="form-control" id="note" ng-model="document.accNote" />
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="received" class="col-lg-4 control-label">dateReceived</label>
+                            <label for="received" class="col-lg-4 control-label">Received</label>
                             <div class="col-lg-6">
                                 <input type="text" class="form-control" id="received" ng-model="document.dateReceived" required />
                                 <div class="error" ng-show="documentForm.received.$dirty && documentForm.received.$invalid">Invalid:
@@ -155,13 +151,13 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="col-lg-4 control-label">uploader</label>
+                            <label class="col-lg-4 control-label">Uploader</label>
                             <div class="col-lg-6">
                                 <p class="form-control-static">{{document.uploader}}</p>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="col-lg-4 control-label">dateUploaded</label>
+                            <label class="col-lg-4 control-label">Uploaded</label>
                             <div class="col-lg-6">
                                 <p class="form-control-static">{{document.dateUploaded}}</p>
                             </div>
