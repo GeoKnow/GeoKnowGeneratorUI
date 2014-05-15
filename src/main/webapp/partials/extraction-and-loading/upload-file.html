@@ -1,3 +1,107 @@
-<div>
+<div ng-controller="UploadDocCtrl">
     <h3 class="green bold">Upload new Files</h3>
+    <form name="documentForm" class="form-horizontal InputForm" role="form" novalidate>
+        <div class="form-group">
+            <label for="number" class="col-lg-4 control-label">ACC document number</label>
+            <div class="col-lg-8">
+                <input type="text" class="form-control" id="number" ng-model="document.accDocumentNumber" placeholder="Fill the name, e.g., D100" required />
+                <div class="error" ng-show="documentForm.number.$dirty && documentForm.number.$invalid">Invalid:
+                    <span ng-show="documentForm.number.$error.required">Specify ACC document number</span>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="iteration" class="col-lg-4 control-label">ACC document iteration</label>
+            <div class="col-lg-8">
+                <input type="text" class="form-control" id="iteration" ng-model="document.accDocumentIteration" placeholder="Fill the iteration, e.g., T1" required />
+                <div class="error" ng-show="documentForm.iteration.$dirty && documentForm.iteration.$invalid">Invalid:
+                    <span ng-show="documentForm.iteration.$error.required">Specify ACC document iteration</span>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-lg-4 control-label">ACC Project Names</label>
+            <div class="col-lg-4">
+                <input type="text" ng-model="document.projectName1" placeholder="Fill the project name, e.g., a402632" required />
+            </div>
+            <div class="col-lg-4">
+                <input type="text" ng-model="document.projectName2" placeholder="Fill an additional name" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="received" class="col-lg-4 control-label">Date Document Received</label>
+            <div class="col-lg-8">
+                <input type="date" class="form-control" id="received" ng-model="document.dateReceived" required />
+                <div class="error" ng-show="documentForm.received.$dirty && documentForm.received.$invalid">Invalid:
+                    <span ng-show="documentForm.received.$error.required">Specify received date</span>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="name" class="col-lg-4 control-label">Owner Name</label>
+            <div class="col-lg-8">
+                <input type="text" class="form-control" id="name" ng-model="document.ownerName" placeholder="Fill the owner name, e.g., SIEMENS" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="description" class="col-lg-4 control-label">Short Description</label>
+            <div class="col-lg-8">
+                <input type="text" class="form-control" id="description" ng-model="document.accDescription" placeholder="Fill a short description" required />
+                <div class="error" ng-show="documentForm.description.$dirty && documentForm.description.$invalid">Invalid:
+                    <span ng-show="documentForm.description.$error.required">Specify description</span>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="applicable" class="col-lg-4 control-label">Document Applicable</label>
+            <div class="col-lg-8">
+                <input type="checkbox" id="applicable" ng-model="document.isApplicable" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-lg-4 control-label">Document Type</label>
+            <div class="col-lg-8">
+                <input type="radio" ng-model="document.documentType" value="Generic Specification">Generic Specification</input>
+                <input type="radio" ng-model="document.documentType" value="Project-specific Specification">Project-specific Specification</input>
+                <input type="radio" ng-model="document.documentType" value="other" checked="checked">other</input>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="name" class="col-lg-4 control-label">Document Name by Owner</label>
+            <div class="col-lg-8">
+                <input type="text" class="form-control" id="docname" ng-model="document.ownerDocumentName" placeholder="Fill the name e.g., 10080-1-SS-CI-001_01" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="revision" class="col-lg-4 control-label">Document Revision by Owner</label>
+            <div class="col-lg-8">
+                <input type="text" class="form-control" id="revision" ng-model="document.ownerDocumentRevision" placeholder="Fill the name e.g., Rev.1" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="data" class="col-lg-4 control-label">Document Revision Date by Owner</label>
+            <div class="col-lg-8">
+                <input type="date" class="form-control" id="data" ng-model="document.ownerDocumentRevisionData" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="note" class="col-lg-4 control-label">Additional Notes</label>
+            <div class="col-lg-8">
+                <input type="text" class="form-control" id="note" ng-model="document.accNote" placeholder="Some more notes?" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-xs-4 control-label">Select files</label>
+            <div class="col-xs-8">
+                <input type="file" ng-file-select="onFileSelect($files)" name="fileName" multiple>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-lg-offset-2 col-xs-10">
+                <button class="btn btn-primary" ng-click="upload()" ng-disabled="documentForm.$invalid || isUploading()">Upload documents</button>
+                <button class="btn btn-primary" ng-click="clearForm()" ng-disabled="isUploading()">Clear form</button>
+                <span ng-show="isUploading()">Uploading... </span>
+            </div>
+        </div>
+    </form>
 </div>

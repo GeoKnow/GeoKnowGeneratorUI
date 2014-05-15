@@ -3473,3 +3473,51 @@ var UploadedDocsCtrl = function($scope, filterFilter, DocumentsService) {
         return true;
     };
 };
+
+var UploadDocCtrl = function($scope, $http, flash, ServerErrorResponse) {
+    $scope.uploading = false;
+
+    $scope.onFileSelect = function($files) {
+        $scope.fileList = $files;
+    };
+
+    $scope.upload = function() {
+        $scope.uploading = true;
+        for (var i = 0; i < $scope.fileList.length; i++) {
+            var f = $scope.fileList[i];
+            $http.uploadFile({
+                    url: "http://localhost:8080/SolrUploadProxy/proxy/upload/files",
+                    file: f,
+                    data: $scope.document
+                }).then(function(response) {
+                    $scope.uploading = false;
+                }, function(response) {
+                    $scope.uploading = false;
+                    flash.error = ServerErrorResponse.getMessage(response.status);
+                });
+        }
+    };
+
+    $scope.isUploading = function() {
+        return $scope.uploading;
+    };
+
+    $scope.clearForm = function() {
+        $scope.fileList = [];
+        $scope.document = {
+            accDocumentNumber : null,
+            accDocumentIteration : null,
+            dateReceived : null,
+            documentType : null,
+            isApplicable : null,
+            projectName1 : null,
+            projectName2 : null,
+            ownerName : null,
+            ownerDocumentName : null,
+            ownerDocumentRevision : null,
+            ownerDocumentRevisionData : null,
+            accDescription : null,
+            accNote : null
+        };
+    };
+};
