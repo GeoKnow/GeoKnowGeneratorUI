@@ -1322,7 +1322,7 @@ module.factory("DocumentsService", function($http, $q, Config, DateService) {
             documentType: doc["acc:documentType"][0],
             ownerDocumentName: doc["acc:ownerDocumentName"]==undefined ? null : doc["acc:ownerDocumentName"][0],
             ownerDocumentRevision: doc["acc:ownerDocumentRevision"]==undefined ? null : doc["acc:ownerDocumentRevision"][0],
-            ownerDocumentRevisionData: doc["acc:ownerDocumentRevisionData"]==undefined ? null : doc["acc:ownerDocumentRevisionData"][0],
+            ownerDocumentRevisionData: null,
             isApplicable: doc["acc:isApplicable"][0],
             accDescription: doc["acc:accDescription"][0],
             accNote: doc["acc:accNote"]==undefined ? null : doc["acc:accNote"][0],
@@ -1335,6 +1335,12 @@ module.factory("DocumentsService", function($http, $q, Config, DateService) {
         var dr = new Date();
         dr.setTime(Date.parse(doc["acc:dateReceived"][0]));
         res.dateReceived = DateService.formatDateXsd(dr);
+        //ownerDocumentRevisionData
+        if (doc["acc:ownerDocumentRevisionData"]!=undefined) {
+            var date = new Date();
+            date.setTime(Date.parse(doc["acc:ownerDocumentRevisionData"][0]));
+            res.ownerDocumentRevisionData = DateService.formatDateXsd(date);
+        }
         //isApplicable
         if (res.isApplicable=="1") res.isApplicable = true;
         else if (res.isApplicable=="0") res.isApplicable = false;
@@ -1385,7 +1391,7 @@ module.factory("DocumentsService", function($http, $q, Config, DateService) {
                             + " ?s acc:documentType \"" + document.documentType + "\" . "
                             + (document.ownerDocumentName==null || document.ownerDocumentName=="" ? "" : " ?s acc:ownerDocumentName \"" + document.ownerDocumentName + "\" . ")
                             + (document.ownerDocumentRevision==null || document.ownerDocumentRevision=="" ? "" : " ?s acc:ownerDocumentRevision \"" + document.ownerDocumentRevision + "\" . ")
-                            + (document.ownerDocumentRevisionData==null || document.ownerDocumentRevisionData=="" ? "" : " ?s acc:ownerDocumentRevisionData \"" + document.ownerDocumentRevisionData + "\" . ")
+                            + (document.ownerDocumentRevisionData==null || document.ownerDocumentRevisionData=="" ? "" : " ?s acc:ownerDocumentRevisionData \"" + document.ownerDocumentRevisionData + "\"^^xsd:date . ")
                             + " ?s acc:isApplicable \"" + document.isApplicable + "\" . "
                             + " ?s acc:accDescription \"" + document.accDescription + "\" . "
                             + (document.accNote==null || document.accNote=="" ? "" : " ?s acc:accNote \"" + document.accNote + "\" . ")
