@@ -649,9 +649,8 @@ $scope.LaunchLimes = function(){
 		params.ReviewRelation = $scope.limes.ReviewRelation;
 		params.numberOfProps = numberOfProps;
 		
-		$window.$windowScope = $scope;
+		window.$windowScope = $scope;
  		var newWindow = $window.open('popup.html#/popup-limes', 'frame', 'resizeable,height=600,width=800');
-		$window.open('popup.html#/popup-limes', 'frame', 'resizeable,top=100,left=100,height=400,width=400');
 		newWindow.params = params;
 	};
 		
@@ -2049,7 +2048,6 @@ var TripleGeoCtrl = function($scope, $http, ConfigurationService, flash, ServerE
 			
 		$window.$windowScope = $scope;
  		var newWindow = $window.open('popup.html#/popup-triplegeo', 'frame', 'resizeable,height=600,width=800');
-		//$window.open('popup.html#/popup-limes', 'frame', 'resizeable,top=100,left=100,height=400,width=400');
 		newWindow.params = params;
 		};
 	
