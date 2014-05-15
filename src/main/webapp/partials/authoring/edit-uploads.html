@@ -144,7 +144,7 @@
                         <div class="form-group">
                             <label for="received" class="col-lg-4 control-label">Received</label>
                             <div class="col-lg-6">
-                                <input type="text" class="form-control" id="received" ng-model="document.dateReceived" required />
+                                <input type="date" class="form-control" id="received" ng-model="document.dateReceived" required />
                                 <div class="error" ng-show="documentForm.received.$dirty && documentForm.received.$invalid">Invalid:
                                     <span ng-show="documentForm.received.$error.required">Specify received date</span>
                                 </div>

@@ -10,10 +10,29 @@ module.factory('DateService', function(){
       //"YYYY-MM-DDThh:mm:ss"^^xsd:date;
       var month = now.getMonth() + 1; // getMonth returns values from 0 to 11
       var s_now = now.getFullYear() + "-" 
-              + (month.toString().length==1 ? "0"+ month : month + "-") 
+              + (month.toString().length==1 ? "0"+ month : month) + "-"
               + (now.getDate().toString().length==1 ? "0"+now.getDate() : now.getDate())
               + "T" + now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds();
       return s_now;
+    },
+
+    formatDateTimeXsd : function(date) {
+      //"YYYY-MM-DDThh:mm:ss"^^xsd:dateTime;
+      var month = date.getMonth() + 1; // getMonth returns values from 0 to 11
+      var s_date = date.getFullYear() + "-"
+              + (month.toString().length==1 ? "0"+ month : month) + "-"
+              + (date.getDate().toString().length==1 ? "0"+date.getDate() : date.getDate())
+              + "T" + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
+      return s_date;
+    },
+
+    formatDateXsd : function(date) {
+      //"YYYY-MM-DD"^^xsd:date;
+      var month = date.getMonth() + 1; // getMonth returns values from 0 to 11
+      var s_date = date.getFullYear() + "-"
+              + (month.toString().length==1 ? "0"+ month : month) + "-"
+              + (date.getDate().toString().length==1 ? "0"+date.getDate() : date.getDate());
+      return s_date;
     }
   }
   return DateService;
@@ -1249,7 +1268,7 @@ module.factory("D2RQService", function($http, $q, ConfigurationService) {
     };
 });
 
-module.factory("DocumentsService", function($http, $q, Config) {
+module.factory("DocumentsService", function($http, $q, Config, DateService) {
     var GRAPH = Config.getDocumentsGraph();
 
     var documents = {};
@@ -1307,12 +1326,19 @@ module.factory("DocumentsService", function($http, $q, Config) {
             isApplicable: doc["acc:isApplicable"][0],
             accDescription: doc["acc:accDescription"][0],
             accNote: doc["acc:accNote"]==undefined ? null : doc["acc:accNote"][0],
-            dateReceived: doc["acc:dateReceived"][0],
             uploader: doc["acc:uploader"][0],
             dateUploaded: doc["acc:dateUploaded"][0]
         };
+        //accNote
+        if (res.accNote.value==="") res.accNote = "";
+        //dateReceived
+        var dr = new Date();
+        dr.setTime(Date.parse(doc["acc:dateReceived"][0]));
+        res.dateReceived = DateService.formatDateXsd(dr);
+        //isApplicable
         if (res.isApplicable=="1") res.isApplicable = true;
         else if (res.isApplicable=="0") res.isApplicable = false;
+        //hasProject
         for (var ind in doc["acc:hasProject"]) {
             var projUri = doc["acc:hasProject"][ind];
             var proj = {
@@ -1337,9 +1363,10 @@ module.factory("DocumentsService", function($http, $q, Config) {
     var updateDocument = function(document) {
         var hasProjectTriples = "";
         for (var ind in document.hasProject) {
-            hasProjectTriples += " ?s acc:hasProject <" + document.hasProject[ind].uri + "> . ";
+            hasProjectTriples += " ?s acc:hasProject " + document.hasProject[ind].uri + " . ";
         }
         var query = "prefix acc: <" + Config.getDocumentsNS() + "> "
+                    + " prefix xsd: <http://www.w3.org/2001/XMLSchema#> "
                     + " WITH <" + GRAPH + "> "
                     + " DELETE {?s acc:accDocumentNumber ?adn . "
                             + " ?s acc:accDocumentIteration ?adi . "
@@ -1362,7 +1389,7 @@ module.factory("DocumentsService", function($http, $q, Config) {
                             + " ?s acc:isApplicable \"" + document.isApplicable + "\" . "
                             + " ?s acc:accDescription \"" + document.accDescription + "\" . "
                             + (document.accNote==null || document.accNote=="" ? "" : " ?s acc:accNote \"" + document.accNote + "\" . ")
-                            + " ?s acc:dateReceived \"" + document.dateReceived + "\" .} "
+                            + " ?s acc:dateReceived \"" + document.dateReceived + "\"^^xsd:date .} "
                     + " WHERE {?s acc:uuid \"" + document.uuid + "\" . "
                             + " ?s acc:accDocumentNumber ?adn . "
                             + " ?s acc:accDocumentIteration ?adi . "
