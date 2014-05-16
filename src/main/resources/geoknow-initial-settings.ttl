@@ -147,12 +147,27 @@
 
 :MiniDix
       a       lds:StackComponent ;
-      rdfs:label "OntoWiki"^^xsd:string ;
+      rdfs:label "MiniDix"^^xsd:string ;
       lds:providesService
               [ a       lds:AuthoringService ;
                 lds:serviceUrl <http://localhost:8080/minidix-web>
               ] .
 
+:Solr
+      a       lds:StackComponent ;
+      rdfs:label "Solr"^^xsd:string ;
+      lds:providesService
+              [ a       lds:ExplorationService ;
+                lds:serviceUrl <http://localhost:8080/solr>
+              ] .
+
+:SolrUploadProxy
+      a       lds:StackComponent ;
+      rdfs:label "SolrUploadProxy"^^xsd:string ;
+      lds:providesService
+              [ a       lds:ExtractionService ;
+                lds:serviceUrl <http://localhost:8080/SolrUploadProxy/proxy/upload>
+              ] .
 
 ########### DATA SOURCES ################################################################
 # Following triples  describes the Data sources (Endpoints and Databases)

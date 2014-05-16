@@ -3483,7 +3483,10 @@ var UploadedDocsCtrl = function($scope, flash, filterFilter, DocumentsService, S
     };
 };
 
-var UploadDocCtrl = function($scope, $http, flash, ServerErrorResponse) {
+var UploadDocCtrl = function($scope, $http, flash, ServerErrorResponse, ConfigurationService) {
+    var services = ConfigurationService.getComponentServices(":SolrUploadProxy");
+	var solrUploadServiceUrl = services[0].serviceUrl;
+
     $scope.uploading = false;
 
     $scope.onFileSelect = function($files) {
@@ -3495,11 +3498,12 @@ var UploadDocCtrl = function($scope, $http, flash, ServerErrorResponse) {
         for (var i = 0; i < $scope.fileList.length; i++) {
             var f = $scope.fileList[i];
             $http.uploadFile({
-                    url: "http://localhost:8080/SolrUploadProxy/proxy/upload/files",
+                    url: solrUploadServiceUrl + "/files",
                     file: f,
                     data: $scope.document
                 }).then(function(response) {
                     $scope.uploading = false;
+                    flash.success = "Uploaded";
                 }, function(response) {
                     $scope.uploading = false;
                     flash.error = ServerErrorResponse.getMessage(response.status);
@@ -3535,4 +3539,14 @@ var UploadDocCtrl = function($scope, $http, flash, ServerErrorResponse) {
     $scope.filesSelected = function() {
         return $scope.fileList!=null && $scope.fileList.length > 0;
     };
+};
+
+var SearchCtrl = function($scope, ConfigurationService) {
+    var services = ConfigurationService.getComponentServices(":Solr");
+	var solrServiceUrl = services[0].serviceUrl;
+
+    $scope.url = "";
+	$scope.setUrl = function(){
+	    $scope.url= solrServiceUrl + "/collection1/custom";
+	};
 };

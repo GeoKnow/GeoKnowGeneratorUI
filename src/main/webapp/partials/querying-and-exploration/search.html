@@ -1,3 +1,16 @@
-<div>
+<div ng-controller="SearchCtrl">
     <h3 class="green bold">Search</h3>
+    <button type="button" class="btn btn-primary btn-large" data-toggle="modal" ng-click="setUrl(); openModal();">Open Solr</button>
+
+    <div class="modal" id="fullModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h5 class="modal-title green bold">Sorl</h5>
+            </div>
+            <div class="modal-body">
+                <modal-iframe></modal-iframe>
+            </div>
+        </div>
+    </div>
 </div>
