@@ -1399,7 +1399,7 @@ module.factory("DocumentsService", function($http, $q, Config, DateService) {
                     + " WHERE {?s acc:uuid \"" + document.uuid + "\" . "
                             + " ?s acc:accDocumentNumber ?adn . "
                             + " ?s acc:accDocumentIteration ?adi . "
-                            + " ?s acc:hasProject ?proj . "
+                            + " optional {?s acc:hasProject ?proj .} "
                             + " ?s acc:documentType ?dt . "
                             + " optional {?s acc:ownerDocumentName ?odn .} "
                             + " optional {?s acc:ownerDocumentRevision ?odr .} "
