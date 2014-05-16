@@ -811,7 +811,7 @@ $scope.LaunchLimes = function(){
 	$scope.save = function(){
 			
 		var parameters = { 
-        endpoint: ConfigurationService.getSPARQLEndpoint() , 
+        endpoint: AccountService.getUsername() == null ? ConfigurationService.getPublicSPARQLEndpoint() : ConfigurationService.getSPARQLEndpoint(),
    		uriBase : ConfigurationService.getUriBase()
 		};
 				
@@ -1536,7 +1536,7 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErr
 		
 		var parameters = {
 	    rdfFile: "result.ttl", 
-	    endpoint: ConfigurationService.getSPARQLEndpoint(), 
+	    endpoint: AccountService.getUsername()== null ? ConfigurationService.getPublicSPARQLEndpoint() : ConfigurationService.getSPARQLEndpoint(),
 	    graph: $scope.saveDataset.replace(':', ConfigurationService.getUriBase()), 
 	    uriBase : ConfigurationService.getUriBase(),
         username: AccountService.getUsername()
@@ -2107,7 +2107,7 @@ var TripleGeoCtrl = function($scope, $http, ConfigurationService, flash, ServerE
 		var parameters = {
 		        rdfFile: "result."+fileType,
 		        fileType: fileType,
-		        endpoint: ConfigurationService.getSPARQLEndpoint() , 
+		        endpoint: AccountService.getUsername()==null ? ConfigurationService.getPublicSPARQLEndpoint() : ConfigurationService.getSPARQLEndpoint(),
 		        graph: $scope.saveDataset.replace(':', ConfigurationService.getUriBase()), 
 		        uriBase : ConfigurationService.getUriBase(),
 		        username: AccountService.getUsername()
