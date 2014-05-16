@@ -1342,8 +1342,8 @@ module.factory("DocumentsService", function($http, $q, Config, DateService) {
             res.ownerDocumentRevisionData = DateService.formatDateXsd(date);
         }
         //isApplicable
-        if (res.isApplicable=="1") res.isApplicable = true;
-        else if (res.isApplicable=="0") res.isApplicable = false;
+        if (res.isApplicable=="1" || res.isApplicable=="true") res.isApplicable = true;
+        else if (res.isApplicable=="0" || res.isApplicable=="false") res.isApplicable = false;
         //hasProject
         for (var ind in doc["acc:hasProject"]) {
             var projUri = doc["acc:hasProject"][ind];
