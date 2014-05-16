@@ -1,4 +1,10 @@
 <div ng-controller="UploadedDocsCtrl">
+    <!-- Subscribe to all flash messages. -->
+    <div flash-alert active-class="in alert" class="fade" duration="0">
+        <button type="button" class="close" ng-click="hide()">&times;</button>
+        <span class="alert-message">{{flash.message}}</span>
+    </div>
+
     <h3 class="green bold">Edit Uploads</h3>
 
     <h4>
@@ -52,7 +58,7 @@
                         <div class="form-group">
                             <label for="number" class="col-lg-4 control-label">ACC document number</label>
                             <div class="col-lg-8">
-                                <input type="text" class="form-control" id="number" ng-model="document.accDocumentNumber" required />
+                                <input type="text" class="form-control" id="number" name="number" ng-model="document.accDocumentNumber" required />
                                 <div class="error" ng-show="documentForm.number.$dirty && documentForm.number.$invalid">Invalid:
                                     <span ng-show="documentForm.number.$error.required">Specify ACC document number</span>
                                 </div>
@@ -61,7 +67,7 @@
                         <div class="form-group">
                             <label for="iteration" class="col-lg-4 control-label">ACC document iteration</label>
                             <div class="col-lg-8">
-                                <input type="text" class="form-control" id="iteration" ng-model="document.accDocumentIteration" required />
+                                <input type="text" class="form-control" id="iteration" name="iteration" ng-model="document.accDocumentIteration" required />
                                 <div class="error" ng-show="documentForm.iteration.$dirty && documentForm.iteration.$invalid">Invalid:
                                     <span ng-show="documentForm.iteration.$error.required">Specify ACC document iteration</span>
                                 </div>
@@ -69,7 +75,7 @@
                         </div>
                         <div>
                             <div class="row">
-                                <label class="col-lg-4 control-label">Assigned projects</label>
+                                <label class="col-lg-4 control-label">ACC Project Names</label>
                                 <div class="col-lg-8">
                                     <table class="table table-striped">
                                         <tr ng-repeat="p in document.hasProject">
@@ -80,7 +86,7 @@
                                                 <button type="button" class="btn btn-default btn-xs" ng-click="removeProject(p)"><span class="glyphicon glyphicon-remove"></span></button>
                                             </td>
                                         </tr>
-                                        <tr ng-repeat="np in document.newAssignedProjects">
+                                        <tr ng-show="hasNotAssigned()" ng-repeat="np in document.newAssignedProjects">
                                             <td>
                                                 <select ng-model="np.project" ng-options="p as p.name for p in projects | filter:notAssigned | orderBy:'name'" ng-change="assignProject()"></select>
                                             </td>
@@ -94,57 +100,56 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="type" class="col-lg-4 control-label">Document type</label>
+                            <label class="col-lg-4 control-label">Document type</label>
                             <div class="col-lg-8">
-                                <input type="text" class="form-control" id="type" ng-model="document.documentType" required />
-                                <div class="error" ng-show="documentForm.type.$dirty && documentForm.type.$invalid">Invalid:
-                                    <span ng-show="documentForm.type.$error.required">Specify document type</span>
-                                </div>
+                                <input type="radio" ng-model="document.documentType" value="Generic Specification" />Generic Specification<br/>
+                                <input type="radio" ng-model="document.documentType" value="Project-specific Specification" />Project-specific Specification<br/>
+                                <input type="radio" ng-model="document.documentType" value="other" />Other<br/>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="name" class="col-lg-4 control-label">ownerDocumentName</label>
+                            <label for="name" class="col-lg-4 control-label">Document name by owner</label>
                             <div class="col-lg-8">
-                                <input type="text" class="form-control" id="name" ng-model="document.ownerDocumentName" />
+                                <input type="text" class="form-control" id="name" name="name" ng-model="document.ownerDocumentName" />
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="revision" class="col-lg-4 control-label">ownerDocumentRevision</label>
+                            <label for="revision" class="col-lg-4 control-label">Document revision by owner</label>
                             <div class="col-lg-8">
-                                <input type="text" class="form-control" id="revision" ng-model="document.ownerDocumentRevision" />
+                                <input type="text" class="form-control" id="revision" name="revision" ng-model="document.ownerDocumentRevision" />
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="data" class="col-lg-4 control-label">ownerDocumentRevisionData</label>
+                            <label for="data" class="col-lg-4 control-label">Document revision date by owner</label>
                             <div class="col-lg-8">
-                                <input type="date" class="form-control" id="data" ng-model="document.ownerDocumentRevisionData" />
+                                <input type="date" class="form-control" id="data" name="data" ng-model="document.ownerDocumentRevisionData" />
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="applicable" class="col-lg-4 control-label">Applicable </label>
+                            <label for="applicable" class="col-lg-4 control-label">Applicable</label>
                             <div class="col-lg-8">
-                                <input type="checkbox" id="applicable" ng-model="document.isApplicable" />
+                                <input type="checkbox" id="applicable" name="applicable" ng-model="document.isApplicable" />
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="description" class="col-lg-4 control-label">Description</label>
+                            <label for="description" class="col-lg-4 control-label">Short description</label>
                             <div class="col-lg-8">
-                                <input type="text" class="form-control" id="description" ng-model="document.accDescription" required />
+                                <input type="text" class="form-control" id="description" name="description" ng-model="document.accDescription" required />
                                 <div class="error" ng-show="documentForm.description.$dirty && documentForm.description.$invalid">Invalid:
                                     <span ng-show="documentForm.description.$error.required">Specify description</span>
                                 </div>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="note" class="col-lg-4 control-label">Note</label>
+                            <label for="note" class="col-lg-4 control-label">Additional notes</label>
                             <div class="col-lg-8">
-                                <input type="text" class="form-control" id="note" ng-model="document.accNote" />
+                                <input type="text" class="form-control" id="note" name="note" ng-model="document.accNote" />
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="received" class="col-lg-4 control-label">Received</label>
+                            <label for="received" class="col-lg-4 control-label">Date Document Received</label>
                             <div class="col-lg-8">
-                                <input type="date" class="form-control" id="received" ng-model="document.dateReceived" required />
+                                <input type="date" class="form-control" id="received" name="received" ng-model="document.dateReceived" required />
                                 <div class="error" ng-show="documentForm.received.$dirty && documentForm.received.$invalid">Invalid:
                                     <span ng-show="documentForm.received.$error.required">Specify received date</span>
                                 </div>

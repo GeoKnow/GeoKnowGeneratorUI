@@ -3394,7 +3394,7 @@ var D2RQMappingCtrl = function($scope, $http, $q, flash, ServerErrorResponse, Ac
     };
 };
 
-var UploadedDocsCtrl = function($scope, filterFilter, DocumentsService) {
+var UploadedDocsCtrl = function($scope, flash, filterFilter, DocumentsService, ServerErrorResponse) {
     $scope.documents = DocumentsService.getAllDocuments();
     $scope.projects = DocumentsService.getAllProjects();
 
@@ -3443,12 +3443,17 @@ var UploadedDocsCtrl = function($scope, filterFilter, DocumentsService) {
         DocumentsService.updateDocument($scope.document).then(function(response) {
             $scope.refreshDocuments();
             $('#modalDocument').modal('hide');
+        }, function(response) {
+            $('#modalDocument').modal('hide');
+            flash.error = ServerErrorResponse.getMessage(response.status);
         });
     };
 
     $scope.delete = function(id) {
         DocumentsService.deleteDocument(id).then(function(response) {
             $scope.refreshDocuments();
+        }, function(response) {
+            flash.error = ServerErrorResponse.getMessage(response.status);
         });
     };
 
@@ -3471,6 +3476,10 @@ var UploadedDocsCtrl = function($scope, filterFilter, DocumentsService) {
                 return false;
         }
         return true;
+    };
+
+    $scope.hasNotAssigned = function() {
+        return $scope.document.hasProject.length < $scope.projects.length;
     };
 };
 
@@ -3503,21 +3512,27 @@ var UploadDocCtrl = function($scope, $http, flash, ServerErrorResponse) {
     };
 
     $scope.clearForm = function() {
-        $scope.fileList = [];
+        $scope.fileList = null;
         $scope.document = {
-            accDocumentNumber : null,
-            accDocumentIteration : null,
-            dateReceived : null,
-            documentType : null,
-            isApplicable : null,
-            projectName1 : null,
-            projectName2 : null,
-            ownerName : null,
-            ownerDocumentName : null,
-            ownerDocumentRevision : null,
-            ownerDocumentRevisionData : null,
-            accDescription : null,
-            accNote : null
+            accDocumentNumber : "",
+            accDocumentIteration : "",
+            dateReceived : "",
+            documentType : "other",
+            isApplicable : false,
+            projectName1 : "",
+            projectName2 : "",
+            ownerName : "",
+            ownerDocumentName : "",
+            ownerDocumentRevision : "",
+            ownerDocumentRevisionData : "",
+            accDescription : "",
+            accNote : ""
         };
+    };
+
+    $scope.clearForm();
+
+    $scope.filesSelected = function() {
+        return $scope.fileList!=null && $scope.fileList.length > 0;
     };
 };
