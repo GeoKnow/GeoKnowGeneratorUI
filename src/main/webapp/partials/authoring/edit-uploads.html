@@ -29,7 +29,7 @@
         <tbody>
         <tr ng-repeat="d in curPageDocs">
             <td>
-                <button type="button" class="btn btn-default btn-xs" ng-click="delete('{{d.uuid}}')"><span class="glyphicon glyphicon-trash"></span></button>
+                <button type="button" class="btn btn-default btn-xs" ng-confirm-click="delete('{{d.uuid}}')" ng-confirm-message="Are you sure you want to delete document {{d.accDocumentNumber}}-{{d.accDocumentIteration}}?"><span class="glyphicon glyphicon-trash"></span></button>
                 <button type="button" class="btn btn-default btn-xs" data-toggle="modal" data-target="#modalDocument" ng-click="edit('{{d.uri}}')"><span class="glyphicon glyphicon-edit"></span></button>
             </td>
             <td>{{d.accDocumentNumber}}-{{d.accDocumentIteration}}</td>

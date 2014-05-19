@@ -20,7 +20,7 @@
         <tbody>
         <tr ng-repeat="onto in ontologies">
             <td>
-                <button type="button" class="btn btn-default btn-xs" ng-click="delete('{{onto}}')" ng-disabled="!isLoggedIn()"><span class="glyphicon glyphicon-trash"></span></button>
+                <button type="button" class="btn btn-default btn-xs" ng-confirm-click="delete('{{onto}}')" ng-confirm-message="Are you sure you want to delete ontology {{onto}}?" ng-disabled="!isLoggedIn()"><span class="glyphicon glyphicon-trash"></span></button>
                 <button type="button" class="btn btn-default btn-xs" data-toggle="modal" ng-click="setUrl('{{onto}}'); openModal();"><span class="glyphicon glyphicon-edit"></span></button>
             </td>
             <td>{{onto}}</td>
