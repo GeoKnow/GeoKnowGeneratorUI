@@ -21,7 +21,7 @@
         <thead>
         <tr>
             <th>Action</th>
-            <th>Id</th>
+            <th>ACC Document</th>
             <th>Project Name</th>
             <th>Uploaded</th>
         </tr>
@@ -102,9 +102,7 @@
                         <div class="form-group">
                             <label class="col-lg-4 control-label">Document type</label>
                             <div class="col-lg-8">
-                                <input type="radio" ng-model="document.documentType" value="Generic Specification" />Generic Specification<br/>
-                                <input type="radio" ng-model="document.documentType" value="Project-specific Specification" />Project-specific Specification<br/>
-                                <input type="radio" ng-model="document.documentType" value="other" />Other<br/>
+                                <select id="type" class="form-control" ng-model="document.documentType" ng-options="dt.value as dt.label for dt in documentTypes" required></select>
                             </div>
                         </div>
                         <div class="form-group">
@@ -134,7 +132,7 @@
                         <div class="form-group">
                             <label for="description" class="col-lg-4 control-label">Short description</label>
                             <div class="col-lg-8">
-                                <input type="text" class="form-control" id="description" name="description" ng-model="document.accDescription" required />
+                                <textarea class="form-control" id="description" name="description" rows="5" ng-model="document.accDescription" required></textarea>
                                 <div class="error" ng-show="documentForm.description.$dirty && documentForm.description.$invalid">Invalid:
                                     <span ng-show="documentForm.description.$error.required">Specify description</span>
                                 </div>
@@ -143,7 +141,7 @@
                         <div class="form-group">
                             <label for="note" class="col-lg-4 control-label">Additional notes</label>
                             <div class="col-lg-8">
-                                <input type="text" class="form-control" id="note" name="note" ng-model="document.accNote" />
+                                <textarea class="form-control" id="note" name="note" rows="5" ng-model="document.accNote"></textarea>
                             </div>
                         </div>
                         <div class="form-group">

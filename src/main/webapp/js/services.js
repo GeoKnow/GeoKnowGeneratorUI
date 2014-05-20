@@ -1269,6 +1269,12 @@ module.factory("D2RQService", function($http, $q, ConfigurationService) {
 });
 
 module.factory("DocumentsService", function($http, $q, Config, DateService) {
+    var documentTypes = [
+        {value:"Generic Specification", label:"Generic Specification"},
+        {value:"Project-specific Specification", label:"Project-specific Specification"},
+        {value:"other", label:"Other"}
+    ];
+
     var GRAPH = Config.getDocumentsGraph();
 
     var documents = {};
@@ -1276,6 +1282,10 @@ module.factory("DocumentsService", function($http, $q, Config, DateService) {
 
     var projects = {};
     var projectsLoaded = false;
+
+    var getDocumentTypes = function() {
+        return documentTypes;
+    };
 
     var readDocuments = function() {
         var requestData = {
@@ -1447,6 +1457,7 @@ module.factory("DocumentsService", function($http, $q, Config, DateService) {
     };
 
     return {
+        getDocumentTypes: getDocumentTypes,
         readDocuments   : readDocuments,
         reloadDocuments : reloadDocuments,
         getAllDocuments : getAllDocuments,

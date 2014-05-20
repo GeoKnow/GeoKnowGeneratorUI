@@ -3395,13 +3395,14 @@ var D2RQMappingCtrl = function($scope, $http, $q, flash, ServerErrorResponse, Ac
 };
 
 var UploadedDocsCtrl = function($scope, flash, filterFilter, DocumentsService, ServerErrorResponse) {
+    $scope.documentTypes = DocumentsService.getDocumentTypes();
     $scope.documents = DocumentsService.getAllDocuments();
     $scope.projects = DocumentsService.getAllProjects();
 
     $scope.filteredDocuments = angular.copy($scope.documents);
 
     $scope.curPageNum = 1;
-    $scope.itemsPerPage = 5;
+    $scope.itemsPerPage = 10;
     $scope.curPageDocs = [];
     $scope.totalDocs = $scope.filteredDocuments.length;
 
@@ -3443,6 +3444,7 @@ var UploadedDocsCtrl = function($scope, flash, filterFilter, DocumentsService, S
         DocumentsService.updateDocument($scope.document).then(function(response) {
             $scope.refreshDocuments();
             $('#modalDocument').modal('hide');
+            flash.success = "Saved";
         }, function(response) {
             $('#modalDocument').modal('hide');
             flash.error = ServerErrorResponse.getMessage(response.status);
@@ -3483,9 +3485,11 @@ var UploadedDocsCtrl = function($scope, flash, filterFilter, DocumentsService, S
     };
 };
 
-var UploadDocCtrl = function($scope, $http, flash, ServerErrorResponse, ConfigurationService) {
+var UploadDocCtrl = function($scope, $http, flash, ServerErrorResponse, ConfigurationService, DocumentsService) {
     var services = ConfigurationService.getComponentServices(":SolrUploadProxy");
 	var solrUploadServiceUrl = services[0].serviceUrl;
+
+	$scope.documentTypes = DocumentsService.getDocumentTypes();
 
     $scope.uploading = false;
 

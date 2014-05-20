@@ -28,10 +28,10 @@
         <div class="form-group">
             <label class="col-lg-4 control-label">ACC Project Names</label>
             <div class="col-lg-4">
-                <input type="text" ng-model="document.projectName1" placeholder="Fill the project name, e.g., a402632" required />
+                <input type="text" class="form-control" ng-model="document.projectName1" placeholder="Fill the project name, e.g., a402632" required />
             </div>
             <div class="col-lg-4">
-                <input type="text" ng-model="document.projectName2" placeholder="Fill an additional name" />
+                <input type="text" class="form-control" ng-model="document.projectName2" placeholder="Fill an additional name" />
             </div>
         </div>
         <div class="form-group">
@@ -52,7 +52,7 @@
         <div class="form-group">
             <label for="description" class="col-lg-4 control-label">Short Description</label>
             <div class="col-lg-8">
-                <input type="text" class="form-control" id="description" name="description" ng-model="document.accDescription" placeholder="Fill a short description" required />
+                <textarea class="form-control" id="description" name="description" rows="5" ng-model="document.accDescription" placeholder="Fill a short description" required></textarea>
                 <div class="error" ng-show="documentForm.description.$dirty && documentForm.description.$invalid">Invalid:
                     <span ng-show="documentForm.description.$error.required">Specify description</span>
                 </div>
@@ -67,9 +67,7 @@
         <div class="form-group">
             <label class="col-lg-4 control-label">Document Type</label>
             <div class="col-lg-8">
-                <input type="radio" ng-model="document.documentType" value="Generic Specification"/>Generic Specification<br/>
-                <input type="radio" ng-model="document.documentType" value="Project-specific Specification"/>Project-specific Specification<br/>
-                <input type="radio" ng-model="document.documentType" value="other"/>Other<br/>
+                <select id="type" class="form-control" ng-model="document.documentType" ng-options="dt.value as dt.label for dt in documentTypes" required></select>
             </div>
         </div>
         <div class="form-group">
@@ -93,7 +91,7 @@
         <div class="form-group">
             <label for="note" class="col-lg-4 control-label">Additional Notes</label>
             <div class="col-lg-8">
-                <input type="text" class="form-control" id="note" name="note" ng-model="document.accNote" placeholder="Some more notes?" />
+                <textarea class="form-control" id="note" name="note" rows="5" ng-model="document.accNote" placeholder="Some more notes?"></textarea>
             </div>
         </div>
         <div class="form-group">
