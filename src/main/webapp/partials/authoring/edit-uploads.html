@@ -16,14 +16,38 @@
         Uploaded Documents
     </h4>
 
-    Search: <input ng-model="searchText" ng-change="filter(searchText)">
+    Search: <input ng-model="searchText" ng-change="filter()">
     <table class="table table-striped">
         <thead>
         <tr>
             <th>Action</th>
-            <th>ACC Document</th>
-            <th>Project Name</th>
-            <th>Uploaded</th>
+            <th>
+                <div class="row">
+                    <div class="col-lg-8">ACC Document</div>
+                    <div class="col-lg-4">
+                        <a ng-show="!sortReverse || sortColumn!=1" href=""><span class="glyphicon glyphicon-chevron-up" ng-click="sortPredicate=getDocumentId; sortReverse=sortColumn==1?true:false; sortColumn=1; sort();"></span></a>
+                        <a ng-show="sortReverse || sortColumn!=1" href=""><span class="glyphicon glyphicon-chevron-down" ng-click="sortPredicate=getDocumentId; sortReverse=sortColumn==1?false:true; sortColumn=1; sort();"></span></a>
+                    </div>
+                </div>
+            </th>
+            <th>
+                <div class="row">
+                    <div class="col-lg-8">Project Name</div>
+                    <div class="col-lg-4">
+                        <a ng-show="!sortReverse || sortColumn!=2" href=""><span class="glyphicon glyphicon-chevron-up" ng-click="sortPredicate='hasProject'; sortReverse=sortColumn==2?true:false; sortColumn=2; sort();"></span></a>
+                        <a ng-show="sortReverse || sortColumn!=2" href=""><span class="glyphicon glyphicon-chevron-down" ng-click="sortPredicate='hasProject'; sortReverse=sortColumn==2?false:true; sortColumn=2; sort();"></span></a>
+                    </div>
+                </div>
+            </th>
+            <th>
+                <div class="row">
+                    <div class="col-lg-8">Uploaded</div>
+                    <div class="col-lg-4">
+                        <a ng-show="!sortReverse || sortColumn!=3" href=""><span class="glyphicon glyphicon-chevron-up" ng-click="sortPredicate='dateUploaded'; sortReverse=sortColumn==3?true:false; sortColumn=3; sort();"></span></a>
+                        <a ng-show="sortReverse || sortColumn!=3" href=""><span class="glyphicon glyphicon-chevron-down" ng-click="sortPredicate='dateUploaded'; sortReverse=sortColumn==3?false:true; sortColumn=3; sort();"></span></a>
+                    </div>
+                </div>
+            </th>
         </tr>
         </thead>
         <tbody>
@@ -32,7 +56,7 @@
                 <button type="button" class="btn btn-default btn-xs" ng-confirm-click="delete('{{d.uuid}}')" ng-confirm-message="Are you sure you want to delete document {{d.accDocumentNumber}}-{{d.accDocumentIteration}}?"><span class="glyphicon glyphicon-trash"></span></button>
                 <button type="button" class="btn btn-default btn-xs" data-toggle="modal" data-target="#modalDocument" ng-click="edit('{{d.uri}}')"><span class="glyphicon glyphicon-edit"></span></button>
             </td>
-            <td>{{d.accDocumentNumber}}-{{d.accDocumentIteration}}</td>
+            <td>{{getDocumentId(d)}}</td>
             <td>
                 <ul class="list-unstyled">
                     <li ng-repeat="project in d.hasProject">{{project.name}}</li>

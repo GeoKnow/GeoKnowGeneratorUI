@@ -3394,13 +3394,14 @@ var D2RQMappingCtrl = function($scope, $http, $q, flash, ServerErrorResponse, Ac
     };
 };
 
-var UploadedDocsCtrl = function($scope, flash, filterFilter, DocumentsService, ServerErrorResponse) {
+var UploadedDocsCtrl = function($scope, flash, filterFilter, orderByFilter, DocumentsService, ServerErrorResponse) {
     $scope.documentTypes = DocumentsService.getDocumentTypes();
     $scope.documents = DocumentsService.getAllDocuments();
     $scope.projects = DocumentsService.getAllProjects();
     $scope.owners = DocumentsService.getAllOwners();
 
     $scope.filteredDocuments = angular.copy($scope.documents);
+    $scope.sortedDocuments = angular.copy($scope.documents);
 
     $scope.curPageNum = 1;
     $scope.itemsPerPage = 10;
@@ -3420,10 +3421,25 @@ var UploadedDocsCtrl = function($scope, flash, filterFilter, DocumentsService, S
         fillPage();
     }, true);
 
-    $scope.filter = function(text) {
-        $scope.filteredDocuments = filterFilter($scope.documents, text);
+    var documentsFilter = function(document) {
+        if ($scope.searchText==undefined || $scope.searchText==null || $scope.searchText=="") return true;
+        if ($scope.getDocumentId(document).indexOf($scope.searchText) > -1) return true;
+        for (var ind in document.hasProject) {
+            if (document.hasProject[ind].name.indexOf($scope.searchText) > -1) return true;
+        }
+        if (document.dateUploaded.indexOf($scope.searchText) > -1) return true;
+        return false;
+    };
+
+    $scope.filter = function() {
+        $scope.filteredDocuments = filterFilter($scope.sortedDocuments, documentsFilter);
         $scope.totalDocs = $scope.filteredDocuments.length;
         fillPage();
+    };
+
+    $scope.sort = function() {
+        $scope.sortedDocuments = orderByFilter($scope.documents, $scope.sortPredicate, $scope.sortReverse);
+        $scope.filter();
     };
 
     $scope.refreshDocuments = function() {
@@ -3484,6 +3500,10 @@ var UploadedDocsCtrl = function($scope, flash, filterFilter, DocumentsService, S
 
     $scope.hasNotAssigned = function() {
         return $scope.document.hasProject.length < $scope.projects.length;
+    };
+
+    $scope.getDocumentId = function(document) {
+        return document.accDocumentNumber + "-" + document.accDocumentIteration;
     };
 };
 
