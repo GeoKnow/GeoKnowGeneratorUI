@@ -3528,7 +3528,7 @@ var UploadDocCtrl = function($scope, $http, flash, ServerErrorResponse, Configur
             accDocumentIteration : "",
             dateReceived : "",
             documentType : "other",
-            isApplicable : false,
+            isApplicable : true,
             projectName1 : "",
             projectName2 : "",
             ownerName : "",
