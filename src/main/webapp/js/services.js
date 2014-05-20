@@ -1330,7 +1330,7 @@ module.factory("DocumentsService", function($http, $q, Config, DateService) {
             dateUploaded: doc["acc:dateUploaded"][0]
         };
         //accNote
-        if (res.accNote.value==="") res.accNote = "";
+        if (res.accNote!=null && res.accNote.value==="") res.accNote = "";
         //dateReceived
         var dr = new Date();
         dr.setTime(Date.parse(doc["acc:dateReceived"][0]));
