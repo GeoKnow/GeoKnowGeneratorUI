@@ -158,6 +158,9 @@ app.config(function($routeSegmentProvider, $routeProvider)
                             },
                             projects: function(DocumentsService) {
                                 return DocumentsService.readProjects();
+                            },
+                            owners: function(DocumentsService) {
+                                return DocumentsService.readOwners();
                             }
                         }
                     })

@@ -3398,6 +3398,7 @@ var UploadedDocsCtrl = function($scope, flash, filterFilter, DocumentsService, S
     $scope.documentTypes = DocumentsService.getDocumentTypes();
     $scope.documents = DocumentsService.getAllDocuments();
     $scope.projects = DocumentsService.getAllProjects();
+    $scope.owners = DocumentsService.getAllOwners();
 
     $scope.filteredDocuments = angular.copy($scope.documents);
 
@@ -3432,6 +3433,7 @@ var UploadedDocsCtrl = function($scope, flash, filterFilter, DocumentsService, S
             $scope.totalDocs = $scope.filteredDocuments.length;
             fillPage();
             $scope.projects = DocumentsService.getAllProjects();
+            $scope.owners = DocumentsService.getAllOwners();
         });
     };
 

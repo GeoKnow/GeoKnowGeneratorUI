@@ -1283,6 +1283,9 @@ module.factory("DocumentsService", function($http, $q, Config, DateService) {
     var projects = {};
     var projectsLoaded = false;
 
+    var owners = {};
+    var ownersLoaded = false;
+
     var getDocumentTypes = function() {
         return documentTypes;
     };
@@ -1307,7 +1310,8 @@ module.factory("DocumentsService", function($http, $q, Config, DateService) {
     var reloadDocuments = function() {
         var documentsPromise = readDocuments();
         var projectsPromise = readProjects();
-        return $q.all([documentsPromise, projectsPromise]).then(function(data) {
+        var ownersPromise = readOwners();
+        return $q.all([documentsPromise, projectsPromise, ownersPromise]).then(function(data) {
             return getAllDocuments();
         });
     };
@@ -1329,6 +1333,7 @@ module.factory("DocumentsService", function($http, $q, Config, DateService) {
             accDocumentNumber: doc["acc:accDocumentNumber"][0],
             accDocumentIteration: doc["acc:accDocumentIteration"][0],
             hasProject: [],
+            owner: doc["dc:creator"][0],
             documentType: doc["acc:documentType"][0],
             ownerDocumentName: doc["acc:ownerDocumentName"]==undefined ? null : doc["acc:ownerDocumentName"][0],
             ownerDocumentRevision: doc["acc:ownerDocumentRevision"]==undefined ? null : doc["acc:ownerDocumentRevision"][0],
@@ -1387,6 +1392,7 @@ module.factory("DocumentsService", function($http, $q, Config, DateService) {
                     + " DELETE {?s acc:accDocumentNumber ?adn . "
                             + " ?s acc:accDocumentIteration ?adi . "
                             + " ?s acc:hasProject ?proj . "
+                            + " ?s dc:creator ?owner . "
                             + " ?s acc:documentType ?dt . "
                             + " ?s acc:ownerDocumentName ?odn . "
                             + " ?s acc:ownerDocumentRevision ?odr . "
@@ -1398,6 +1404,7 @@ module.factory("DocumentsService", function($http, $q, Config, DateService) {
                     + " INSERT {?s acc:accDocumentNumber \"" + document.accDocumentNumber + "\" . "
                             + " ?s acc:accDocumentIteration \"" + document.accDocumentIteration + "\" . "
                             + hasProjectTriples
+                            + " ?s dc:creator " + document.owner + " . "
                             + " ?s acc:documentType \"" + document.documentType + "\" . "
                             + (document.ownerDocumentName==null || document.ownerDocumentName=="" ? "" : " ?s acc:ownerDocumentName \"" + document.ownerDocumentName + "\" . ")
                             + (document.ownerDocumentRevision==null || document.ownerDocumentRevision=="" ? "" : " ?s acc:ownerDocumentRevision \"" + document.ownerDocumentRevision + "\" . ")
@@ -1410,6 +1417,7 @@ module.factory("DocumentsService", function($http, $q, Config, DateService) {
                             + " ?s acc:accDocumentNumber ?adn . "
                             + " ?s acc:accDocumentIteration ?adi . "
                             + " optional {?s acc:hasProject ?proj .} "
+                            + " optional {?s dc:creator ?owner .} "
                             + " ?s acc:documentType ?dt . "
                             + " optional {?s acc:ownerDocumentName ?odn .} "
                             + " optional {?s acc:ownerDocumentRevision ?odr .} "
@@ -1456,6 +1464,36 @@ module.factory("DocumentsService", function($http, $q, Config, DateService) {
         return results;
     };
 
+    var readOwners = function() {
+        var requestData = {
+            format: "application/sparql-results+json",
+            query: "prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n"
+                    + "prefix acc: <" + Config.getDocumentsNS() + ">\n"
+                    + "SELECT ?s ?p ?o FROM <" + GRAPH + "> "
+                    + " WHERE { ?s ?p ?o . ?s rdf:type acc:Owner } "
+                    + " ORDER BY ?s ?p ?o",
+            mode: "settings"
+        };
+        return $http.post("RdfStoreProxy", $.param(requestData)).then(function(response) {
+            owners = Config.parseSparqlResults(response.data);
+            ownersLoaded = true;
+            return owners;
+        });
+    };
+
+    var getAllOwners = function() {
+        var results = [];
+        for (var resource in owners) {
+            var o = owners[resource];
+            var res = {
+                uri: resource,
+                name: o["acc:name"][0]
+            };
+            results.push(res);
+        }
+        return results;
+    };
+
     return {
         getDocumentTypes: getDocumentTypes,
         readDocuments   : readDocuments,
@@ -1465,6 +1503,8 @@ module.factory("DocumentsService", function($http, $q, Config, DateService) {
         deleteDocument  : deleteDocument,
         updateDocument  : updateDocument,
         readProjects    : readProjects,
-        getAllProjects  : getAllProjects
+        getAllProjects  : getAllProjects,
+        readOwners      : readOwners,
+        getAllOwners    : getAllOwners
     };
 });

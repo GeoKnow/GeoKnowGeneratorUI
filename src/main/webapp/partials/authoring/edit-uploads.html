@@ -100,33 +100,18 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="col-lg-4 control-label">Document type</label>
+                            <label for="received" class="col-lg-4 control-label">Date Document Received</label>
                             <div class="col-lg-8">
-                                <select id="type" class="form-control" ng-model="document.documentType" ng-options="dt.value as dt.label for dt in documentTypes" required></select>
+                                <input type="date" class="form-control" id="received" name="received" ng-model="document.dateReceived" required />
+                                <div class="error" ng-show="documentForm.received.$dirty && documentForm.received.$invalid">Invalid:
+                                    <span ng-show="documentForm.received.$error.required">Specify received date</span>
+                                </div>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="name" class="col-lg-4 control-label">Document name by owner</label>
+                            <label class="col-lg-4 control-label">Owner Name</label>
                             <div class="col-lg-8">
-                                <input type="text" class="form-control" id="name" name="name" ng-model="document.ownerDocumentName" />
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="revision" class="col-lg-4 control-label">Document revision by owner</label>
-                            <div class="col-lg-8">
-                                <input type="text" class="form-control" id="revision" name="revision" ng-model="document.ownerDocumentRevision" />
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="data" class="col-lg-4 control-label">Document revision date by owner</label>
-                            <div class="col-lg-8">
-                                <input type="date" class="form-control" id="data" name="data" ng-model="document.ownerDocumentRevisionData" />
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="applicable" class="col-lg-4 control-label">Applicable</label>
-                            <div class="col-lg-8">
-                                <input type="checkbox" id="applicable" name="applicable" ng-model="document.isApplicable" />
+                                <select id="owner" class="form-control" ng-model="document.owner" ng-options="o.uri as o.name for o in owners" required></select>
                             </div>
                         </div>
                         <div class="form-group">
@@ -139,18 +124,39 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="note" class="col-lg-4 control-label">Additional notes</label>
+                            <label for="applicable" class="col-lg-4 control-label">Document Applicable</label>
                             <div class="col-lg-8">
-                                <textarea class="form-control" id="note" name="note" rows="5" ng-model="document.accNote"></textarea>
+                                <input type="checkbox" id="applicable" name="applicable" ng-model="document.isApplicable" />
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="received" class="col-lg-4 control-label">Date Document Received</label>
+                            <label class="col-lg-4 control-label">Document Type</label>
                             <div class="col-lg-8">
-                                <input type="date" class="form-control" id="received" name="received" ng-model="document.dateReceived" required />
-                                <div class="error" ng-show="documentForm.received.$dirty && documentForm.received.$invalid">Invalid:
-                                    <span ng-show="documentForm.received.$error.required">Specify received date</span>
-                                </div>
+                                <select id="type" class="form-control" ng-model="document.documentType" ng-options="dt.value as dt.label for dt in documentTypes" required></select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="name" class="col-lg-4 control-label">Document Name by Owner</label>
+                            <div class="col-lg-8">
+                                <input type="text" class="form-control" id="name" name="name" ng-model="document.ownerDocumentName" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="revision" class="col-lg-4 control-label">Document Revision by Owner</label>
+                            <div class="col-lg-8">
+                                <input type="text" class="form-control" id="revision" name="revision" ng-model="document.ownerDocumentRevision" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="data" class="col-lg-4 control-label">Document Revision Date by Owner</label>
+                            <div class="col-lg-8">
+                                <input type="date" class="form-control" id="data" name="data" ng-model="document.ownerDocumentRevisionData" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="note" class="col-lg-4 control-label">Additional Notes</label>
+                            <div class="col-lg-8">
+                                <textarea class="form-control" id="note" name="note" rows="5" ng-model="document.accNote"></textarea>
                             </div>
                         </div>
                         <div class="form-group">
