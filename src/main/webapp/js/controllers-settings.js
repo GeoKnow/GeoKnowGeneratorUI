@@ -106,6 +106,13 @@ function EndpointCtrl($scope, ConfigurationService){
 		}
 	};
 
+    $scope.close = function(modalID) {
+        $(modalID).modal('hide');
+        $('body').removeClass('modal-open');
+        $('.modal-backdrop').slideUp();
+        $('.modal-scrollable').slideUp();
+    };
+
 }
 
 function DatabaseCtrl($scope, ConfigurationService){
@@ -163,6 +170,13 @@ function DatabaseCtrl($scope, ConfigurationService){
 		// TODO: check if success then close the window or where to put error messages		
 		}
 	};
+
+    $scope.close = function(modalID) {
+        $(modalID).modal('hide');
+        $('body').removeClass('modal-open');
+        $('.modal-backdrop').slideUp();
+        $('.modal-scrollable').slideUp();
+    };
 }
 
 function GraphCtrl($scope, $http, flash, ConfigurationService, DateService, AccountService, GraphService, GraphGroupService){
@@ -411,6 +425,13 @@ function GraphCtrl($scope, $http, flash, ConfigurationService, DateService, Acco
         }
     };
 
+    $scope.close = function(modalID) {
+        $(modalID).modal('hide');
+        $('body').removeClass('modal-open');
+        $('.modal-backdrop').slideUp();
+        $('.modal-scrollable').slideUp();
+    };
+
     //watch
 	$scope.$watch( function () { return ConfigurationService.getAllNamedGraphs(); }, function () {
 	    $scope.refreshTable();
@@ -569,5 +590,12 @@ function UserCtrl($scope, $http, flash, DateService, AccountService) {
 
     $scope.notOwn = function(graph) {
         return $scope.user.ownGraphs.indexOf(graph) == -1;
+    };
+
+    $scope.close = function(modalID) {
+        $(modalID).modal('hide');
+        $('body').removeClass('modal-open');
+        $('.modal-backdrop').slideUp();
+        $('.modal-scrollable').slideUp();
     };
 }

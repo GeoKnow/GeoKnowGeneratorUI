@@ -189,6 +189,13 @@ function AccountCtrl($scope, flash, AccountService, LoginService, ServerErrorRes
             });
     };
 
+    $scope.close = function(modalID) {
+        $(modalID).modal('hide');
+        $('body').removeClass('modal-open');
+        $('.modal-backdrop').slideUp();
+        $('.modal-scrollable').slideUp();
+    };
+
     $scope.$watch( function() { return AccountService.getAccount(); }, function() {
         $scope.currentAccount = angular.copy(AccountService.getAccount());
     }, true);
@@ -276,6 +283,13 @@ app.controller('OntoWikiCtrl', function($scope, ConfigurationService) {
 	$scope.component = ConfigurationService.getComponent(":OntoWiki");
 	var services = ConfigurationService.getComponentServices(":OntoWiki");
 	$scope.url = services[0].serviceUrl;
+
+    $scope.close = function(modalID) {
+        $(modalID).modal('hide');
+        $('body').removeClass('modal-open');
+        $('.modal-backdrop').slideUp();
+        $('.modal-scrollable').slideUp();
+    };
 });
 
 
@@ -325,6 +339,13 @@ app.controller('VirtuosoCtrl', function($scope, ConfigurationService, AccountSer
                                     '&username=' + AccountService.getUsername();
         }
 	};
+
+    $scope.close = function(modalID) {
+        $(modalID).modal('hide');
+        $('body').removeClass('modal-open');
+        $('.modal-backdrop').slideUp();
+        $('.modal-scrollable').slideUp();
+    };
 
 	$scope.$watch( function () { return AccountService.getUsername(); }, function () {
 	    $scope.refreshGraphList();
@@ -2508,6 +2529,13 @@ var OntologyCtrl = function($scope, $http, flash, ServerErrorResponse, AccountSe
     $scope.isLoggedIn = function() {
         return AccountService.isLogged();
     };
+
+    $scope.close = function(modalID) {
+        $(modalID).modal('hide');
+        $('body').removeClass('modal-open');
+        $('.modal-backdrop').slideUp();
+        $('.modal-scrollable').slideUp();
+    };
 };
 
 /****************************************************************************************************
@@ -2661,6 +2689,13 @@ var D2RQTaskCtrl = function($scope, $http, $q, flash, ServerErrorResponse, Accou
             flash.error = ServerErrorResponse.getMessage(response.status);
             $scope.refreshTasks();
         });
+    };
+
+    $scope.close = function(modalID) {
+        $(modalID).modal('hide');
+        $('body').removeClass('modal-open');
+        $('.modal-backdrop').slideUp();
+        $('.modal-scrollable').slideUp();
     };
 };
 
@@ -3398,6 +3433,13 @@ var D2RQMappingCtrl = function($scope, $http, $q, flash, ServerErrorResponse, Ac
     $scope.notCurrent = function(mapping) {
         return $scope.isNew || mapping.id != $scope.mapping.id;
     };
+
+    $scope.close = function(modalID) {
+        $(modalID).modal('hide');
+        $('body').removeClass('modal-open');
+        $('.modal-backdrop').slideUp();
+        $('.modal-scrollable').slideUp();
+    };
 };
 
 var UploadedDocsCtrl = function($scope, flash, filterFilter, orderByFilter, DocumentsService, ServerErrorResponse) {
@@ -3576,6 +3618,13 @@ var UploadedDocsCtrl = function($scope, flash, filterFilter, orderByFilter, Docu
     $scope.getDocumentId = function(document) {
         return document.accDocumentNumber + "-" + document.accDocumentIteration;
     };
+
+    $scope.close = function(modalID) {
+        $(modalID).modal('hide');
+        $('body').removeClass('modal-open');
+        $('.modal-backdrop').slideUp();
+        $('.modal-scrollable').slideUp();
+    };
 };
 
 var UploadDocCtrl = function($scope, $http, flash, ServerErrorResponse, ConfigurationService, DocumentsService) {
@@ -3646,4 +3695,11 @@ var SearchCtrl = function($scope, ConfigurationService) {
 	$scope.setUrl = function(){
 	    $scope.url= solrServiceUrl + "/collection1/custom";
 	};
+
+    $scope.close = function(modalID) {
+        $(modalID).modal('hide');
+        $('body').removeClass('modal-open');
+        $('.modal-backdrop').slideUp();
+        $('.modal-scrollable').slideUp();
+    };
 };
