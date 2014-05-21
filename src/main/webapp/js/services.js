@@ -1383,11 +1383,22 @@ module.factory("DocumentsService", function($http, $q, Config, DateService) {
 
     var updateDocument = function(document) {
         var hasProjectTriples = "";
+        var newProjectTriples = "";
         for (var ind in document.hasProject) {
             hasProjectTriples += " ?s acc:hasProject " + document.hasProject[ind].uri + " . ";
+            if (document.hasProject[ind].created) {
+                newProjectTriples += document.hasProject[ind].uri + " rdf:type acc:AccProject . "
+                                    + document.hasProject[ind].uri + " acc:name \"" + document.hasProject[ind].name + "\" . ";
+            }
+        }
+        var newOwnerTriples = "";
+        if (document.owner.created) {
+            newOwnerTriples += document.owner.uri + " rdf:type acc:Owner . "
+                                + document.owner.uri + " acc:name \"" + document.owner.name + "\" . ";
         }
         var query = "prefix acc: <" + Config.getDocumentsNS() + "> "
                     + " prefix xsd: <http://www.w3.org/2001/XMLSchema#> "
+                    + " prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> "
                     + " WITH <" + GRAPH + "> "
                     + " DELETE {?s acc:accDocumentNumber ?adn . "
                             + " ?s acc:accDocumentIteration ?adi . "
@@ -1404,7 +1415,9 @@ module.factory("DocumentsService", function($http, $q, Config, DateService) {
                     + " INSERT {?s acc:accDocumentNumber \"" + document.accDocumentNumber + "\" . "
                             + " ?s acc:accDocumentIteration \"" + document.accDocumentIteration + "\" . "
                             + hasProjectTriples
-                            + " ?s dc:creator " + document.owner + " . "
+                            + newProjectTriples
+                            + " ?s dc:creator " + document.owner.uri + " . "
+                            + newOwnerTriples
                             + " ?s acc:documentType \"" + document.documentType + "\" . "
                             + (document.ownerDocumentName==null || document.ownerDocumentName=="" ? "" : " ?s acc:ownerDocumentName \"" + document.ownerDocumentName + "\" . ")
                             + (document.ownerDocumentRevision==null || document.ownerDocumentRevision=="" ? "" : " ?s acc:ownerDocumentRevision \"" + document.ownerDocumentRevision + "\" . ")

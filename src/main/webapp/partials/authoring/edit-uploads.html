@@ -110,15 +110,25 @@
                                                 <button type="button" class="btn btn-default btn-xs" ng-click="removeProject(p)"><span class="glyphicon glyphicon-remove"></span></button>
                                             </td>
                                         </tr>
-                                        <tr ng-show="hasNotAssigned()" ng-repeat="np in document.newAssignedProjects">
+                                        <tr ng-show="document.hasProject.length < projects.length">
                                             <td>
-                                                <select ng-model="np.project" ng-options="p as p.name for p in projects | filter:notAssigned | orderBy:'name'" ng-change="assignProject()"></select>
+                                                <select ng-model="newAssignedProject" ng-options="p as p.name for p in projects | filter:notAssigned | orderBy:'name'" ng-change="assignProject()"></select>
                                             </td>
-                                            <td></td>
+                                            <td>
+                                                <button type="button" class="btn btn-default btn-xs" ng-click="showCreateProject=true;"><span class="glyphicon glyphicon-plus"></span></button>
+                                            </td>
+                                        </tr>
+                                        <tr ng-show="showCreateProject">
+                                            <td>
+                                                <input type="text" ng-model="newProjectName" placeholder="New project name"/>
+                                            </td>
+                                            <td>
+                                                <button type="button" class="btn btn-default btn-xs" ng-click="addNewProject()"><span class="glyphicon glyphicon-ok"></span></button>
+                                            </td>
                                         </tr>
                                     </table>
                                     <div class="error" ng-show="document.hasProject.length==0">Invalid:
-                                        <span>At least one assigned document expected</span>
+                                        <span>At least one assigned project expected</span>
                                     </div>
                                 </div>
                             </div>
@@ -134,8 +144,23 @@
                         </div>
                         <div class="form-group">
                             <label class="col-lg-4 control-label">Owner Name</label>
-                            <div class="col-lg-8">
-                                <select id="owner" class="form-control" ng-model="document.owner" ng-options="o.uri as o.name for o in owners" required></select>
+                            <div class="col-lg-8 row">
+                                <div class="col-lg-9">
+                                    <select id="owner" class="form-control" ng-model="document.owner" ng-options="o as o.name for o in owners" required></select>
+                                </div>
+                                <div class="col-lg-3">
+                                    <button type="button" class="btn btn-default btn-xs" ng-click="showCreateOwner=true;"><span class="glyphicon glyphicon-plus"></span></button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group" ng-show="showCreateOwner">
+                            <div class="col-lg-offset-4 row">
+                                <div class="col-lg-8">
+                                    <input type="text" ng-model="newOwnerName" placeholder="New owner name"/>
+                                </div>
+                                <div class="col-lg-4">
+                                    <button type="button" class="btn btn-default btn-xs" ng-click="addNewOwner()"><span class="glyphicon glyphicon-ok"></span></button>
+                                </div>
                             </div>
                         </div>
                         <div class="form-group">

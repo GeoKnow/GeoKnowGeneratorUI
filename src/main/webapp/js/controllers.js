@@ -3406,6 +3406,9 @@ var UploadedDocsCtrl = function($scope, flash, filterFilter, orderByFilter, Docu
     $scope.projects = DocumentsService.getAllProjects();
     $scope.owners = DocumentsService.getAllOwners();
 
+    $scope.showCreateProject = false;
+    $scope.showCreateOwner = false;
+
     $scope.filteredDocuments = angular.copy($scope.documents);
     $scope.sortedDocuments = angular.copy($scope.documents);
 
@@ -3461,7 +3464,17 @@ var UploadedDocsCtrl = function($scope, flash, filterFilter, orderByFilter, Docu
 
     $scope.edit = function(uri) {
         $scope.document = angular.copy(DocumentsService.getDocument(uri));
-        $scope.document.newAssignedProjects = [{project: null}];
+        for (var ind in $scope.owners) {
+            if ($scope.owners[ind].uri==$scope.document.owner) {
+                $scope.document.owner = $scope.owners[ind];
+                break;
+            }
+        }
+        $scope.newAssignedProject = null;
+        $scope.newProjectName = null;
+        $scope.newOwnerName = null;
+        $scope.showCreateProject = false;
+        $scope.showCreateOwner = false;
     };
 
     $scope.save = function() {
@@ -3483,29 +3496,81 @@ var UploadedDocsCtrl = function($scope, flash, filterFilter, orderByFilter, Docu
         });
     };
 
+    $scope.createOwner = function(name) {
+        return {
+            uri: "acc:owner_" + name.split(" ").join("_"),
+            name: name,
+            created: true
+        };
+    };
+
+    $scope.ownerExists = function(ownerName) {
+        for (var ind in $scope.owners) {
+            if ($scope.owners[ind].name==ownerName) return true;
+        }
+        return false;
+    };
+
+    $scope.addNewOwner = function() {
+        if ($scope.newOwnerName!=null && $scope.newOwnerName!="" && !$scope.ownerExists($scope.newOwnerName)) {
+            var o = $scope.createOwner($scope.newOwnerName);
+            //add to owners list
+            $scope.owners.push(o);
+            //change current document owner
+            $scope.document.owner = o;
+        };
+        $scope.newOwnerName = null;
+        $scope.showCreateOwner = false;
+    };
+
+    $scope.createProject = function(name) {
+        return {
+            uri: "acc:project_" + name.split(" ").join("_"),
+            name: name,
+            created: true
+        };
+    };
+
+    $scope.projectExists = function(projectName) {
+        for (var ind in $scope.projects) {
+            if ($scope.projects[ind].name==projectName) return true;
+        }
+        return false;
+    };
+
+    $scope.addNewProject = function() {
+        if ($scope.newProjectName!=null && $scope.newProjectName!="" && !$scope.projectExists($scope.newProjectName)) {
+            var p = $scope.createProject($scope.newProjectName);
+            //add to projects list
+            $scope.projects.push(p);
+            //assign to current document
+            $scope.newAssignedProject = p;
+            $scope.assignProject();
+        }
+        $scope.newProjectName = null;
+        $scope.showCreateProject = false;
+    };
+
     $scope.removeProject = function(project) {
         var index = $scope.document.hasProject.indexOf(project);
         if (index > -1) $scope.document.hasProject.splice(index, 1);
     };
 
     $scope.assignProject = function() {
-        var project = $scope.document.newAssignedProjects[0].project;
+        var project = $scope.newAssignedProject;
         if (project != null && $scope.document.hasProject.indexOf(project) == -1) {
             $scope.document.hasProject.push(project);
-            $scope.document.newAssignedProjects = [{project: null}];
         }
+        $scope.newAssignedProject = null;
     };
 
     $scope.notAssigned = function(project) {
+        if ($scope.document==undefined) return true;
         for (var ind in $scope.document.hasProject) {
             if ($scope.document.hasProject[ind].uri==project.uri)
                 return false;
         }
         return true;
-    };
-
-    $scope.hasNotAssigned = function() {
-        return $scope.document.hasProject.length < $scope.projects.length;
     };
 
     $scope.getDocumentId = function(document) {
