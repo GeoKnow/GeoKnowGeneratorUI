@@ -31,11 +31,11 @@ public class FrameworkConfiguration {
     private String resourceNamespace = "http://generator.geoknow.eu/resource/";
 
     //email
-    private String smtpHost = "smtp.gmail.com";
-    private String smtpTLSPort = "587";
-    private String smtpSSLPort = "465";
+	private String smtpHost		= "smtp-relay.gmail.com";
+	private String smtpTLSPort	= "587";
+	private String smtpSSLPort	= "465";
     //set this parameters before run
-    private String emailAddress = "";
+	private String emailAddress	= "do_not_reply@acc.ontos.com";
     private String emailUsername = "";
     private String emailPassword = "";
 
