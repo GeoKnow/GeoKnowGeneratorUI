@@ -1268,7 +1268,7 @@ module.factory("D2RQService", function($http, $q, ConfigurationService) {
     };
 });
 
-module.factory("DocumentsService", function($http, $q, Config, DateService) {
+module.factory("DocumentsService", function($http, $q, Config, DateService, ConfigurationService) {
     var documentTypes = [
         {value:"Generic Specification", label:"Generic Specification"},
         {value:"Project-specific Specification", label:"Project-specific Specification"},
@@ -1372,13 +1372,18 @@ module.factory("DocumentsService", function($http, $q, Config, DateService) {
     };
 
     var deleteDocument = function(id) {
-        var query = "prefix acc: <" + Config.getDocumentsNS() + "> WITH <" + GRAPH + "> DELETE {?s ?p ?o} WHERE {?s acc:uuid \"" + id + "\" . ?s ?p ?o .}";
-        var requestData = {
-            format: "application/sparql-results+json",
-            query: query,
-            mode: "settings"
-        };
-        return $http.post("RdfStoreProxy", $.param(requestData));
+        var services = ConfigurationService.getComponentServices(":SolrUploadProxy");
+    	var solrUploadServiceUrl = services[0].serviceUrl;
+
+        return $http.post(solrUploadServiceUrl+"/update/deleteDocument?uuid="+id);
+
+//        var query = "prefix acc: <" + Config.getDocumentsNS() + "> WITH <" + GRAPH + "> DELETE {?s ?p ?o} WHERE {?s acc:uuid \"" + id + "\" . ?s ?p ?o .}";
+//        var requestData = {
+//            format: "application/sparql-results+json",
+//            query: query,
+//            mode: "settings"
+//        };
+//        return $http.post("RdfStoreProxy", $.param(requestData));
     };
 
     var updateDocument = function(document) {

@@ -178,7 +178,7 @@
       rdfs:label "SolrUploadProxy"^^xsd:string ;
       lds:providesService
               [ a       lds:ExtractionService ;
-                lds:serviceUrl <http://localhost:8080/SolrUploadProxy/proxy/upload>
+                lds:serviceUrl <http://localhost:8080/SolrUploadProxy/proxy>
               ] .
 
 

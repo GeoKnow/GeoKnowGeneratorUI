@@ -3442,7 +3442,7 @@ var D2RQMappingCtrl = function($scope, $http, $q, flash, ServerErrorResponse, Ac
     };
 };
 
-var UploadedDocsCtrl = function($scope, flash, filterFilter, orderByFilter, DocumentsService, ServerErrorResponse) {
+var UploadedDocsCtrl = function($scope, $http, flash, filterFilter, orderByFilter, DocumentsService, ServerErrorResponse, ConfigurationService) {
     $scope.documentTypes = DocumentsService.getDocumentTypes();
     $scope.documents = DocumentsService.getAllDocuments();
     $scope.projects = DocumentsService.getAllProjects();
@@ -3524,6 +3524,17 @@ var UploadedDocsCtrl = function($scope, flash, filterFilter, orderByFilter, Docu
             $scope.refreshDocuments();
             $('#modalDocument').modal('hide');
             flash.success = "Saved";
+            //reindex document
+            var services = ConfigurationService.getComponentServices(":SolrUploadProxy");
+            var solrUploadServiceUrl = services[0].serviceUrl;
+            $http.post(solrUploadServiceUrl+"/update/reindexDocument?uuid="+$scope.document.uuid)
+                .then(function(response) {
+                    console.log("Document " + $scope.document.uuid + " reindex completed");
+                    console.log(response.data);
+                }, function(response) {
+                    console.log("Document " + $scope.document.uuid + " reindex failed");
+                    console.log(response);
+                });
         }, function(response) {
             $('#modalDocument').modal('hide');
             flash.error = ServerErrorResponse.getMessage(response.status);
@@ -3533,6 +3544,7 @@ var UploadedDocsCtrl = function($scope, flash, filterFilter, orderByFilter, Docu
     $scope.delete = function(id) {
         DocumentsService.deleteDocument(id).then(function(response) {
             $scope.refreshDocuments();
+            console.log("Document " + id + " was deleted")
         }, function(response) {
             flash.error = ServerErrorResponse.getMessage(response.status);
         });
@@ -3644,7 +3656,7 @@ var UploadDocCtrl = function($scope, $http, flash, ServerErrorResponse, Configur
         for (var i = 0; i < $scope.fileList.length; i++) {
             var f = $scope.fileList[i];
             $http.uploadFile({
-                    url: solrUploadServiceUrl + "/files",
+                    url: solrUploadServiceUrl + "/upload/files",
                     file: f,
                     data: $scope.document
                 }).then(function(response) {
