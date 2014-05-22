@@ -6,66 +6,85 @@ import rdf.RdfStoreManager;
 import rdf.RdfStoreManagerImpl;
 import rdf.SecureRdfStoreManagerImpl;
 import util.HttpUtils;
+import util.JsonResponse;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.codehaus.jackson.map.ObjectMapper;
+
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 public class RdfStoreProxy extends HttpServlet {
-    /**
+	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	
+
 	private FrameworkUserManager frameworkUserManager;
-    private RdfStoreManager frameworkRdfStoreManager;
+	private RdfStoreManager frameworkRdfStoreManager;
+	
+	// provides a response to the webapp with more information about errors
+	JsonResponse res = new JsonResponse();
+	ObjectMapper mapper = new ObjectMapper();
 
-    @Override
-    public void init(ServletConfig config) throws ServletException {
-        super.init(config);
-        FrameworkConfiguration frameworkConf = FrameworkConfiguration.getInstance(getServletContext());
-        frameworkUserManager = frameworkConf.getFrameworkUserManager();
-        frameworkRdfStoreManager = new SecureRdfStoreManagerImpl(frameworkConf.getAuthSparqlEndpoint(),
-                frameworkConf.getSparqlFrameworkLogin(), frameworkConf.getSparqlFrameworkPassword());
-    }
+	@Override
+	public void init(ServletConfig config) throws ServletException {
+		super.init(config);
+		FrameworkConfiguration frameworkConf;
+		try {
+			frameworkConf = FrameworkConfiguration.getInstance(getServletContext());
+			frameworkUserManager = frameworkConf.getFrameworkUserManager();
+			frameworkRdfStoreManager = new SecureRdfStoreManagerImpl(frameworkConf.getAuthSparqlEndpoint(),
+					frameworkConf.getAuthSparqlUser() , frameworkConf.getAuthSparqlPassword());
+		} catch (FileNotFoundException e) {
+			throw new ServletException(e.getLocalizedMessage(), e);
+		} catch (Exception e) {
+			throw new ServletException(e.getLocalizedMessage(), e);
+		}
 
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        doGet(req, resp);
-    }
+	}
 
-    @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String responseFormat = req.getParameter("format");
-        String username = req.getParameter("username");
-        String token = HttpUtils.getCookieValue(req, "token");
-        String mode = req.getParameter("mode");
-        String query = req.getParameter("query");
+	@Override
+	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		doGet(req, resp);
+	}
 
-        System.out.println(query);
-        try {
-            RdfStoreManager rdfStoreManager;
-            if ("settings".equals(mode)) { // framework manages settings graphs (public setting for unauthorized user)
-            	 System.out.println("mode" + mode);
-                rdfStoreManager = frameworkRdfStoreManager;
-            } else if (username!=null && !username.isEmpty()) {
-            	System.out.println("username:" + username);
-                boolean valid = frameworkUserManager.checkToken(username, token);
-                if (!valid)
-                    throw new ServletException("invalid token");
-                rdfStoreManager = frameworkUserManager.getRdfStoreManager(username);
-            } else {
-            	System.out.println("new RdfStoreManagerImpl");
-                rdfStoreManager = new RdfStoreManagerImpl(FrameworkConfiguration.getInstance(getServletContext()).getPublicSparqlEndpoint());
-            }
-            String result = rdfStoreManager.execute(query, responseFormat);
-            resp.setContentType(responseFormat);
-            resp.getWriter().print(result);
-        } catch (Exception e) {
-            throw new ServletException(e);
-        }
-    }
+	@Override
+	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		String responseFormat = req.getParameter("format");
+		String username = req.getParameter("username");
+		String token = HttpUtils.getCookieValue(req, "token");
+		String mode = req.getParameter("mode");
+		String query = req.getParameter("query");
+
+		System.out.println("mode " + mode);
+		System.out.println(query);
+
+		try {
+			RdfStoreManager rdfStoreManager;
+			if ("settings".equals(mode)) { // framework manages settings graphs (public setting for unauthorized user)
+				System.out.println("unregustered user settings");
+				rdfStoreManager = frameworkRdfStoreManager;
+			} else if (username!=null && !username.isEmpty()) {
+				System.out.println("username:" + username);
+				boolean valid = frameworkUserManager.checkToken(username, token);
+				if (!valid)
+					throw new ServletException("invalid token");
+				rdfStoreManager = frameworkUserManager.getRdfStoreManager(username);
+			} else {
+				System.out.println("new RdfStoreManagerImpl");
+				rdfStoreManager = new RdfStoreManagerImpl(FrameworkConfiguration.getInstance(getServletContext()).getPublicSparqlEndpoint());
+			}
+			String result = rdfStoreManager.execute(query, responseFormat);
+			resp.setContentType(responseFormat);
+			resp.getWriter().print(result);
+		} catch (Exception e) {
+			throw new ServletException(e);
+		}
+	}
 }

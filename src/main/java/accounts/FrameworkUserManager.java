@@ -10,6 +10,7 @@ import rdf.SecureRdfStoreManagerImpl;
 import util.ObjectPair;
 import util.RandomStringGenerator;
 
+import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -61,13 +62,13 @@ public class FrameworkUserManager implements UserManager {
             counter++;
         } while (error && counter<10);
         //grant SPARQL_UPDATE role to created Virtuoso user
-        // todo users with only read access?
+        //TODO: users with only read access?
         rdfStoreUserManager.grantRole(rdfStoreUser, "SPARQL_UPDATE");
 
         //create setting graph for user
         String userSettingsGraphURI = frameworkConfig.getResourceNamespace() + URLEncoder.encode(name, "UTF-8") + "/settingsGraph";
         // grant write permissions to framework - otherwise framework fails to create graph
-        rdfStoreUserManager.setRdfGraphPermissions(frameworkConfig.getSparqlFrameworkLogin(), userSettingsGraphURI, 3);
+        rdfStoreUserManager.setRdfGraphPermissions(frameworkConfig.getAuthSparqlUser(), userSettingsGraphURI, 3);
         rdfStoreManager.createGraph(userSettingsGraphURI);
         //grant write permissions to user
         rdfStoreUserManager.setRdfGraphPermissions(rdfStoreUser, userSettingsGraphURI, 3); // todo deny access for user?
@@ -76,8 +77,15 @@ public class FrameworkUserManager implements UserManager {
         String query = getPrefixes() + "\n"
                 + "INSERT INTO <" + userSettingsGraphURI + "> {?s ?p ?o} "
                 + "WHERE {GRAPH <" + frameworkConfig.getInitialSettingsGraph() + "> {?s ?p ?o} }";
-        rdfStoreManager.execute(query, jsonResponseFormat);
-
+        try{
+        	rdfStoreManager.execute(query, jsonResponseFormat);
+        }
+        catch(IOException e)
+        {	// failed to write user graph 
+        	// rollback actions:
+            rdfStoreUserManager.dropUser(rdfStoreUser);
+            throw e;
+        }
         // write user account to accounts graph
         query = getPrefixes() + "\n"
                 + "INSERT DATA { GRAPH <" + frameworkConfig.getAccountsGraph() + "> {\n"
@@ -90,8 +98,17 @@ public class FrameworkUserManager implements UserManager {
                 + " :" + name + " foaf:mbox <mailto:" + email + "> .\n"
                 + " :" + name + " dcterms:created \"" + ISO8601Utils.format(new Date()) + "\"^^xsd:date .\n"
                 + "} }";
-        rdfStoreManager.execute(query, jsonResponseFormat);
-
+        
+        try{
+        	rdfStoreManager.execute(query, jsonResponseFormat);
+        }
+        catch(IOException e)
+        {	// failed to register user in to the accounts graph
+        	// rollback actions:
+            rdfStoreUserManager.dropUser(rdfStoreUser);
+            rdfStoreManager.dropGraph(userSettingsGraphURI);
+            throw e;
+        }
         //todo delete Virtuoso user if failed to write account triples
     }
 
@@ -623,12 +640,12 @@ public class FrameworkUserManager implements UserManager {
 
     private String getPrefixes() {
         if (prefixes==null) {
-            prefixes = "PREFIX : <" + frameworkConfig.getAccountsNamespace() + ">\n"
-                    + "PREFIX ao: <" + frameworkConfig.getAccountsOntologyNamespace() + ">\n"
+            prefixes ="PREFIX : <" + frameworkConfig.getResourceNamespace() + ">\n" 
+            		+ "PREFIX ao: <" + frameworkConfig.getAccountsOntologyNamespace() + ">\n"
+            		+ "PREFIX gkg: <"+ frameworkConfig.getFrameworkOntologyNS() +">\n"
                     + "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n"
                     + "PREFIX user: <http://schemas.talis.com/2005/user/schema#>\n"
                     + "PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>\n"
-                    + "PREFIX gkg: <http://generator.geoknow.eu/ontology/>\n"
                     + "PREFIX acl: <http://www.w3.org/ns/auth/acl#>\n"
                     + "PREFIX foaf: <http://xmlns.com/foaf/0.1/>\n"
                     + "PREFIX dcterms: <http://purl.org/dc/terms/>";
@@ -662,7 +679,7 @@ public class FrameworkUserManager implements UserManager {
 
     private Collection<String> getSettingsGraphs() throws Exception {
         Collection<String> settingsGraphList = new ArrayList<String>();
-        settingsGraphList.add(frameworkConfig.getDefaultSettingsGraph());
+        settingsGraphList.add(frameworkConfig.getSettingsGraph());
         String query = getPrefixes() + "\n"
                 + " SELECT DISTINCT ?sg FROM <" + frameworkConfig.getAccountsGraph() + "> "
                 + " WHERE { ?account ao:settingsGraph ?sg }";

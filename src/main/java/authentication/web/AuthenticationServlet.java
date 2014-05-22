@@ -15,17 +15,29 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.UUID;
 
 public class AuthenticationServlet extends HttpServlet {
-    private FrameworkUserManager frameworkUserManager;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private FrameworkUserManager frameworkUserManager;
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        frameworkUserManager = FrameworkConfiguration.getInstance(getServletContext()).getFrameworkUserManager();
+        try {
+			frameworkUserManager = FrameworkConfiguration.getInstance(getServletContext()).getFrameworkUserManager();
+		} catch (FileNotFoundException e) {
+			throw new ServletException(e);
+		} catch (Exception e) {
+			throw new ServletException(e);
+		}
         
     }
 
@@ -96,12 +108,15 @@ public class AuthenticationServlet extends HttpServlet {
                 throw new ServletException("Failed to create account " + username, e);
             }
 
-            EmailSender emailSender = FrameworkConfiguration.getInstance(getServletContext()).getDefaultEmailSender();
             try {
+            	EmailSender emailSender = FrameworkConfiguration.getInstance(getServletContext()).getDefaultEmailSender();
+                
                 emailSender.send(email, "GeoKnow registration", "Your login: " + username + ", password: " + password);
             } catch (MessagingException e) {
                 throw new ServletException(e);
-            }
+            } catch (Exception e) {
+            	 throw new ServletException(e);
+			}
 
             String responseStr = "{\"message\" : \"Your password will be sent to your e-mail address " + email + " \"}";
             response.getWriter().print(responseStr);
@@ -152,12 +167,15 @@ public class AuthenticationServlet extends HttpServlet {
             }
 
             //send new password to user
-            EmailSender emailSender = FrameworkConfiguration.getInstance(getServletContext()).getDefaultEmailSender();
+            
             try {
+            	EmailSender emailSender = FrameworkConfiguration.getInstance(getServletContext()).getDefaultEmailSender();
                 emailSender.send(userProfile.getEmail(), "GeoKnow restore password", "Your login: " + username + ", password: " + password);
             } catch (MessagingException e) {
                 throw new ServletException(e);
-            }
+            } catch (Exception e) {
+            	 throw new ServletException(e);
+			}
 
             String responseStr = "{\"message\" : \"New password will be sent to your e-mail address " + userProfile.getEmail() + " \"}";
             response.getWriter().print(responseStr);

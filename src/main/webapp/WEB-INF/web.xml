@@ -28,81 +28,22 @@
     <param-name>temp-data</param-name> 
     <param-value>/uploads/tmp/</param-value> 
   </context-param>
+  
   <!-- FrameWork Configuration parameters  -->
-  <!-- Virtuoso server and users  -->
   <context-param> 
-    <description>Virtuoso server</description> 
-    <param-name>virtuoso-jdbc-conn-string</param-name> 
-    <param-value>jdbc:virtuoso://generator.geoknow.eu:1111/</param-value> 
-  </context-param>
-  <context-param> 
-    <description>Virtuoso server user</description> 
-    <param-name>virtuoso-dba-user</param-name> 
-    <param-value>dba</param-value> 
-  </context-param>
-  <context-param> 
-    <description>Virtuoso server password</description> 
-    <param-name>virtuoso-dba-password</param-name> 
-    <param-value>dba</param-value> 
-  </context-param>
-
-  <!-- FrameWork SPARQL Endpoints and settings graph  -->
-  <context-param>
-    <description>SPARQL Public Endpoint</description> 
-    <param-name>sparql-public-endpoint</param-name> 
-    <param-value>http://generator.geoknow.eu:8890/sparql</param-value> 
-  </context-param>
-  <context-param>
-    <description>SPARQL Auth Endpoint</description> 
-    <param-name>sparql-auth-endpoint</param-name> 
-    <param-value>http://generator.geoknow.eu:8890/sparql</param-value> 
-  </context-param>
-  <context-param> 
-    <description>Settings Graph</description> 
-    <param-name>settings-graph</param-name> 
-    <param-value>http://generator.geoknow.eu/resource/settingsGraph</param-value> 
-  </context-param>
-
-  <!-- Authentication credentals and default graphs   -->
-  <context-param> 
-    <description>Framework User</description> 
-    <param-name>framework-user</param-name> 
-    <param-value>generator</param-value> 
-  </context-param>
-  <context-param> 
-    <description>Framework Password</description> 
-    <param-name>framework-password</param-name> 
-    <param-value>generator</param-value> 
-  </context-param>
-  <context-param> 
-    <description>Initial Settings for new users</description> 
-    <param-name>new-user-settings</param-name> 
-    <param-value>http://generator.geoknow.eu/resource/newUuserSettings</param-value> 
-  </context-param>
-  <context-param> 
-    <description>Groups Graph</description> 
-    <param-name>groups-graph</param-name> 
-    <param-value>http://generator.geoknow.eu/resource/graphGroups</param-value> 
-  </context-param>
-  <context-param> 
-    <description>Users Accounts Graph</description> 
-    <param-name>users-accounts-graph</param-name> 
-    <param-value>http://generator.geoknow.eu/resource/accountsGraph</param-value> 
-  </context-param>
-  <context-param> 
-    <description>Guest Settings Graph</description> 
-    <param-name>guest-settings-graph</param-name> 
-    <param-value>http://generator.geoknow.eu/resource/guestSettingsGraph</param-value> 
-  </context-param>
+    <description>Framework URI is used to get the configuration data from the framework-configuration.ttl file</description> 
+    <param-name>framework-uri</param-name> 
+    <param-value>http://generator.geoknow.eu/resource/GeoKnowGenerator</param-value> 
+  </context-param> 
   <!-- Namespaces -->
   <context-param> 
-    <description>Users Accounts Namespace</description> 
-    <param-name>users-accounts-ns</param-name> 
-    <param-value>http://generator.geoknow.eu/accounts/</param-value> 
+    <description>Framework Ontology Namespace</description> 
+    <param-name>framework-ontology-ns</param-name> 
+    <param-value>http://generator.geoknow.eu/ontology/</param-value> 
   </context-param>
   <context-param> 
-    <description>User Accounts Ontology</description> 
-    <param-name>users-accounts-ontology</param-name> 
+    <description>User Accounts Namespace</description> 
+    <param-name>accounts-ns</param-name> 
     <param-value>http://generator.geoknow.eu/accounts/ontology/</param-value> 
   </context-param>
   <context-param> 
@@ -110,10 +51,44 @@
     <param-name>framework-ns</param-name> 
     <param-value>http://generator.geoknow.eu/resource/</param-value> 
   </context-param>
+  
+  
 
+  <!--User Registration email sender  -->
+  <context-param> 
+    <description>SMPT Host</description> 
+    <param-name>smtp-host</param-name> 
+    <param-value>***REMOVED***</param-value> 
+  </context-param>
+  <context-param> 
+    <description>SMPT TLS Port</description> 
+    <param-name>smpt-tls-port</param-name> 
+    <param-value>587</param-value> 
+  </context-param>
+  <context-param> 
+    <description>SMPT SSL Port</description> 
+    <param-name>smtp-ssl-port</param-name> 
+    <param-value>465</param-value> 
+  </context-param>
+  <context-param> 
+    <description>email</description> 
+    <param-name>email</param-name> 
+    <param-value>***REMOVED***</param-value> 
+  </context-param>
+  <context-param> 
+    <description>User Name</description> 
+    <param-name>user-name</param-name> 
+    <param-value>***REMOVED***</param-value> 
+  </context-param>
+  <context-param> 
+    <description>password</description> 
+    <param-name>password</param-name> 
+    <param-value>***REMOVED***</param-value> 
+  </context-param>  
+  
   <servlet>
      <servlet-name>ImportRDF</servlet-name>
-     <servlet-class>ImportRDF</servlet-class>
+     <servlet-class>ImportRDFServlet</servlet-class>
   </servlet>
 
   <servlet-mapping>

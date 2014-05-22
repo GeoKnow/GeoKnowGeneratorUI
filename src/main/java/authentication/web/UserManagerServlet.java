@@ -16,18 +16,30 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
 public class UserManagerServlet extends HttpServlet {
-    private FrameworkUserManager frameworkUserManager;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private FrameworkUserManager frameworkUserManager;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        frameworkUserManager = FrameworkConfiguration.getInstance(getServletContext()).getFrameworkUserManager();
+        try {
+			frameworkUserManager = FrameworkConfiguration.getInstance(getServletContext()).getFrameworkUserManager();
+		} catch (FileNotFoundException e) {
+			throw new ServletException(e);
+		} catch (Exception e) {
+			throw new ServletException(e);
+		}
     }
 
     @Override
@@ -103,12 +115,15 @@ public class UserManagerServlet extends HttpServlet {
             }
 
             //send email with login and password
-            EmailSender emailSender = FrameworkConfiguration.getInstance(getServletContext()).getDefaultEmailSender();
+           
             try {
+            	 EmailSender emailSender = FrameworkConfiguration.getInstance(getServletContext()).getDefaultEmailSender();
                 emailSender.send(email, "GeoKnow registration", "Your login: " + username + ", password: " + password);
             } catch (MessagingException e) {
                 throw new ServletException(e);
-            }
+            } catch (Exception e) {
+            	throw new ServletException(e);
+			}
         } else if ("delete".equals(mode)) {
             String username = req.getParameter("username");
             try {

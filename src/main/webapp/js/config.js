@@ -1,4 +1,4 @@
-/**
+    /**
  * GeoKnow Generator
  *    Configuration management
  *
@@ -29,350 +29,352 @@
 "use strict";
 
 angular.module("app.configuration", [])
-.factory("Config", function($q, $http, flash, AccountService)
+.factory("Config", function($q, $http, flash, AccountService, ServerErrorResponse)
 {
-        $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded; charset=UTF-8";
+    $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded; charset=UTF-8";
 
-        // the public and authenticated enpoints that will be used by the application
-        var AUTH_ENDPOINT               = "http://generator.geoknow.eu:8890/sparql-auth";
-        var PUBLIC_ENDPOINT             = "http://generator.geoknow.eu:8890/sparql";
-        // if new resorces are created they will use this name space, and it can be changed
-        var NS                          = "http://generator.geoknow.eu/resource/";
-        // this is the graph where settings are stored, it doesnt change, and independent on the Namespace
-        var DEFAULT_SETTINGS_GRAPH_URI  = "http://generator.geoknow.eu/resource/settingsGraph";
-        // SETTINGS_GRAPH_URI is initalized with DEFAULT_SETTINGS_GRAPH_URI, but can be changed with setGraph, 
-        var SETTINGS_GRAPH_URI          = DEFAULT_SETTINGS_GRAPH_URI;
-        // Create a graph for groups of users
-        var GROUPS_GRAPH_URI            = "http://generator.geoknow.eu/resource/groupsGraph";
-        
+    // the public and authenticated enpoints that will be used by the application
+    var AUTH_ENDPOINT;
+    var PUBLIC_ENDPOINT;
+    // if new resorces are created they will use this name space, and it can be changed
+    var NS                          = "http://generator.geoknow.eu/resource/";
+    // this is the graph where settings are stored, it doesnt change, and independent on the Namespace
+    var DEFAULT_SETTINGS_GRAPH_URI  = "http://generator.geoknow.eu/resource/settingsGraph";
+    // SETTINGS_GRAPH_URI is initalized with DEFAULT_SETTINGS_GRAPH_URI, but can be changed with setGraph, 
+    var SETTINGS_GRAPH_URI          = DEFAULT_SETTINGS_GRAPH_URI;
+    // Create a graph for groups of users
+    var GROUPS_GRAPH_URI            = "http://generator.geoknow.eu/resource/groupsGraph";
+    
 
-        var namespaces =
+    var namespaces =
+    {
+        "http://dbpedia.org/resource/"                     : "dbpedia:",
+        "http://purl.org/dc/elements/1.1/"                 : "dc:",
+        "http://purl.org/dc/terms/"                        : "dcterms:",
+        "http://xmlns.com/foaf/0.1/"                       : "foaf:",
+        "http://stack.linkeddata.org/ldis-schema/"   	   : "lds:",
+        "http://generator.geoknow.eu/ontology/"            : "gkg:",
+        "http://www.w3.org/1999/02/22-rdf-syntax-ns#"      : "rdf:",
+        "http://www.w3.org/2000/01/rdf-schema#"            : "rdfs:",
+        "http://www.w3.org/ns/sparql-service-description#" : "sd:",
+        "http://rdfs.org/ns/void#"                         : "void:",
+        "http://www.w3.org/ns/auth/acl#"                   : "acl:"
+    };
+    namespaces[NS] = ":";
+
+    var GRAPH    = "<" + SETTINGS_GRAPH_URI + ">";
+    var EOL      = "\n";
+    var PREFIXES = "";
+    for (var namespace in namespaces)
+            PREFIXES += "PREFIX " + namespaces[namespace] + " <" + namespace + ">" + EOL;
+
+    var settings = {};
+    var isLoaded = false;
+
+    var request = function(url, data, success){
+        var deferred = $q.defer();
+
+        $http.post(url, $.param(data))
+        .success(function(data)
         {
-                "http://dbpedia.org/resource/"                     : "dbpedia:",
-                "http://purl.org/dc/elements/1.1/"                 : "dc:",
-                "http://purl.org/dc/terms/"                        : "dcterms:",
-                "http://xmlns.com/foaf/0.1/"                       : "foaf:",
-                "http://stack.linkeddata.org/ldis-schema/"   	   : "lds:",
-                "http://generator.geoknow.eu/ontology/"            : "gkg:",
-                "http://www.w3.org/1999/02/22-rdf-syntax-ns#"      : "rdf:",
-                "http://www.w3.org/2000/01/rdf-schema#"            : "rdfs:",
-                "http://www.w3.org/ns/sparql-service-description#" : "sd:",
-                "http://rdfs.org/ns/void#"                         : "void:",
-                "http://www.w3.org/ns/auth/acl#"                   : "acl:"
-        };
-        namespaces[NS] = ":";
+            try{
+                deferred.resolve(success ? success(data) : data.results.bindings[0]["callret-0"].value);
+            }
+            catch (e){
+                console.log("ERROR with no more explai");
+            flash.error = ServerErrorResponse.getMessage(data.message);
 
-        var GRAPH    = "<" + SETTINGS_GRAPH_URI + ">";
-        var EOL      = "\n";
-        var PREFIXES = "";
-        for (var namespace in namespaces)
-                PREFIXES += "PREFIX " + namespaces[namespace] + " <" + namespace + ">" + EOL;
+                deferred.reject(e);
+            }
+        })
+        .error(function(data, status){
+            var message = ServerErrorResponse.getMessage(status) + "at " + AUTH_ENDPOINT ;
+            console.log(message);
+            flash.error = message;
+            deferred.reject(message);
+        });
 
-        var settings = {};
-        var isLoaded = false;
+        return deferred.promise;
+    };
 
-        var request = function(url, data, success)
+    var ns = function(v){
+        var value = v.value || v;
+
+        if (!v.type || v.type == "uri")
         {
-                var deferred = $q.defer();
+            var namespace = /.*[#\/]/.exec(value);
+            if (namespace)
+            {
+                var prefix = namespaces[namespace = namespace[0]];
+                if (prefix)
+                   return prefix + value.slice(namespace.length);
+            }
+        }
 
-                $http.post(url, $.param(data))
-                .success(function(data)
-                {
-                        try
+        return value;
+    };
+
+    var setEndpoint = function(url)
+    {
+        AUTH_ENDPOINT = url;
+    };
+
+    var getEndpoint = function()
+    {
+        return AUTH_ENDPOINT;
+    };
+    
+    var setNS = function(ns)
+    {
+        NS = ns;
+    };
+
+    var getNS = function()
+    {
+        return NS;
+    };
+
+    var getGraph = function()
+    {
+        return SETTINGS_GRAPH_URI;
+    };
+
+    var setGraph = function(uri) {
+        SETTINGS_GRAPH_URI = uri;
+        GRAPH = "<" + SETTINGS_GRAPH_URI + ">";
+        isLoaded = false;
+        read();
+    };
+
+    var restoreDefault = function() {
+        return setGraph(DEFAULT_SETTINGS_GRAPH_URI);
+    };
+
+    var getSettings = function()
+    {
+        return settings;
+    };
+
+    var select = function(property, value)
+    {
+        property = ns(property);
+        value    = ns(value);
+
+        var elements = {};
+        var resource;
+
+        var walk = function(element)
+        {
+            for (var key in element)
+            {
+                var prop = element[key];
+                if (prop)
+                    if (key == property)
+                        for (var i in prop)
                         {
-                                deferred.resolve(success ? success(data) : data.results.bindings[0]["callret-0"].value);
+                            var val = prop[i];
+                            if (val == value)
+                            {
+                                elements[resource] = element;
+                                break;
+                            }
                         }
-                        catch (e)
+                    else
+                        for (var i in prop)
                         {
-                                deferred.reject(e);
-
+                            var val = prop[i];
+                            if (typeof val === "object")
+                                walk(val);
                         }
-                })
-                .error(function(data, status)
-                {
-                        var message = data || AUTH_ENDPOINT + " not found";
-                        deferred.reject(message);
-                        flash.error = message;
-                });
-
-                return deferred.promise;
+            }
         };
 
-        var ns = function(v)
+        for (resource in settings)
+            walk(settings[resource]);
+
+        return elements;
+    };
+
+    var parseSparqlResults = function(data) {
+        var bindings = data.results.bindings;
+        var triples  = [];
+
+        for (var i in bindings)
         {
-                var value = v.value || v;
+            var binding = bindings[i];
+            triples.push([ ns(binding.s), ns(binding.p), ns(binding.o) ]);
+        }
 
-                if (!v.type || v.type == "uri")
-                {
-                        var namespace = /.*[#\/]/.exec(value);
-                        if (namespace)
-                        {
-                                var prefix = namespaces[namespace = namespace[0]];
-                                if (prefix)
-                                        return prefix + value.slice(namespace.length);
-                        }
-                }
+        var result = {};
 
-                return value;
-        };
+        var bnodes = {};
 
-        var setEndpoint = function(url)
+        for (var i in triples)
         {
-                AUTH_ENDPOINT = url;
-        };
+            var triple = triples[i],
+                s = triple[0],
+                p = triple[1],
+                o = triple[2];
 
-        var getEndpoint = function()
+            if (/^nodeID:\/\//.test(s))
+            {
+                var id  = s.slice(9),
+                map = bnodes[id] = bnodes[id] || {};
+            }
+            else
+            {
+                var map = result[s] || (result[s] = {});
+            }
+
+            if (/^nodeID:\/\//.test(o))
+            {
+                var id = o.slice(9);
+                o = bnodes[id] = bnodes[id] || {};
+            }
+
+            (map[p] || (map[p] = [])).push(o);
+        }
+
+        return result;
+    };
+
+    var read = function()
+    {
+        if (isLoaded)
         {
-                return AUTH_ENDPOINT;
-        };
-        
-        var setNS = function(ns)
-        {
-                NS = ns;
+            var deferred = $q.defer();
+            deferred.resolve(settings);
+            return deferred.promise;
+        }
+
+        var requestData = {
+            format: "application/sparql-results+json",
+            query: "SELECT * FROM " + GRAPH + EOL
+                    + "WHERE { ?s ?p ?o }" + EOL
+                    + "ORDER BY ?s ?p ?o",
+            mode: "settings"
         };
 
-        var getNS = function()
-        {
-                return NS;
-        };
-
-        var getGraph = function()
-        {
-                return SETTINGS_GRAPH_URI;
-        };
-
-        var setGraph = function(uri) {
-            SETTINGS_GRAPH_URI = uri;
-            GRAPH = "<" + SETTINGS_GRAPH_URI + ">";
-            isLoaded = false;
-            read();
-        };
-
-        var restoreDefault = function() {
-            return setGraph(DEFAULT_SETTINGS_GRAPH_URI);
-        };
-
-        var getSettings = function()
-        {
+        return request("RdfStoreProxy", requestData,
+            function(data)
+            {
+                settings = parseSparqlResults(data);
+                isLoaded = true;
                 return settings;
-        };
+            }
+        );
+    };
 
-        var select = function(property, value)
+    var write = function()
+    {
+        var wrap = function(s)
         {
-                property = ns(property);
-                value    = ns(value);
-
-                var elements = {};
-                var resource;
-
-                var walk = function(element)
-                {
-                        for (var key in element)
-                        {
-                                var prop = element[key];
-                                if (prop)
-                                        if (key == property)
-                                                for (var i in prop)
-                                                {
-                                                        var val = prop[i];
-                                                        if (val == value)
-                                                        {
-                                                                elements[resource] = element;
-                                                                break;
-                                                        }
-                                                }
-                                        else
-                                                for (var i in prop)
-                                                {
-                                                        var val = prop[i];
-                                                        if (typeof val === "object")
-                                                                walk(val);
-                                                }
-                        }
-                };
-
-                for (resource in settings)
-                        walk(settings[resource]);
-
-                return elements;
+            return /^https?:\/\//.test(s) ? "<" + s + ">" : !/^\w*:/.test(s) ? '"' + s + '"' : s;
         };
 
-        var parseSparqlResults = function(data) {
-            var bindings = data.results.bindings;
-            var triples  = [];
+        var data = "",
+            bnodeIndex = 0;
 
-            for (var i in bindings)
+        var walk = function(s, map)
+        {
+            for (var p in map)
             {
-                var binding = bindings[i];
-                triples.push([ ns(binding.s), ns(binding.p), ns(binding.o) ]);
-            }
-
-            var result = {};
-
-            var bnodes = {};
-
-            for (var i in triples)
-            {
-                var triple = triples[i],
-                    s = triple[0],
-                    p = triple[1],
-                    o = triple[2];
-
-                if (/^nodeID:\/\//.test(s))
+                var arr = map[p];
+                for (var i in arr)
                 {
-                    var id  = s.slice(9),
-                    map = bnodes[id] = bnodes[id] || {};
+                    var o = arr[i];
+                    if (typeof o === "string")
+                        data += wrap(s) + " " + wrap(p) + " " + wrap(o) + " ." + EOL;
+                    else
+                    {
+                        var bnode = "_:b" + ++bnodeIndex;
+                        data += wrap(s) + " " + wrap(p) + " " + bnode + " ." + EOL;
+                        walk(bnode, o);
+                    }
                 }
-                else
-                {
-                    var map = result[s] || (result[s] = {});
-                }
-
-                if (/^nodeID:\/\//.test(o))
-                {
-                    var id = o.slice(9);
-                    o = bnodes[id] = bnodes[id] || {};
-                }
-
-                (map[p] || (map[p] = [])).push(o);
             }
-
-            return result;
         };
 
-        var read = function()
-        {
-                if (isLoaded)
-                {
-                        var deferred = $q.defer();
-                        deferred.resolve(settings);
-                        return deferred.promise;
-                }
+        for (var s in settings)
+                walk(s, settings[s]);
 
-                var requestData = {
-                    format: "application/sparql-results+json",
-                    query: "SELECT * FROM " + GRAPH + EOL
-                            + "WHERE { ?s ?p ?o }" + EOL
-                            + "ORDER BY ?s ?p ?o",
-                    mode: "settings"
-                };
-
-                return request("RdfStoreProxy", requestData,
-                        function(data)
-                        {
-                            settings = parseSparqlResults(data);
-                            isLoaded = true;
-                            return settings;
-                        }
-                );
+        var requestData = {
+            format: "application/sparql-results+json",
+            query: PREFIXES
+                    + "DROP SILENT GRAPH "   + GRAPH + EOL
+                    + "CREATE SILENT GRAPH " + GRAPH + EOL
+                    + "INSERT INTO " + GRAPH + EOL
+                    + "{" + EOL
+                    +        data
+                    + "}",
+            mode: "settings"
         };
 
-        var write = function()
-        {
-                var wrap = function(s)
-                {
-                        return /^https?:\/\//.test(s) ? "<" + s + ">" : !/^\w*:/.test(s) ? '"' + s + '"' : s;
-                };
+        return request("RdfStoreProxy", requestData);
+    };
 
-                var data = "",
-                        bnodeIndex = 0;
+    var createGraph = function(name, permissions)
+    {
+        var requestData = {
+            format: "application/sparql-results+json",
+            mode: "create",
+            graph: name,
+            permissions: permissions,
+            username: AccountService.getUsername()
+        }
+        return request("GraphManagerServlet", requestData);
+    };
 
-                var walk = function(s, map)
-                {
-                        for (var p in map)
-                        {
-                                var arr = map[p];
-                                for (var i in arr)
-                                {
-                                        var o = arr[i];
-                                        if (typeof o === "string")
-                                                data += wrap(s) + " " + wrap(p) + " " + wrap(o) + " ." + EOL;
-                                        else
-                                        {
-                                                var bnode = "_:b" + ++bnodeIndex;
-                                                data += wrap(s) + " " + wrap(p) + " " + bnode + " ." + EOL;
-                                                walk(bnode, o);
-                                        }
-                                }
-                        }
-                };
+    var dropGraph = function(name)
+    {
+        var requestData = {
+            format: "application/sparql-results+json",
+            mode: "drop",
+            graph: name,
+            username: AccountService.getUsername()
+        }
+        return request("GraphManagerServlet", requestData);
+    };
 
-                for (var s in settings)
-                        walk(s, settings[s]);
-
-                var requestData = {
-                    format: "application/sparql-results+json",
-                    query: PREFIXES
-                            + "DROP SILENT GRAPH "   + GRAPH + EOL
-                            + "CREATE SILENT GRAPH " + GRAPH + EOL
-                            + "INSERT INTO " + GRAPH + EOL
-                            + "{" + EOL
-                            +        data
-                            + "}",
-                    mode: "settings"
-                };
-
-                return request("RdfStoreProxy", requestData);
+    var setGraphPermissions = function(name, permissions) {
+        var requestData = {
+            format: "application/sparql-results+json",
+            graph: name,
+            mode: "update",
+            permissions: permissions,
+            username: AccountService.getUsername()
         };
+        return request("GraphManagerServlet", requestData);
+    };
 
-        var createGraph = function(name, permissions)
-        {
-            var requestData = {
-                format: "application/sparql-results+json",
-                mode: "create",
-                graph: name,
-                permissions: permissions,
-                username: AccountService.getUsername()
-            }
-            return request("GraphManagerServlet", requestData);
-        };
+    var setPublicEndpoint = function(endpoint) {
+        PUBLIC_ENDPOINT = endpoint;
+    };
 
-        var dropGraph = function(name)
-        {
-            var requestData = {
-                format: "application/sparql-results+json",
-                mode: "drop",
-                graph: name,
-                username: AccountService.getUsername()
-            }
-            return request("GraphManagerServlet", requestData);
-        };
+    var getPublicEndpoint = function() {
+        return PUBLIC_ENDPOINT;
+    };
 
-        var setGraphPermissions = function(name, permissions) {
-            var requestData = {
-                format: "application/sparql-results+json",
-                graph: name,
-                mode: "update",
-                permissions: permissions,
-                username: AccountService.getUsername()
-            };
-            return request("GraphManagerServlet", requestData);
-        };
+    var getGroupsGraph = function() {
+        return GROUPS_GRAPH_URI;
+    };
 
-        var getPublicEndpoint = function() {
-            return PUBLIC_ENDPOINT;
-        };
-
-        var getGroupsGraph = function() {
-            return GROUPS_GRAPH_URI;
-        };
-
-        return {
-                setEndpoint         : setEndpoint,
-                getEndpoint         : getEndpoint,
-                getNS               : getNS,
-                getGraph            : getGraph,
-                setGraph            : setGraph,
-                restoreDefault      : restoreDefault,
-                getSettings         : getSettings,
-                select              : select,
-                read                : read,
-                write               : write,
-                createGraph         : createGraph,
-                dropGraph           : dropGraph,
-                setGraphPermissions : setGraphPermissions,
-                parseSparqlResults  : parseSparqlResults,
-                getPublicEndpoint   : getPublicEndpoint,
-                getGroupsGraph      : getGroupsGraph
-        };
+    return {
+        setEndpoint         : setEndpoint,
+        getEndpoint         : getEndpoint,
+        getNS               : getNS,
+        getGraph            : getGraph,
+        setGraph            : setGraph,
+        restoreDefault      : restoreDefault,
+        getSettings         : getSettings,
+        select              : select,
+        read                : read,
+        write               : write,
+        createGraph         : createGraph,
+        dropGraph           : dropGraph,
+        setGraphPermissions : setGraphPermissions,
+        parseSparqlResults  : parseSparqlResults,
+        getPublicEndpoint   : getPublicEndpoint,
+        getGroupsGraph      : getGroupsGraph
+    };
 });
