@@ -83,7 +83,7 @@
   <context-param> 
     <description>password</description> 
     <param-name>password</param-name> 
-    <param-value>***REMOVED***</param-value> 
+    <param-value>ASK ME!!</param-value> 
   </context-param>  
   
   <servlet>
