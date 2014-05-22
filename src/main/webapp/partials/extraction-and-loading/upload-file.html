@@ -27,11 +27,24 @@
         </div>
         <div class="form-group">
             <label class="col-lg-4 control-label">ACC Project Names</label>
-            <div class="col-lg-4">
-                <input type="text" class="form-control" ng-model="document.projectName1" placeholder="Fill the project name, e.g., a402632" required />
+            <div class="col-lg-3">
+                <select class="form-control" ng-model="document.projectName1" ng-options="p for p in projects" required></select>
             </div>
-            <div class="col-lg-4">
-                <input type="text" class="form-control" ng-model="document.projectName2" placeholder="Fill an additional name" />
+            <div class="col-lg-3">
+                <select class="form-control" ng-model="document.projectName2" ng-options="p for p in projects" required></select>
+            </div>
+            <div class="col-lg-2">
+                <button type="button" class="btn btn-default btn-xs" ng-click="showProjectTextField=true;"><span class="glyphicon glyphicon-plus"></span></button>
+            </div>
+        </div>
+        <div class="form-group" ng-show="showProjectTextField">
+            <div class="col-lg-offset-4 row">
+                <div class="col-lg-8">
+                    <input type="text" class="form-control" ng-model="newProjectName" placeholder="New project name, e.g., a402632"/>
+                </div>
+                <div class="col-lg-4">
+                    <button type="button" class="btn btn-default btn-xs" ng-click="addNewProject()"><span class="glyphicon glyphicon-ok"></span></button>
+                </div>
             </div>
         </div>
         <div class="form-group">
@@ -44,9 +57,24 @@
             </div>
         </div>
         <div class="form-group">
-            <label for="name" class="col-lg-4 control-label">Owner Name</label>
-            <div class="col-lg-8">
-                <input type="text" class="form-control" id="name" name="name" ng-model="document.ownerName" placeholder="Fill the owner name, e.g., SIEMENS" required />
+            <label class="col-lg-4 control-label">Owner Name</label>
+            <div class="col-lg-8 row">
+                <div class="col-lg-9">
+                    <select id="owner" class="form-control" ng-model="document.ownerName" ng-options="o for o in owners" required></select>
+                </div>
+                <div class="col-lg-3">
+                    <button type="button" class="btn btn-default btn-xs" ng-click="showOwnerTextField=true;"><span class="glyphicon glyphicon-plus"></span></button>
+                </div>
+            </div>
+        </div>
+        <div class="form-group" ng-show="showOwnerTextField">
+            <div class="col-lg-offset-4 row">
+                <div class="col-lg-8">
+                    <input type="text" class="form-control" ng-model="newOwnerName" placeholder="New owner name, e.g., SIEMENS"/>
+                </div>
+                <div class="col-lg-4">
+                    <button type="button" class="btn btn-default btn-xs" ng-click="addNewOwner()"><span class="glyphicon glyphicon-ok"></span></button>
+                </div>
             </div>
         </div>
         <div class="form-group">

@@ -124,7 +124,16 @@ app.config(function($routeSegmentProvider, $routeProvider)
                             })
                     .up()
                 .segment('upload-file', {
-                    templateUrl: 'partials/extraction-and-loading/upload-file.html' })
+                    templateUrl: 'partials/extraction-and-loading/upload-file.html',
+                    resolve: {
+                            projects: function(DocumentsService) {
+                                return DocumentsService.readProjects();
+                            },
+                            owners: function(DocumentsService) {
+                                return DocumentsService.readOwners();
+                            }
+                        }
+                    })
                 .segment('geospatial', {
                     templateUrl: 'partials/querying-and-exploration/geospatial.html'})
      /*           .segment('googlemap', {

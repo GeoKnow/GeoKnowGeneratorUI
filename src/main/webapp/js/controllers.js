@@ -3643,6 +3643,18 @@ var UploadDocCtrl = function($scope, $http, flash, ServerErrorResponse, Configur
     var services = ConfigurationService.getComponentServices(":SolrUploadProxy");
 	var solrUploadServiceUrl = services[0].serviceUrl;
 
+    $scope.projects = [];
+    var allProjects = DocumentsService.getAllProjects();
+    for (var ind in allProjects) {
+        $scope.projects.push(allProjects[ind].name);
+    }
+
+    $scope.owners = [];
+    var allOwners = DocumentsService.getAllOwners();
+    for (var ind in allOwners) {
+        $scope.owners.push(allOwners[ind].name);
+    }
+
 	$scope.documentTypes = DocumentsService.getDocumentTypes();
 
     $scope.uploading = false;
@@ -3673,6 +3685,23 @@ var UploadDocCtrl = function($scope, $http, flash, ServerErrorResponse, Configur
         return $scope.uploading;
     };
 
+    $scope.addNewOwner = function() {
+        if ($scope.newOwnerName!=null && $scope.newOwnerName!="" && $scope.owners.indexOf($scope.newOwnerName) == -1) {
+            $scope.owners.push($scope.newOwnerName);
+            $scope.document.ownerName = $scope.newOwnerName;
+        }
+        $scope.newOwnerName = null;
+        $scope.showOwnerTextField = false;
+    };
+
+    $scope.addNewProject = function() {
+        if ($scope.newProjectName!=null && $scope.newProjectName!="" && $scope.projects.indexOf($scope.newProjectName) == -1) {
+            $scope.projects.push($scope.newProjectName);
+        }
+        $scope.newProjectName = null;
+        $scope.showProjectTextField = false;
+    };
+
     $scope.clearForm = function() {
         $scope.fileList = null;
         $scope.document = {
@@ -3690,6 +3719,10 @@ var UploadDocCtrl = function($scope, $http, flash, ServerErrorResponse, Configur
             accDescription : "",
             accNote : ""
         };
+        $scope.showOwnerTextField = false;
+        $scope.showProjectTextField = false;
+        $scope.newOwnerName = null;
+        $scope.newProjectName = null;
     };
 
     $scope.clearForm();
