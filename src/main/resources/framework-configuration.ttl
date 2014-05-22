@@ -1,0 +1,60 @@
+@prefix :        <http://generator.geoknow.eu/resource/> .
+@prefix d2rq:    <http://www.wiwiss.fu-berlin.de/suhl/bizer/D2RQ/0.1#> .
+@prefix dcmit:   <http://purl.org/dc/dcmitype/> .
+@prefix dcterms:  <http://purl.org/dc/terms/> .
+@prefix lds:     <http://stack.linkeddata.org/ldis-schema/> .
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix schema:  <http://schema.org/> .
+@prefix sd:      <http://www.w3.org/ns/sparql-service-description#> .
+@prefix void:    <http://rdfs.org/ns/void#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix foaf:    <http://xmlns.com/foaf/0.1/> .
+@prefix gkg:     <http://generator.geoknow.eu/ontology/> .
+
+
+########### ABOUT THIS FILE #############################################################
+# This file contains the configuration for the GeoKnow generator concerning
+# the endpoints and default user credentials
+# This file has to be added to the :settingsGraph and to :initialSettingsGraph
+# NOTE: avoid using blank nodes may cause problems loading the file:
+#    - https://www.mail-archive.com/virtuoso-users@lists.sourceforge.net/msg05138.html
+# #######################################################################################
+
+# These triples describes the URL endpoints for the application
+
+:GeoKnowGenerator
+  a       lds:StackComponent ;
+  rdfs:comment "This resource contains all the configuration required by the application"^^xsd:string ;
+  rdfs:label "GeoKnowGeneator"^^xsd:string ;
+  dcterms:hasVersion "2.0"^^xsd:string ;
+  lds:integrates :Virtuoso ;
+  foaf:homepage "http://localhost:8080/generator"^^xsd:string .
+
+:Virtuoso
+  a       lds:StackComponent ;
+  rdfs:label "Service URL"^^xsd:string ;
+  dcterms:hasVersion "7.0"^^xsd:string ;
+  lds:providesService :VirtuosoConductor; 
+  lds:providesService :VirtuosoAutSPARQLEndpoint;
+  lds:providesService :VirtuosoEndpoint;
+  foaf:homepage <http://virtuoso.openlinksw.com/> .
+
+:VirtuosoConductor 
+  a  lds:StorageService ;
+  lds:password "dba"^^xsd:string ;
+  lds:serviceUrl "http://192.168.2.21:8890/conductor"^^xsd:string ;
+  lds:connectionString "jdbc:virtuoso://192.168.2.21:1111/"^^xsd:string;
+  lds:user   "dba"^^xsd:string . 
+
+:VirtuosoAutSPARQLEndpoint
+  a       lds:SecuredSPARQLEndPointService ;
+  lds:password "generator"^^xsd:string ;
+  lds:serviceUrl <http://192.168.2.21:8890/sparql-auth> ;
+  lds:user   "generator"^^xsd:string .
+
+:VirtuosoEndpoint
+  a       lds:SPARQLEndPointService ;
+  lds:serviceUrl <http://192.168.2.21:8890/sparql> .
+

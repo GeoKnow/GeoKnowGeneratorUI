@@ -10,17 +10,29 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.Enumeration;
 
 public class VirtuosoProxy extends HttpServlet {
-    private FrameworkUserManager frameworkUserManager;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private FrameworkUserManager frameworkUserManager;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        frameworkUserManager = FrameworkConfiguration.getInstance(getServletContext()).getFrameworkUserManager();
+        try {
+			frameworkUserManager = FrameworkConfiguration.getInstance(getServletContext()).getFrameworkUserManager();
+		} catch (FileNotFoundException e) {
+			throw new ServletException(e);
+		} catch (Exception e) {
+			throw new ServletException(e);
+		}
     }
 
     @Override

@@ -1,94 +1,265 @@
 package authentication;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
 import javax.servlet.ServletContext;
 
-import accounts.FrameworkUserManager;
-import accounts.VirtuosoUserManager;
+import org.apache.jena.riot.RiotException;
+
 import rdf.SecureRdfStoreManagerImpl;
 import util.EmailSender;
 import util.SSLEmailSender;
 import util.TLSEmailSender;
+import accounts.FrameworkUserManager;
+import accounts.VirtuosoUserManager;
+
+import com.hp.hpl.jena.query.QueryExecution;
+import com.hp.hpl.jena.query.QueryExecutionFactory;
+import com.hp.hpl.jena.query.QuerySolution;
+import com.hp.hpl.jena.query.ResultSet;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
 
 public class FrameworkConfiguration {
-	//virtuoso jdbc
-	// private String virtuosoJdbcConnString = "jdbc:virtuoso://localhost:1111";
-	// private String virtuosoDbaUser = "dba";
-	// private String virtuosoDbaPassword = "dba";
 
-	//virtuoso sparql
-	// private String sparqlEndpoint = "http://localhost:8890/sparql-auth";
-	// private String publicSparqlEndpoint = "http://localhost:8890/sparql";
-	// private String sparqlFrameworkLogin = "generator";
-	// private String sparqlFrameworkPassword = "generator";
-
-	// //system graphs
-	// private String accountsGraph = "http://generator.geoknow.eu/accounts/accountsGraph";
-	// private String defaultSettingsGraph = "http://generator.geoknow.eu/resource/settingsGraph"; //settings for unauthorized users
-	// private String initialSettingsGraph = "http://generator.geoknow.eu/resource/initialSettingsGraph"; //initial setting for new users
-	// private String groupsGraph = "http://generator.geoknow.eu/resource/graphGroups";
-
-	// //namespaces
-	// private String accountsNamespace = "http://generator.geoknow.eu/accounts/";
-	// private String accountsOntologyNamespace = "http://generator.geoknow.eu/accounts/ontology/";
-	// private String resourceNamespace = "http://generator.geoknow.eu/resource/";
-
-
-	//email
-	private String smtpHost = "smtp.gmail.com";
+	//email registration notifications
+	private String smtpHost = "";
 	private String smtpTLSPort = "587";
 	private String smtpSSLPort = "465";
-	//set this parameters before run
 	private String emailAddress = "";
 	private String emailUsername = "";
 	private String emailPassword = "";
 
+	private String accountsOntologyNS = "";
+	private String resourceNS = "";
+	private String frameworkOntologyNS = "";
+	
+	private String virtuosoJdbcConnString = "";
 	private String virtuosoDbaUser = "";
 	private String virtuosoDbaPassword = "";
+	
+	private String publicSparqlEndpoint = "";	
 	private String authSparqlEndpoint = "";
-	private String sparqlFrameworkLogin = "";
-	private String sparqlFrameworkPassword = "";
-	private String accountsNamespace = "";
-	private String accountsOntologyNamespace = "";
+	private String AuthSparqlUser = "";
+	private String AuthSparqlPassword = "";
+	
 	private String accountsGraph = "";
-	private String defaultSettingsGraph = "";
+	private String settingsGraph = "";
 	private String initialSettingsGraph = "";
-	private String resourceNamespace = "";
-	private String publicSparqlEndpoint = "";
 	private String groupsGraph = "";
-	private String virtuosoJdbcConnString = "";
+	
 
 	private static FrameworkConfiguration instance;
 
-	public static synchronized FrameworkConfiguration getInstance(ServletContext context) {
+	public static synchronized FrameworkConfiguration getInstance(ServletContext context) throws Exception {
+
 		if (instance==null){
+
 			instance = new FrameworkConfiguration();
-		
-			instance.setVirtuosoJdbcConnString(context.getInitParameter("jdbc-virtuoso-conn-string"));            
-			instance.setVirtuosoDbaUser(context.getInitParameter("virtuoso-dba-user")); 
-			instance.setVirtuosoDbaPassword(context.getInitParameter("virtuoso-dba-password")); 
-			instance.setAuthSparqlEndpoint(context.getInitParameter("sparql-auth-endpoint"));
-			instance.setSparqlFrameworkLogin(context.getInitParameter("framework-user"));
-			instance.setSparqlFrameworkPassword(context.getInitParameter("framework-password"));
-			instance.setAccountsNamespace(context.getInitParameter("users-accounts-ns"));
-			instance.setAccountsOntologyNamespace(context.getInitParameter("users-accounts-ontology"));
-			instance.setAccountsGraph(context.getInitParameter("users-accounts-graph"));
-			instance.setDefaultSettingsGraph(context.getInitParameter("guest-settings-graph"));
-			instance.setInitialSettingsGraph(context.getInitParameter("new-user-settings"));
+
+			String configurationFile = "framework-configuration.ttl";
+			String graphsFile = "framework-graphs.ttl";
+			String datasetsFile = "framework-datasets.ttl";
+			String componentsFile = "framework-components.ttl";
+			String ontologyFile = "framework-ontology.ttl";
+			String accountsOntologyFile = "framework-accounts-ontology.ttl";
+
+			String frameworkUri = context.getInitParameter("framework-uri");
+
+			instance.setFrameworkOntologyNS(context.getInitParameter("framework-ontology-ns"));
+			instance.setAccountsOntologyNamespace(context.getInitParameter("accounts-ns"));
 			instance.setResourceNamespace(context.getInitParameter("framework-ns"));
-			instance.setPublicSparqlEndpoint(context.getInitParameter("sparql-public-endpoint"));
-			instance.setGroupsGraph(context.getInitParameter("groups-graph"));
+			
+			instance.setSmtpHost(context.getInitParameter("smtp-host"));
+			instance.setSmtpTLSPort(context.getInitParameter("smpt-tls-port"));
+			instance.setSmtpSSLPort(context.getInitParameter("smtp-ssl-port"));
+			instance.setEmailAddress(context.getInitParameter("email"));
+			instance.setEmailUsername(context.getInitParameter("user-name"));
+			instance.setEmailPassword(context.getInitParameter("password"));
+
+
+			Model configurationModel = ModelFactory.createDefaultModel() ; 
+			Model graphsModel = ModelFactory.createDefaultModel() ; 
+			
+			try	{
+				configurationModel.read(configurationFile);
+				graphsModel.read(graphsFile);	
+			}
+			catch(RiotException e){
+				throw new IOException ("Malformed "+ configurationFile + " or " + graphsFile+ " file"); 
+			}
+			// get and set the properties framework configutation (endpoints and credentials)
+			String query =  "PREFIX lds: <http://stack.linkeddata.org/ldis-schema/> " + 
+					" SELECT ?endpoint WHERE {" + 
+					" <"+ frameworkUri +">  lds:integrates ?component ." + 
+					" ?component lds:providesService ?service ." + 
+					" ?service a lds:SPARQLEndPointService ." + 
+					" ?service lds:serviceUrl ?endpoint  }";
+
+			QueryExecution qexec = QueryExecutionFactory.create(query, configurationModel) ;
+			ResultSet results = qexec.execSelect() ;
+			if (!results.hasNext()) throw new NullPointerException("Invalid initial parameter required");
+			for ( ; results.hasNext() ; ){
+				QuerySolution soln = results.next() ;
+				instance.setPublicSparqlEndpoint (soln.get("endpoint").toString());
+			}
+			qexec.close() ;
+
+			query =  "PREFIX lds: <http://stack.linkeddata.org/ldis-schema/>" + 
+					" SELECT ?endpoint ?user ?password WHERE {" + 
+					" <"+ frameworkUri +">  lds:integrates ?component ." + 
+					" ?component lds:providesService ?service ." + 
+					" ?service a lds:SecuredSPARQLEndPointService ." + 
+					" ?service lds:serviceUrl ?endpoint ." + 
+					" ?service lds:user ?user ." + 
+					" ?service lds:password ?password }";
+
+			qexec = QueryExecutionFactory.create(query, configurationModel) ;
+			results = qexec.execSelect() ;
+			if (!results.hasNext()) throw new NullPointerException("Invalid initial parameter required");
+			for ( ; results.hasNext() ; ){
+				QuerySolution soln = results.next() ;
+				instance.setAuthSparqlEndpoint (soln.get("endpoint").toString());
+				instance.setAuthSparqlUser (soln.get("user").asLiteral().getString());
+				instance.setAuthSparqlPassword (soln.get("password").asLiteral().getString());
+			}
+			qexec.close() ;
+
+			// get and set the database configuration (Virtuoso)
+			query =  "PREFIX lds: <http://stack.linkeddata.org/ldis-schema/>" + 
+					" SELECT ?connectionString ?user ?password WHERE {" + 
+					" <"+ frameworkUri +">  lds:integrates ?component ." + 
+					" ?component lds:providesService ?service ." + 
+					" ?service a lds:StorageService ." + 
+					" ?service lds:connectionString ?connectionString ." + 
+					" ?service lds:user ?user ." + 
+					" ?service lds:password ?password }";
+			qexec = QueryExecutionFactory.create(query, configurationModel) ;
+			results = qexec.execSelect() ;
+			if (!results.hasNext()) throw new NullPointerException("Invalid initial parameter required");
+			for ( ; results.hasNext() ; ){
+				QuerySolution soln = results.next() ;
+				instance.setVirtuosoJdbcConnString (soln.get("connectionString").asLiteral().getString());
+				instance.setVirtuosoDbaUser (soln.get("user").asLiteral().getString());
+				instance.setVirtuosoDbaPassword (soln.get("password").asLiteral().getString());
+			}
+			qexec.close() ;
+
+			// get and set the named graphs 
+			query =   "PREFIX  sd:    <http://www.w3.org/ns/sparql-service-description#> "
+					+ "PREFIX  rdfs:  <http://www.w3.org/2000/01/rdf-schema#> "
+					+ "SELECT ?name ?label  "
+					+ "WHERE "
+					+ "{ ?s sd:namedGraph  ?o .  ?o sd:name ?name . ?o sd:graph ?g . ?g rdfs:label ?label } ";
+
+			qexec = QueryExecutionFactory.create(query, graphsModel) ;
+			results = qexec.execSelect() ;
+			if (!results.hasNext()) throw new NullPointerException("Invalid initial parameter required");
+			for ( ; results.hasNext() ; ){
+				QuerySolution soln = results.next() ;
+
+				if("settings".equals(soln.get("label").asLiteral().getString()))
+					instance.setSettingsGraph(soln.get("name").toString());
+				else if("initialSettings".equals(soln.get("label").asLiteral().getString()))
+					instance.setInitialSettingsGraph(soln.get("name").toString());
+				else if("accounts".equals(soln.get("label").asLiteral().getString()))
+					instance.setAccountsGraph(soln.get("name").toString());
+				else if("groups".equals(soln.get("label").asLiteral().getString()))
+					instance.setGroupsGraph(soln.get("name").toString());
+			}
+			qexec.close() ;
+
+			// creates the system user exist for the application in virtuoso
+			VirtuosoUserManager userManager = instance.getVirtuosoUserManager();
+			try {
+				userManager.createUser(instance.getAuthSparqlUser(), instance.getAuthSparqlPassword());
+				userManager.grantRole(instance.getAuthSparqlUser(), "SPARQL_UPDATE");
+				userManager.setDefaultRdfPermissions(instance.getAuthSparqlUser(), 3);
+			}catch(Exception e){
+				if ("virtuoso.jdbc4.VirtuosoException".equals(e.getClass().getCanonicalName()) )
+					System.out.println("Seems that the user is already there");
+				else
+					throw e;	
+			}
+
+			SecureRdfStoreManagerImpl frameworkRdfStoreManager = new SecureRdfStoreManagerImpl(instance.getAuthSparqlEndpoint(),
+					instance.getAuthSparqlUser() , instance.getAuthSparqlPassword());
+
+			// check if settingsGraph exist do not overwrite
+			String queryString = " ASK { GRAPH <"+instance.getSettingsGraph()+"> {?s a ?o} }";
+			String response = frameworkRdfStoreManager.execute(queryString, "text/plain");
+			if(response.toLowerCase().indexOf("true")<0){
+				
+				System.out.println("Create required graphs and load default settings");
+				
+				//Read configuration files
+				Model datrasetModel = ModelFactory.createDefaultModel();
+				Model componentsModel = ModelFactory.createDefaultModel();
+				Model ontologyModel = ModelFactory.createDefaultModel();
+				Model ontologyAccountsModel = ModelFactory.createDefaultModel();
+				
+				try	{
+					datrasetModel.read(datasetsFile) ;
+					componentsModel.read(componentsFile) ;
+					ontologyModel.read(ontologyFile) ;	
+					ontologyAccountsModel.read(accountsOntologyFile);
+				}
+				catch(RiotException e){
+					throw new IOException ("Malformed configuration files"); 
+				}
+				
+				// create required named graphs and load the configuration files using framework default user
+				frameworkRdfStoreManager.createGraph(instance.getSettingsGraph());
+				frameworkRdfStoreManager.createGraph(instance.getAccountsGraph());
+				frameworkRdfStoreManager.createGraph(instance.getGroupsGraph() );
+				frameworkRdfStoreManager.createGraph(instance.getInitialSettingsGraph() );
+
+				//Make graphs accessible to framework user only
+				userManager.setRdfGraphPermissions(instance.getAuthSparqlUser(), instance.getSettingsGraph(), 3);
+				userManager.setRdfGraphPermissions(instance.getAuthSparqlUser(), instance.getAccountsGraph(), 3);
+				userManager.setRdfGraphPermissions(instance.getAuthSparqlUser(), instance.getGroupsGraph(), 3);
+				userManager.setRdfGraphPermissions(instance.getAuthSparqlUser(), instance.getInitialSettingsGraph(), 3);
+
+				Model settingsModel = ModelFactory.createDefaultModel();
+				settingsModel.add(configurationModel);
+				settingsModel.add(datrasetModel );
+				settingsModel.add(componentsModel);
+				settingsModel.add(ontologyModel );	
+				// write the initial settings model (default settings for new users)
+				ByteArrayOutputStream os = new ByteArrayOutputStream();
+				settingsModel.write(os, "N-TRIPLES");
+				queryString = "INSERT DATA { GRAPH <" + instance.getInitialSettingsGraph() + "> { " + os.toString() + " } }";
+				os.close();
+				frameworkRdfStoreManager.execute(queryString, null);
+				
+				// write the system settings model (include system graphs data)
+				os = new ByteArrayOutputStream();
+				settingsModel.write(os, "N-TRIPLES");
+				settingsModel.add(graphsModel);
+				queryString = "INSERT DATA { GRAPH <" + instance.getSettingsGraph() + "> { " + os.toString() + " } }";
+				os.close();
+				frameworkRdfStoreManager.execute(queryString, null);
+
+				// create and add accounts ontology to the accounts graph
+				os = new ByteArrayOutputStream();
+				ontologyAccountsModel.write(os, "N-TRIPLES");
+				queryString = "INSERT DATA { GRAPH <" + instance.getAccountsGraph() + "> { " + os.toString() + " } }";
+				os.close();
+				frameworkRdfStoreManager.execute(queryString, null);
+			}	
 		}
+
 		return instance;
 	}
 
-	
 	public FrameworkUserManager getFrameworkUserManager() {
-		return new FrameworkUserManager(new VirtuosoUserManager(getVirtuosoJdbcConnString(), getVirtuosoDbaUser(), getVirtuosoDbaPassword()),
-				new SecureRdfStoreManagerImpl(getAuthSparqlEndpoint(), getSparqlFrameworkLogin(), getSparqlFrameworkPassword()), instance);
+		return new FrameworkUserManager(new VirtuosoUserManager(this.virtuosoJdbcConnString, this.virtuosoDbaUser, this.virtuosoDbaPassword),
+				new SecureRdfStoreManagerImpl(this.authSparqlEndpoint, this.AuthSparqlUser, this.AuthSparqlPassword), instance);
 	}
 
 	public VirtuosoUserManager getVirtuosoUserManager() {
-		return new VirtuosoUserManager(getVirtuosoJdbcConnString(), getVirtuosoDbaUser(), getVirtuosoDbaPassword());
+		return new VirtuosoUserManager(this.virtuosoJdbcConnString, this.virtuosoDbaUser, this.virtuosoDbaPassword);
 	}
 
 	public EmailSender getDefaultEmailSender() {
@@ -96,11 +267,11 @@ public class FrameworkConfiguration {
 	}
 
 	public EmailSender getTLSEmailSender() {
-		return new TLSEmailSender(smtpHost, smtpTLSPort, emailAddress, emailUsername, emailPassword);
+		return new TLSEmailSender(this.smtpHost, this.smtpTLSPort, this.emailAddress, this.emailUsername, this.emailPassword);
 	}
 
 	public EmailSender getSSLEmailSender() {
-		return new SSLEmailSender(smtpHost, smtpSSLPort, emailAddress, emailUsername, emailPassword);
+		return new SSLEmailSender(this.smtpHost, this.smtpSSLPort, this.emailAddress, this.emailUsername, this.emailPassword);
 	}
 
 	public String getSmtpHost() {
@@ -175,36 +346,36 @@ public class FrameworkConfiguration {
 		this.authSparqlEndpoint = authSparqlEndpoint;
 	}
 
-	public String getSparqlFrameworkLogin() {
-		return sparqlFrameworkLogin;
+	public String getAuthSparqlUser() {
+		return AuthSparqlUser;
 	}
 
-	public void setSparqlFrameworkLogin(String sparqlFrameworkLogin) {
-		this.sparqlFrameworkLogin = sparqlFrameworkLogin;
+	public void setAuthSparqlUser(String authSparqlUser) {
+		this.AuthSparqlUser = authSparqlUser;
 	}
 
-	public String getSparqlFrameworkPassword() {
-		return sparqlFrameworkPassword;
+	public String getAuthSparqlPassword() {
+		return AuthSparqlPassword;
 	}
 
-	public void setSparqlFrameworkPassword(String sparqlFrameworkPassword) {
-		this.sparqlFrameworkPassword = sparqlFrameworkPassword;
+	public void setAuthSparqlPassword(String authSparqlPassword) {
+		this.AuthSparqlPassword = authSparqlPassword;
 	}
 
-	public String getAccountsNamespace() {
-		return accountsNamespace;
-	}
-
-	public void setAccountsNamespace(String accountsNamespace) {
-		this.accountsNamespace = accountsNamespace;
-	}
+	//	public String getAccountsNamespace() {
+	//		return accountsNamespace;
+	//	}
+	//
+	//	public void setAccountsNamespace(String accountsNamespace) {
+	//		this.accountsNamespace = accountsNamespace;
+	//	}
 
 	public String getAccountsOntologyNamespace() {
-		return accountsOntologyNamespace;
+		return accountsOntologyNS;
 	}
 
-	public void setAccountsOntologyNamespace(String accountsOntologyNamespace) {
-		this.accountsOntologyNamespace = accountsOntologyNamespace;
+	public void setAccountsOntologyNamespace(String accountsNamespace) {
+		this.accountsOntologyNS = accountsNamespace;
 	}
 
 	public String getAccountsGraph() {
@@ -215,12 +386,12 @@ public class FrameworkConfiguration {
 		this.accountsGraph = accountsGraph;
 	}
 
-	public String getDefaultSettingsGraph() {
-		return defaultSettingsGraph;
+	public String getSettingsGraph() {
+		return settingsGraph;
 	}
 
-	public void setDefaultSettingsGraph(String defaultSettingsGraph) {
-		this.defaultSettingsGraph = defaultSettingsGraph;
+	public void setSettingsGraph(String settingsGraph) {
+		this.settingsGraph = settingsGraph;
 	}
 
 	public String getInitialSettingsGraph() {
@@ -232,11 +403,11 @@ public class FrameworkConfiguration {
 	}
 
 	public String getResourceNamespace() {
-		return resourceNamespace;
+		return resourceNS;
 	}
 
 	public void setResourceNamespace(String resourceNamespace) {
-		this.resourceNamespace = resourceNamespace;
+		this.resourceNS = resourceNamespace;
 	}
 
 	public String getPublicSparqlEndpoint() {
@@ -261,5 +432,13 @@ public class FrameworkConfiguration {
 
 	public void setVirtuosoJdbcConnString(String virtuosoJdbcConnString) {
 		this.virtuosoJdbcConnString = virtuosoJdbcConnString;
+	}
+
+	public String getFrameworkOntologyNS() {
+		return frameworkOntologyNS;
+	}
+
+	public void setFrameworkOntologyNS(String frameworkOntologyNS) {
+		this.frameworkOntologyNS = frameworkOntologyNS;
 	}
 }

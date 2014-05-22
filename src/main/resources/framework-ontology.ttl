@@ -35,8 +35,7 @@
       rdfs:label "Database types"@en ;
       rdfs:subClassOf owl:Thing .
       
-      
- :dbHost
+:dbHost
       rdf:type owl:DatatypeProperty ;
       rdfs:domain :Database ;
       rdfs:label "Service URL"^^xsd:string ;

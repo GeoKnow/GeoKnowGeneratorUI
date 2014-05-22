@@ -12,6 +12,12 @@ public class VirtuosoUserManager implements UserManager {
     private String password;
     private Connection connection;
 
+    /**
+     * This class manages the User creation in virtuoso for authentication and graph access control
+     * @param connectionString 	Connection string to Virtuoso
+     * @param user 				Virtuoso user
+     * @param password 			Virtuoso password
+     */
     public VirtuosoUserManager(String connectionString, String user, String password) {
         this.connectionString = connectionString;
         this.user = user;
@@ -31,7 +37,7 @@ public class VirtuosoUserManager implements UserManager {
 
     @Override
     public void grantRole(String user, String role) throws Exception {
-        executeUpdate(getConnection(), "GRANT " + role + " TO \"" + user + "\"");
+        	executeUpdate(getConnection(), "GRANT " + role + " TO \"" + user + "\"");
     }
 
     @Override

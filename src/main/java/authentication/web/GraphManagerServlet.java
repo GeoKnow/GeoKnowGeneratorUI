@@ -17,22 +17,36 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
 
 public class GraphManagerServlet extends HttpServlet {
-    private FrameworkUserManager frameworkUserManager;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private FrameworkUserManager frameworkUserManager;
     private VirtuosoUserManager virtuosoUserManager;
     private VirtuosoGraphGroupManager virtuosoGraphGroupManager;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        FrameworkConfiguration frameworkConfig = FrameworkConfiguration.getInstance(getServletContext());
+        FrameworkConfiguration frameworkConfig;
+		try {
+			frameworkConfig = FrameworkConfiguration.getInstance(getServletContext());
+		
         frameworkUserManager = frameworkConfig.getFrameworkUserManager();
         virtuosoUserManager = frameworkConfig.getVirtuosoUserManager();
         virtuosoGraphGroupManager = new VirtuosoGraphGroupManager(frameworkConfig.getVirtuosoJdbcConnString(),
                 frameworkConfig.getVirtuosoDbaUser(), frameworkConfig.getVirtuosoDbaPassword());
+		} catch (FileNotFoundException e) {
+			throw new ServletException(e);
+		} catch (Exception e) {
+			throw new ServletException(e);
+		}
     }
 
     @Override
@@ -95,7 +109,7 @@ public class GraphManagerServlet extends HttpServlet {
                 //remove graph from graph groups descriptions
                 FrameworkConfiguration frameworkConf = FrameworkConfiguration.getInstance(getServletContext());
                 RdfStoreManager frameworkRdfStoreManager = new SecureRdfStoreManagerImpl(frameworkConf.getAuthSparqlEndpoint(),
-                        frameworkConf.getSparqlFrameworkLogin(), frameworkConf.getSparqlFrameworkPassword());
+                        frameworkConf.getAuthSparqlUser(), frameworkConf.getAuthSparqlPassword());
                 String query = "PREFIX sd: <http://www.w3.org/ns/sparql-service-description#> "
                         + " WITH <" + frameworkConf.getGroupsGraph() + "> DELETE {?s sd:namedGraph <" + graph + ">} "
                         + " WHERE {?s sd:namedGraph <" + graph + ">}";
@@ -134,7 +148,7 @@ public class GraphManagerServlet extends HttpServlet {
                 //update metadata
                 FrameworkConfiguration frameworkConf = FrameworkConfiguration.getInstance(getServletContext());
                 RdfStoreManager frameworkRdfStoreManager = new SecureRdfStoreManagerImpl(frameworkConf.getAuthSparqlEndpoint(),
-                        frameworkConf.getSparqlFrameworkLogin(), frameworkConf.getSparqlFrameworkPassword());
+                		frameworkConf.getAuthSparqlUser(), frameworkConf.getAuthSparqlPassword());
 
                 String graphLabel = graphNode.path("graph").path("label").getTextValue();
                 String graphDescription = graphNode.path("graph").path("description").getTextValue();
@@ -184,7 +198,7 @@ public class GraphManagerServlet extends HttpServlet {
                 String settingsGraph = frameworkUserManager.getDescribedIn(graph);
                 FrameworkConfiguration frameworkConf = FrameworkConfiguration.getInstance(getServletContext());
                 RdfStoreManager frameworkRdfStoreManager = new SecureRdfStoreManagerImpl(frameworkConf.getAuthSparqlEndpoint(),
-                        frameworkConf.getSparqlFrameworkLogin(), frameworkConf.getSparqlFrameworkPassword());
+                		frameworkConf.getAuthSparqlUser(), frameworkConf.getAuthSparqlPassword());
                 String query = "PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>\n"
                         + "PREFIX gkg: <http://generator.geoknow.eu/ontology/>\n"
                         + "WITH <" + settingsGraph + "> "
