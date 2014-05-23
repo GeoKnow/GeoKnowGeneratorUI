@@ -12,7 +12,7 @@
 @prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
 @prefix foaf:    <http://xmlns.com/foaf/0.1/> .
 @prefix gkg:     <http://generator.geoknow.eu/ontology/> .
-@prefix acl:	   <http://www.w3.org/ns/auth/acl#> .
+@prefix acl:     <http://www.w3.org/ns/auth/acl#> .
 
 ########### ABOUT THIS FILE #############################################################
 # This file contains the default set-up of components in the framework; 

@@ -18,7 +18,7 @@
 # This file contains the configuration for the GeoKnow generator concerning
 # the endpoints and default user credentials
 # This file has to be added to the :settingsGraph and to :initialSettingsGraph
-# NOTE: avoid using blank nodes may cause problems loading the file:
+# NOTE: avoid usin  g blank nodes may cause problems loading the file:
 #    - https://www.mail-archive.com/virtuoso-users@lists.sourceforge.net/msg05138.html
 # #######################################################################################
 
@@ -29,6 +29,8 @@
   rdfs:comment "This resource contains all the configuration required by the application"^^xsd:string ;
   rdfs:label "GeoKnowGeneator"^^xsd:string ;
   dcterms:hasVersion "2.0"^^xsd:string ;
+  gkg:publicEndpoint :VirtuosoEndpoint ;
+  gkg:authEndpoint :VirtuosoAutSPARQLEndpoint ;
   lds:integrates :Virtuoso ;
   foaf:homepage "http://localhost:8080/generator"^^xsd:string .
 
@@ -44,17 +46,17 @@
 :VirtuosoConductor 
   a  lds:StorageService ;
   lds:password "dba"^^xsd:string ;
-  lds:serviceUrl "http://192.168.2.21:8890/conductor"^^xsd:string ;
-  lds:connectionString "jdbc:virtuoso://192.168.2.21:1111/"^^xsd:string;
+  lds:serviceUrl "http://10.0.0.63:8890/conductor"^^xsd:string ;
+  lds:connectionString "jdbc:virtuoso://10.0.0.63:1111/"^^xsd:string;
   lds:user   "dba"^^xsd:string . 
 
 :VirtuosoAutSPARQLEndpoint
   a       lds:SecuredSPARQLEndPointService ;
   lds:password "generator"^^xsd:string ;
-  lds:serviceUrl <http://192.168.2.21:8890/sparql-auth> ;
+  lds:serviceUrl <http://10.0.0.63:8890/sparql-auth> ;
   lds:user   "generator"^^xsd:string .
 
 :VirtuosoEndpoint
   a       lds:SPARQLEndPointService ;
-  lds:serviceUrl <http://192.168.2.21:8890/sparql> .
+  lds:serviceUrl <http://10.0.0.63:8890/sparql> .
 

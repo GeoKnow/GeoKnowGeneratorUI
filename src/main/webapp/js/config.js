@@ -1,4 +1,4 @@
-    /**
+/**
  * GeoKnow Generator
  *    Configuration management
  *
@@ -36,6 +36,8 @@ angular.module("app.configuration", [])
     // the public and authenticated enpoints that will be used by the application
     var AUTH_ENDPOINT;
     var PUBLIC_ENDPOINT;
+    
+    var FRAMEWORK_URI  = "http://generator.geoknow.eu/resource/GeoKnowGenerator";
     // if new resorces are created they will use this name space, and it can be changed
     var NS                          = "http://generator.geoknow.eu/resource/";
     // this is the graph where settings are stored, it doesnt change, and independent on the Namespace
@@ -113,17 +115,12 @@ angular.module("app.configuration", [])
 
         return value;
     };
-
-    var setEndpoint = function(url)
-    {
-        AUTH_ENDPOINT = url;
-    };
-
-    var getEndpoint = function()
-    {
-        return AUTH_ENDPOINT;
-    };
     
+    var getFrameworkUri = function()
+    {
+        return ns(FRAMEWORK_URI);
+    };
+
     var setNS = function(ns)
     {
         NS = ns;
@@ -260,6 +257,8 @@ angular.module("app.configuration", [])
             {
                 settings = parseSparqlResults(data);
                 isLoaded = true;
+                console.log(GRAPH);
+                console.log(settings);
                 return settings;
             }
         );
@@ -347,21 +346,11 @@ angular.module("app.configuration", [])
         return request("GraphManagerServlet", requestData);
     };
 
-    var setPublicEndpoint = function(endpoint) {
-        PUBLIC_ENDPOINT = endpoint;
-    };
-
-    var getPublicEndpoint = function() {
-        return PUBLIC_ENDPOINT;
-    };
-
     var getGroupsGraph = function() {
         return GROUPS_GRAPH_URI;
     };
 
     return {
-        setEndpoint         : setEndpoint,
-        getEndpoint         : getEndpoint,
         getNS               : getNS,
         getGraph            : getGraph,
         setGraph            : setGraph,
@@ -374,7 +363,7 @@ angular.module("app.configuration", [])
         dropGraph           : dropGraph,
         setGraphPermissions : setGraphPermissions,
         parseSparqlResults  : parseSparqlResults,
-        getPublicEndpoint   : getPublicEndpoint,
-        getGroupsGraph      : getGroupsGraph
+        getGroupsGraph      : getGroupsGraph,
+        getFrameworkUri     : getFrameworkUri
     };
 });

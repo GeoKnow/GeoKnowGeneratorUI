@@ -3,6 +3,11 @@
 var app = angular.module('app', ['ngRoute',
                                  'ngCookies',
                                  'app.services', 
+                                 'app.configuration-service',
+                                 'app.graph-service',
+                                 'app.account-service',
+                                 'app.graph-group-service',
+                                 'app.login-service',
                                  'app.directives', 
                                  'app.configuration',
                                  'ui.bootstrap',
@@ -31,7 +36,7 @@ app.config(function($routeSegmentProvider, $routeProvider)
         .when('/settings/datasets', 'settings.datasets')
         .when('/settings/namespaces', 'settings.namespaces')
         .when('/settings/components', 'settings.components')
-        .when('/settings/users', 'settings.users')
+        // .when('/settings/users', 'settings.users')
         .when('/home/extraction-and-loading/import-rdf', 'default.import-rdf')
         .when('/home/extraction-and-loading/sparqlify', 'default.sparqlify')
         .when('/home/extraction-and-loading/triplegeo', 'default.triplegeo')
@@ -110,7 +115,7 @@ app.config(function($routeSegmentProvider, $routeProvider)
 
 		.segment('settings',
 		{
-			templateUrl: 'partials/settings.html',
+			templateUrl: 'js/settings/settings.html',
             resolve: {
               settings: function (Config) {
                 return Config.read();
@@ -119,22 +124,22 @@ app.config(function($routeSegmentProvider, $routeProvider)
 		})
             .within()
                 .segment('datasets', {
-                    templateUrl: 'partials/settings/datasets.html'})
+                    templateUrl: 'js/settings/datasets/datasets.html'})
                 .segment('data-sources', {
-                    templateUrl: 'partials/settings/data-sources.html'})
+                    templateUrl: 'js/settings/data-sources/data-sources.html'})
                 .segment('namespaces', {
-                    templateUrl: 'partials/settings/namespaces.html'})
+                    templateUrl: 'js/settings/namespaces/namespaces.html'})
                 .segment('components', {
-                    templateUrl: 'partials/settings/components.html'})
-                .segment('users', {
-                    templateUrl: 'partials/admin/users.html'})
+                    templateUrl: 'js/settings/components/components.html'})
+                // .segment('users', {
+                    // templateUrl: 'partials/admin/users.html'})
             .up()
            
         .segment('account', {
-            templateUrl:'partials/account.html' })
+            templateUrl:'js/account/account.html' })
             .within()
                 .segment('preferences', {
-                    templateUrl: 'partials/settings/preferences.html' })
+                    templateUrl: 'js/account/preferences/preferences.html' })
             .up()
 
         .segment('about', {

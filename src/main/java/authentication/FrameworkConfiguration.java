@@ -55,6 +55,8 @@ public class FrameworkConfiguration {
 	public static synchronized FrameworkConfiguration getInstance(ServletContext context) throws Exception {
 
 		if (instance==null){
+			//TODO: replace with a logging implementation
+			System.out.println("[INFO] System Initialization ");
 
 			instance = new FrameworkConfiguration();
 
@@ -173,11 +175,14 @@ public class FrameworkConfiguration {
 			// creates the system user exist for the application in virtuoso
 			VirtuosoUserManager userManager = instance.getVirtuosoUserManager();
 			try {
+				//TODO: replace with a logging implementation
 				userManager.createUser(instance.getAuthSparqlUser(), instance.getAuthSparqlPassword());
 				userManager.grantRole(instance.getAuthSparqlUser(), "SPARQL_UPDATE");
 				userManager.setDefaultRdfPermissions(instance.getAuthSparqlUser(), 3);
+				System.out.println("[INFO] System User was created ");
 			}catch(Exception e){
 				if ("virtuoso.jdbc4.VirtuosoException".equals(e.getClass().getCanonicalName()) )
+					//TODO: replace with a logging implementation
 					System.out.println("Seems that the user is already there");
 				else
 					throw e;	
@@ -191,7 +196,8 @@ public class FrameworkConfiguration {
 			String response = frameworkRdfStoreManager.execute(queryString, "text/plain");
 			if(response.toLowerCase().indexOf("true")<0){
 				
-				System.out.println("Create required graphs and load default settings");
+				//TODO: replace with a logging implementation
+				System.out.println("[INFO] Default Graphs creation/configuration ");
 				
 				//Read configuration files
 				Model datrasetModel = ModelFactory.createDefaultModel();
@@ -221,7 +227,7 @@ public class FrameworkConfiguration {
 				userManager.setRdfGraphPermissions(instance.getAuthSparqlUser(), instance.getGroupsGraph(), 3);
 				userManager.setRdfGraphPermissions(instance.getAuthSparqlUser(), instance.getInitialSettingsGraph(), 3);
 
-				Model settingsModel = ModelFactory.createDefaultModel();
+				Model settingsModel = ModelFactory.createDefaultModel();;
 				settingsModel.add(configurationModel);
 				settingsModel.add(datrasetModel );
 				settingsModel.add(componentsModel);
@@ -234,9 +240,9 @@ public class FrameworkConfiguration {
 				frameworkRdfStoreManager.execute(queryString, null);
 				
 				// write the system settings model (include system graphs data)
+				settingsModel.add(graphsModel);
 				os = new ByteArrayOutputStream();
 				settingsModel.write(os, "N-TRIPLES");
-				settingsModel.add(graphsModel);
 				queryString = "INSERT DATA { GRAPH <" + instance.getSettingsGraph() + "> { " + os.toString() + " } }";
 				os.close();
 				frameworkRdfStoreManager.execute(queryString, null);
