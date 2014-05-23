@@ -8,7 +8,8 @@ function SettingsMenuCtrl($scope, AccountService) {
   	{ name: "Datasets", route:'#/settings/datasets', url:'/settings/datasets', admin: false },
     // { name: "Namespaces", route:'#/settings/namespaces', url:'/settings/namespaces' },
   	{ name: "Components", route:'#/settings/components', url:'/settings/components', admin: false },
-    { name: "Users", route:'#/settings/users', url:'/settings/users', admin: true }
+    { name: "Users", route:'#/settings/users', url:'/settings/users', admin: true },
+    { name: "Thesaurus Management", route:'#/settings/ontology', url:'/settings/ontology', admin: false }
   ];
 
   $scope.showAdmin = AccountService.isAdmin();
@@ -28,6 +29,10 @@ function AccountMenuCtrl($scope) {
 function StackMenuCtrl($scope, ConfigurationService) {
     var services = ConfigurationService.getComponentServices(":Solr");
 	var solrServiceUrl = services[0].serviceUrl;
+
+	var miniDixServices = ConfigurationService.getComponentServices(":MiniDix");
+    var miniDixServiceUrl = miniDixServices[0].serviceUrl;
+    var ontology = "http://acc.ontos.com/thesaurus/concept/v2/";
 
 	  $scope.oneAtATime = true;
 	  // these data can be replaced later with the configuration
@@ -55,7 +60,8 @@ function StackMenuCtrl($scope, ConfigurationService) {
 	      id:"authoring",
 	      items: [
 //	       {name: 'OntoWiki', route:'#/home/authoring/ontowiki', url:'/home/authoring/ontowiki' },
-	       {name: "Thesaurus Management", route:'#/home/authoring/ontology', url:'/home/authoring/ontology' },
+//	       {name: "Thesaurus Management", route:'#/home/authoring/ontology', url:'/home/authoring/ontology' },
+	       {name: "Thesaurus Management", route:null, url:miniDixServiceUrl + "/?ontology=" + ontology + "&newConceptsOntology=" + ontology + "&writableOntologies=" + ontology + "&locale=en", modaltitle:'MiniDix' },
 	       {name: "Edit Uploads", route:'#/home/authoring/edit-uploads', url:'/home/authoring/edit-uploads' }]
 	    },
 	    /*
@@ -79,7 +85,7 @@ function StackMenuCtrl($scope, ConfigurationService) {
 //		       {name: 'Facete', route:'#/home/querying-and-exploration/facete', url:'/home/querying-and-exploration/facete' },
 //		       {name: 'Mappify', route:'#/home/querying-and-exploration/mappify', url:'/home/querying-and-exploration/mappify' },
 //               {name: 'Search', route:'#/home/querying-and-exploration/search', url:'/home/querying-and-exploration/search' },
-               {name: 'Search', route:null, url:solrServiceUrl+'/collection1/custom' }]
+               {name: 'Search', route:null, url:solrServiceUrl+'/collection1/custom', modaltitle:'Faceted Search' }]
 		    }
 	  ];
 
@@ -93,6 +99,10 @@ function StackMenuCtrl($scope, ConfigurationService) {
         $('body').removeClass('modal-open');
       	$('.modal-backdrop').slideUp();
       	$('.modal-scrollable').slideUp();
+      };
+
+      $scope.setModalTitle = function(title) {
+        $scope.modaltitle = title;
       };
 
 	}

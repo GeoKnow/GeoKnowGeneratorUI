@@ -32,6 +32,7 @@ app.config(function($routeSegmentProvider, $routeProvider)
         .when('/settings/namespaces', 'settings.namespaces')
         .when('/settings/components', 'settings.components')
         .when('/settings/users', 'settings.users')
+        .when('/settings/ontology', 'settings.ontology')
         .when('/home/extraction-and-loading/import-rdf', 'default.import-rdf')
         .when('/home/extraction-and-loading/sparqlify', 'default.sparqlify')
         .when('/home/extraction-and-loading/triplegeo', 'default.triplegeo')
@@ -199,6 +200,17 @@ app.config(function($routeSegmentProvider, $routeProvider)
                     templateUrl: 'partials/settings/components.html'})
                 .segment('users', {
                     templateUrl: 'partials/admin/users.html'})
+                .segment('ontology', {
+                    templateUrl: 'partials/authoring/ontology.html',
+                    resolve: {
+                            ontologies: function (OntologyService) {
+                                return OntologyService.readOntologies();
+                            },
+                            settings: function (Config) {
+                                return Config.read();
+                            }
+                        }
+                    })
             .up()
            
         .segment('account', {

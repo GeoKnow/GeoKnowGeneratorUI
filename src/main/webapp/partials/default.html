@@ -14,7 +14,7 @@
 					  <div class="list-item" ng-class="{selected:isSelected('{{item.url}}')}" ng-repeat="item in group.items">
 							<h6>
                                 <a ng-show="item.route!=null" class="list-group-item" target="{{item.target}}" href="{{item.route}}">{{item.name}}</a>
-                                <a ng-show="item.route==null" class="list-group-item" data-toggle="modal" href="" ng-click="setDirectUrl('{{item.url}}'); openModal('fullModalDirect');">{{item.name}}</a>
+                                <a ng-show="item.route==null" class="list-group-item" data-toggle="modal" href="" ng-click="setDirectUrl('{{item.url}}'); setModalTitle('{{item.modaltitle}}'); openModal('fullModalDirect');">{{item.name}}</a>
                             </h6>
 					  </div>
 				  </div>
@@ -24,7 +24,7 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" ng-click="close('#fullModalDirect')" aria-hidden="true">&times;</button>
-                            <h5 class="modal-title green bold">Faceted Search</h5>
+                            <h5 class="modal-title green bold">{{modaltitle}}</h5>
                         </div>
                         <div class="modal-body">
                             <modal-iframe></modal-iframe>
