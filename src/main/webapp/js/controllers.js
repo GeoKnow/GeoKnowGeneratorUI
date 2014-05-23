@@ -3739,6 +3739,7 @@ var UploadDocCtrl = function($scope, $http, flash, ServerErrorResponse, Configur
             projectName1 : "",
             projectName2 : "",
             ownerName : "",
+            ownerDocumentNumber: "",
             ownerDocumentName : "",
             ownerDocumentRevision : "",
             ownerDocumentRevisionData : "",

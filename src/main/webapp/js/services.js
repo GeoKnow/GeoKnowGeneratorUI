@@ -1335,6 +1335,7 @@ module.factory("DocumentsService", function($http, $q, Config, DateService, Conf
             hasProject: [],
             owner: doc["dc:creator"][0],
             documentType: doc["acc:documentType"][0],
+            ownerDocumentNumber: doc["acc:ownerDocumentNumber"]==undefined ? null : doc["acc:ownerDocumentNumber"][0],
             ownerDocumentName: doc["acc:ownerDocumentName"]==undefined ? null : doc["acc:ownerDocumentName"][0],
             ownerDocumentRevision: doc["acc:ownerDocumentRevision"]==undefined ? null : doc["acc:ownerDocumentRevision"][0],
             ownerDocumentRevisionData: null,
@@ -1410,6 +1411,7 @@ module.factory("DocumentsService", function($http, $q, Config, DateService, Conf
                             + " ?s acc:hasProject ?proj . "
                             + " ?s dc:creator ?owner . "
                             + " ?s acc:documentType ?dt . "
+                            + " ?s acc:ownerDocumentNumber ?num . "
                             + " ?s acc:ownerDocumentName ?odn . "
                             + " ?s acc:ownerDocumentRevision ?odr . "
                             + " ?s acc:ownerDocumentRevisionData ?odrd . "
@@ -1424,6 +1426,7 @@ module.factory("DocumentsService", function($http, $q, Config, DateService, Conf
                             + " ?s dc:creator " + document.owner.uri + " . "
                             + newOwnerTriples
                             + " ?s acc:documentType \"" + document.documentType + "\" . "
+                            + (document.ownerDocumentNumber==null || document.ownerDocumentNumber=="" ? "" : " ?s acc:ownerDocumentNumber \"" + document.ownerDocumentNumber + "\" . ")
                             + (document.ownerDocumentName==null || document.ownerDocumentName=="" ? "" : " ?s acc:ownerDocumentName \"" + document.ownerDocumentName + "\" . ")
                             + (document.ownerDocumentRevision==null || document.ownerDocumentRevision=="" ? "" : " ?s acc:ownerDocumentRevision \"" + document.ownerDocumentRevision + "\" . ")
                             + (document.ownerDocumentRevisionData==null || document.ownerDocumentRevisionData=="" ? "" : " ?s acc:ownerDocumentRevisionData \"" + document.ownerDocumentRevisionData + "\"^^xsd:date . ")
@@ -1437,6 +1440,7 @@ module.factory("DocumentsService", function($http, $q, Config, DateService, Conf
                             + " optional {?s acc:hasProject ?proj .} "
                             + " optional {?s dc:creator ?owner .} "
                             + " ?s acc:documentType ?dt . "
+                            + " optional {?s acc:ownerDocumentNumber ?num .} "
                             + " optional {?s acc:ownerDocumentName ?odn .} "
                             + " optional {?s acc:ownerDocumentRevision ?odr .} "
                             + " optional {?s acc:ownerDocumentRevisionData ?odrd .} "

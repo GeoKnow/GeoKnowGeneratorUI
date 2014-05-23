@@ -99,7 +99,13 @@
             </div>
         </div>
         <div class="form-group">
-            <label for="name" class="col-lg-4 control-label">Document Name by Owner</label>
+            <label for="docnum" class="col-lg-4 control-label">Document Number by Owner</label>
+            <div class="col-lg-8">
+                <input type="text" class="form-control" id="docnum" name="docnum" ng-model="document.ownerDocumentNumber" placeholder="Fill the number, e.g., 10080-1-SS-CI-010" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="docname" class="col-lg-4 control-label">Document Name by Owner</label>
             <div class="col-lg-8">
                 <input type="text" class="form-control" id="docname" name="docname" ng-model="document.ownerDocumentName" placeholder="Fill the name e.g., 10080-1-SS-CI-001_01" />
             </div>
