@@ -649,9 +649,8 @@ $scope.LaunchLimes = function(){
 		params.ReviewRelation = $scope.limes.ReviewRelation;
 		params.numberOfProps = numberOfProps;
 		
-		$window.$windowScope = $scope;
+		window.$windowScope = $scope;
  		var newWindow = $window.open('popup.html#/popup-limes', 'frame', 'resizeable,height=600,width=800');
-		$window.open('popup.html#/popup-limes', 'frame', 'resizeable,top=100,left=100,height=400,width=400');
 		newWindow.params = params;
 	};
 		
@@ -812,7 +811,7 @@ $scope.LaunchLimes = function(){
 	$scope.save = function(){
 			
 		var parameters = { 
-        endpoint: ConfigurationService.getSPARQLEndpoint() , 
+        endpoint: AccountService.getUsername() == null ? ConfigurationService.getPublicSPARQLEndpoint() : ConfigurationService.getSPARQLEndpoint(),
    		uriBase : ConfigurationService.getUriBase()
 		};
 				
@@ -1537,7 +1536,7 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErr
 		
 		var parameters = {
 	    rdfFile: "result.ttl", 
-	    endpoint: ConfigurationService.getSPARQLEndpoint(), 
+	    endpoint: AccountService.getUsername()== null ? ConfigurationService.getPublicSPARQLEndpoint() : ConfigurationService.getSPARQLEndpoint(),
 	    graph: $scope.saveDataset.replace(':', ConfigurationService.getUriBase()), 
 	    uriBase : ConfigurationService.getUriBase(),
         username: AccountService.getUsername()
@@ -2049,7 +2048,6 @@ var TripleGeoCtrl = function($scope, $http, ConfigurationService, flash, ServerE
 			
 		$window.$windowScope = $scope;
  		var newWindow = $window.open('popup.html#/popup-triplegeo', 'frame', 'resizeable,height=600,width=800');
-		//$window.open('popup.html#/popup-limes', 'frame', 'resizeable,top=100,left=100,height=400,width=400');
 		newWindow.params = params;
 		};
 	
@@ -2109,7 +2107,7 @@ var TripleGeoCtrl = function($scope, $http, ConfigurationService, flash, ServerE
 		var parameters = {
 		        rdfFile: "result."+fileType,
 		        fileType: fileType,
-		        endpoint: ConfigurationService.getSPARQLEndpoint() , 
+		        endpoint: AccountService.getUsername()==null ? ConfigurationService.getPublicSPARQLEndpoint() : ConfigurationService.getSPARQLEndpoint(),
 		        graph: $scope.saveDataset.replace(':', ConfigurationService.getUriBase()), 
 		        uriBase : ConfigurationService.getUriBase(),
 		        username: AccountService.getUsername()
