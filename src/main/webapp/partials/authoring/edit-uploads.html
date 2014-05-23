@@ -118,18 +118,18 @@
                         <div class="form-group">
                             <label for="number" class="col-lg-4 control-label">ACC document number</label>
                             <div class="col-lg-8">
-                                <input type="text" class="form-control" id="number" name="number" ng-model="document.accDocumentNumber" required />
+                                <input type="text" class="form-control" id="number" name="number" ng-model="document.accDocumentNumber" required regex-validate="docNumber" />
                                 <div class="error" ng-show="documentForm.number.$dirty && documentForm.number.$invalid">Invalid:
-                                    <span ng-show="documentForm.number.$error.required">Specify ACC document number</span>
+                                    <span ng-show="documentForm.number.$error.required || documentForm.number.$error.regexValidate">Specify valid ACC document number</span>
                                 </div>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="iteration" class="col-lg-4 control-label">ACC document iteration</label>
                             <div class="col-lg-8">
-                                <input type="text" class="form-control" id="iteration" name="iteration" ng-model="document.accDocumentIteration" required />
+                                <input type="text" class="form-control" id="iteration" name="iteration" ng-model="document.accDocumentIteration" required regex-validate="docIteration" />
                                 <div class="error" ng-show="documentForm.iteration.$dirty && documentForm.iteration.$invalid">Invalid:
-                                    <span ng-show="documentForm.iteration.$error.required">Specify ACC document iteration</span>
+                                    <span ng-show="documentForm.iteration.$error.required || documentForm.iteration.$error.regexValidate">Specify valid ACC document iteration</span>
                                 </div>
                             </div>
                         </div>
