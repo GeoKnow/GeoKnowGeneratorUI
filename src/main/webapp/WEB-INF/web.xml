@@ -58,7 +58,7 @@
   <context-param> 
     <description>SMPT Host</description> 
     <param-name>smtp-host</param-name> 
-    <param-value>smtp.strato.de</param-value> 
+    <param-value>***REMOVED***</param-value> 
   </context-param>
   <context-param> 
     <description>SMPT TLS Port</description> 
@@ -73,17 +73,17 @@
   <context-param> 
     <description>email</description> 
     <param-name>email</param-name> 
-    <param-value>pr@geoknow.eu</param-value> 
+    <param-value>***REMOVED***</param-value> 
   </context-param>
   <context-param> 
     <description>User Name</description> 
     <param-name>user-name</param-name> 
-    <param-value>pr@geoknow.eu</param-value> 
+    <param-value>***REMOVED***</param-value> 
   </context-param>
   <context-param> 
     <description>password</description> 
     <param-name>password</param-name> 
-    <param-value>kygeoknow</param-value> 
+    <param-value>***REMOVED***</param-value> 
   </context-param>  
   
   <servlet>
