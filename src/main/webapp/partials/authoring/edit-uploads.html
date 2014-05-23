@@ -79,24 +79,6 @@
                     </div>
 
                     <div class="modal-body">
-                        <div class="form-group">
-                            <label for="number" class="col-lg-4 control-label">ACC document number</label>
-                            <div class="col-lg-8">
-                                <input type="text" class="form-control" id="number" name="number" ng-model="document.accDocumentNumber" required />
-                                <div class="error" ng-show="documentForm.number.$dirty && documentForm.number.$invalid">Invalid:
-                                    <span ng-show="documentForm.number.$error.required">Specify ACC document number</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="iteration" class="col-lg-4 control-label">ACC document iteration</label>
-                            <div class="col-lg-8">
-                                <input type="text" class="form-control" id="iteration" name="iteration" ng-model="document.accDocumentIteration" required />
-                                <div class="error" ng-show="documentForm.iteration.$dirty && documentForm.iteration.$invalid">Invalid:
-                                    <span ng-show="documentForm.iteration.$error.required">Specify ACC document iteration</span>
-                                </div>
-                            </div>
-                        </div>
                         <div>
                             <div class="row">
                                 <label class="col-lg-4 control-label">ACC Project Names</label>
@@ -130,6 +112,24 @@
                                     <div class="error" ng-show="document.hasProject.length==0">Invalid:
                                         <span>At least one assigned project expected</span>
                                     </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="number" class="col-lg-4 control-label">ACC document number</label>
+                            <div class="col-lg-8">
+                                <input type="text" class="form-control" id="number" name="number" ng-model="document.accDocumentNumber" required />
+                                <div class="error" ng-show="documentForm.number.$dirty && documentForm.number.$invalid">Invalid:
+                                    <span ng-show="documentForm.number.$error.required">Specify ACC document number</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="iteration" class="col-lg-4 control-label">ACC document iteration</label>
+                            <div class="col-lg-8">
+                                <input type="text" class="form-control" id="iteration" name="iteration" ng-model="document.accDocumentIteration" required />
+                                <div class="error" ng-show="documentForm.iteration.$dirty && documentForm.iteration.$invalid">Invalid:
+                                    <span ng-show="documentForm.iteration.$error.required">Specify ACC document iteration</span>
                                 </div>
                             </div>
                         </div>
