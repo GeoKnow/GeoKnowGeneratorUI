@@ -25,7 +25,10 @@ function AccountMenuCtrl($scope) {
     { name: "User Preferences",   route:'#/account/preferences', url:'/account/preferences' }];
 }
 
-function StackMenuCtrl($scope) {
+function StackMenuCtrl($scope, ConfigurationService) {
+    var services = ConfigurationService.getComponentServices(":Solr");
+	var solrServiceUrl = services[0].serviceUrl;
+
 	  $scope.oneAtATime = true;
 	  // these data can be replaced later with the configuration
 	  $scope.groups = [
@@ -75,9 +78,22 @@ function StackMenuCtrl($scope) {
 		      items: [
 //		       {name: 'Facete', route:'#/home/querying-and-exploration/facete', url:'/home/querying-and-exploration/facete' },
 //		       {name: 'Mappify', route:'#/home/querying-and-exploration/mappify', url:'/home/querying-and-exploration/mappify' },
-               {name: 'Search', route:'#/home/querying-and-exploration/search', url:'/home/querying-and-exploration/search' }]
+//               {name: 'Search', route:'#/home/querying-and-exploration/search', url:'/home/querying-and-exploration/search' },
+               {name: 'Search', route:null, url:solrServiceUrl+'/collection1/custom' }]
 		    }
 	  ];
+
+	  $scope.url=null;
+	  $scope.setDirectUrl = function(url) {
+	    $scope.url = url;
+	  };
+
+	  $scope.close = function(modalID) {
+	    $(modalID).modal('hide');
+        $('body').removeClass('modal-open');
+      	$('.modal-backdrop').slideUp();
+      	$('.modal-scrollable').slideUp();
+      };
 
 	}
 

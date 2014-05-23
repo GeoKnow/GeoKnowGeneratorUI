@@ -8,14 +8,16 @@ app.directive("modalIframe", function ($compile) {
     restrict: 'E',
     link: function (scope, elm, attr) {
         
-        scope.openModal = function(){
+        scope.openModal = function(modalId){
             // $('#modal').modal({
             //     width:'100%',
             //     height : $(window).height() - 165
             // });
             //console.log("URL:" + scope.url);
 
-            $('#fullModal').css({
+            if (modalId==null) modalId = 'fullModal';
+
+            $('#'+modalId).css({
                 width: $(window).width() ,
                 height : $(window).height(),
                 position: 'fixed',
@@ -27,7 +29,7 @@ app.directive("modalIframe", function ($compile) {
                 // }
             });
 
-            $('#fullModal').find('.modal-body').css({
+            $('#'+modalId).find('.modal-body').css({
                 width:'auto',
                 padding:'0px', 
                 height: function(){ 
@@ -35,7 +37,7 @@ app.directive("modalIframe", function ($compile) {
                 }, 
             });
 
-            $('#fullModal').modal('show');
+            $('#'+modalId).modal('show');
         };
     }
   };
