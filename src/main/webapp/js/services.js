@@ -1340,7 +1340,7 @@ module.factory("DocumentsService", function($http, $q, Config, DateService, Conf
             ownerDocumentRevision: doc["acc:ownerDocumentRevision"]==undefined ? null : doc["acc:ownerDocumentRevision"][0],
             ownerDocumentRevisionData: null,
             isApplicable: doc["acc:isApplicable"][0],
-            accDescription: doc["acc:accDescription"][0],
+            accDescription: doc["acc:accDescription"]==undefined ? null : doc["acc:accDescription"][0],
             accNote: doc["acc:accNote"]==undefined ? null : doc["acc:accNote"][0],
             uploader: doc["acc:uploader"][0],
             dateUploaded: doc["acc:dateUploaded"][0]
@@ -1431,7 +1431,7 @@ module.factory("DocumentsService", function($http, $q, Config, DateService, Conf
                             + (document.ownerDocumentRevision==null || document.ownerDocumentRevision=="" ? "" : " ?s acc:ownerDocumentRevision \"" + document.ownerDocumentRevision + "\" . ")
                             + (document.ownerDocumentRevisionData==null || document.ownerDocumentRevisionData=="" ? "" : " ?s acc:ownerDocumentRevisionData \"" + document.ownerDocumentRevisionData + "\"^^xsd:date . ")
                             + " ?s acc:isApplicable \"" + document.isApplicable + "\" . "
-                            + " ?s acc:accDescription \"" + document.accDescription + "\" . "
+                            + (document.accDescription==null || document.accDescription=="" ? "" : " ?s acc:accDescription \"" + document.accDescription + "\" . ")
                             + (document.accNote==null || document.accNote=="" ? "" : " ?s acc:accNote \"" + document.accNote + "\" . ")
                             + " ?s acc:dateReceived \"" + document.dateReceived + "\"^^xsd:date .} "
                     + " WHERE {?s acc:uuid \"" + document.uuid + "\" . "
@@ -1445,7 +1445,7 @@ module.factory("DocumentsService", function($http, $q, Config, DateService, Conf
                             + " optional {?s acc:ownerDocumentRevision ?odr .} "
                             + " optional {?s acc:ownerDocumentRevisionData ?odrd .} "
                             + " ?s acc:isApplicable ?a . "
-                            + " ?s acc:accDescription ?descr . "
+                            + " optional {?s acc:accDescription ?descr .} "
                             + " optional {?s acc:accNote ?note .} "
                             + " ?s acc:dateReceived ?dr .} ";
         var requestData = {
