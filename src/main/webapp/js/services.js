@@ -1270,6 +1270,7 @@ module.factory("D2RQService", function($http, $q, ConfigurationService) {
 
 module.factory("DocumentsService", function($http, $q, Config, DateService, ConfigurationService) {
     var documentTypes = [
+        {value:"customer specification", label:"customer specification"},
         {value:"Generic Specification", label:"Generic Specification"},
         {value:"Project-specific Specification", label:"Project-specific Specification"},
         {value:"other", label:"Other"}
