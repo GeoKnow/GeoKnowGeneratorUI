@@ -3666,6 +3666,18 @@ var UploadedDocsCtrl = function($scope, $http, flash, filterFilter, orderByFilte
         $('.modal-backdrop').slideUp();
         $('.modal-scrollable').slideUp();
     };
+
+    $scope.formatDateTime = function(dateStr) {
+        //YYYY-MM-DD HH:MM
+        var date = new Date();
+        date.setTime(Date.parse(dateStr));
+        var month = date.getMonth() + 1; // getMonth returns values from 0 to 11
+        var s_date = date.getFullYear() + "-"
+                        + (month.toString().length==1 ? "0"+ month : month) + "-"
+                        + (date.getDate().toString().length==1 ? "0"+date.getDate() : date.getDate()) + " "
+                        + date.getHours() + ":" + date.getMinutes();
+        return s_date;
+    };
 };
 
 var UploadDocCtrl = function($scope, $http, flash, ServerErrorResponse, ConfigurationService, DocumentsService, AccountService) {
@@ -3738,11 +3750,9 @@ var UploadDocCtrl = function($scope, $http, flash, ServerErrorResponse, Configur
     };
 
     $scope.projectChanged = function() {
-        console.log("project changed");
         for (var ind in $scope.projects) {
             if ($scope.projects[ind].number==$scope.document.projectNumber) {
                 $scope.document.projectName = $scope.projects[ind].name;
-                console.log($scope.document.projectNumber + ", " + $scope.document.projectName);
                 break;
             }
         }

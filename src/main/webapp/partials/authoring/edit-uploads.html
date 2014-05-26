@@ -32,7 +32,7 @@
             </th>
             <th>
                 <div class="row">
-                    <div class="col-lg-8">Project Name</div>
+                    <div class="col-lg-8">Project</div>
                     <div class="col-lg-4">
                         <a ng-show="!sortReverse || sortColumn!=2" href=""><span class="glyphicon glyphicon-chevron-up" ng-click="sortPredicate='hasProject'; sortReverse=sortColumn==2?true:false; sortColumn=2; sort();"></span></a>
                         <a ng-show="sortReverse || sortColumn!=2" href=""><span class="glyphicon glyphicon-chevron-down" ng-click="sortPredicate='hasProject'; sortReverse=sortColumn==2?false:true; sortColumn=2; sort();"></span></a>
@@ -41,10 +41,37 @@
             </th>
             <th>
                 <div class="row">
+                    <div class="col-lg-8">Document Number by Owner</div>
+                </div>
+                <div class="col-lg-4">
+                    <a ng-show="!sortReverse || sortColumn!=3" href=""><span class="glyphicon glyphicon-chevron-up" ng-click="sortPredicate='ownerDocumentNumber'; sortReverse=sortColumn==3?true:false; sortColumn=3; sort();"></span></a>
+                    <a ng-show="sortReverse || sortColumn!=3" href=""><span class="glyphicon glyphicon-chevron-down" ng-click="sortPredicate='ownerDocumentNumber'; sortReverse=sortColumn==3?false:true; sortColumn=3; sort();"></span></a>
+                </div>
+            </th>
+            <th>
+                <div class="row">
+                    <div class="col-lg-8">Document Name by Owner</div>
+                </div>
+                <div class="col-lg-4">
+                    <a ng-show="!sortReverse || sortColumn!=4" href=""><span class="glyphicon glyphicon-chevron-up" ng-click="sortPredicate='ownerDocumentName'; sortReverse=sortColumn==4?true:false; sortColumn=4; sort();"></span></a>
+                    <a ng-show="sortReverse || sortColumn!=4" href=""><span class="glyphicon glyphicon-chevron-down" ng-click="sortPredicate='ownerDocumentName'; sortReverse=sortColumn==4?false:true; sortColumn=4; sort();"></span></a>
+                </div>
+            </th>
+            <th>
+                <div class="row">
+                    <div class="col-lg-8">Document Revision by Owner</div>
+                </div>
+                <div class="col-lg-4">
+                    <a ng-show="!sortReverse || sortColumn!=5" href=""><span class="glyphicon glyphicon-chevron-up" ng-click="sortPredicate='ownerDocumentRevision'; sortReverse=sortColumn==5?true:false; sortColumn=5; sort();"></span></a>
+                    <a ng-show="sortReverse || sortColumn!=5" href=""><span class="glyphicon glyphicon-chevron-down" ng-click="sortPredicate='ownerDocumentRevision'; sortReverse=sortColumn==5?false:true; sortColumn=5; sort();"></span></a>
+                </div>
+            </th>
+            <th>
+                <div class="row">
                     <div class="col-lg-8">Uploaded</div>
                     <div class="col-lg-4">
-                        <a ng-show="!sortReverse || sortColumn!=3" href=""><span class="glyphicon glyphicon-chevron-up" ng-click="sortPredicate='dateUploaded'; sortReverse=sortColumn==3?true:false; sortColumn=3; sort();"></span></a>
-                        <a ng-show="sortReverse || sortColumn!=3" href=""><span class="glyphicon glyphicon-chevron-down" ng-click="sortPredicate='dateUploaded'; sortReverse=sortColumn==3?false:true; sortColumn=3; sort();"></span></a>
+                        <a ng-show="!sortReverse || sortColumn!=6" href=""><span class="glyphicon glyphicon-chevron-up" ng-click="sortPredicate='dateUploaded'; sortReverse=sortColumn==6?true:false; sortColumn=6; sort();"></span></a>
+                        <a ng-show="sortReverse || sortColumn!=6" href=""><span class="glyphicon glyphicon-chevron-down" ng-click="sortPredicate='dateUploaded'; sortReverse=sortColumn==6?false:true; sortColumn=6; sort();"></span></a>
                     </div>
                 </div>
             </th>
@@ -59,10 +86,13 @@
             <td>{{getDocumentId(d)}}</td>
             <td>
                 <ul class="list-unstyled">
-                    <li ng-repeat="project in d.hasProject">{{project.name}}</li>
+                    <li ng-repeat="project in d.hasProject">{{project.number}} ({{project.name}})</li>
                 </ul>
             </td>
-            <td>{{d.dateUploaded}}</td>
+            <td>{{d.ownerDocumentNumber}}</td>
+            <td>{{d.ownerDocumentName}}</td>
+            <td>{{d.ownerDocumentRevision}}</td>
+            <td>{{formatDateTime(d.dateUploaded)}}</td>
         </tr>
         </tbody>
     </table>
