@@ -1365,6 +1365,7 @@ module.factory("DocumentsService", function($http, $q, Config, DateService, Conf
             var projUri = doc["acc:hasProject"][ind];
             var proj = {
                 uri: projUri,
+                number: projects[projUri]["acc:number"][0],
                 name: projects[projUri]["acc:name"][0]
             };
             res.hasProject.push(proj);
@@ -1394,6 +1395,7 @@ module.factory("DocumentsService", function($http, $q, Config, DateService, Conf
             hasProjectTriples += " ?s acc:hasProject " + document.hasProject[ind].uri + " . ";
             if (document.hasProject[ind].created) {
                 newProjectTriples += document.hasProject[ind].uri + " rdf:type acc:AccProject . "
+                                    + document.hasProject[ind].uri + " acc:number \"" + document.hasProject[ind].number + "\" . "
                                     + document.hasProject[ind].uri + " acc:name \"" + document.hasProject[ind].name + "\" . ";
             }
         }
@@ -1479,6 +1481,7 @@ module.factory("DocumentsService", function($http, $q, Config, DateService, Conf
             var proj = projects[resource];
             var res = {
                     uri: resource,
+                    number: proj["acc:number"][0],
                     name: proj["acc:name"][0]
             };
             results.push(res);

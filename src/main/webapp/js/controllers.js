@@ -3540,6 +3540,7 @@ var UploadedDocsCtrl = function($scope, $http, flash, filterFilter, orderByFilte
         }
         $scope.newAssignedProject = null;
         $scope.newProjectName = null;
+        $scope.newProjectNumber = null;
         $scope.newOwnerName = null;
         $scope.showCreateProject = false;
         $scope.showCreateOwner = false;
@@ -3603,24 +3604,25 @@ var UploadedDocsCtrl = function($scope, $http, flash, filterFilter, orderByFilte
         $scope.showCreateOwner = false;
     };
 
-    $scope.createProject = function(name) {
+    $scope.createProject = function(name, number) {
         return {
             uri: "acc:project_" + name.split(" ").join("_"),
             name: name,
+            number: number,
             created: true
         };
     };
 
-    $scope.projectExists = function(projectName) {
+    $scope.projectExists = function(projectNumber) {
         for (var ind in $scope.projects) {
-            if ($scope.projects[ind].name==projectName) return true;
+            if ($scope.projects[ind].number==projectNumber) return true;
         }
         return false;
     };
 
     $scope.addNewProject = function() {
-        if ($scope.newProjectName!=null && $scope.newProjectName!="" && !$scope.projectExists($scope.newProjectName)) {
-            var p = $scope.createProject($scope.newProjectName);
+        if ($scope.newProjectNumber && $scope.newProjectName && !$scope.projectExists($scope.newProjectNumber)) {
+            var p = $scope.createProject($scope.newProjectName, $scope.newProjectNumber);
             //add to projects list
             $scope.projects.push(p);
             //assign to current document
@@ -3628,6 +3630,7 @@ var UploadedDocsCtrl = function($scope, $http, flash, filterFilter, orderByFilte
             $scope.assignProject();
         }
         $scope.newProjectName = null;
+        $scope.newProjectNumber = null;
         $scope.showCreateProject = false;
     };
 
@@ -3665,15 +3668,11 @@ var UploadedDocsCtrl = function($scope, $http, flash, filterFilter, orderByFilte
     };
 };
 
-var UploadDocCtrl = function($scope, $http, flash, ServerErrorResponse, ConfigurationService, DocumentsService) {
+var UploadDocCtrl = function($scope, $http, flash, ServerErrorResponse, ConfigurationService, DocumentsService, AccountService) {
     var services = ConfigurationService.getComponentServices(":SolrUploadProxy");
 	var solrUploadServiceUrl = services[0].serviceUrl;
 
-    $scope.projects = [];
-    var allProjects = DocumentsService.getAllProjects();
-    for (var ind in allProjects) {
-        $scope.projects.push(allProjects[ind].name);
-    }
+    $scope.projects = DocumentsService.getAllProjects();
 
     $scope.owners = [];
     var allOwners = DocumentsService.getAllOwners();
@@ -3720,12 +3719,33 @@ var UploadDocCtrl = function($scope, $http, flash, ServerErrorResponse, Configur
         $scope.showOwnerTextField = false;
     };
 
+    $scope.projectExists = function(projectNumber) {
+        for (var ind in $scope.projects) {
+            if ($scope.projects[ind].number==projectNumber) return true;
+        }
+        return false;
+    };
+
     $scope.addNewProject = function() {
-        if ($scope.newProjectName!=null && $scope.newProjectName!="" && $scope.projects.indexOf($scope.newProjectName) == -1) {
-            $scope.projects.push($scope.newProjectName);
+        if ($scope.newProjectName && $scope.newProjectNumber && !$scope.projectExists($scope.newProjectNumber)) {
+            $scope.projects.push({number: $scope.newProjectNumber, name: $scope.newProjectName});
+            $scope.document.projectNumber = $scope.newProjectNumber;
+            $scope.document.projectName = $scope.newProjectName;
         }
         $scope.newProjectName = null;
+        $scope.newProjectNumber = null;
         $scope.showProjectTextField = false;
+    };
+
+    $scope.projectChanged = function() {
+        console.log("project changed");
+        for (var ind in $scope.projects) {
+            if ($scope.projects[ind].number==$scope.document.projectNumber) {
+                $scope.document.projectName = $scope.projects[ind].name;
+                console.log($scope.document.projectNumber + ", " + $scope.document.projectName);
+                break;
+            }
+        }
     };
 
     $scope.clearForm = function() {
@@ -3736,19 +3756,21 @@ var UploadDocCtrl = function($scope, $http, flash, ServerErrorResponse, Configur
             dateReceived : "",
             documentType : "other",
             isApplicable : true,
-            projectName1 : "",
-            projectName2 : "",
+            projectNumber : "",
+            projectName : "",
             ownerName : "",
             ownerDocumentNumber: "",
             ownerDocumentName : "",
             ownerDocumentRevision : "",
             ownerDocumentRevisionData : "",
             accDescription : "",
-            accNote : ""
+            accNote : "",
+            uploader : AccountService.getUsername()
         };
         $scope.showOwnerTextField = false;
         $scope.showProjectTextField = false;
         $scope.newOwnerName = null;
+        $scope.newProjectNumber = null;
         $scope.newProjectName = null;
     };
 

@@ -8,15 +8,25 @@
     <h3 class="green bold">Upload new Files</h3>
     <form name="documentForm" class="form-horizontal InputForm" role="form" novalidate>
         <div class="form-group">
-            <label class="col-lg-4 control-label">ACC Project Names</label>
-            <div class="col-lg-3">
-                <select class="form-control" ng-model="document.projectName1" ng-options="p for p in projects" required></select>
-            </div>
-            <div class="col-lg-3">
-                <select class="form-control" ng-model="document.projectName2" ng-options="p for p in projects" required></select>
+            <label class="col-lg-4 control-label">ACC Project with Number</label>
+            <div class="col-lg-6">
+                <select chosen data-placeholder=" " width="'100%'" class="form-control" ng-model="document.projectNumber" ng-options="p.number as p.number for p in projects" ng-change="projectChanged()" required></select>
             </div>
             <div class="col-lg-2">
                 <button type="button" class="btn btn-default btn-xs" ng-click="showProjectTextField=true;"><span class="glyphicon glyphicon-plus"></span></button>
+            </div>
+        </div>
+        <div class="form-group" ng-show="showProjectTextField">
+            <div class="col-lg-offset-4 row">
+                <div class="col-lg-4">
+                    <input type="text" class="form-control" ng-model="newProjectNumber" placeholder="New project number"/>
+                </div>
+                <div class="col-lg-4">
+                    <input type="text" class="form-control" ng-model="newProjectName" placeholder="New project name"/>
+                </div>
+                <div class="col-lg-4">
+                    <button type="button" class="btn btn-default btn-xs" ng-click="addNewProject()"><span class="glyphicon glyphicon-ok"></span></button>
+                </div>
             </div>
         </div>
         <div class="form-group">
@@ -31,19 +41,9 @@
         <div class="form-group">
             <label for="iteration" class="col-lg-4 control-label">ACC document iteration</label>
             <div class="col-lg-8">
-                <input type="text" class="form-control" id="iteration" name="iteration" ng-model="document.accDocumentIteration" placeholder="Fill the iteration, e.g., T1" required regex-validate="docIteration" />
+                <input type="text" class="form-control" id="iteration" name="iteration" ng-model="document.accDocumentIteration" placeholder="Fill the iteration, e.g., IT1" required regex-validate="docIteration" />
                 <div class="error" ng-show="documentForm.iteration.$dirty && documentForm.iteration.$invalid">Invalid:
                     <span ng-show="documentForm.iteration.$error.required || documentForm.iteration.$error.regexValidate">Specify valid ACC document iteration</span>
-                </div>
-            </div>
-        </div>
-        <div class="form-group" ng-show="showProjectTextField">
-            <div class="col-lg-offset-4 row">
-                <div class="col-lg-8">
-                    <input type="text" class="form-control" ng-model="newProjectName" placeholder="New project name, e.g., a402632"/>
-                </div>
-                <div class="col-lg-4">
-                    <button type="button" class="btn btn-default btn-xs" ng-click="addNewProject()"><span class="glyphicon glyphicon-ok"></span></button>
                 </div>
             </div>
         </div>
@@ -60,7 +60,7 @@
             <label class="col-lg-4 control-label">Owner Name</label>
             <div class="col-lg-8 row">
                 <div class="col-lg-9">
-                    <select id="owner" class="form-control" ng-model="document.ownerName" ng-options="o for o in owners" required></select>
+                    <select chosen data-placeholder=" " width="'100%'" id="owner" class="form-control" ng-model="document.ownerName" ng-options="o for o in owners" required></select>
                 </div>
                 <div class="col-lg-3">
                     <button type="button" class="btn btn-default btn-xs" ng-click="showOwnerTextField=true;"><span class="glyphicon glyphicon-plus"></span></button>
@@ -133,7 +133,7 @@
         </div>
         <div class="form-group">
             <div class="col-lg-offset-2 col-xs-10">
-                <button class="btn btn-primary" ng-click="upload()" ng-disabled="documentForm.$invalid || isUploading() || !filesSelected()">Upload documents</button>
+                <button class="btn btn-primary" ng-click="upload()" ng-disabled="documentForm.$invalid || isUploading() || !filesSelected()">Upload document</button>
                 <button class="btn btn-primary" ng-click="clearForm()" ng-disabled="isUploading()">Clear form</button>
                 <span ng-show="isUploading()">Uploading... </span>
             </div>
