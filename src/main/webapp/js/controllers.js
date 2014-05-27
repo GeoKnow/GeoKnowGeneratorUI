@@ -3479,7 +3479,9 @@ var UploadedDocsCtrl = function($scope, $http, flash, filterFilter, orderByFilte
         {value: "dateUploaded", label: "Uploaded"}
     ];
 
-    $scope.searchField = ["all"];
+    $scope.search = [
+        {text: null, fields: ["all"]}
+    ];
 
     $scope.documentTypes = DocumentsService.getDocumentTypes();
     $scope.documents = DocumentsService.getAllDocuments();
@@ -3545,7 +3547,7 @@ var UploadedDocsCtrl = function($scope, $http, flash, filterFilter, orderByFilte
 
     var filterUnion = function(filters, fields) {
         return function(document) {
-            if (!$scope.searchText) return true;
+            if (!$scope.searchText || filters.length==0 && fields.length==0) return true;
             for (var ind in filters) {
                 if (filters[ind](document)) return true;
             }
@@ -3556,7 +3558,7 @@ var UploadedDocsCtrl = function($scope, $http, flash, filterFilter, orderByFilte
         };
     };
 
-    $scope.filter = function() {
+    var buildFilterExpression = function() {
         var filterExpr;
         if ($scope.searchField.indexOf("all") > -1) { //ignore other search options
             filterExpr = documentsFilter;
@@ -3571,9 +3573,43 @@ var UploadedDocsCtrl = function($scope, $http, flash, filterFilter, orderByFilte
             }
             filterExpr = filterUnion(filters, fields);
         }
+        return filterExpr;
+    };
+
+    $scope.filter = function() {
+        $scope.searchField = $scope.search[0].fields;
+        $scope.searchText = $scope.search[0].text;
+        var filterExpr = buildFilterExpression();
         $scope.filteredDocuments = filterFilter($scope.sortedDocuments, filterExpr);
+        if ($scope.search.length > 0) {
+            for (var ind in $scope.search) {
+                if (ind==0) continue;
+                $scope.searchField = $scope.search[ind].fields;
+                $scope.searchText = $scope.search[ind].text;
+                var filterExpr = buildFilterExpression();
+                $scope.filteredDocuments = filterFilter($scope.filteredDocuments, filterExpr);
+            }
+        }
         $scope.totalDocs = $scope.filteredDocuments.length;
         fillPage();
+    };
+
+    $scope.addSearch = function() {
+        $scope.search.push({text: null, fields: ["all"]});
+    };
+
+    $scope.removeSearch = function(s) {
+        var removeIndex = $scope.search.indexOf(s);
+        $scope.search.splice(removeIndex, 1);
+        $scope.filter();
+    };
+
+    $scope.showRemoveSearch = function(s) {
+        return $scope.search.length > 1;
+    };
+
+    $scope.showAddSearch = function(s) {
+        return $scope.search.indexOf(s) == $scope.search.length-1;
     };
 
     $scope.sort = function() {

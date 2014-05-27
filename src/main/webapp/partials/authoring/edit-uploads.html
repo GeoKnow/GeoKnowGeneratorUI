@@ -16,13 +16,17 @@
         Uploaded Documents
     </h4>
 
-    <div class="row">
-        <div class="row col-lg-6">
-            <div class="col-lg-2">Search: </div>
-            <div class="col-lg-4"><input type="text" ng-model="searchText" ng-change="filter()"></div>
-            <div class="col-lg-2">Field: </div>
+    <div class="row" ng-repeat="s in search">
+        <div class="row col-lg-8">
+            <div class="col-lg-1">Search: </div>
+            <div class="col-lg-3"><input type="text" ng-model="s.text" ng-change="filter()"></div>
+            <div class="col-lg-1">Fields: </div>
             <div class="col-lg-4">
-                <select multiple chosen width="'100%'" ng-model="searchField" ng-options="field.value as field.label for field in filterFields" ng-change="filter()"></select>
+                <select multiple chosen width="'100%'" ng-model="s.fields" ng-options="field.value as field.label for field in filterFields" ng-change="filter()"></select>
+            </div>
+            <div class="col-lg-3">
+                <button ng-show="showAddSearch(s)" type="button" class="btn btn-default btn-xs" ng-click="addSearch()"><span class="glyphicon glyphicon-plus"></span></button>
+                <button ng-show="showRemoveSearch(s)" type="button" class="btn btn-default btn-xs" ng-click="removeSearch(s)"><span class="glyphicon glyphicon-remove"></span></button>
             </div>
         </div>
     </div>
