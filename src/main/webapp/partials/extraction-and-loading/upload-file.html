@@ -8,12 +8,18 @@
     <h3 class="green bold">Upload new Files</h3>
     <form name="documentForm" class="form-horizontal InputForm" role="form" novalidate>
         <div class="form-group">
-            <label class="col-lg-4 control-label">ACC Project with Number</label>
+            <label class="col-lg-4 control-label">ACC Project Number</label>
             <div class="col-lg-6">
                 <select chosen data-placeholder=" " width="'100%'" class="form-control" ng-model="document.projectNumber" ng-options="p.number as p.number for p in projects" ng-change="projectChanged()" required></select>
             </div>
             <div class="col-lg-2">
                 <button type="button" class="btn btn-default btn-xs" ng-click="showProjectTextField=true;"><span class="glyphicon glyphicon-plus"></span></button>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-lg-4 control-label">ACC Project Name</label>
+            <div class="col-lg-8">
+                <p class="form-control-static">{{document.projectName}}</p>
             </div>
         </div>
         <div class="form-group" ng-show="showProjectTextField">
@@ -30,7 +36,7 @@
             </div>
         </div>
         <div class="form-group">
-            <label for="number" class="col-lg-4 control-label">ACC document number</label>
+            <label for="number" class="col-lg-4 control-label">ACC Document Number</label>
             <div class="col-lg-8">
                 <input type="text" class="form-control" id="number" name="number" ng-model="document.accDocumentNumber" placeholder="Fill the name, e.g., D100" required regex-validate="docNumber" />
                 <div class="error" ng-show="documentForm.number.$dirty && documentForm.number.$invalid">Invalid:
@@ -39,7 +45,7 @@
             </div>
         </div>
         <div class="form-group">
-            <label for="iteration" class="col-lg-4 control-label">ACC document iteration</label>
+            <label for="iteration" class="col-lg-4 control-label">ACC Document Iteration</label>
             <div class="col-lg-8">
                 <input type="text" class="form-control" id="iteration" name="iteration" ng-model="document.accDocumentIteration" placeholder="Fill the iteration, e.g., IT1" required regex-validate="docIteration" />
                 <div class="error" ng-show="documentForm.iteration.$dirty && documentForm.iteration.$invalid">Invalid:

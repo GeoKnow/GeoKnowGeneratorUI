@@ -126,7 +126,7 @@
                                     <table class="table table-striped">
                                         <tr ng-repeat="p in document.hasProject">
                                             <td>
-                                                <p class="form-control-static">{{p.number}}</p>
+                                                <p class="form-control-static">{{p.number}} ({{p.name}})</p>
                                             </td>
                                             <td>
                                                 <button type="button" class="btn btn-default btn-xs" ng-click="removeProject(p)"><span class="glyphicon glyphicon-remove"></span></button>
@@ -198,7 +198,7 @@
                         <div class="form-group" ng-show="showCreateOwner">
                             <div class="col-lg-offset-4 row">
                                 <div class="col-lg-8">
-                                    <input type="text" ng-model="newOwnerName" placeholder="New owner name"/>
+                                    <input type="text" class="form-control" ng-model="newOwnerName" placeholder="New owner name"/>
                                 </div>
                                 <div class="col-lg-4">
                                     <button type="button" class="btn btn-default btn-xs" ng-click="addNewOwner()"><span class="glyphicon glyphicon-ok"></span></button>
