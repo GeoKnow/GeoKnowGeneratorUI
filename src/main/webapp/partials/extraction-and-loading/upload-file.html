@@ -16,10 +16,10 @@
                 <button type="button" class="btn btn-default btn-xs" ng-click="showProjectTextField=true;"><span class="glyphicon glyphicon-plus"></span></button>
             </div>
         </div>
-        <div class="form-group">
+        <div class="form-group" ng-show="document.projectName">
             <label class="col-lg-4 control-label">ACC Project Name</label>
             <div class="col-lg-8">
-                <p class="form-control-static">{{document.projectName}}</p>
+                <input type="text" class="form-control" ng-model="document.projectName" ng-disabled="true"/>
             </div>
         </div>
         <div class="form-group" ng-show="showProjectTextField">
