@@ -3479,7 +3479,7 @@ var UploadedDocsCtrl = function($scope, $http, flash, filterFilter, orderByFilte
         {value: "dateUploaded", label: "Uploaded"}
     ];
 
-    $scope.searchField = "all";
+    $scope.searchField = ["all"];
 
     $scope.documentTypes = DocumentsService.getDocumentTypes();
     $scope.documents = DocumentsService.getAllDocuments();
@@ -3543,19 +3543,33 @@ var UploadedDocsCtrl = function($scope, $http, flash, filterFilter, orderByFilte
         return formattedDate.indexOf($scope.searchText) > -1;
     };
 
+    var filterUnion = function(filters, fields) {
+        return function(document) {
+            if (!$scope.searchText) return true;
+            for (var ind in filters) {
+                if (filters[ind](document)) return true;
+            }
+            for (var ind in fields) {
+                if (document[fields[ind]].indexOf($scope.searchText) > -1) return true;
+            }
+            return false;
+        };
+    };
+
     $scope.filter = function() {
         var filterExpr;
-        if ($scope.searchField=="all") {
+        if ($scope.searchField.indexOf("all") > -1) { //ignore other search options
             filterExpr = documentsFilter;
-        } else if ($scope.searchField=="docId") {
-            filterExpr = documentsIdFilter;
-        } else if ($scope.searchField=="hasProject") {
-            filterExpr = projectNumberFilter;
-        } else if ($scope.searchField=="dateUploaded") {
-            filterExpr = dateUploadedFilter;
         } else {
-            filterExpr = {};
-            filterExpr[$scope.searchField] = $scope.searchText;
+            var filters = [];
+            var fields = [];
+            for (var ind in $scope.searchField) {
+                if ($scope.searchField[ind] == "docId") filters.push(documentsIdFilter);
+                else if ($scope.searchField[ind] == "hasProject") filters.push(projectNumberFilter);
+                else if ($scope.searchField[ind] == "dateUploaded") filters.push(dateUploadedFilter);
+                else fields.push($scope.searchField[ind]);
+            }
+            filterExpr = filterUnion(filters, fields);
         }
         $scope.filteredDocuments = filterFilter($scope.sortedDocuments, filterExpr);
         $scope.totalDocs = $scope.filteredDocuments.length;

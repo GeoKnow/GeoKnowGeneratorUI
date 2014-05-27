@@ -22,7 +22,7 @@
             <div class="col-lg-4"><input type="text" ng-model="searchText" ng-change="filter()"></div>
             <div class="col-lg-2">Field: </div>
             <div class="col-lg-4">
-                <select ng-model="searchField" ng-options="field.value as field.label for field in filterFields" ng-change="filter()"></select>
+                <select multiple chosen width="'100%'" ng-model="searchField" ng-options="field.value as field.label for field in filterFields" ng-change="filter()"></select>
             </div>
         </div>
     </div>
