@@ -3469,6 +3469,18 @@ var D2RQMappingCtrl = function($scope, $http, $q, flash, ServerErrorResponse, Ac
 };
 
 var UploadedDocsCtrl = function($scope, $http, flash, filterFilter, orderByFilter, DocumentsService, ServerErrorResponse, ConfigurationService) {
+    $scope.filterFields = [
+        {value: "all", label: "All"},
+        {value: "docId", label: "ACC Document"},
+        {value: "hasProject", label: "Project Number"},
+        {value: "ownerDocumentNumber", label: "Document Number by Owner"},
+        {value: "ownerDocumentName", label: "Document Name by Owner"},
+        {value: "ownerDocumentRevision", label: "Document Revision by Owner"},
+        {value: "dateUploaded", label: "Uploaded"}
+    ];
+
+    $scope.searchField = "all";
+
     $scope.documentTypes = DocumentsService.getDocumentTypes();
     $scope.documents = DocumentsService.getAllDocuments();
     $scope.projects = DocumentsService.getAllProjects();
@@ -3502,14 +3514,50 @@ var UploadedDocsCtrl = function($scope, $http, flash, filterFilter, orderByFilte
         if ($scope.searchText==undefined || $scope.searchText==null || $scope.searchText=="") return true;
         if ($scope.getDocumentId(document).indexOf($scope.searchText) > -1) return true;
         for (var ind in document.hasProject) {
+            if (document.hasProject[ind].number.indexOf($scope.searchText) > -1) return true;
             if (document.hasProject[ind].name.indexOf($scope.searchText) > -1) return true;
         }
-        if (document.dateUploaded.indexOf($scope.searchText) > -1) return true;
+        if (document.ownerDocumentNumber.indexOf($scope.searchText) > -1) return true;
+        if (document.ownerDocumentName.indexOf($scope.searchText) > -1) return true;
+        if (document.ownerDocumentRevision.indexOf($scope.searchText) > -1) return true;
+        if ($scope.formatDateTime(document.dateUploaded).indexOf($scope.searchText) > -1) return true;
         return false;
     };
 
+    var documentsIdFilter = function(document) {
+        if (!$scope.searchText) return true;
+        return $scope.getDocumentId(document).indexOf($scope.searchText) > -1;
+    };
+
+    var projectNumberFilter = function(document) {
+        if (!$scope.searchText) return true;
+        for (var ind in document.hasProject) {
+            if (document.hasProject[ind].number.indexOf($scope.searchText) > -1) return true;
+        }
+        return false;
+    };
+
+    var dateUploadedFilter = function(document) {
+        if (!$scope.searchText) return true;
+        var formattedDate = $scope.formatDateTime(document.dateUploaded);
+        return formattedDate.indexOf($scope.searchText) > -1;
+    };
+
     $scope.filter = function() {
-        $scope.filteredDocuments = filterFilter($scope.sortedDocuments, documentsFilter);
+        var filterExpr;
+        if ($scope.searchField=="all") {
+            filterExpr = documentsFilter;
+        } else if ($scope.searchField=="docId") {
+            filterExpr = documentsIdFilter;
+        } else if ($scope.searchField=="hasProject") {
+            filterExpr = projectNumberFilter;
+        } else if ($scope.searchField=="dateUploaded") {
+            filterExpr = dateUploadedFilter;
+        } else {
+            filterExpr = {};
+            filterExpr[$scope.searchField] = $scope.searchText;
+        }
+        $scope.filteredDocuments = filterFilter($scope.sortedDocuments, filterExpr);
         $scope.totalDocs = $scope.filteredDocuments.length;
         fillPage();
     };
