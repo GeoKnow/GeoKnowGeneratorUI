@@ -11,7 +11,8 @@ var app = angular.module('app', ['ngRoute',
                                  'angularFileUpload',
                                  'angular-flash.service', 
                                  'angular-flash.flash-alert-directive',
-                                 'localytics.directives']);
+                                 'localytics.directives',
+                                 'ui.date']);
 
 
 app.config(function($routeSegmentProvider, $routeProvider)

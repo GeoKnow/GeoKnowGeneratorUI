@@ -349,3 +349,8 @@ form{
 .scrollable {
     overflow: auto;
 }
+
+/* Show jquery datepicker above dialogs */
+.ui-datepicker {
+    z-index: 10000 !important;
+}
