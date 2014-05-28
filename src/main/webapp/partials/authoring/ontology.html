@@ -1,6 +1,11 @@
 <div ng-controller="OntologyCtrl">
+    <!-- Subscribe to all flash messages. -->
+    <div flash-alert active-class="in alert" class="fade" duration="0">
+        <button type="button" class="close" ng-click="hide()">&times;</button>
+        <span class="alert-message">{{flash.message}}</span>
+    </div>
 
-<div class="row below">
+    <div class="row below">
     <h3 class="green bold">
         <span class="btn-group">
             <button type="button" class="btn btn-link reset" ng-click="refreshOntologies()">
@@ -29,6 +34,26 @@
     </table>
     
     <button type="button" class="btn btn-primary btn-large" data-toggle="modal" data-target="#modalOntology" ng-click="new();" ng-disabled="!isLoggedIn()">Add new ontology</button>
+    <button type="button" class="btn btn-primary btn-large" data-toggle="modal" data-target="#reindexDocuments" ng-click="beforeReindex()">Re-Index with current Thesaurus</button>
+
+    <div class="modal fade" id="reindexDocuments">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" ng-click="close('#reindexDocuments')" aria-hidden="true">&times;</button>
+                    <h5 class="modal-title green bold">Re-Index documents</h5>
+                </div>
+                <div class="modal-body">
+                    <p>Re-index all documents with current thesaurus?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn-sm btn-primary" ng-click="reindex();" ng-disabled="reindexing">Yes</button>
+                    <button type="button" class="btn-sm btn-default" ng-click="close('#reindexDocuments')" ng-disabled="reindexing">No</button>
+                    <span ng-show="reindexing">Re-indexing...</span>
+                </div>
+            </div>
+        </div>
+    </div>
 
 <div class="modal fade" id="modalOntology">
     <div class="modal-content">
@@ -78,7 +103,7 @@
 
         <div class="modal-footer">
             <button type="submit" class="btn-sm btn-primary" ng-click="add();">Add</button>
-            <button type="button" class="btn-sm btn-default" data-dismiss="modal">Cancel</button>
+            <button type="button" class="btn-sm btn-default" ng-click="close('#modalOntology')">Cancel</button>
         </div>
     </div>
     </div>

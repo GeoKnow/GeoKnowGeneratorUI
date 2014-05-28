@@ -2452,6 +2452,9 @@ var OntologyCtrl = function($scope, $http, flash, ServerErrorResponse, AccountSe
 	var d2rqServices = ConfigurationService.getComponentServices(":D2RQ");
 	var d2rqServiceUrl = d2rqServices[0].serviceUrl;
 
+	var solrServices = ConfigurationService.getComponentServices(":SolrUploadProxy");
+	var solrUploadServiceUrl = solrServices[0].serviceUrl;
+
     $scope.ontologies = OntologyService.getAllOntologies();
 
     $scope.refreshOntologies = function() {
@@ -2505,8 +2508,9 @@ var OntologyCtrl = function($scope, $http, flash, ServerErrorResponse, AccountSe
                 data: {user: AccountService.getUsername()} //todo unauthorized user
             }).then(function(response) {
                 $scope.refreshOntologies();
-                $('#modalOntology').modal('hide');
+                $scope.close('#modalOntology');
             }, function(response) {
+                $scope.close('#modalOntology');
                 flash.error = ServerErrorResponse.getMessage(response.status);
                 $scope.refreshOntologies();
             });
@@ -2561,6 +2565,29 @@ var OntologyCtrl = function($scope, $http, flash, ServerErrorResponse, AccountSe
         $('body').removeClass('modal-open');
         $('.modal-backdrop').slideUp();
         $('.modal-scrollable').slideUp();
+    };
+
+    $scope.beforeReindex = function() {
+        $scope.reindexing = false;
+    };
+
+    $scope.reindex = function() {
+        console.log("reindex with current thesaurus");
+        $scope.reindexing = true;
+        $http.post(solrUploadServiceUrl+"/update/reindexWithNewThesaurus")
+            .then(function(response) {
+                $scope.close('#reindexDocuments');
+                console.log("reindex completed");
+                console.log(response.data);
+                flash.success = ServerErrorResponse.getMessage(response.status);
+                $scope.reindexing = false;
+            }, function(response) {
+                $scope.close('#reindexDocuments');
+                console.log("reindex failed");
+                console.log(response);
+                flash.error = ServerErrorResponse.getMessage(response.status);
+                $scope.reindexing = false;
+            });
     };
 };
 
@@ -3647,7 +3674,7 @@ var UploadedDocsCtrl = function($scope, $http, flash, filterFilter, orderByFilte
     $scope.save = function() {
         DocumentsService.updateDocument($scope.document).then(function(response) {
             $scope.refreshDocuments();
-            $('#modalDocument').modal('hide');
+            $scope.close('#modalDocument');
             flash.success = "Saved";
             //reindex document
             var services = ConfigurationService.getComponentServices(":SolrUploadProxy");
