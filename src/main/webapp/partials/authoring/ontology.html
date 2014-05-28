@@ -34,7 +34,7 @@
     </table>
     
     <button type="button" class="btn btn-primary btn-large" data-toggle="modal" data-target="#modalOntology" ng-click="new();" ng-disabled="!isLoggedIn()">Add new ontology</button>
-    <button type="button" class="btn btn-primary btn-large" data-toggle="modal" data-target="#reindexDocuments" ng-click="beforeReindex()">Re-Index with current Thesaurus</button>
+    <button type="button" class="btn btn-primary btn-large" data-toggle="modal" data-target="#reindexDocuments" ng-click="beforeReindex()" ng-disabled="!isLoggedIn()">Re-Index with current Thesaurus</button>
 
     <div class="modal fade" id="reindexDocuments">
         <div class="modal-dialog">
