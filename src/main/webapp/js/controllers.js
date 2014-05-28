@@ -2579,7 +2579,7 @@ var OntologyCtrl = function($scope, $http, flash, ServerErrorResponse, AccountSe
                 $scope.close('#reindexDocuments');
                 console.log("reindex completed");
                 console.log(response.data);
-                flash.success = ServerErrorResponse.getMessage(response.status);
+                flash.success = "Reindex finished";
                 $scope.reindexing = false;
             }, function(response) {
                 $scope.close('#reindexDocuments');
