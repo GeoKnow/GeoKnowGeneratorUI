@@ -5,24 +5,23 @@
         <span class="alert-message">{{flash.message}}</span>
     </div>
 
-    <h3 class="green bold">Edit Uploads</h3>
+    <h3 class="green bold" data-i18n="_edit-uploads_"></h3>
 
-    <h4>
+    <h4 data-i18n="_uploaded-docs_">
         <span class="btn-group">
             <button type="button" class="btn btn-link reset" ng-click="refreshDocuments()">
                 <i class="glyphicon glyphicon-refresh" aria-hidden="true"></i>
             </button>
         </span>
-        Uploaded Documents
     </h4>
 
     <div class="row" ng-repeat="s in search">
         <div class="row col-lg-8">
-            <div class="col-lg-1">Search: </div>
+            <div class="col-lg-1">{{'_search_' | i18n}}: </div>
             <div class="col-lg-3"><input type="text" ng-model="s.text" ng-change="filter()"></div>
-            <div class="col-lg-1">Fields: </div>
+            <div class="col-lg-1">{{'_fields_' | i18n}}: </div>
             <div class="col-lg-4">
-                <select multiple chosen width="'100%'" ng-model="s.fields" ng-options="field.value as field.label for field in filterFields" ng-change="filter()"></select>
+                <select multiple chosen width="'100%'" ng-model="s.fields" ng-options="field.value as localize(field.label) for field in filterFields" ng-change="filter()"></select>
             </div>
             <div class="col-lg-3">
                 <button ng-show="showAddSearch(s)" type="button" class="btn btn-default btn-xs" ng-click="addSearch()"><span class="glyphicon glyphicon-plus"></span></button>
@@ -34,10 +33,10 @@
     <table class="table table-striped">
         <thead>
         <tr>
-            <th>Action</th>
+            <th data-i18n="_action_"></th>
             <th>
                 <div class="row">
-                    <div class="col-lg-8">ACC Document</div>
+                    <div class="col-lg-8" data-i18n="_acc-doc_"></div>
                     <div class="col-lg-4">
                         <a ng-show="!sortReverse || sortColumn!=1" href=""><span class="glyphicon glyphicon-chevron-up" ng-click="sortPredicate=getDocumentId; sortReverse=sortColumn==1?true:false; sortColumn=1; sort();"></span></a>
                         <a ng-show="sortReverse || sortColumn!=1" href=""><span class="glyphicon glyphicon-chevron-down" ng-click="sortPredicate=getDocumentId; sortReverse=sortColumn==1?false:true; sortColumn=1; sort();"></span></a>
@@ -46,7 +45,7 @@
             </th>
             <th>
                 <div class="row">
-                    <div class="col-lg-8">Project</div>
+                    <div class="col-lg-8" data-i18n="_doc-projects_"></div>
                     <div class="col-lg-4">
                         <a ng-show="!sortReverse || sortColumn!=2" href=""><span class="glyphicon glyphicon-chevron-up" ng-click="sortPredicate='hasProject'; sortReverse=sortColumn==2?true:false; sortColumn=2; sort();"></span></a>
                         <a ng-show="sortReverse || sortColumn!=2" href=""><span class="glyphicon glyphicon-chevron-down" ng-click="sortPredicate='hasProject'; sortReverse=sortColumn==2?false:true; sortColumn=2; sort();"></span></a>
@@ -55,7 +54,7 @@
             </th>
             <th>
                 <div class="row">
-                    <div class="col-lg-8">Document Number by Owner</div>
+                    <div class="col-lg-8" data-i18n="_owner-doc-number_"></div>
                 </div>
                 <div class="col-lg-4">
                     <a ng-show="!sortReverse || sortColumn!=3" href=""><span class="glyphicon glyphicon-chevron-up" ng-click="sortPredicate='ownerDocumentNumber'; sortReverse=sortColumn==3?true:false; sortColumn=3; sort();"></span></a>
@@ -64,7 +63,7 @@
             </th>
             <th>
                 <div class="row">
-                    <div class="col-lg-8">Document Name by Owner</div>
+                    <div class="col-lg-8" data-i18n="_owner-doc-name_"></div>
                 </div>
                 <div class="col-lg-4">
                     <a ng-show="!sortReverse || sortColumn!=4" href=""><span class="glyphicon glyphicon-chevron-up" ng-click="sortPredicate='ownerDocumentName'; sortReverse=sortColumn==4?true:false; sortColumn=4; sort();"></span></a>
@@ -73,7 +72,7 @@
             </th>
             <th>
                 <div class="row">
-                    <div class="col-lg-8">Document Revision by Owner</div>
+                    <div class="col-lg-8" data-i18n="_owner-doc-revision_"></div>
                 </div>
                 <div class="col-lg-4">
                     <a ng-show="!sortReverse || sortColumn!=5" href=""><span class="glyphicon glyphicon-chevron-up" ng-click="sortPredicate='ownerDocumentRevision'; sortReverse=sortColumn==5?true:false; sortColumn=5; sort();"></span></a>
@@ -82,7 +81,7 @@
             </th>
             <th>
                 <div class="row">
-                    <div class="col-lg-8">Uploaded</div>
+                    <div class="col-lg-8" data-i18n="_doc-uploaded_"></div>
                     <div class="col-lg-4">
                         <a ng-show="!sortReverse || sortColumn!=6" href=""><span class="glyphicon glyphicon-chevron-up" ng-click="sortPredicate='dateUploaded'; sortReverse=sortColumn==6?true:false; sortColumn=6; sort();"></span></a>
                         <a ng-show="sortReverse || sortColumn!=6" href=""><span class="glyphicon glyphicon-chevron-down" ng-click="sortPredicate='dateUploaded'; sortReverse=sortColumn==6?false:true; sortColumn=6; sort();"></span></a>
@@ -110,7 +109,7 @@
         </tr>
         </tbody>
     </table>
-    <pagination total-items="totalDocs" items-per-page="itemsPerPage" page="curPageNum" max-size="5" class="pagination-sm" boundary-links="true" rotate="false" num-pages="numPages"></pagination>
+    <pagination total-items="totalDocs" items-per-page="itemsPerPage" page="curPageNum" max-size="5" class="pagination-sm" boundary-links="true" rotate="false" num-pages="numPages" first-text="{{'_pagination-first_' | i18n}}" last-text="{{'_pagination-last_' | i18n}}" previous-text="{{'_pagination-previous_' | i18n}}" next-text="{{'_pagination-next_' | i18n}}"></pagination>
 
 
     <div class="modal fade scrollable" id="modalDocument">
@@ -119,13 +118,13 @@
                 <form name="documentForm" class="form-horizontal InputForm" role="form" novalidate>
                     <div class="modal-header">
                         <button type="button" class="close" ng-click="close('#modalDocument')" aria-hidden="true">&times;</button>
-                        <h5 class="modal-title green bold">Edit Document</h5>
+                        <h5 class="modal-title green bold" data-i18n="_edit-doc_"></h5>
                     </div>
 
                     <div class="modal-body">
                         <div>
                             <div class="row">
-                                <label class="col-lg-4 control-label">ACC Project Names</label>
+                                <label class="col-lg-4 control-label" data-i18n="_acc-project-name_"></label>
                                 <div class="col-lg-8">
                                     <table class="table table-striped">
                                         <tr ng-repeat="p in document.hasProject">
@@ -146,9 +145,9 @@
                                         </tr>
                                         <tr ng-show="showCreateProject">
                                             <td>
-                                                <input type="text" ng-model="newProjectNumber" placeholder="New project number"/>
+                                                <input type="text" ng-model="newProjectNumber" data-i18n-attr="_new-project-number_|placeholder"/>
                                                 <br/>
-                                                <input type="text" ng-model="newProjectName" placeholder="New project name"/>
+                                                <input type="text" ng-model="newProjectName" data-i18n-attr="_new-project-name_|placeholder"/>
                                             </td>
                                             <td>
                                                 <button type="button" class="btn btn-default btn-xs" ng-click="addNewProject()"><span class="glyphicon glyphicon-ok"></span></button>
@@ -162,7 +161,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="number" class="col-lg-4 control-label">ACC document number</label>
+                            <label for="number" class="col-lg-4 control-label" data-i18n="_acc-doc-number_"></label>
                             <div class="col-lg-8">
                                 <input type="text" class="form-control" id="number" name="number" ng-model="document.accDocumentNumber" required regex-validate="docNumber" />
                                 <div class="error" ng-show="documentForm.number.$dirty && documentForm.number.$invalid">Invalid:
@@ -171,7 +170,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="iteration" class="col-lg-4 control-label">ACC document iteration</label>
+                            <label for="iteration" class="col-lg-4 control-label" data-i18n="_acc-doc-iteration_"></label>
                             <div class="col-lg-8">
                                 <input type="text" class="form-control" id="iteration" name="iteration" ng-model="document.accDocumentIteration" required regex-validate="docIteration" />
                                 <div class="error" ng-show="documentForm.iteration.$dirty && documentForm.iteration.$invalid">Invalid:
@@ -180,7 +179,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="received" class="col-lg-4 control-label">Date Document Received</label>
+                            <label for="received" class="col-lg-4 control-label" data-i18n="_date-doc-received_"></label>
                             <div class="col-lg-8">
                                 <input ui-date="{dateFormat: 'yy-mm-dd'}" ui-date-format="yy-mm-dd" class="form-control" id="received" name="received" ng-model="document.dateReceived" required />
                                 <div class="error" ng-show="documentForm.received.$dirty && documentForm.received.$invalid">Invalid:
@@ -189,7 +188,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="col-lg-4 control-label">Owner Name</label>
+                            <label class="col-lg-4 control-label" data-i18n="_owner-name_"></label>
                             <div class="col-lg-8 row">
                                 <div class="col-lg-9">
                                     <select chosen data-placeholder=" " width="'100%'" id="owner" class="form-control" ng-model="document.owner" ng-options="o as o.name for o in owners" required></select>
@@ -202,7 +201,7 @@
                         <div class="form-group" ng-show="showCreateOwner">
                             <div class="col-lg-offset-4 row">
                                 <div class="col-lg-8">
-                                    <input type="text" class="form-control" ng-model="newOwnerName" placeholder="New owner name"/>
+                                    <input type="text" class="form-control" ng-model="newOwnerName" data-i18n-attr="_new-owner-name_|placeholder"/>
                                 </div>
                                 <div class="col-lg-4">
                                     <button type="button" class="btn btn-default btn-xs" ng-click="addNewOwner()"><span class="glyphicon glyphicon-ok"></span></button>
@@ -210,13 +209,13 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="description" class="col-lg-4 control-label">Short description</label>
+                            <label for="description" class="col-lg-4 control-label" data-i18n="_short-description_"></label>
                             <div class="col-lg-8">
                                 <textarea class="form-control" id="description" name="description" rows="5" ng-model="document.accDescription"></textarea>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="applicable" class="col-lg-4 control-label">Document Applicable</label>
+                            <label for="applicable" class="col-lg-4 control-label" data-i18n="_doc-applicable_"></label>
                             <div class="col-lg-8">
                                 <input type="checkbox" id="applicable" name="applicable" ng-model="document.isApplicable" />
                             </div>
@@ -228,51 +227,51 @@
                             </div>
                         </div-->
                         <div class="form-group">
-                            <label for="docnum" class="col-lg-4 control-label">Document Number by Owner</label>
+                            <label for="docnum" class="col-lg-4 control-label" data-i18n="_owner-doc-number_"></label>
                             <div class="col-lg-8">
                                 <input type="text" class="form-control" id="docnum" name="docnum" ng-model="document.ownerDocumentNumber" />
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="name" class="col-lg-4 control-label">Document Name by Owner</label>
+                            <label for="name" class="col-lg-4 control-label" data-i18n="_owner-doc-name_"></label>
                             <div class="col-lg-8">
                                 <input type="text" class="form-control" id="name" name="name" ng-model="document.ownerDocumentName" />
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="revision" class="col-lg-4 control-label">Document Revision by Owner</label>
+                            <label for="revision" class="col-lg-4 control-label" data-i18n="_owner-doc-revision_"></label>
                             <div class="col-lg-8">
                                 <input type="text" class="form-control" id="revision" name="revision" ng-model="document.ownerDocumentRevision" />
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="data" class="col-lg-4 control-label">Document Revision Date by Owner</label>
+                            <label for="data" class="col-lg-4 control-label" data-i18n="_owner-doc-revision-date_"></label>
                             <div class="col-lg-8">
                                 <input ui-date="{dateFormat: 'yy-mm-dd'}" ui-date-format="yy-mm-dd" class="form-control" id="data" name="data" ng-model="document.ownerDocumentRevisionData" />
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="note" class="col-lg-4 control-label">Additional Notes</label>
+                            <label for="note" class="col-lg-4 control-label" data-i18n="_additional-notes_"></label>
                             <div class="col-lg-8">
                                 <textarea class="form-control" id="note" name="note" rows="5" ng-model="document.accNote"></textarea>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="col-lg-4 control-label">Uploader</label>
+                            <label class="col-lg-4 control-label" data-i18n="_doc-uploader_"></label>
                             <div class="col-lg-8">
                                 <p class="form-control-static">{{document.uploader}}</p>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="col-lg-4 control-label">Uploaded</label>
+                            <label class="col-lg-4 control-label" data-i18n="_doc-uploaded_"></label>
                             <div class="col-lg-8">
                                 <p class="form-control-static">{{document.dateUploaded}}</p>
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="submit" class="btn-sm btn-primary" ng-click="save();" ng-disabled="documentForm.$invalid || document.hasProject.length==0 || isUnchanged(document)">Save</button>
-                        <button type="button" class="btn-sm btn-default" ng-click="close('#modalDocument')">Cancel</button>
+                        <button type="submit" class="btn-sm btn-primary" ng-click="save();" ng-disabled="documentForm.$invalid || document.hasProject.length==0 || isUnchanged(document)" data-i18n="_save_"></button>
+                        <button type="button" class="btn-sm btn-default" ng-click="close('#modalDocument')" data-i18n="_cancel_"></button>
                     </div>
                 </form>
             </div>

@@ -4,12 +4,12 @@ function SettingsMenuCtrl($scope, AccountService) {
   $scope.oneAtATime = true;
   // these data can be replaced later with the configuration
   $scope.items = [
-  	{ name: "Data Sources", route:'#/settings/data-sources', url:'/settings/data-sources', admin: false },
-  	{ name: "Datasets", route:'#/settings/datasets', url:'/settings/datasets', admin: false },
+  	{ name: "_data-sources_", route:'#/settings/data-sources', url:'/settings/data-sources', admin: false },
+  	{ name: "_datasets_", route:'#/settings/datasets', url:'/settings/datasets', admin: false },
     // { name: "Namespaces", route:'#/settings/namespaces', url:'/settings/namespaces' },
-  	{ name: "Components", route:'#/settings/components', url:'/settings/components', admin: false },
-    { name: "Users", route:'#/settings/users', url:'/settings/users', admin: true },
-    { name: "Thesaurus Management", route:'#/settings/ontology', url:'/settings/ontology', admin: false }
+  	{ name: "_components_", route:'#/settings/components', url:'/settings/components', admin: false },
+    { name: "_users_", route:'#/settings/users', url:'/settings/users', admin: true },
+    { name: "_thesaurus-management_", route:'#/settings/ontology', url:'/settings/ontology', admin: false }
   ];
 
   $scope.showAdmin = AccountService.isAdmin();
@@ -26,7 +26,7 @@ function AccountMenuCtrl($scope) {
     { name: "User Preferences",   route:'#/account/preferences', url:'/account/preferences' }];
 }
 
-function StackMenuCtrl($scope, ConfigurationService) {
+function StackMenuCtrl($scope, ConfigurationService, LanguageService) {
     var services = ConfigurationService.getComponentServices(":Solr");
 	var solrServiceUrl = services[0].serviceUrl;
 
@@ -38,14 +38,14 @@ function StackMenuCtrl($scope, ConfigurationService) {
 	  // these data can be replaced later with the configuration
 	  $scope.groups = [
 	    {
-	      title: "Extraction and Loading",
+	      title: "_extraction-loading_",
 	      id:"extraction-loading",
 	      items: [
 //	        {name: 'Import RDF data', route:'#/home/extraction-and-loading/import-rdf',  url:'/home/extraction-and-loading/import-rdf' },
 //	        {name: 'Sparqlify Extraction', route:'#/home/extraction-and-loading/sparqlify', url:'/home/extraction-and-loading/sparqlify' },
 //	        {name: 'TripleGeo Extraction', route:'#/home/extraction-and-loading/triplegeo', url:'/home/extraction-and-loading/triplegeo' },
 //	        {name: 'D2RQ Extraction', route:'#/home/extraction-and-loading/d2rq', url:'/home/extraction-and-loading/d2rq' },
-            {name: 'Upload new Files', route:'#/home/extraction-and-loading/upload-file', url:'/home/extraction-and-loading/upload-file' }]
+            {name: '_upload-files_', route:'#/home/extraction-and-loading/upload-file', url:'/home/extraction-and-loading/upload-file' }]
 	    },
 	    /*
 	    {
@@ -56,13 +56,13 @@ function StackMenuCtrl($scope, ConfigurationService) {
 		    },
 		    */
 	    {
-	      title: "Authoring",
+	      title: "_authoring_",
 	      id:"authoring",
 	      items: [
 //	       {name: 'OntoWiki', route:'#/home/authoring/ontowiki', url:'/home/authoring/ontowiki' },
 //	       {name: "Thesaurus Management", route:'#/home/authoring/ontology', url:'/home/authoring/ontology' },
-	       {name: "Thesaurus Management", route:null, url:miniDixServiceUrl + "/?ontology=" + ontology + "&newConceptsOntology=" + ontology + "&writableOntologies=" + ontology + "&locale=en", modaltitle:'MiniDix' },
-	       {name: "Edit Uploads", route:'#/home/authoring/edit-uploads', url:'/home/authoring/edit-uploads' }]
+	       {name: "_thesaurus-management_", route:null, url:miniDixServiceUrl + "/?ontology=" + ontology + "&newConceptsOntology=" + ontology + "&writableOntologies=" + ontology + "&locale=" + LanguageService.getCurrentLanguage(), modaltitle:'MiniDix' },
+	       {name: "_edit-uploads_", route:'#/home/authoring/edit-uploads', url:'/home/authoring/edit-uploads' }]
 	    },
 	    /*
 	    {
@@ -79,13 +79,13 @@ function StackMenuCtrl($scope, ConfigurationService) {
 		  },
 		  */
 		{
-		      title: "Exploration",
+		      title: "_querying-exploration_",
 		      id:"querying-exploration",
 		      items: [
 //		       {name: 'Facete', route:'#/home/querying-and-exploration/facete', url:'/home/querying-and-exploration/facete' },
 //		       {name: 'Mappify', route:'#/home/querying-and-exploration/mappify', url:'/home/querying-and-exploration/mappify' },
 //               {name: 'Search', route:'#/home/querying-and-exploration/search', url:'/home/querying-and-exploration/search' },
-               {name: 'Search', route:null, url:solrServiceUrl+'/collection1/custom', modaltitle:'Faceted Search' }]
+               {name: '_search_', route:null, url:solrServiceUrl+'/collection1/custom', modaltitle:'_faceted-search_' }]
 		    }
 	  ];
 
@@ -2445,7 +2445,7 @@ var GoogleMapWindow = function ($scope, $timeout, $log) {
 * Ontologies Controller
 *
 ***************************************************************************************************/
-var OntologyCtrl = function($scope, $http, flash, ServerErrorResponse, AccountService, OntologyService, ConfigurationService) {
+var OntologyCtrl = function($scope, $http, flash, ServerErrorResponse, AccountService, OntologyService, ConfigurationService, LanguageService) {
     var miniDixServices = ConfigurationService.getComponentServices(":MiniDix");
 	var miniDixServiceUrl = miniDixServices[0].serviceUrl;
 
@@ -2546,7 +2546,7 @@ var OntologyCtrl = function($scope, $http, flash, ServerErrorResponse, AccountSe
 
     $scope.url = "";
 	$scope.setUrl = function(ontology){
-	    $scope.url= miniDixServiceUrl + "/?ontology=" + ontology + "&newConceptsOntology=" + ontology + "&writableOntologies=" + ontology + "&locale=en";
+	    $scope.url= miniDixServiceUrl + "/?ontology=" + ontology + "&newConceptsOntology=" + ontology + "&writableOntologies=" + ontology + "&locale=" + LanguageService.getCurrentLanguage();
 	};
 
 	$scope.onFileSelect = function($files) {
@@ -3495,16 +3495,20 @@ var D2RQMappingCtrl = function($scope, $http, $q, flash, ServerErrorResponse, Ac
     };
 };
 
-var UploadedDocsCtrl = function($scope, $http, flash, filterFilter, orderByFilter, DocumentsService, ServerErrorResponse, ConfigurationService) {
+var UploadedDocsCtrl = function($scope, $http, flash, filterFilter, orderByFilter, DocumentsService, ServerErrorResponse, ConfigurationService, localize) {
     $scope.filterFields = [
-        {value: "all", label: "All"},
-        {value: "docId", label: "ACC Document"},
-        {value: "hasProject", label: "Project Number"},
-        {value: "ownerDocumentNumber", label: "Document Number by Owner"},
-        {value: "ownerDocumentName", label: "Document Name by Owner"},
-        {value: "ownerDocumentRevision", label: "Document Revision by Owner"},
-        {value: "dateUploaded", label: "Uploaded"}
+        {value: "all", label: "_all-fields_"},
+        {value: "docId", label: "_acc-doc_"},
+        {value: "hasProject", label: "_project-number_"},
+        {value: "ownerDocumentNumber", label: "_owner-doc-number_"},
+        {value: "ownerDocumentName", label: "_owner-doc-name_"},
+        {value: "ownerDocumentRevision", label: "_owner-doc-revision_"},
+        {value: "dateUploaded", label: "_doc-uploaded_"}
     ];
+
+    $scope.localize = function(str) {
+        return localize.getLocalizedString(str);
+    };
 
     $scope.search = [
         {text: null, fields: ["all"]}

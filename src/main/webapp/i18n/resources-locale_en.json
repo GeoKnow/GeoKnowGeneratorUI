@@ -1,0 +1,779 @@
+[
+    {
+        "key":"_home-title_",
+        "value":"Ontos Linked Data Suite",
+        "description":"Home page title"
+    },
+
+
+    {
+        "key":"_components-page-description_",
+        "value":"Current workbench configuration has integrated the following components.",
+        "description":"description shown on components page under the title"
+    },
+
+
+    {
+        "key":"_workbench_",
+        "value":"Workbench",
+        "description":"top navbar item"
+    },
+    {
+        "key":"_forgot-password_",
+        "value":"Forgot password?",
+        "description":"top navbar item"
+    },
+    {
+        "key":"_logged-in-as_",
+        "value":"You are logged in as ",
+        "description":"top navbar message"
+    },
+
+
+    {
+        "key":"_change-password_",
+        "value":"Change Password",
+        "description":"change password button, dialog title"
+    },
+    {
+        "key":"_old-password_",
+        "value":"Old password",
+        "description":"change password form field"
+    },
+    {
+        "key":"_new-password_",
+        "value":"New password",
+        "description":"change password form field"
+    },
+
+
+    {
+        "key":"_extraction-loading_",
+        "value":"Extraction and Loading",
+        "description":"stack menu group title"
+    },
+    {
+        "key":"_authoring_",
+        "value":"Authoring",
+        "description":"stack menu group title"
+    },
+    {
+        "key":"_querying-exploration_",
+        "value":"Exploration",
+        "description":"stack menu group title"
+    },
+
+
+    {
+        "key":"_upload-files_",
+        "value":"Upload new Files",
+        "description":"page and stack menu item title"
+    },
+    {
+        "key":"_thesaurus-management_",
+        "value":"Thesaurus Management",
+        "description":"page and stack/settings menu item title"
+    },
+    {
+        "key":"_edit-uploads_",
+        "value":"Edit Uploads",
+        "description":"page and stack menu item title"
+    },
+
+
+    {
+        "key":"_data-sources_",
+        "value":"Data Sources",
+        "description":"page and settings menu item title"
+    },
+    {
+        "key":"_datasets_",
+        "value":"Datasets",
+        "description":"page and settings menu item title"
+    },
+    {
+        "key":"_components_",
+        "value":"Components",
+        "description":"page and settings menu item title"
+    },
+    {
+        "key":"_users_",
+        "value":"Users",
+        "description":"page and settings menu item title"
+    },
+
+
+    {
+        "key":"_faceted-search_",
+        "value":"Faceted Search",
+        "description":"modal dialog title"
+    },
+
+
+    {
+        "key":"_user-account_",
+        "value":"User Account",
+        "description":"page title"
+    },
+
+
+    {
+        "key":"_username-email_",
+        "value":"Username or e-mail",
+        "description":"login form field, restore password form field"
+    },
+
+
+    {
+        "key":"_request-password_",
+        "value":"Request password",
+        "description":"restore password dialog title, button"
+    },
+
+
+    {
+        "key":"_acc-project-number_",
+        "value":"ACC Project Number",
+        "description":"upload document, edit document form field"
+    },
+    {
+        "key":"_acc-project-name_",
+        "value":"ACC Project Name",
+        "description":"upload document, edit document form field"
+    },
+    {
+        "key":"_acc-doc-number_",
+        "value":"ACC Document Number",
+        "description":"upload document, edit document form field"
+    },
+    {
+        "key":"_acc-doc-iteration_",
+        "value":"ACC Document Iteration",
+        "description":"upload document, edit document form field"
+    },
+    {
+        "key":"_date-doc-received_",
+        "value":"Date Document Received",
+        "description":"upload document, edit document form field"
+    },
+    {
+        "key":"_owner-name_",
+        "value":"Owner Name",
+        "description":"upload document, edit document form field"
+    },
+    {
+        "key":"_short-description_",
+        "value":"Short Description",
+        "description":"upload document, edit document form field"
+    },
+    {
+        "key":"_owner-doc-number_",
+        "value":"Document Number by Owner",
+        "description":"upload document, edit document form field"
+    },
+    {
+        "key":"_owner-doc-name_",
+        "value":"Document Name by Owner",
+        "description":"upload document, edit document form field"
+    },
+    {
+        "key":"_owner-doc-revision_",
+        "value":"Document Revision by Owner",
+        "description":"upload document, edit document form field"
+    },
+    {
+        "key":"_owner-doc-revision-date_",
+        "value":"Document Revision Date by Owner",
+        "description":"upload document, edit document form field"
+    },
+    {
+        "key":"_additional-notes_",
+        "value":"Additional Notes",
+        "description":"upload document, edit document form field"
+    },
+    {
+        "key":"_doc-applicable_",
+        "value":"Document Applicable",
+        "description":"upload document, edit document form field"
+    },
+    {
+        "key":"_doc-uploader_",
+        "value":"Uploader",
+        "description":"edit document form field"
+    },
+    {
+        "key":"_doc-uploaded_",
+        "value":"Uploaded",
+        "description":"edit document form field, documents table field"
+    },
+    {
+        "key":"_acc-doc_",
+        "value":"ACC Document",
+        "description":"documents table field"
+    },
+    {
+        "key":"_doc-projects_",
+        "value":"Projects",
+        "description":"documents table field"
+    },
+    {
+        "key":"_edit-doc_",
+        "value":"Edit Document",
+        "description":"edit document dialog title"
+    },
+    {
+        "key":"_project-number_",
+        "value":"Project Number",
+        "description":"document search field"
+    },
+    {
+        "key":"_all-fields_",
+        "value":"All",
+        "description":"document search field"
+    },
+
+
+    {
+        "key":"_new-project-number_",
+        "value":"New project number",
+        "description":"upload document, edit document form placeholder"
+    },
+    {
+        "key":"_new-project-name_",
+        "value":"New project name",
+        "description":"upload document, edit document form placeholder"
+    },
+    {
+        "key":"_new-owner-name_",
+        "value":"New owner name, e.g., SIEMENS",
+        "description":"upload document, edit document form placeholder"
+    },
+    {
+        "key":"_fill-doc-number_",
+        "value":"Fill the number, e.g., D100",
+        "description":"upload document form placeholder"
+    },
+    {
+        "key":"_fill-doc-iteration_",
+        "value":"Fill the iteration, e.g., IT1",
+        "description":"upload document form placeholder"
+    },
+    {
+        "key":"_fill-short-description_",
+        "value":"Fill a short description",
+        "description":"upload document form placeholder"
+    },
+    {
+        "key":"_fill-owner-doc-number_",
+        "value":"Fill the number, e.g., 10080-1-SS-CI-010",
+        "description":"upload document form placeholder"
+    },
+    {
+        "key":"_fill-owner-doc-name_",
+        "value":"Fill the name e.g., 10080-1-SS-CI-001_01",
+        "description":"upload document form placeholder"
+    },
+    {
+        "key":"_fill-owner-doc-revision_",
+        "value":"Fill the name e.g., Rev.1",
+        "description":"upload document form placeholder"
+    },
+    {
+        "key":"_fill-additional-notes_",
+        "value":"Some more notes?",
+        "description":"upload document form placeholder"
+    },
+
+
+    {
+        "key":"_uploaded-docs_",
+        "value":"Uploaded Documents",
+        "description":"documents table title"
+    },
+
+
+    {
+        "key":"_sign-in_",
+        "value":"Sign in",
+        "description":"Sign in button"
+    },
+    {
+        "key":"_clear-form_",
+        "value":"Clear form",
+        "description":"Clear form button"
+    },
+    {
+        "key":"_upload-doc_",
+        "value":"Upload document",
+        "description":"Upload document button"
+    },
+
+
+    {
+        "key":"_uploading_",
+        "value":"Uploading...",
+        "description":"Uploading message"
+    },
+
+
+    {
+        "key":"_ontologies_",
+        "value":"Ontologies",
+        "description":"page title"
+    },
+    {
+        "key":"_add-ontology_",
+        "value":"Add Ontology",
+        "description":"add ontology button, dialog title"
+    },
+    {
+        "key":"_reindex-cur-thesaurus_",
+        "value":"Re-Index with current Thesaurus",
+        "description":"button"
+    },
+    {
+        "key":"_reindex-docs_",
+        "value":"Re-Index documents",
+        "description":"dialog title"
+    },
+    {
+        "key":"_reindex-confirm_",
+        "value":"Re-index all documents with current thesaurus?",
+        "description":"reindex confirmation question"
+    },
+    {
+        "key":"_reindexing_",
+        "value":"Re-indexing...",
+        "description":"reindexing message"
+    },
+
+
+    {
+        "key":"_import-from_",
+        "value":"Import from a ",
+        "description":"import ontology dialog field"
+    },
+    {
+        "key":"_file-input_",
+        "value":"File input",
+        "description":"import ontology dialog field"
+    },
+
+
+    {
+        "key":"_change_",
+        "value":"Change",
+        "description":"Change button"
+    },
+    {
+        "key":"_cancel_",
+        "value":"Cancel",
+        "description":""
+    },
+    {
+        "key":"_yes_",
+        "value":"Yes",
+        "description":""
+    },
+    {
+        "key":"_no_",
+        "value":"No",
+        "description":""
+    },
+    {
+        "key":"_add_",
+        "value":"Add",
+        "description":""
+    },
+    {
+        "key":"_save_",
+        "value":"Save",
+        "description":""
+    },
+    {
+        "key":"_search_",
+        "value":"Search",
+        "description":""
+    },
+    {
+        "key":"_identifier_",
+        "value":"Identifier",
+        "description":""
+    },
+    {
+        "key":"_label_",
+        "value":"Label",
+        "description":""
+    },
+    {
+        "key":"_endpoint_",
+        "value":"Endpoint",
+        "description":""
+    },
+    {
+        "key":"_homepage_",
+        "value":"Homepage",
+        "description":""
+    },
+    {
+        "key":"_action_",
+        "value":"Action",
+        "description":""
+    },
+    {
+        "key":"_type_",
+        "value":"Type",
+        "description":""
+    },
+    {
+        "key":"_host_",
+        "value":"Host",
+        "description":""
+    },
+    {
+        "key":"_port_",
+        "value":"Port",
+        "description":""
+    },
+    {
+        "key":"_user_",
+        "value":"User",
+        "description":""
+    },
+    {
+        "key":"_password_",
+        "value":"Password",
+        "description":""
+    },
+    {
+        "key":"_name_",
+        "value":"Name",
+        "description":""
+    },
+    {
+        "key":"_db_",
+        "value":"Database",
+        "description":""
+    },
+    {
+        "key":"_description_",
+        "value":"Description",
+        "description":""
+    },
+    {
+        "key":"_created_",
+        "value":"Created",
+        "description":""
+    },
+    {
+        "key":"_modified_",
+        "value":"Modified",
+        "description":""
+    },
+    {
+        "key":"_owner_",
+        "value":"Owner",
+        "description":""
+    },
+    {
+        "key":"_access_",
+        "value":"Access",
+        "description":""
+    },
+    {
+        "key":"_read_",
+        "value":"Read",
+        "description":""
+    },
+    {
+        "key":"_write_",
+        "value":"Write",
+        "description":""
+    },
+    {
+        "key":"_graph_",
+        "value":"Graph",
+        "description":""
+    },
+    {
+        "key":"_graphs_",
+        "value":"Graphs",
+        "description":""
+    },
+    {
+        "key":"_services_",
+        "value":"Services",
+        "description":""
+    },
+    {
+        "key":"_version_",
+        "value":"Version",
+        "description":""
+    },
+    {
+        "key":"_settings_",
+        "value":"Settings",
+        "description":""
+    },
+    {
+        "key":"_account_",
+        "value":"Account",
+        "description":""
+    },
+    {
+        "key":"_login_",
+        "value":"Login",
+        "description":""
+    },
+    {
+        "key":"_logout_",
+        "value":"Logout",
+        "description":""
+    },
+    {
+        "key":"_register_",
+        "value":"Register",
+        "description":""
+    },
+    {
+        "key":"_username_",
+        "value":"Username",
+        "description":""
+    },
+    {
+        "key":"_email_",
+        "value":"E-mail",
+        "description":""
+    },
+    {
+        "key":"_fields_",
+        "value":"Fields",
+        "description":""
+    },
+    {
+        "key":"_file_",
+        "value":"File",
+        "description":"upload document, edit document form field"
+    },
+
+
+    {
+        "key":"_sparql-endpoint_",
+        "value":"SPARQL Endpoint",
+        "description":""
+    },
+    {
+        "key":"_user-access_",
+        "value":"User access",
+        "description":""
+    },
+
+
+    {
+        "key":"_named-graphs-management_",
+        "value":"Named Graphs Management",
+        "description":"datasets page title"
+    },
+    {
+        "key":"_user-graphs_",
+        "value":"User Graphs",
+        "description":"datasets page (table title)"
+    },
+    {
+        "key":"_public-access_",
+        "value":"Public Access",
+        "description":"datasets page"
+    },
+    {
+        "key":"_read-access_",
+        "value":"Read Access",
+        "description":"datasets page"
+    },
+    {
+        "key":"_write-access_",
+        "value":"Write Access",
+        "description":"datasets page"
+    },
+    {
+        "key":"_all-graphs_",
+        "value":"All Graphs",
+        "description":"datasets page (table title)"
+    },
+    {
+        "key":"_accessible-graphs_",
+        "value":"Accessible Graphs",
+        "description":"datasets page (table title)"
+    },
+    {
+        "key":"_add-graph-group_",
+        "value":"Add new graph group",
+        "description":"button on datasets page"
+    },
+    {
+        "key":"_add-dataset_",
+        "value":"Add new Dataset",
+        "description":"button on datasets page"
+    },
+    {
+        "key":"_graph-groups_",
+        "value":"Graph Groups",
+        "description":"datasets page (table title)"
+    },
+
+
+    {
+        "key":"_rel-databases_",
+        "value":"Relational Databases",
+        "description":"data sources page"
+    },
+    {
+        "key":"_db-name_",
+        "value":"Database Name",
+        "description":"data sources page"
+    },
+    {
+        "key":"_add-db_",
+        "value":"Add new Database",
+        "description":"button on data sources page"
+    },
+    {
+        "key":"_add-endpoint_",
+        "value":"Add new Endpoint",
+        "description":"button on data sources page"
+    },
+
+
+    {
+        "key":"_components-management_",
+        "value":"Components Management",
+        "description":"components page title"
+    },
+
+
+    {
+        "key":"_users-management_",
+        "value":"Users Management",
+        "description":"users management page title"
+    },
+    {
+        "key":"_add-user_",
+        "value":"Add new user",
+        "description":"button on users management page"
+    },
+    {
+        "key":"_user-account-uri_",
+        "value":"Account URI",
+        "description":"user account URI field in user manager"
+    },
+    {
+        "key":"_graph-access_",
+        "value":"Graph access",
+        "description":"field in user manager"
+    },
+    {
+        "key":"_user-own-graphs_",
+        "value":"Own graphs",
+        "description":"field in user manager"
+    },
+    {
+        "key":"_user-readable-graphs_",
+        "value":"Readable graphs",
+        "description":"field in user manager"
+    },
+    {
+        "key":"_user-writable-graphs_",
+        "value":"Writable graphs",
+        "description":"field in user manager"
+    },
+    
+    
+    {
+        "key":"_new-endpoint-title_",
+        "value":"New Endpoint",
+        "description":"dialog title"
+    },
+    {
+        "key":"_edit-endpoint-title_",
+        "value":"Edit Endpoint",
+        "description":"dialog title"
+    },
+    {
+        "key":"_new-db-title_",
+        "value":"New Database",
+        "description":"dialog title"
+    },
+    {
+        "key":"_edit-db-title_",
+        "value":"Edit Database",
+        "description":"dialog title"
+    },
+    {
+        "key":"_new-ngraph-title_",
+        "value":"New Named Graph",
+        "description":"dialog title"
+    },
+    {
+        "key":"_edit-ngraph-title_",
+        "value":"Edit Named Graph",
+        "description":"dialog title"
+    },
+    {
+        "key":"_new-graph-group-title_",
+        "value":"New Graph Group",
+        "description":"dialog title"
+    },
+    {
+        "key":"_edit-graph-group-title_",
+        "value":"Edit Graph Group",
+        "description":"dialog title"
+    },
+    {
+        "key":"_new-user-title_",
+        "value":"New User",
+        "description":"dialog title"
+    },
+    {
+        "key":"_edit-user-title_",
+        "value":"Edit User",
+        "description":"dialog title"
+    },
+
+
+    {
+        "key":"_settings-base-uri_",
+        "value":"URI Base",
+        "description":"information on settings page"
+    },
+    {
+        "key":"_settings-graph_",
+        "value":"Settings Graph",
+        "description":"information on settings page"
+    },
+    {
+        "key":"_settings-endpoint_",
+        "value":"Generator Endpoint",
+        "description":"information on settings page"
+    },
+
+
+    {
+        "key":"_pagination-first_",
+        "value":"First",
+        "description":"text for First button in pagination element"
+    },
+    {
+        "key":"_pagination-last_",
+        "value":"Last",
+        "description":"text for Last button in pagination element"
+    },
+    {
+        "key":"_pagination-previous_",
+        "value":"Previous",
+        "description":"text for Previous button in pagination element"
+    },
+    {
+        "key":"_pagination-next_",
+        "value":"Next",
+        "description":"text for Next button in pagination element"
+    }
+]

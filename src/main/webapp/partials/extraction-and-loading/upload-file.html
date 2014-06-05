@@ -5,10 +5,10 @@
         <span class="alert-message">{{flash.message}}</span>
     </div>
 
-    <h3 class="green bold">Upload new Files</h3>
+    <h3 class="green bold" data-i18n="_upload-files_"></h3>
     <form name="documentForm" class="form-horizontal InputForm" role="form" novalidate>
         <div class="form-group">
-            <label class="col-lg-4 control-label">ACC Project Number</label>
+            <label class="col-lg-4 control-label" data-i18n="_acc-project-number_"></label>
             <div class="col-lg-6">
                 <select chosen data-placeholder=" " width="'100%'" class="form-control" ng-model="document.projectNumber" ng-options="p.number as p.number for p in projects" ng-change="projectChanged()" required></select>
             </div>
@@ -17,7 +17,7 @@
             </div>
         </div>
         <div class="form-group" ng-show="document.projectName">
-            <label class="col-lg-4 control-label">ACC Project Name</label>
+            <label class="col-lg-4 control-label" data-i18n="_acc-project-name_"></label>
             <div class="col-lg-8">
                 <input type="text" class="form-control" ng-model="document.projectName" ng-disabled="true"/>
             </div>
@@ -25,10 +25,10 @@
         <div class="form-group" ng-show="showProjectTextField">
             <div class="col-lg-offset-4 row">
                 <div class="col-lg-4">
-                    <input type="text" class="form-control" ng-model="newProjectNumber" placeholder="New project number"/>
+                    <input type="text" class="form-control" ng-model="newProjectNumber" data-i18n-attr="_new-project-number_|placeholder"/>
                 </div>
                 <div class="col-lg-4">
-                    <input type="text" class="form-control" ng-model="newProjectName" placeholder="New project name"/>
+                    <input type="text" class="form-control" ng-model="newProjectName" data-i18n-attr="_new-project-name_|placeholder"/>
                 </div>
                 <div class="col-lg-4">
                     <button type="button" class="btn btn-default btn-xs" ng-click="addNewProject()"><span class="glyphicon glyphicon-ok"></span></button>
@@ -36,25 +36,25 @@
             </div>
         </div>
         <div class="form-group">
-            <label for="number" class="col-lg-4 control-label">ACC Document Number</label>
+            <label for="number" class="col-lg-4 control-label" data-i18n="_acc-doc-number_"></label>
             <div class="col-lg-8">
-                <input type="text" class="form-control" id="number" name="number" ng-model="document.accDocumentNumber" placeholder="Fill the name, e.g., D100" required regex-validate="docNumber" />
+                <input type="text" class="form-control" id="number" name="number" ng-model="document.accDocumentNumber" data-i18n-attr="_fill-doc-number_|placeholder" required regex-validate="docNumber" />
                 <div class="error" ng-show="documentForm.number.$dirty && documentForm.number.$invalid">Invalid:
                     <span ng-show="documentForm.number.$error.required || documentForm.number.$error.regexValidate">Specify valid ACC document number</span>
                 </div>
             </div>
         </div>
         <div class="form-group">
-            <label for="iteration" class="col-lg-4 control-label">ACC Document Iteration</label>
+            <label for="iteration" class="col-lg-4 control-label" data-i18n="_acc-doc-iteration_"></label>
             <div class="col-lg-8">
-                <input type="text" class="form-control" id="iteration" name="iteration" ng-model="document.accDocumentIteration" placeholder="Fill the iteration, e.g., IT1" required regex-validate="docIteration" />
+                <input type="text" class="form-control" id="iteration" name="iteration" ng-model="document.accDocumentIteration" data-i18n-attr="_fill-doc-iteration_|placeholder" required regex-validate="docIteration" />
                 <div class="error" ng-show="documentForm.iteration.$dirty && documentForm.iteration.$invalid">Invalid:
                     <span ng-show="documentForm.iteration.$error.required || documentForm.iteration.$error.regexValidate">Specify valid ACC document iteration</span>
                 </div>
             </div>
         </div>
         <div class="form-group">
-            <label for="received" class="col-lg-4 control-label">Date Document Received</label>
+            <label for="received" class="col-lg-4 control-label" data-i18n="_date-doc-received_"></label>
             <div class="col-lg-8">
                 <input ui-date="{dateFormat: 'yy-mm-dd'}" ui-date-format="yy-mm-dd" class="form-control" id="received" name="received" ng-model="document.dateReceived" required />
                 <div class="error" ng-show="documentForm.received.$dirty && documentForm.received.$invalid">Invalid:
@@ -63,7 +63,7 @@
             </div>
         </div>
         <div class="form-group">
-            <label class="col-lg-4 control-label">Owner Name</label>
+            <label class="col-lg-4 control-label" data-i18n="_owner-name_"></label>
             <div class="col-lg-8 row">
                 <div class="col-lg-9">
                     <select chosen data-placeholder=" " width="'100%'" id="owner" class="form-control" ng-model="document.ownerName" ng-options="o for o in owners" required></select>
@@ -76,7 +76,7 @@
         <div class="form-group" ng-show="showOwnerTextField">
             <div class="col-lg-offset-4 row">
                 <div class="col-lg-8">
-                    <input type="text" class="form-control" ng-model="newOwnerName" placeholder="New owner name, e.g., SIEMENS"/>
+                    <input type="text" class="form-control" ng-model="newOwnerName" data-i18n-attr="_new-owner-name_|placeholder"/>
                 </div>
                 <div class="col-lg-4">
                     <button type="button" class="btn btn-default btn-xs" ng-click="addNewOwner()"><span class="glyphicon glyphicon-ok"></span></button>
@@ -84,9 +84,9 @@
             </div>
         </div>
         <div class="form-group">
-            <label for="description" class="col-lg-4 control-label">Short Description</label>
+            <label for="description" class="col-lg-4 control-label" data-i18n="_short-description_"></label>
             <div class="col-lg-8">
-                <textarea class="form-control" id="description" name="description" rows="5" ng-model="document.accDescription" placeholder="Fill a short description"></textarea>
+                <textarea class="form-control" id="description" name="description" rows="5" ng-model="document.accDescription" data-i18n-attr="_fill-short-description_|placeholder"></textarea>
             </div>
         </div>
         <!--div class="form-group">
@@ -102,46 +102,46 @@
             </div>
         </div-->
         <div class="form-group">
-            <label for="docnum" class="col-lg-4 control-label">Document Number by Owner</label>
+            <label for="docnum" class="col-lg-4 control-label" data-i18n="_owner-doc-number_"></label>
             <div class="col-lg-8">
-                <input type="text" class="form-control" id="docnum" name="docnum" ng-model="document.ownerDocumentNumber" placeholder="Fill the number, e.g., 10080-1-SS-CI-010" />
+                <input type="text" class="form-control" id="docnum" name="docnum" ng-model="document.ownerDocumentNumber" data-i18n-attr="_fill-owner-doc-number_|placeholder"/>
             </div>
         </div>
         <div class="form-group">
-            <label for="docname" class="col-lg-4 control-label">Document Name by Owner</label>
+            <label for="docname" class="col-lg-4 control-label" data-i18n="_owner-doc-name_"></label>
             <div class="col-lg-8">
-                <input type="text" class="form-control" id="docname" name="docname" ng-model="document.ownerDocumentName" placeholder="Fill the name e.g., 10080-1-SS-CI-001_01" />
+                <input type="text" class="form-control" id="docname" name="docname" ng-model="document.ownerDocumentName" data-i18n-attr="_fill-owner-doc-name_|placeholder"/>
             </div>
         </div>
         <div class="form-group">
-            <label for="revision" class="col-lg-4 control-label">Document Revision by Owner</label>
+            <label for="revision" class="col-lg-4 control-label" data-i18n="_owner-doc-revision_"></label>
             <div class="col-lg-8">
-                <input type="text" class="form-control" id="revision" name="revision" ng-model="document.ownerDocumentRevision" placeholder="Fill the name e.g., Rev.1" />
+                <input type="text" class="form-control" id="revision" name="revision" ng-model="document.ownerDocumentRevision" data-i18n-attr="_fill-owner-doc-revision_|placeholder"/>
             </div>
         </div>
         <div class="form-group">
-            <label for="data" class="col-lg-4 control-label">Document Revision Date by Owner</label>
+            <label for="data" class="col-lg-4 control-label" data-i18n="_owner-doc-revision-date_"></label>
             <div class="col-lg-8">
                 <input ui-date="{dateFormat: 'yy-mm-dd'}" ui-date-format="yy-mm-dd" class="form-control" id="data" name="data" ng-model="document.ownerDocumentRevisionData" />
             </div>
         </div>
         <div class="form-group">
-            <label for="note" class="col-lg-4 control-label">Additional Notes</label>
+            <label for="note" class="col-lg-4 control-label" data-i18n="_additional-notes_"></label>
             <div class="col-lg-8">
-                <textarea class="form-control" id="note" name="note" rows="5" ng-model="document.accNote" placeholder="Some more notes?"></textarea>
+                <textarea class="form-control" id="note" name="note" rows="5" ng-model="document.accNote" data-i18n-attr="_fill-additional-notes_|placeholder"></textarea>
             </div>
         </div>
         <div class="form-group">
-            <label class="col-xs-4 control-label">Files</label>
+            <label class="col-xs-4 control-label" data-i18n="_file_"></label>
             <div class="col-xs-8">
                 <input type="file" ng-file-select="onFileSelect($files)" id="fileName" name="fileName"/>
             </div>
         </div>
         <div class="form-group">
             <div class="col-lg-offset-2 col-xs-10">
-                <button class="btn btn-primary" ng-click="upload()" ng-disabled="documentForm.$invalid || isUploading() || !filesSelected()">Upload document</button>
-                <button class="btn btn-primary" ng-click="clearForm()" ng-disabled="isUploading()">Clear form</button>
-                <span ng-show="isUploading()">Uploading... </span>
+                <button class="btn btn-primary" ng-click="upload()" ng-disabled="documentForm.$invalid || isUploading() || !filesSelected()" data-i18n="_upload-doc_"></button>
+                <button class="btn btn-primary" ng-click="clearForm()" ng-disabled="isUploading()" data-i18n="_clear-form_"></button>
+                <span ng-show="isUploading()" data-i18n="_uploading_"></span>
             </div>
         </div>
     </form>

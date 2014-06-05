@@ -68,7 +68,7 @@ function EndpointCtrl($scope, ConfigurationService){
 	$scope.new = function(){
 		// default values
 		newEndpoint=true;
-		$scope.modaltitle = "New Endpoint";
+		$scope.modaltitle = "_new-endpoint-title_";
 		$scope.endpoint = angular.copy(emptyEndpoint);
 		$scope.endpointForm.$setPristine();
 	};
@@ -77,7 +77,7 @@ function EndpointCtrl($scope, ConfigurationService){
 		$scope.endpoint = angular.copy(ConfigurationService.getEndpoint(uri));
 		$scope.endpoint.uri = $scope.endpoint.uri.replace(':',''); //for the validation to be accepted
 		newEndpoint=false;
-		$scope.modaltitle = "Edit Endopoint";
+		$scope.modaltitle = "_edit-endpoint-title_";
 	};
 
 	$scope.delete = function(uri){
@@ -98,7 +98,7 @@ function EndpointCtrl($scope, ConfigurationService){
 			success = ConfigurationService.updateEndpoint($scope.endpoint);
 
 		if(success){
-			$('#modalEndpoint').modal('hide');
+			$scope.close('#modalEndpoint');
 			$scope.refreshTable();
 		}
 		else{
@@ -134,7 +134,7 @@ function DatabaseCtrl($scope, ConfigurationService){
 		// default values
 		$scope.databaseForm.$setPristine();
 		newDatabase=true;
-		$scope.modaltitle = "New Database";
+		$scope.modaltitle = "_new-db-title_";
 		$scope.database = angular.copy(emptyDatabase);
 	};
 
@@ -142,7 +142,7 @@ function DatabaseCtrl($scope, ConfigurationService){
 		$scope.database = angular.copy(ConfigurationService.getDatabase(uri));
 		$scope.database.uri = $scope.database.uri.replace(':','');
 		newDatabase=false;
-		$scope.modaltitle = "Edit Database";
+		$scope.modaltitle = "_edit-db-title_";
 	};
 
 	$scope.delete = function(uri){
@@ -163,7 +163,7 @@ function DatabaseCtrl($scope, ConfigurationService){
 			success = ConfigurationService.updateDatabase($scope.database);
 		
 		if(success){
-			$('#modalDatabase').modal('hide');
+			$scope.close('#modalDatabase');
 			$scope.refreshTable();
 		}
 		else{
@@ -179,8 +179,12 @@ function DatabaseCtrl($scope, ConfigurationService){
     };
 }
 
-function GraphCtrl($scope, $http, flash, ConfigurationService, DateService, AccountService, GraphService, GraphGroupService){
+function GraphCtrl($scope, $http, flash, ConfigurationService, DateService, AccountService, GraphService, GraphGroupService, localize){
     $scope.accessModes = ConfigurationService.getAccessModes();
+
+    $scope.localize = function(str) {
+        return localize.getLocalizedString(str);
+    };
 
     $scope.users = [];
     $scope.refreshUsersList = function() {
@@ -234,7 +238,7 @@ function GraphCtrl($scope, $http, flash, ConfigurationService, DateService, Acco
 		// default values
 		newGraph=true;
 		$scope.graphForm.$setPristine();
-		$scope.modaltitle = "New Named Graph";
+		$scope.modaltitle = "_new-ngraph-title_";
 
 		var s_now = DateService.getCurrentDate();
 		var defaultEndpoint = ConfigurationService.getSPARQLEndpoint();
@@ -254,7 +258,7 @@ function GraphCtrl($scope, $http, flash, ConfigurationService, DateService, Acco
 		$scope.namedgraph.name = $scope.namedgraph.name.replace(':','');
 		$scope.namedgraph.owner = AccountService.getAccountURI();
 		newGraph=false;
-		$scope.modaltitle = "Edit Named Graph";
+		$scope.modaltitle = "_edit-ngraph-title_";
 		$scope.refreshUsersList();
 	};
 
@@ -262,7 +266,7 @@ function GraphCtrl($scope, $http, flash, ConfigurationService, DateService, Acco
         $scope.namedgraph = angular.copy(GraphService.getNamedGraph(graphName));
         $scope.namedgraph.name = $scope.namedgraph.name.replace(':','');
 		newGraph=false;
-		$scope.modaltitle = "Edit Named Graph";
+		$scope.modaltitle = "_edit-ngraph-title_";
 		$scope.refreshUsersList();
 	};
 
@@ -284,7 +288,7 @@ function GraphCtrl($scope, $http, flash, ConfigurationService, DateService, Acco
 		}
 			
 		if(success){
-			$('#modalGraph').modal('hide');
+			$scope.close('#modalGraph');
 			$scope.refreshTable();
 			$scope.refreshAllGraphs();
 		}
@@ -373,7 +377,7 @@ function GraphCtrl($scope, $http, flash, ConfigurationService, DateService, Acco
 	$scope.newGroup = function() {
 		newGroup=true;
 		$scope.groupForm.$setPristine();
-		$scope.modaltitle = "New Graph Group";
+		$scope.modaltitle = "_new-graph-group-title_";
 		var s_now = DateService.getCurrentDate();
 		$scope.graphgroup = angular.copy(emptyGroup);
 		$scope.graphgroup.created = s_now;
@@ -385,7 +389,7 @@ function GraphCtrl($scope, $http, flash, ConfigurationService, DateService, Acco
 		$scope.graphgroup = angular.copy(GraphGroupService.getGraphGroup(groupName));
 		$scope.graphgroup.name = $scope.graphgroup.name.replace(':','');
 		newGroup=false;
-		$scope.modaltitle = "Edit Graph Group";
+		$scope.modaltitle = "_edit-graph-group-title_";
 		$scope.refreshAllGraphs();
 	};
 
@@ -393,12 +397,12 @@ function GraphCtrl($scope, $http, flash, ConfigurationService, DateService, Acco
 		$scope.graphgroup.name =  ":" + $scope.graphgroup.name;
 		if (newGroup) {
 			GraphGroupService.addGraphGroup($scope.graphgroup).then(function(result) {
-			    $('#modalGroup').modal('hide');
+			    $scope.close('#modalGroup');
 			    $scope.refreshGraphGroups();
 			});
 		} else {
 			GraphGroupService.updateGraphGroup($scope.graphgroup).then(function(result) {
-			    $('#modalGroup').modal('hide');
+			    $scope.close('#modalGroup');
 			    $scope.refreshGraphGroups();
 			});
 		}
@@ -508,7 +512,7 @@ function UserCtrl($scope, $http, flash, DateService, AccountService) {
 
 	$scope.new = function(){
 	    newUser = true;
-	    $scope.modaltitle = "New User";
+	    $scope.modaltitle = "_new-user-title_";
 		$scope.userForm.$setPristine();
 		$scope.user = angular.copy(emptyUser);
 		$scope.refreshGraphsList();
@@ -516,7 +520,7 @@ function UserCtrl($scope, $http, flash, DateService, AccountService) {
 
     $scope.edit = function(username) {
    		newUser = false;
-   		$scope.modaltitle = "Edit User";
+   		$scope.modaltitle = "_edit-user-title_";
    		for (var ind in $scope.users) {
    		    if ($scope.users[ind].profile.username == username) {
    		        $scope.user = angular.copy($scope.users[ind]);
@@ -541,11 +545,11 @@ function UserCtrl($scope, $http, flash, DateService, AccountService) {
             })
             .success(function (data, status, headers, config) {
                 $scope.refreshUsersList();
-                $('#modalUser').modal('hide');
+                $scope.close('#modalUser');
             })
             .error(function(data, status, headers, config) {
                 flash.error = data;
-                $('#modalUser').modal('hide');
+                $scope.close('#modalUser');
             });
 	};
 

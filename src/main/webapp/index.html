@@ -39,22 +39,22 @@
 	                <a class="navbar-brand" href="#/"></a>
 	                    <div ng-controller="NavbarCtrl">
 	                    	<ul class="nav navbar-nav navbar-left">
-	                        <li ng-class="getClass('/home')"><a href="#/"><div class="glyphicon glyphicon-cog"></div> Workbench </a></li>
+	                        <li ng-class="getClass('/home')"><a href="#/" data-i18n="_workbench_"><div class="glyphicon glyphicon-cog"></div></a></li>
 	                        <!-- <li ng-class="getClass('/batch')""><a href="#/batch"><div class="glyphicon glyphicon-list"></div> Batch job </a></li> -->
-	                        <li ng-class="getClass('/settings')"><a href="#/settings"><div class="glyphicon glyphicon-wrench"></div> Settings </a></li>
-	                        <li ng-class="getClass('/account')"><a href="#/account"><div class="glyphicon glyphicon-user"></div> Account </a></li>
+	                        <li ng-class="getClass('/settings')"><a href="#/settings" data-i18n="_settings_"><div class="glyphicon glyphicon-wrench"></div></a></li>
+	                        <li ng-class="getClass('/account')"><a href="#/account" data-i18n="_account_"><div class="glyphicon glyphicon-user"></div></a></li>
 	                        </ul>
 	                        
 	                        <ul class="nav navbar-nav navbar-right">
                             <li>
                             <div ng-show="currentAccount.username">
-                                        <span class="strong">You are logged in as <strong>{{currentAccount.username}}</strong></span> <button class="btn-sm btn-primary" ng-click="logout()">Logout</button>
+                                        <span class="strong">{{'_logged-in-as_' | i18n}}<strong>{{currentAccount.username}}</strong></span> <button class="btn-sm btn-primary" ng-click="logout()" data-i18n="_logout_"></button>
                             </div>
                             <div ng-hide="loggedIn">
                                         <!-- ng-disabled="loginForm.$invalid" -->
-                                        <button type="button" class="btn-sm btn-primary navbar-left" data-toggle="modal" data-target="#modalLogin" ng-click="openModal()">Login</button>
-                                        <button type="button" class="btn-xs btn-link navbar-left" data-toggle="modal" data-target="#modalSignUp" ng-click="new();">Register</button>
-                                    	<button type="button" class="btn-xs btn-link navbar-left" data-toggle="modal" data-target="#modalRestorePassword" ng-show="currentAccount.username==null">Forgot password?</button>
+                                        <button type="button" class="btn-sm btn-primary navbar-left" data-toggle="modal" data-target="#modalLogin" ng-click="openModal()" data-i18n="_login_"></button>
+                                        <button type="button" class="btn-xs btn-link navbar-left" data-toggle="modal" data-target="#modalSignUp" ng-click="new();" data-i18n="_register_"></button>
+                                    	<button type="button" class="btn-xs btn-link navbar-left" data-toggle="modal" data-target="#modalRestorePassword" ng-show="currentAccount.username==null" data-i18n="_forgot-password_"></button>
                             </div>
                             </li>
 	                        <!-- <li><a href="http://geoknow.eu" target="_blanc"><div class="glyphicon glyphicon-info-sign"></div> About</a></li> -->
@@ -69,20 +69,20 @@
 	<form name="loginForm" class="form-horizontal InputForm" role="form" ng-show="currentAccount.username==null">
 			<div class="modal-header">
                 <button type="button" class="close" ng-click="close('#modalLogin')" aria-hidden="true">&times;</button>
-                <h5 class="modal-title green bold">Login</h5>
+                <h5 class="modal-title green bold" data-i18n="_login_"></h5>
             </div>
             <div class="modal-body">
             
 										<div class="form-group">
-                                            <label class="sr-only" for="login">Username or e-mail</label>
-                                            <input type="text" class="form-control col-xs-3 input-sm" id="login" placeholder="Username or e-mail address" ng-model="login.username" required>
+                                            <label class="sr-only" for="login" data-i18n="_username-email_"></label>
+                                            <input type="text" class="form-control col-xs-3 input-sm" id="login" data-i18n-attr="_username-email_|placeholder" ng-model="login.username" required>
                                             <div class="error" ng-show="loginForm.login.$dirty && loginForm.login.$invalid">
                                                 <span ng-show="loginForm.login.$error.required">Enter your username</span>
                                             </div>
                                         </div>
                                         <div class="form-group">
-                                            <label class="sr-only" for="password">Password</label>
-                                            <input type="password" class="form-control col-xs-3 input-sm" id="password" placeholder="Password" ng-model="login.password" required>
+                                            <label class="sr-only" for="password" data-i18n="_password_"></label>
+                                            <input type="password" class="form-control col-xs-3 input-sm" id="password" data-i18n-attr="_password_|placeholder" ng-model="login.password" required>
                                         </div>
                                         <div class="error" ng-show="loginForm.password.$dirty && loginForm.password.$invalid">
                                             <span ng-show="loginForm.password.$error.required">Enter a password</span>
@@ -90,8 +90,8 @@
              </div>
              
              <div class="modal-footer">
-                <button type="submit" class="btn-sm btn-primary" ng-click="login();" ng-disabled="loginForm.$invalid">Sign in</button>
-                <button type="button" class="btn-sm btn-default" ng-click="close('#modalLogin')">Cancel</button>
+                <button type="submit" class="btn-sm btn-primary" ng-click="login();" ng-disabled="loginForm.$invalid" data-i18n="_sign-in_"></button>
+                <button type="button" class="btn-sm btn-default" ng-click="close('#modalLogin')" data-i18n="_cancel_"></button>
             </div>
     </form>
     </div>
@@ -104,22 +104,22 @@
 	<form name="signUpForm" class="form-horizontal InputForm" role="form">
 			<div class="modal-header">
                 <button type="button" class="close" ng-click="close('#modalSignUp')" aria-hidden="true">&times;</button>
-                <h5 class="modal-title green bold">Register</h5>
+                <h5 class="modal-title green bold" data-i18n="_register_"></h5>
             </div>
             <div class="modal-body">
 										<div class="form-group">
-                                            <label for="username" class="col-lg-2 control-label">Username</label>
+                                            <label for="username" class="col-lg-2 control-label" data-i18n="_username_"></label>
 					                    <div class="col-lg-10">
-					                        <input type="text" id="username" name="username" class="form-control" placeholder="Username" ng-model="signUp.username" required/>
+					                        <input type="text" id="username" name="username" class="form-control" data-i18n-attr="_username_|placeholder" ng-model="signUp.username" required/>
 					                        <div class="error"  ng-show="signUpForm.username.$dirty && signUpForm.username.$invalid">Invalid:
 					                            <span ng-show="signUpForm.username.$error.required">Enter a username</span>
 					                        </div>
 					                    </div>
                                         </div>
                                         <div class="form-group">
-                                        <label for="email" class="col-lg-2 control-label">E-mail</label>
+                                        <label for="email" class="col-lg-2 control-label" data-i18n="_email_"></label>
 					                    <div class="col-lg-10">
-					                        <input type="email" id="email" name="email" class="form-control" placeholder="E-mail address" ng-model="signUp.email" required/>
+					                        <input type="email" id="email" name="email" class="form-control" data-i18n-attr="_email_|placeholder" ng-model="signUp.email" required/>
 					                        <div class="error" ng-show="signUpForm.email.$dirty && signUpForm.email.$invalid">Invalid:
 					                            <span ng-show="signUpForm.email.$error.required">Enter your email address</span>
 					                            <span ng-show="signUpForm.email.$error.email">This is not a valid email address</span>
@@ -129,8 +129,8 @@
              </div>
              
              <div class="modal-footer">
-                <button type="submit" class="btn-sm btn-primary" ng-click="createAccount();" ng-disabled="signUpForm.$invalid">Register</button>
-                <button type="button" class="btn-sm btn-default" ng-click="close('#modalSignUp')">Cancel</button>
+                <button type="submit" class="btn-sm btn-primary" ng-click="createAccount();" ng-disabled="signUpForm.$invalid" data-i18n="_register_"></button>
+                <button type="button" class="btn-sm btn-default" ng-click="close('#modalSignUp')" data-i18n="_cancel_"></button>
             </div>
     </form>
     </div>
@@ -143,13 +143,13 @@
           <form name="restorePasswordForm" class="form-horizontal InputForm" role="form">
               <div class="modal-header">
                   <button type="button" class="close" ng-click="close('#modalRestorePassword')" aria-hidden="true">&times;</button>
-                  <h5 class="modal-title green bold">Request password</h5>
+                  <h5 class="modal-title green bold" data-i18n="_request-password_"></h5>
               </div>
               <div class="modal-body">
                   <div class="form-group">
-                      <label for="username" class="col-lg-2 control-label">Username or e-mail address</label>
+                      <label for="username" class="col-lg-2 control-label" data-i18n="_username-email_"></label>
                       <div class="col-lg-10">
-                          <input type="text" id="username" name="username" class="form-control" placeholder="Username or e-mail address" ng-model="restorePassword.username" required/>
+                          <input type="text" id="username" name="username" class="form-control" data-i18n-attr="_username-email_|placeholder" ng-model="restorePassword.username" required/>
                           <div class="error" ng-show="restorePasswordForm.username.$dirty && restorePasswordForm.username.$invalid">Invalid:
                               <span ng-show="restorePasswordForm.username.$error.required">Enter your username or email address</span>
                           </div>
@@ -157,8 +157,8 @@
                   </div>
               </div>
               <div class="modal-footer">
-                  <button type="submit" class="btn-sm btn-primary" ng-click="restorePassword();" ng-disabled="restorePasswordForm.$invalid">Request password</button>
-                  <button type="button" class="btn-sm btn-default" ng-click="close('#modalRestorePassword')">Cancel</button>
+                  <button type="submit" class="btn-sm btn-primary" ng-click="restorePassword();" ng-disabled="restorePasswordForm.$invalid" data-i18n="_request-password_"></button>
+                  <button type="button" class="btn-sm btn-default" ng-click="close('#modalRestorePassword')" data-i18n="_cancel_"></button>
               </div>
           </form>
       </div>
@@ -201,5 +201,6 @@
     <script src="lib/chosen.jquery.min.js"></script>
     <script src="lib/chosen.js"></script>
     <script src="lib/date.js"></script>
+    <script src="lib/localize.js"></script>
   </body>
 </html>
