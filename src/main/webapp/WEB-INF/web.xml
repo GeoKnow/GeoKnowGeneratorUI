@@ -58,7 +58,7 @@
   <context-param> 
     <description>SMPT Host</description> 
     <param-name>smtp-host</param-name> 
-    <param-value>***REMOVED***</param-value> 
+    <param-value>smtp.strato.de</param-value> 
   </context-param>
   <context-param> 
     <description>SMPT TLS Port</description> 

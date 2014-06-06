@@ -2,9 +2,8 @@
 
 var module = angular.module('app.services', []);
 
-module.factory('DateService', function(){
-  var DateService = {
-    getCurrentDate : function(){
+module.factory('Helpers', function(){
+  var getCurrentDate = function(){
       var now = new Date();
       //"YYYY-MM-DDThh:mm:ss"^^xsd:date;
       var month = now.getMonth() + 1; // getMonth returns values from 0 to 11
@@ -13,9 +12,23 @@ module.factory('DateService', function(){
               + (now.getDate().toString().length==1 ? "0"+now.getDate() : now.getDate())
               + "T" + now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds();
       return s_now;
+  };
+
+  var invertMap = function (obj) {
+    var new_obj = {};
+    for (var prop in obj) {
+      if(obj.hasOwnProperty(prop)) {
+        new_obj[obj[prop]] = prop;
+      }
     }
-  }
-  return DateService;
+    return new_obj;
+  };
+  
+  return {
+      getCurrentDate :getCurrentDate,
+      invertMap : invertMap
+  };
+
 });
 
 module.factory('ServerErrorResponse', function() {

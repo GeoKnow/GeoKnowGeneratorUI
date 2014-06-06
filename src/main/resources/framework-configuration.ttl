@@ -17,9 +17,6 @@
 ########### ABOUT THIS FILE #############################################################
 # This file contains the configuration for the GeoKnow generator concerning
 # the endpoints and default user credentials
-# This file has to be added to the :settingsGraph and to :initialSettingsGraph
-# NOTE: avoid usin  g blank nodes may cause problems loading the file:
-#    - https://www.mail-archive.com/virtuoso-users@lists.sourceforge.net/msg05138.html
 # #######################################################################################
 
 # These triples describes the URL endpoints for the application
@@ -29,34 +26,110 @@
   rdfs:comment "This resource contains all the configuration required by the application"^^xsd:string ;
   rdfs:label "GeoKnowGeneator"^^xsd:string ;
   dcterms:hasVersion "2.0"^^xsd:string ;
+  lds:password "admin"^^xsd:string ;         # an admin user for the webapp
+  lds:user   "admin"^^xsd:string ;
   gkg:publicEndpoint :VirtuosoEndpoint ;
   gkg:authEndpoint :VirtuosoAutSPARQLEndpoint ;
   lds:integrates :Virtuoso ;
-  foaf:homepage "http://localhost:8080/generator"^^xsd:string .
+  foaf:homepage <http://localhost:8080/generator> .
 
 :Virtuoso
   a       lds:StackComponent ;
   rdfs:label "Service URL"^^xsd:string ;
   dcterms:hasVersion "7.0"^^xsd:string ;
-  lds:providesService :VirtuosoConductor; 
-  lds:providesService :VirtuosoAutSPARQLEndpoint;
-  lds:providesService :VirtuosoEndpoint;
+  lds:providesService :VirtuosoConductor , :VirtuosoAutSPARQLEndpoint, :VirtuosoEndpoint;
   foaf:homepage <http://virtuoso.openlinksw.com/> .
 
 :VirtuosoConductor 
   a  lds:StorageService ;
   lds:password "dba"^^xsd:string ;
-  lds:serviceUrl "http://10.0.0.63:8890/conductor"^^xsd:string ;
-  lds:connectionString "jdbc:virtuoso://10.0.0.63:1111/"^^xsd:string;
+  lds:serviceUrl <http://***REMOVED***:8890/conductor> ;
+  lds:connectionString "jdbc:virtuoso://***REMOVED***:1111/"^^xsd:string;
   lds:user   "dba"^^xsd:string . 
 
 :VirtuosoAutSPARQLEndpoint
   a       lds:SecuredSPARQLEndPointService ;
-  lds:password "generator"^^xsd:string ;
-  lds:serviceUrl <http://10.0.0.63:8890/sparql-auth> ;
-  lds:user   "generator"^^xsd:string .
+  lds:password "***REMOVED***"^^xsd:string ;
+  lds:serviceUrl <http://***REMOVED***:8890/sparql-auth> ;
+  lds:user   "***REMOVED***"^^xsd:string .
 
 :VirtuosoEndpoint
   a       lds:SPARQLEndPointService ;
-  lds:serviceUrl <http://10.0.0.63:8890/sparql> .
+  lds:serviceUrl <http://***REMOVED***:8890/sparql> .
+
+
+# #######################################################################################
+# Following triples simulates implementation of the Service Descrioption recommendation
+# in order to describe named graphs (Datasets)
+# The named graphs described in this file have to be created in the famework endpoint
+# and loaded with their corresponding data
+# This file has to be added to the :settingsGraph
+# NOTE: avoid using blank nodes may cause problems loading the file:
+#    - https://www.mail-archive.com/virtuoso-users@lists.sourceforge.net/msg05138.html
+# #######################################################################################
+
+:default-dataset 
+  a sd:Dataset;
+  rdfs:label "Default dataset";
+  dcterms:description "This is the endpoint default dataset"^^xsd:string;
+  sd:defaultGraph :defaultNamedGraph;
+  sd:namedGraph :settingsNamedGraph, :initialSettingsNamedGraph, :accountsNamedGraph, :groupsNamedGraph 
+  .
+
+:defaultNamedGraph
+  sd:name <http://10.0.0.63:8890/DAV>;
+  sd:graph [
+    a sd:Graph, void:Dataset;
+    rdfs:label "default"^^xsd:string;
+    dcterms:title "default"^^xsd:string;
+    dcterms:description "Default graph"^^xsd:string ]
+  .
+
+:settingsNamedGraph
+  a sd:NamedGraph ;
+  sd:name :settingsGraph;
+  sd:graph [
+    a sd:Graph, void:Dataset;
+    rdfs:label "settings"^^xsd:string;
+    dcterms:description "GeoKnow Generator settings and configurations"^^xsd:string;
+    dcterms:modified "2013-09-12"^^xsd:date;
+    dcterms:created "2013-09-12"^^xsd:date;
+    void:sparqlEndpoint <http://10.0.0.63:8890/sparql> ]
+  .
+
+:initialSettingsNamedGraph
+  a sd:NamedGraph ;
+  sd:name :initialSettingsGraph;
+  sd:graph [
+    a sd:Graph, void:Dataset;
+    rdfs:label "initialSettings"^^xsd:string;
+    dcterms:description "Initial configuration of components in the framework"^^xsd:string;
+    dcterms:modified "2013-09-12"^^xsd:date;
+    dcterms:created "2013-09-12"^^xsd:date;
+    void:sparqlEndpoint <http://10.0.0.63:8890/sparql> ]
+  .
+
+:accountsNamedGraph
+  a sd:NamedGraph ; 
+  sd:name :accountsGraph;
+  sd:graph [
+    a sd:Graph, void:Dataset;
+    rdfs:label "accounts"^^xsd:string;
+    dcterms:description "A graph to store the users accounts"^^xsd:string;
+    dcterms:modified "2014-04-12"^^xsd:date;
+    dcterms:created "2014-04-12"^^xsd:date;
+    void:sparqlEndpoint <http://10.0.0.63:8890/sparql> ]
+  .
+
+:groupsNamedGraph
+  a sd:NamedGraph ;
+  sd:name :groupsGraph;
+  sd:graph [
+    a sd:Graph, void:Dataset;
+    rdfs:label "groups"^^xsd:string;
+    dcterms:description "A graph for groups of graphs"^^xsd:string;
+    dcterms:modified "2014-04-12"^^xsd:date;
+    dcterms:created "2014-04-12"^^xsd:date;
+    void:sparqlEndpoint <http://10.0.0.63:8890/sparql> ]
+  .
 

@@ -29,7 +29,7 @@
 "use strict";
 
 angular.module("app.configuration", [])
-.factory("Config", function($q, $http, flash, AccountService, ServerErrorResponse)
+.factory("Config", function($q, $http, flash, AccountService, ServerErrorResponse, Helpers)
 {
     $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded; charset=UTF-8";
 
@@ -63,6 +63,8 @@ angular.module("app.configuration", [])
         "http://www.w3.org/ns/auth/acl#"                   : "acl:"
     };
     namespaces[NS] = ":";
+    // a variable to lookup by prefix
+    var prefixes = Helpers.invertMap(namespaces);
 
     var GRAPH    = "<" + SETTINGS_GRAPH_URI + ">";
     var EOL      = "\n";
@@ -73,25 +75,24 @@ angular.module("app.configuration", [])
     var settings = {};
     var isLoaded = false;
 
-    var request = function(url, data, success){
+    var request = function(url, data, callbackSuccess){
         var deferred = $q.defer();
 
         $http.post(url, $.param(data))
         .success(function(data)
         {
             try{
-                deferred.resolve(success ? success(data) : data.results.bindings[0]["callret-0"].value);
+                deferred.resolve(callbackSuccess ? callbackSuccess(data) : data.results.bindings[0]["callret-0"].value);
             }
             catch (e){
-                console.log("ERROR with no more explai");
-            flash.error = ServerErrorResponse.getMessage(data.message);
-
+                // a problem with the callback
+                console.log(e);
+                flash.error = e.message;
                 deferred.reject(e);
             }
         })
         .error(function(data, status){
             var message = ServerErrorResponse.getMessage(status) + "at " + AUTH_ENDPOINT ;
-            console.log(message);
             flash.error = message;
             deferred.reject(message);
         });
@@ -99,6 +100,7 @@ angular.module("app.configuration", [])
         return deferred.promise;
     };
 
+    // Replaces the long name space by the prefix
     var ns = function(v){
         var value = v.value || v;
 
@@ -115,7 +117,17 @@ angular.module("app.configuration", [])
 
         return value;
     };
-    
+
+    var isUri = function (v){
+        if (/^:/.test(v))
+            return true;
+        else if(/^\w*:/.test(v)){
+            if( prefixes[v.substr(0, v.indexOf(':')+1)] != undefined )
+                return true;
+        }
+        return false;
+    }
+
     var getFrameworkUri = function()
     {
         return ns(FRAMEWORK_URI);
@@ -257,7 +269,7 @@ angular.module("app.configuration", [])
             {
                 settings = parseSparqlResults(data);
                 isLoaded = true;
-                console.log(GRAPH);
+                console.log("Reading Settings from " + GRAPH);
                 console.log(settings);
                 return settings;
             }
@@ -268,7 +280,8 @@ angular.module("app.configuration", [])
     {
         var wrap = function(s)
         {
-            return /^https?:\/\//.test(s) ? "<" + s + ">" : !/^\w*:/.test(s) ? '"' + s + '"' : s;
+            // TODO: we have also to validate the datatype!
+            return /^https?:\/\//.test(s) ? "<" + s + ">" : isUri(s) || /^_:b/.test(s) ? s : '"' + s + '"';
         };
 
         var data = "",
@@ -295,7 +308,7 @@ angular.module("app.configuration", [])
         };
 
         for (var s in settings)
-                walk(s, settings[s]);
+            walk(s, settings[s]);
 
         var requestData = {
             format: "application/sparql-results+json",
@@ -309,20 +322,23 @@ angular.module("app.configuration", [])
             mode: "settings"
         };
 
+        // console.log(requestData);
         return request("RdfStoreProxy", requestData);
     };
 
-    var createGraph = function(name, permissions)
-    {
-        var requestData = {
-            format: "application/sparql-results+json",
-            mode: "create",
-            graph: name,
-            permissions: permissions,
-            username: AccountService.getUsername()
-        }
-        return request("GraphManagerServlet", requestData);
-    };
+    // var createGraph = function(name, permissions, callback)
+    // {
+    //     var requestData = {
+    //         format: "application/sparql-results+json",
+    //         mode: "create",
+    //         graph: name,
+    //         permissions: permissions,
+    //         username: AccountService.getUsername()
+    //     }
+    //     console.log("request create graph");
+    //     console.log(requestData);
+    //     return request("GraphManagerServlet", requestData, callback);
+    // };
 
     var dropGraph = function(name)
     {
@@ -335,16 +351,16 @@ angular.module("app.configuration", [])
         return request("GraphManagerServlet", requestData);
     };
 
-    var setGraphPermissions = function(name, permissions) {
-        var requestData = {
-            format: "application/sparql-results+json",
-            graph: name,
-            mode: "update",
-            permissions: permissions,
-            username: AccountService.getUsername()
-        };
-        return request("GraphManagerServlet", requestData);
-    };
+    // var setGraphPermissions = function(name, permissions) {
+    //     var requestData = {
+    //         format: "application/sparql-results+json",
+    //         graph: name,
+    //         mode: "update",
+    //         permissions: permissions,
+    //         username: AccountService.getUsername()
+    //     };
+    //     return request("GraphManagerServlet", requestData);
+    // };
 
     var getGroupsGraph = function() {
         return GROUPS_GRAPH_URI;
@@ -359,9 +375,10 @@ angular.module("app.configuration", [])
         select              : select,
         read                : read,
         write               : write,
-        createGraph         : createGraph,
+        request             : request,
+        // createGraph         : createGraph,
         dropGraph           : dropGraph,
-        setGraphPermissions : setGraphPermissions,
+        // setGraphPermissions : setGraphPermissions,
         parseSparqlResults  : parseSparqlResults,
         getGroupsGraph      : getGroupsGraph,
         getFrameworkUri     : getFrameworkUri

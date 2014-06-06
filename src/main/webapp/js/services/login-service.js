@@ -2,7 +2,7 @@
 
 var module = angular.module('app.login-service', []);
 
-module.factory("LoginService", function ($http, $location, $cookieStore, AccountService, ConfigurationService, Base64) {
+module.factory("LoginService", function ($http, $location, $cookieStore, AccountService, ConfigurationService, Base64, flash, ServerErrorResponse) {
 
     var login = function (username, password) {
 
@@ -34,7 +34,7 @@ module.factory("LoginService", function ($http, $location, $cookieStore, Account
             //console.log($http.defaults.headers.common);
 
         }, function (response) {
-            //todo
+            flash.error = ServerErrorResponse.getMessage(response.status);
         });
     };
 
@@ -61,7 +61,10 @@ module.factory("LoginService", function ($http, $location, $cookieStore, Account
             console.log($http.defaults.headers.common);
 
         }, function (response) {
-            //todo
+            console.log("error? esponse:")
+            console.log(response);
+            // flash.error = message;
+            
         });
     };
 

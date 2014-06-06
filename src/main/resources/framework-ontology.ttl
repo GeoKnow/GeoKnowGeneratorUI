@@ -75,7 +75,7 @@
 :endpoint
       rdf:type owl:DatatypeProperty ;
       rdfs:domain :SPARQLEndpoint ;
-      rdfs:label "Service URL"^^xsd:string .
+      rdfs:label "endpoint"^^xsd:string .
  
  
 :jdbcDSN
@@ -111,17 +111,17 @@
 dcterms:creator
       rdf:type owl:DatatypeProperty ;
       rdfs:domain void:Dataset ;
-      rdfs:label "Service URL"^^xsd:string .
+      rdfs:label "creator"^^xsd:string .
 
 dcterms:description
       rdf:type owl:DatatypeProperty ;
       rdfs:domain void:Dataset ;
-      rdfs:label "Service URL"^^xsd:string .
+      rdfs:label "description"^^xsd:string .
 
 dcterms:source
       rdf:type owl:DatatypeProperty ;
       rdfs:domain void:Dataset ;
-      rdfs:label "Service URL"^^xsd:string .
+      rdfs:label "source"^^xsd:string .
 
 dcterms:title
       rdf:type owl:DatatypeProperty ;
@@ -131,25 +131,25 @@ dcterms:title
 
 void:Dataset
       rdf:type owl:Class ;
-      rdfs:label "Service URL"^^xsd:string ;
+      rdfs:label "Dataset"^^xsd:string ;
       rdfs:subClassOf owl:Thing .
 
 void:Linkset
       rdf:type owl:Class ;
-      rdfs:label "Service URL"^^xsd:string ;
+      rdfs:label "Linkset"^^xsd:string ;
       rdfs:subClassOf void:Dataset .
 
 sd:NamedGraph
       rdf:type rdfs:Class ;
-      rdfs:label "Service URL"^^xsd:string .
+      rdfs:label "Named Graph"^^xsd:string .
 
 sd:Service
       rdf:type rdfs:Class ;
-      rdfs:label "Service URL"^^xsd:string .
+      rdfs:label "Service"^^xsd:string .
 
 foaf:homepage
       rdf:type rdf:Property ;
       rdfs:domain :SoftwareComponent ;
-      rdfs:label "Service URL"^^xsd:string .
+      rdfs:label "homepage"^^xsd:string .
  
  
