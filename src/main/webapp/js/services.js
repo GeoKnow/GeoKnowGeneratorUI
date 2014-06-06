@@ -38,24 +38,6 @@ module.factory('DateService', function(){
   return DateService;
 });
 
-module.factory('LanguageService', function($window){
-    var LanguageService = {
-        getCurrentLanguage : function() {
-            var lang, androidLang;
-            // works for earlier version of Android (2.3.x)
-            if ($window.navigator && $window.navigator.userAgent && (androidLang = $window.navigator.userAgent.match(/android.*\W(\w\w)-(\w\w)\W/i))) {
-                lang = androidLang[1];
-            } else {
-                // works for iOS, Android 4.x and other devices
-                lang = $window.navigator.userLanguage || $window.navigator.language;
-            }
-            console.log("current lang: " + lang);
-            return lang;
-        }
-    }
-    return LanguageService;
-});
-
 module.factory('ServerErrorResponse', function() {
 
   var ServerErrorResponseService = {

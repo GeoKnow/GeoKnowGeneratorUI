@@ -26,7 +26,7 @@ function AccountMenuCtrl($scope) {
     { name: "User Preferences",   route:'#/account/preferences', url:'/account/preferences' }];
 }
 
-function StackMenuCtrl($scope, ConfigurationService, LanguageService) {
+function StackMenuCtrl($scope, ConfigurationService, localize) {
     var services = ConfigurationService.getComponentServices(":Solr");
 	var solrServiceUrl = services[0].serviceUrl;
 
@@ -61,7 +61,7 @@ function StackMenuCtrl($scope, ConfigurationService, LanguageService) {
 	      items: [
 //	       {name: 'OntoWiki', route:'#/home/authoring/ontowiki', url:'/home/authoring/ontowiki' },
 //	       {name: "Thesaurus Management", route:'#/home/authoring/ontology', url:'/home/authoring/ontology' },
-	       {name: "_thesaurus-management_", route:null, url:miniDixServiceUrl + "/?ontology=" + ontology + "&newConceptsOntology=" + ontology + "&writableOntologies=" + ontology + "&locale=" + LanguageService.getCurrentLanguage(), modaltitle:'MiniDix' },
+	       {name: "_thesaurus-management_", route:null, url:miniDixServiceUrl + "/?ontology=" + ontology + "&newConceptsOntology=" + ontology + "&writableOntologies=" + ontology, modaltitle:'MiniDix' },
 	       {name: "_edit-uploads_", route:'#/home/authoring/edit-uploads', url:'/home/authoring/edit-uploads' }]
 	    },
 	    /*
@@ -92,6 +92,9 @@ function StackMenuCtrl($scope, ConfigurationService, LanguageService) {
 	  $scope.url=null;
 	  $scope.setDirectUrl = function(url) {
 	    $scope.url = url;
+	    //add locale for MiniDix
+	    if (url.indexOf(miniDixServiceUrl)==0)
+	        $scope.url += ("&locale=" + localize.language);
 	  };
 
 	  $scope.close = function(modalID) {
@@ -227,7 +230,7 @@ function AccountCtrl($scope, flash, AccountService, LoginService, ServerErrorRes
     }, true);
 }
 
-app.controller('NavbarCtrl', function($scope, $location) {
+app.controller('NavbarCtrl', function($scope, $location, localize) {
 		//if($location.path === "/"){
 		//	$location.path('/home')
 		//}
@@ -238,6 +241,12 @@ app.controller('NavbarCtrl', function($scope, $location) {
 			      return "";
 			    }
 			};
+
+        $scope.languages = localize.getLanguages();
+        $scope.currentLanguage = localize.language;
+        $scope.setLanguage = function() {
+            localize.setLanguage($scope.currentLanguage);
+        };
 	});
 
 app.controller('SidebarCtrl', function($scope, $location) {
@@ -2445,7 +2454,7 @@ var GoogleMapWindow = function ($scope, $timeout, $log) {
 * Ontologies Controller
 *
 ***************************************************************************************************/
-var OntologyCtrl = function($scope, $http, flash, ServerErrorResponse, AccountService, OntologyService, ConfigurationService, LanguageService) {
+var OntologyCtrl = function($scope, $http, flash, ServerErrorResponse, AccountService, OntologyService, ConfigurationService, localize) {
     var miniDixServices = ConfigurationService.getComponentServices(":MiniDix");
 	var miniDixServiceUrl = miniDixServices[0].serviceUrl;
 
@@ -2546,7 +2555,7 @@ var OntologyCtrl = function($scope, $http, flash, ServerErrorResponse, AccountSe
 
     $scope.url = "";
 	$scope.setUrl = function(ontology){
-	    $scope.url= miniDixServiceUrl + "/?ontology=" + ontology + "&newConceptsOntology=" + ontology + "&writableOntologies=" + ontology + "&locale=" + LanguageService.getCurrentLanguage();
+	    $scope.url= miniDixServiceUrl + "/?ontology=" + ontology + "&newConceptsOntology=" + ontology + "&writableOntologies=" + ontology + "&locale=" + localize.language;
 	};
 
 	$scope.onFileSelect = function($files) {

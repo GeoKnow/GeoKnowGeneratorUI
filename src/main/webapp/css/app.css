@@ -354,3 +354,8 @@ form{
 .ui-datepicker {
     z-index: 10000 !important;
 }
+
+.lang-select {
+    margin-top: 15px;
+    margin-left: 15px;
+}

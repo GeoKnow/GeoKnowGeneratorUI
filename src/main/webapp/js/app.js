@@ -247,7 +247,7 @@ app.config(function($routeSegmentProvider, $routeProvider)
     $sceDelegateProvider.resourceUrlWhitelist(['.*']);
 })
 .config(function(localizeProvider) {
-    localizeProvider.languages = ['en', 'ru', 'de'];
+    localizeProvider.languages = ['en', 'ru'];
     localizeProvider.defaultLanguage = 'en';
     localizeProvider.ext = 'json';
 });

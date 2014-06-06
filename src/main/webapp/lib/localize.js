@@ -47,6 +47,10 @@ angular.module('localization', [])
                     localize.initLocalizedResources();
                 },
 
+                getLanguages: function() {
+                    return angular.copy(provider.languages);
+                },
+
                 fallbackLanguage: function(value) {
 
                     value = String(value);
