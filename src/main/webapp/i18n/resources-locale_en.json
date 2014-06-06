@@ -910,5 +910,17 @@
         "key":"_delete-doc-confirm-message_",
         "value":"Are you sure you want to delete document",
         "description":"text in delete document confirmation dialog"
+    },
+
+
+    {
+        "key":"_changes-saved-message_",
+        "value":"Saved",
+        "description":"saved message shown when some save operation finished successfully (documents, etc.)"
+    },
+    {
+        "key":"_uploading-finished-message_",
+        "value":"Uploaded",
+        "description":"message shown when some upload operation finished successfully (documents, etc.)"
     }
 ]

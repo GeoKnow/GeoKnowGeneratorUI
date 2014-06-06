@@ -144,12 +144,13 @@
     <br/>
 
   <div ng-if="!isAdminLogged()">
-    <h4 data-i18n="_accessible-graphs_">
+    <h4>
         <span class="btn-group">
             <button type="button" class="btn btn-link reset" ng-click="refreshAccessibleGraphs()">
                 <i class="glyphicon glyphicon-refresh" aria-hidden="true"></i>
             </button>
         </span>
+        {{'_accessible-graphs_' | i18n}}
     </h4>
     <table class="table table-striped">
         <thead>
@@ -176,12 +177,13 @@
   </div>
 
     <div ng-if="isAdminLogged()">
-    <h4 data-i18n="_all-graphs_">
+    <h4>
         <span class="btn-group">
             <button type="button" class="btn btn-link reset" ng-click="refreshAllGraphs()">
                 <i class="glyphicon glyphicon-refresh" aria-hidden="true"></i>
             </button>
         </span>
+        {{'_all-graphs_' | i18n}}
     </h4>
     <table class="table table-striped">
         <thead>
@@ -298,12 +300,13 @@
   </div>
   </div>
 
-  <h4 data-i18n="_graph-groups_">
+  <h4>
       <span class="btn-group">
           <button type="button" class="btn btn-link reset" ng-click="refreshGraphGroups()">
               <i class="glyphicon glyphicon-refresh" aria-hidden="true"></i>
           </button>
       </span>
+      {{'_graph-groups_' | i18n}}
   </h4>
 
   <table class="table table-striped">

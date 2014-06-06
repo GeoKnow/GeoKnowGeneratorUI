@@ -2496,7 +2496,7 @@ var OntologyCtrl = function($scope, $http, flash, ServerErrorResponse, AccountSe
                 headers: {"Content-Type":"application/json; charset=utf-8"}
             }).then(function(response) {
                 $scope.refreshOntologies();
-                $('#modalOntology').modal('hide');
+                $scope.close('#modalOntology');
             }, function(response) {
                 flash.error = ServerErrorResponse.getMessage(response.status);
                 $scope.refreshOntologies();
@@ -3679,7 +3679,7 @@ var UploadedDocsCtrl = function($scope, $http, flash, filterFilter, orderByFilte
         DocumentsService.updateDocument($scope.document).then(function(response) {
             $scope.refreshDocuments();
             $scope.close('#modalDocument');
-            flash.success = "Saved";
+            flash.success = localize.getLocalizedString("_changes-saved-message_");
             //reindex document
             var services = ConfigurationService.getComponentServices(":SolrUploadProxy");
             var solrUploadServiceUrl = services[0].serviceUrl;
@@ -3692,7 +3692,7 @@ var UploadedDocsCtrl = function($scope, $http, flash, filterFilter, orderByFilte
                     console.log(response);
                 });
         }, function(response) {
-            $('#modalDocument').modal('hide');
+            $scope.close('#modalDocument');
             flash.error = ServerErrorResponse.getMessage(response.status);
         });
     };
@@ -3809,7 +3809,7 @@ var UploadedDocsCtrl = function($scope, $http, flash, filterFilter, orderByFilte
     };
 };
 
-var UploadDocCtrl = function($scope, $http, flash, ServerErrorResponse, ConfigurationService, DocumentsService, AccountService) {
+var UploadDocCtrl = function($scope, $http, flash, ServerErrorResponse, ConfigurationService, DocumentsService, AccountService, localize) {
     var services = ConfigurationService.getComponentServices(":SolrUploadProxy");
 	var solrUploadServiceUrl = services[0].serviceUrl;
 
@@ -3839,7 +3839,7 @@ var UploadDocCtrl = function($scope, $http, flash, ServerErrorResponse, Configur
                     data: $scope.document
                 }).then(function(response) {
                     $scope.uploading = false;
-                    flash.success = "Uploaded";
+                    flash.success = localize.getLocalizedString("_uploading-finished-message_");;
                 }, function(response) {
                     $scope.uploading = false;
                     flash.error = ServerErrorResponse.getMessage(response.status);

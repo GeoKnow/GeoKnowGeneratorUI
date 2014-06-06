@@ -576,7 +576,7 @@
     },
     {
         "key":"_user-graphs_",
-        "value":"Пользовательский графы",
+        "value":"Пользовательские графы",
         "description":"datasets page (table title)"
     },
     {
@@ -910,5 +910,17 @@
         "key":"_delete-doc-confirm-message_",
         "value":"Вы уверены, что хотите удалить документ",
         "description":"text in delete document confirmation dialog"
+    },
+
+
+    {
+        "key":"_changes-saved-message_",
+        "value":"Изменения сохранены",
+        "description":"saved message shown when some save operation finished successfully (documents, etc.)"
+    },
+    {
+        "key":"_uploading-finished-message_",
+        "value":"Загрузка завершена",
+        "description":"message shown when some upload operation finished successfully (documents, etc.)"
     }
 ]
