@@ -250,7 +250,7 @@
     },
     {
         "key":"_fill-doc-number_",
-        "value":"Укпжите номер, например, D100",
+        "value":"Укажите номер, например, D100",
         "description":"upload document form placeholder"
     },
     {
@@ -775,5 +775,140 @@
         "key":"_pagination-next_",
         "value":"Следующая",
         "description":"text for Next button in pagination element"
+    },
+
+
+    {
+        "key":"_invalid-field-message_",
+        "value":"Ошибка",
+        "description":"part of text shown below form field when it's value is invalid or missed (for required fields)"
+    },
+
+
+    {
+        "key":"_username-missed-message_",
+        "value":"Укажите имя пользователя",
+        "description":"shown in forms below required username field when it's not specified"
+    },
+    {
+        "key":"_email-missed-message_",
+        "value":"Укажите e-mail",
+        "description":"shown in forms below required e-mail field when it's not specified"
+    },
+    {
+        "key":"_project-missed-message_",
+        "value":"Требуется указать хотя бы один проект",
+        "description":"shown in forms below project field when the value is not specified"
+    },
+    {
+        "key":"_doc-received-date-missed-message_",
+        "value":"Укажите дату получения",
+        "description":"shown in forms below document received date field when the value is not specified"
+    },
+    {
+        "key":"_uri-missed-message_",
+        "value":"Укажите URI",
+        "description":"shown in forms below URI field when the value is not specified"
+    },
+    {
+        "key":"_host-missed-message_",
+        "value":"Укажите хост",
+        "description":"shown in forms below host field when the value is not specified"
+    },
+    {
+        "key":"_port-missed-message_",
+        "value":"Укажите порт",
+        "description":"shown in forms below port field when the value is not specified"
+    },
+    {
+        "key":"_label-missed-message_",
+        "value":"Укажите лейбл",
+        "description":"shown in forms below label field when the value is not specified"
+    },
+    {
+        "key":"_db-name-missed-message_",
+        "value":"Укажите имя базы данных",
+        "description":"shown in forms below database name field when the value is not specified"
+    },
+    {
+        "key":"_user-missed-message_",
+        "value":"Укажите пользователя",
+        "description":"shown in forms below user field when the value is not specified"
+    },
+    {
+        "key":"_password-missed-message_",
+        "value":"Укажите пароль",
+        "description":"shown in forms below password field when the value is not specified"
+    },
+    {
+        "key":"_new-password-missed-message_",
+        "value":"Укажите новый пароль",
+        "description":"shown in change password form below new password field when the value is not specified"
+    },
+    {
+        "key":"_old-password-missed-message_",
+        "value":"Укажите старый пароль",
+        "description":"shown in change password form below old password field when the value is not specified"
+    },
+    {
+        "key":"_description-missed-message_",
+        "value":"Добавьте описание",
+        "description":"shown in forms below description field when the value is not specified"
+    },
+    {
+        "key":"_username-email-missed-message_",
+        "value":"Укажите имя пользователя или e-mail",
+        "description":"shown in forms below username-or-email field when the value is not specified"
+    },
+
+
+    {
+        "key":"_malformed-email-message_",
+        "value":"Указан некорректный e-mail",
+        "description":"shown in forms below e-mail field when the value is malformed"
+    },
+    {
+        "key":"_malformed-doc-number-message_",
+        "value":"Указан некорректный номер документа",
+        "description":"shown in forms below document number field when the value is malformed"
+    },
+    {
+        "key":"_malformed-doc-iteration-message_",
+        "value":"Указана некорректная версия документа",
+        "description":"shown in forms below document iteration field when the value is malformed"
+    },
+    {
+        "key":"_malformed-endpoint-message_",
+        "value":"Указан некорректный эндпоинт",
+        "description":"shown in forms below endpoint field when the value is malformed"
+    },
+    {
+        "key":"_malformed-homepage-message_",
+        "value":"Указан некорректный адрес домашней страницы",
+        "description":"shown in forms below homepage field when the value is malformed"
+    },
+    {
+        "key":"_malformed-letters-number-id-message_",
+        "value":"Укажите корректный идентификатор (буквы и/или цифры)",
+        "description":"shown in forms below letters-and-numbers id field when the value is malformed"
+    },
+
+
+    {
+        "key":"_id-already-exists-message_",
+        "value":"Указанный идентификатор уже существует",
+        "description":"shown in forms below unique id fields when specified value already exists"
+    },
+
+
+    {
+        "key":"_delete-ontology-confirm-message_",
+        "value":"Вы уверены, что хотите удалить онтологию",
+        "description":"text in delete ontology confirmation dialog"
+    },
+    {
+        "key":"_delete-doc-confirm-message_",
+        "value":"Вы уверены, что хотите удалить документ",
+        "description":"text in delete document confirmation dialog"
     }
 ]

@@ -24,8 +24,12 @@
         <tbody>
         <tr ng-repeat="onto in ontologies">
             <td>
-                <button type="button" class="btn btn-default btn-xs" ng-confirm-click="delete('{{onto}}')" ng-confirm-message="Are you sure you want to delete ontology {{onto}}?" ng-disabled="!isLoggedIn()"><span class="glyphicon glyphicon-trash"></span></button>
-                <button type="button" class="btn btn-default btn-xs" data-toggle="modal" ng-click="setUrl('{{onto}}'); openModal();"><span class="glyphicon glyphicon-edit"></span></button>
+                <button type="button" class="btn btn-default btn-xs" ng-confirm-click="delete('{{onto}}')" ng-confirm-message="{{'_delete-ontology-confirm-message_' | i18n}} {{onto}}?" ng-disabled="!isLoggedIn()">
+                    <span class="glyphicon glyphicon-trash"></span>
+                </button>
+                <button type="button" class="btn btn-default btn-xs" data-toggle="modal" ng-click="setUrl('{{onto}}'); openModal();">
+                    <span class="glyphicon glyphicon-edit"></span>
+                </button>
             </td>
             <td>{{onto}}</td>
         </tr>
@@ -90,9 +94,9 @@
                         <label class="col-xs-2 control-label">URI</label>
                         <div class="col-xs-10">
                             <input type="text" class="form-control" id="uri" name="uri" placeholder="URI" ng-model="ontology.uri" required unique-identifier/>
-                            <div class="error"  ng-show="urlForm.uri.$dirty && urlForm.uri.$invalid">Invalid:
-                                <span ng-show="urlForm.uri.$error.required">Specify URI</span>
-                                <span ng-show="urlForm.uri.$error.uniqueIdentifier">This identifier already exist</span>
+                            <div class="error"  ng-show="urlForm.uri.$dirty && urlForm.uri.$invalid">{{'_invalid-field-message_' | i18n}}:
+                                <span ng-show="urlForm.uri.$error.required" data-i18n="_uri-missed-message_"></span>
+                                <span ng-show="urlForm.uri.$error.uniqueIdentifier" data-i18n="_id-already-exists-message_"></span>
                             </div>
                         </div>
                     </div>

@@ -76,16 +76,16 @@
 										<div class="form-group">
                                             <label class="sr-only" for="login" data-i18n="_username-email_"></label>
                                             <input type="text" class="form-control col-xs-3 input-sm" id="login" data-i18n-attr="_username-email_|placeholder" ng-model="login.username" required>
-                                            <div class="error" ng-show="loginForm.login.$dirty && loginForm.login.$invalid">
-                                                <span ng-show="loginForm.login.$error.required">Enter your username</span>
+                                            <div class="error" ng-show="loginForm.login.$dirty && loginForm.login.$invalid">{{'_invalid-field-message_' | i18n}}:
+                                                <span ng-show="loginForm.login.$error.required" data-i18n="_username-missed-message_"></span>
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <label class="sr-only" for="password" data-i18n="_password_"></label>
                                             <input type="password" class="form-control col-xs-3 input-sm" id="password" data-i18n-attr="_password_|placeholder" ng-model="login.password" required>
                                         </div>
-                                        <div class="error" ng-show="loginForm.password.$dirty && loginForm.password.$invalid">
-                                            <span ng-show="loginForm.password.$error.required">Enter a password</span>
+                                        <div class="error" ng-show="loginForm.password.$dirty && loginForm.password.$invalid">{{'_invalid-field-message_' | i18n}}:
+                                            <span ng-show="loginForm.password.$error.required" data-i18n="_password-missed-message_"></span>
                                         </div>
              </div>
              
@@ -111,8 +111,8 @@
                                             <label for="username" class="col-lg-2 control-label" data-i18n="_username_"></label>
 					                    <div class="col-lg-10">
 					                        <input type="text" id="username" name="username" class="form-control" data-i18n-attr="_username_|placeholder" ng-model="signUp.username" required/>
-					                        <div class="error"  ng-show="signUpForm.username.$dirty && signUpForm.username.$invalid">Invalid:
-					                            <span ng-show="signUpForm.username.$error.required">Enter a username</span>
+					                        <div class="error"  ng-show="signUpForm.username.$dirty && signUpForm.username.$invalid">{{'_invalid-field-message_' | i18n}}:
+					                            <span ng-show="signUpForm.username.$error.required" data-i18n="_username-missed-message_"></span>
 					                        </div>
 					                    </div>
                                         </div>
@@ -120,9 +120,9 @@
                                         <label for="email" class="col-lg-2 control-label" data-i18n="_email_"></label>
 					                    <div class="col-lg-10">
 					                        <input type="email" id="email" name="email" class="form-control" data-i18n-attr="_email_|placeholder" ng-model="signUp.email" required/>
-					                        <div class="error" ng-show="signUpForm.email.$dirty && signUpForm.email.$invalid">Invalid:
-					                            <span ng-show="signUpForm.email.$error.required">Enter your email address</span>
-					                            <span ng-show="signUpForm.email.$error.email">This is not a valid email address</span>
+					                        <div class="error" ng-show="signUpForm.email.$dirty && signUpForm.email.$invalid">{{'_invalid-field-message_' | i18n}}:
+					                            <span ng-show="signUpForm.email.$error.required" data-i18n="_email-missed-message_"></span>
+					                            <span ng-show="signUpForm.email.$error.email" data-i18n="_malformed-email-message_"></span>
 					                        </div>
 					                    </div>    
 										</div>
@@ -151,7 +151,7 @@
                       <div class="col-lg-10">
                           <input type="text" id="username" name="username" class="form-control" data-i18n-attr="_username-email_|placeholder" ng-model="restorePassword.username" required/>
                           <div class="error" ng-show="restorePasswordForm.username.$dirty && restorePasswordForm.username.$invalid">Invalid:
-                              <span ng-show="restorePasswordForm.username.$error.required">Enter your username or email address</span>
+                              <span ng-show="restorePasswordForm.username.$error.required" data-i18n="_username-email-missed-message_"></span>
                           </div>
                       </div>
                   </div>

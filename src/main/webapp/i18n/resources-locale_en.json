@@ -775,5 +775,140 @@
         "key":"_pagination-next_",
         "value":"Next",
         "description":"text for Next button in pagination element"
+    },
+
+
+    {
+        "key":"_invalid-field-message_",
+        "value":"Invalid",
+        "description":"part of text shown below form field when it's value is invalid or missed (for required fields)"
+    },
+
+
+    {
+        "key":"_username-missed-message_",
+        "value":"Specify a username",
+        "description":"shown in forms below required username field when it's not specified"
+    },
+    {
+        "key":"_email-missed-message_",
+        "value":"Specify e-mail",
+        "description":"shown in forms below required e-mail field when it's not specified"
+    },
+    {
+        "key":"_project-missed-message_",
+        "value":"At least one assigned project expected",
+        "description":"shown in forms below project field when the value is not specified"
+    },
+    {
+        "key":"_doc-received-date-missed-message_",
+        "value":"Specify received date",
+        "description":"shown in forms below document received date field when the value is not specified"
+    },
+    {
+        "key":"_uri-missed-message_",
+        "value":"Specify URI",
+        "description":"shown in forms below URI field when the value is not specified"
+    },
+    {
+        "key":"_host-missed-message_",
+        "value":"Specify a valid host",
+        "description":"shown in forms below host field when the value is not specified"
+    },
+    {
+        "key":"_port-missed-message_",
+        "value":"Specify a valid port number",
+        "description":"shown in forms below port field when the value is not specified"
+    },
+    {
+        "key":"_label-missed-message_",
+        "value":"Specify a valid label",
+        "description":"shown in forms below label field when the value is not specified"
+    },
+    {
+        "key":"_db-name-missed-message_",
+        "value":"Specify a valid database name",
+        "description":"shown in forms below database name field when the value is not specified"
+    },
+    {
+        "key":"_user-missed-message_",
+        "value":"Specify a valid user",
+        "description":"shown in forms below user field when the value is not specified"
+    },
+    {
+        "key":"_password-missed-message_",
+        "value":"Specify a valid password",
+        "description":"shown in forms below password field when the value is not specified"
+    },
+    {
+        "key":"_new-password-missed-message_",
+        "value":"Specify new password",
+        "description":"shown in change password form below new password field when the value is not specified"
+    },
+    {
+        "key":"_old-password-missed-message_",
+        "value":"Specify old password",
+        "description":"shown in change password form below old password field when the value is not specified"
+    },
+    {
+        "key":"_description-missed-message_",
+        "value":"Give a description",
+        "description":"shown in forms below description field when the value is not specified"
+    },
+    {
+        "key":"_username-email-missed-message_",
+        "value":"Enter your username or email address",
+        "description":"shown in forms below username-or-email field when the value is not specified"
+    },
+
+
+    {
+        "key":"_malformed-email-message_",
+        "value":"This is not a valid e-mail",
+        "description":"shown in forms below e-mail field when the value is malformed"
+    },
+    {
+        "key":"_malformed-doc-number-message_",
+        "value":"Specify valid ACC document number",
+        "description":"shown in forms below document number field when the value is malformed"
+    },
+    {
+        "key":"_malformed-doc-iteration-message_",
+        "value":"Specify valid ACC document iteration",
+        "description":"shown in forms below document iteration field when the value is malformed"
+    },
+    {
+        "key":"_malformed-endpoint-message_",
+        "value":"Specify a valid endpoint",
+        "description":"shown in forms below endpoint field when the value is malformed"
+    },
+    {
+        "key":"_malformed-homepage-message_",
+        "value":"Specify a valid homepage",
+        "description":"shown in forms below homepage field when the value is malformed"
+    },
+    {
+        "key":"_malformed-letters-number-id-message_",
+        "value":"Specify a valid identifier (letters and or numbers)",
+        "description":"shown in forms below letters-and-numbers id field when the value is malformed"
+    },
+
+
+    {
+        "key":"_id-already-exists-message_",
+        "value":"This identifier already exist",
+        "description":"shown in forms below unique id fields when specified value already exists"
+    },
+
+
+    {
+        "key":"_delete-ontology-confirm-message_",
+        "value":"Are you sure you want to delete ontology",
+        "description":"text in delete ontology confirmation dialog"
+    },
+    {
+        "key":"_delete-doc-confirm-message_",
+        "value":"Are you sure you want to delete document",
+        "description":"text in delete document confirmation dialog"
     }
 ]

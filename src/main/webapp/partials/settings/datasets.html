@@ -18,9 +18,9 @@
           <label class="col-lg-2 control-label" data-i18n="_name_"></label>
           <div class="col-lg-10">
             <input type="text" class="form-control" id="name" name="name" data-i18n-attr="_name_|placeholder" ng-model="namedgraph.name" ng-disabled="!isNew()" required regex-validate="identifier" unique-identifier/>
-            <div class="error"  ng-show="graphForm.name.$dirty && graphForm.name.$invalid">Invalid:
-              <span ng-show="graphForm.name.$error.required || graphForm.name.$error.regexValidate ">Specify a valid identifier (letters and or numbers)</span>
-              <span ng-show="graphForm.name.$error.uniqueIdentifier">This identifier already exist</span>
+            <div class="error"  ng-show="graphForm.name.$dirty && graphForm.name.$invalid">{{'_invalid-field-message_' | i18n}}:
+              <span ng-show="graphForm.name.$error.required || graphForm.name.$error.regexValidate" data-i18n="_malformed-letters-number-id-message_"></span>
+              <span ng-show="graphForm.name.$error.uniqueIdentifier" data-i18n="_id-already-exists-message_"></span>
             </div>
           </div>
         </div>
@@ -28,8 +28,8 @@
           <label for="name" class="col-lg-2 control-label" data-i18n="_label_"></label>
           <div class="col-lg-10">
             <input type="text" class="form-control" id="label" name="label" data-i18n-attr="_label_|placeholder" ng-model="namedgraph.graph.label" required />
-            <div class="error"  ng-show="graphForm.label.$dirty && graphForm.label.$invalid">Invalid:
-              <span ng-show="graphForm.label.$error.required">Specify a label</span>
+            <div class="error"  ng-show="graphForm.label.$dirty && graphForm.label.$invalid">{{'_invalid-field-message_' | i18n}}:
+              <span ng-show="graphForm.label.$error.required" data-i18n="_label-missed-message_"></span>
             </div>
           </div>
         </div>
@@ -37,8 +37,8 @@
           <label for="description" class="col-lg-2 control-label" data-i18n="_description_"></label>
           <div class="col-lg-10">
             <input type="text" class="form-control" name="description" id="description" data-i18n-attr="_description_|placeholder" ng-model="namedgraph.graph.description" required />
-            <div class="error"  ng-show="graphForm.description.$dirty && graphForm.description.$invalid">Invalid:
-              <span ng-show="graphForm.description.$error.required">Give a description</span>
+            <div class="error"  ng-show="graphForm.description.$dirty && graphForm.description.$invalid">{{'_invalid-field-message_' | i18n}}:
+              <span ng-show="graphForm.description.$error.required" data-i18n="_description-missed-message_"></span>
             </div>
           </div>
         </div>
@@ -244,9 +244,9 @@
                   <label class="col-lg-2 control-label" data-i18n="_name_"></label>
                   <div class="col-lg-10">
                       <input type="text" class="form-control" id="name" name="name" data-i18n-attr="_name_|placeholder" ng-model="graphgroup.name" ng-disabled="!isNewGroup()" required regex-validate="identifier" unique-identifier/>
-                      <div class="error"  ng-show="groupForm.name.$dirty && groupForm.name.$invalid">Invalid:
-                          <span ng-show="groupForm.name.$error.required || groupForm.name.$error.regexValidate ">Specify a valid identifier (letters and or numbers)</span>
-                          <span ng-show="groupForm.name.$error.uniqueIdentifier">This identifier already exist</span>
+                      <div class="error"  ng-show="groupForm.name.$dirty && groupForm.name.$invalid">{{'_invalid-field-message_' | i18n}}:
+                          <span ng-show="groupForm.name.$error.required || groupForm.name.$error.regexValidate" data-i18n="_malformed-letters-number-id-message_"></span>
+                          <span ng-show="groupForm.name.$error.uniqueIdentifier" data-i18n="_id-already-exists-message_"></span>
                       </div>
                   </div>
               </div>
@@ -254,8 +254,8 @@
                   <label for="name" class="col-lg-2 control-label" data-i18n="_label_"></label>
                   <div class="col-lg-10">
                       <input type="text" class="form-control" id="label" name="label" data-i18n-attr="_label_|placeholder" ng-model="graphgroup.label" required />
-                      <div class="error"  ng-show="groupForm.label.$dirty && groupForm.label.$invalid">Invalid:
-                          <span ng-show="groupForm.label.$error.required">Specify a label</span>
+                      <div class="error"  ng-show="groupForm.label.$dirty && groupForm.label.$invalid">{{'_invalid-field-message_' | i18n}}:
+                          <span ng-show="groupForm.label.$error.required" data-i18n="_label-missed-message_"></span>
                       </div>
                   </div>
               </div>
@@ -263,8 +263,8 @@
                   <label for="description" class="col-lg-2 control-label" data-i18n="_description_"></label>
                   <div class="col-lg-10">
                       <input type="text" class="form-control" name="description" id="description" data-i18n-attr="_description_|placeholder" ng-model="graphgroup.description" required />
-                      <div class="error"  ng-show="groupForm.description.$dirty && groupForm.description.$invalid">Invalid:
-                          <span ng-show="groupForm.description.$error.required">Give a description</span>
+                      <div class="error"  ng-show="groupForm.description.$dirty && groupForm.description.$invalid">{{'_invalid-field-message_' | i18n}}:
+                          <span ng-show="groupForm.description.$error.required" data-i18n="_description-missed-message_"></span>
                       </div>
                   </div>
               </div>

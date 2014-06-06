@@ -23,9 +23,9 @@
           <label for="uri" class="col-lg-2 control-label" data-i18n="_identifier_"></label>
           <div class="col-lg-10">
             <input type="text" class="form-control" name="identifier" id="identifier" data-i18n-attr="_identifier_|placeholder" ng-model="endpoint.uri" ng-disabled="!isNew()" required regex-validate="identifier" unique-identifier>
-            <div class="error" ng-show="endpointForm.identifier.$dirty && endpointForm.identifier.$invalid">Invalid:
-              <span ng-show="endpointForm.identifier.$error.required || endpointForm.identifier.$error.regexValidate">Specify a valid identifier (letters and or numbers)</span>
-              <span ng-show="endpointForm.identifier.$error.uniqueIdentifier">This identifier already exist</span>
+            <div class="error" ng-show="endpointForm.identifier.$dirty && endpointForm.identifier.$invalid">{{'_invalid-field-message_' | i18n}}:
+              <span ng-show="endpointForm.identifier.$error.required || endpointForm.identifier.$error.regexValidate" data-i18n="_malformed-letters-number-id-message_"></span>
+              <span ng-show="endpointForm.identifier.$error.uniqueIdentifier" data-i18n="_id-already-exists-message_"></span>
             </div>
           </div>
         </div>
@@ -33,8 +33,8 @@
           <label for="label" class="col-lg-2 control-label" data-i18n="_label_"></label>
           <div class="col-lg-10">
             <input type="text" class="form-control" name="label" id="label" data-i18n-attr="_label_|placeholder" ng-model="endpoint.label" required>
-            <div class="error" ng-show="endpointForm.label.$dirty && endpointForm.label.$invalid">Invalid:
-              <span ng-show="endpointForm.label.$error.required">Specify a valid label</span>
+            <div class="error" ng-show="endpointForm.label.$dirty && endpointForm.label.$invalid">{{'_invalid-field-message_' | i18n}}:
+              <span ng-show="endpointForm.label.$error.required" data-i18n="_label-missed-message_"></span>
             </div>
           </div>
         </div>
@@ -42,8 +42,8 @@
           <label for="endpoint" class="col-lg-2 control-label" data-i18n="_endpoint_"></label>
           <div class="col-lg-10">
             <input type="text" class="form-control" name="endpoint" id="endpoint" data-i18n-attr="_endpoint_|placeholder" ng-model="endpoint.endpoint" required regex-validate="sparqlEndpoint">
-             <div class="error" ng-show="endpointForm.endpoint.$dirty && endpointForm.endpoint.$invalid">Invalid:
-              <span ng-show="endpointForm.endpoint.$error.required || endpointForm.endpoint.$error.regexValidate ">Specify a valid endpoint</span>
+             <div class="error" ng-show="endpointForm.endpoint.$dirty && endpointForm.endpoint.$invalid">{{'_invalid-field-message_' | i18n}}:
+              <span ng-show="endpointForm.endpoint.$error.required || endpointForm.endpoint.$error.regexValidate" data-i18n="_malformed-endpoint-message_"></span>
             </div>
           </div>
         </div>
@@ -51,8 +51,8 @@
           <label for="homepage" class="col-lg-2 control-label" data-i18n="_homepage_"></label>
           <div class="col-lg-10">
             <input type="text" class="form-control" name="homepage" id="homepage" data-i18n-attr="_homepage_|placeholder" ng-model="endpoint.homepage" required regex-validate="url">
-             <div class="error" ng-show="endpointForm.homepage.$dirty && endpointForm.homepage.$invalid">Invalid:
-              <span ng-show="endpointForm.homepage.$error.required || endpointForm.homepage.$error.regexValidate ">Specify a valid homepage</span>
+             <div class="error" ng-show="endpointForm.homepage.$dirty && endpointForm.homepage.$invalid">{{'_invalid-field-message_' | i18n}}:
+              <span ng-show="endpointForm.homepage.$error.required || endpointForm.homepage.$error.regexValidate" data-i18n="_malformed-homepage-message_"></span>
             </div>
           </div>
         </div>
@@ -113,9 +113,9 @@
           <label for="identifier" class="col-lg-2 control-label" data-i18n="_identifier_"></label>
           <div class="col-lg-10">
             <input type="text" class="form-control" id="identifier" name="identifier" data-i18n-attr="_identifier_|placeholder" ng-model="database.uri" ng-disabled="!isNew()" required regex-validate="identifier" unique-identifier >
-            <div class="error" ng-show="databaseForm.identifier.$dirty && databaseForm.identifier.$invalid">Invalid:
-              <span ng-show="databaseForm.identifier.$error.required || databaseForm.identifier.$error.regexValidate ">Specify a valid identifier (letters and or numbers)</span>
-              <span ng-show="databaseForm.identifier.$error.uniqueIdentifier">This identifier already exist</span>
+            <div class="error" ng-show="databaseForm.identifier.$dirty && databaseForm.identifier.$invalid">{{'_invalid-field-message_' | i18n}}:
+              <span ng-show="databaseForm.identifier.$error.required || databaseForm.identifier.$error.regexValidate" data-i18n="_malformed-letters-number-id-message_"></span>
+              <span ng-show="databaseForm.identifier.$error.uniqueIdentifier" data-i18n="_id-already-exists-message_"></span>
             </div>
           </div>
         </div>
@@ -123,8 +123,8 @@
           <label for="label" class="col-lg-2 control-label" data-i18n="_label_"></label>
           <div class="col-lg-10">
             <input type="text" class="form-control" name="label" id="label" data-i18n-attr="_label_|placeholder" ng-model="database.label" required>
-            <div class="error" ng-show="databaseForm.label.$dirty && databaseForm.label.$invalid">Invalid:
-              <span ng-show="databaseForm.label.$error.required">Specify a valid label</span>
+            <div class="error" ng-show="databaseForm.label.$dirty && databaseForm.label.$invalid">{{'_invalid-field-message_' | i18n}}:
+              <span ng-show="databaseForm.label.$error.required" data-i18n="_label-missed-message_"></span>
             </div>
           </div>
         </div>
@@ -140,8 +140,8 @@
           <label for="dbHost" class="col-lg-2 control-label" data-i18n="_host_"></label>
           <div class="col-lg-10">
             <input type="text" class="form-control" id="dbHost" name="dbHost" data-i18n-attr="_host_|placeholder" ng-model="database.dbHost" required>
-            <div class="error" ng-show="databaseForm.dbHost.$dirty && databaseForm.dbHost.$invalid">Invalid:
-              <span ng-show="databaseForm.dbHost.$error.required">Specify a valid Host</span>
+            <div class="error" ng-show="databaseForm.dbHost.$dirty && databaseForm.dbHost.$invalid">{{'_invalid-field-message_' | i18n}}:
+              <span ng-show="databaseForm.dbHost.$error.required" data-i18n="_host-missed-message_"></span>
             </div>
           </div>
         </div>
@@ -149,8 +149,8 @@
           <label for="dbPort" class="col-lg-2 control-label" data-i18n="_port_"></label>
           <div class="col-lg-10">
             <input type="text" class="form-control" id="dbPort" name="dbPort" data-i18n-attr="_port_|placeholder" ng-model="database.dbPort" required>
-            <div class="error" ng-show="databaseForm.dbPort.$dirty && databaseForm.dbPort.$invalid">Invalid:
-              <span ng-show="databaseForm.dbPort.$error.required">Specify a valid port number</span>
+            <div class="error" ng-show="databaseForm.dbPort.$dirty && databaseForm.dbPort.$invalid">{{'_invalid-field-message_' | i18n}}:
+              <span ng-show="databaseForm.dbPort.$error.required" data-i18n="_port-missed-message_"></span>
             </div>
           </div>
         </div>
@@ -158,8 +158,8 @@
           <label for="dbName" class="col-lg-2 control-label" data-i18n="_db-name_"></label>
           <div class="col-lg-10">
             <input type="text" class="form-control" id="dbName" name="dbName" data-i18n-attr="_db_|placeholder" ng-model="database.dbName" required>
-            <div class="error" ng-show="databaseForm.dbName.$dirty && databaseForm.dbName.$invalid">Invalid:
-              <span ng-show="databaseForm.dbName.$error.required">Specify a valid database name</span>
+            <div class="error" ng-show="databaseForm.dbName.$dirty && databaseForm.dbName.$invalid">{{'_invalid-field-message_' | i18n}}:
+              <span ng-show="databaseForm.dbName.$error.required" data-i18n="_db-name-missed-message_"></span>
             </div>
           </div>
         </div>
@@ -167,8 +167,8 @@
           <label for="dbUser" class="col-lg-2 control-label" data-i18n="_user_"></label>
           <div class="col-lg-10">
             <input type="text" class="form-control" id="dbUser" name="dbUser" data-i18n-attr="_user_|placeholder" ng-model="database.dbUser" required>
-            <div class="error" ng-show="databaseForm.dbUser.$dirty && databaseForm.dbUser.$invalid">Invalid:
-              <span ng-show="databaseForm.dbUser.$error.required">Specify a valid user</span>
+            <div class="error" ng-show="databaseForm.dbUser.$dirty && databaseForm.dbUser.$invalid">{{'_invalid-field-message_' | i18n}}:
+              <span ng-show="databaseForm.dbUser.$error.required" data-i18n="_user-missed-message_"></span>
             </div>
           </div>
         </div>
@@ -176,8 +176,8 @@
           <label for="dbPassword" class="col-lg-2 control-label" data-i18n="_password_"></label>
           <div class="col-lg-10">
             <input type="text" class="form-control" id="dbPassword" name="dbPassword" data-i18n-attr="_password_|placeholder" ng-model="database.dbPassword" required>
-            <div class="error" ng-show="databaseForm.dbPassword.$dirty && databaseForm.dbPassword.$invalid">Invalid:
-              <span ng-show="databaseForm.dbPassword.$error.required">Specify a valid password</span>
+            <div class="error" ng-show="databaseForm.dbPassword.$dirty && databaseForm.dbPassword.$invalid">{{'_invalid-field-message_' | i18n}}:
+              <span ng-show="databaseForm.dbPassword.$error.required" data-i18n="_password-missed-message_"></span>
             </div>
           </div>
         </div>

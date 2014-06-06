@@ -1,12 +1,12 @@
 <div ng-controller="SearchCtrl">
-    <h3 class="green bold">Search</h3>
+    <h3 class="green bold" data-i18n="_search_"></h3>
     <button type="button" class="btn btn-primary btn-large" data-toggle="modal" ng-click="setUrl(); openModal();">Open Solr</button>
 
     <div class="modal" id="fullModal">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" ng-click="close('#fullModal')" aria-hidden="true">&times;</button>
-                <h5 class="modal-title green bold">Faceted Search</h5>
+                <h5 class="modal-title green bold" data-i18n="_faceted-search_"></h5>
             </div>
             <div class="modal-body">
                 <modal-iframe></modal-iframe>

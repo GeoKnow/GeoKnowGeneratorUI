@@ -20,8 +20,8 @@
                     <label for="username" class="col-lg-2 control-label" data-i18n="_login_"></label>
                     <div class="col-lg-10">
                         <input type="text" id="username" name="username" class="form-control" placeholder="Username" ng-model="user.profile.username" ng-disabled="!isNew()" required/>
-                        <div class="error" ng-show="userForm.username.$dirty && userForm.username.$invalid">Invalid:
-                            <span ng-show="userForm.username.$error.required">Specify a username</span>
+                        <div class="error" ng-show="userForm.username.$dirty && userForm.username.$invalid">{{'_invalid-field-message_' | i18n}}:
+                            <span ng-show="userForm.username.$error.required" data-i18n="_username-missed-message_"></span>
                         </div>
                     </div>
                 </div>
@@ -29,9 +29,9 @@
                     <label for="email" class="col-lg-2 control-label" data-i18n="_email_"></label>
                     <div class="col-lg-10">
                         <input type="email" id="email" name="email" class="form-control" placeholder="E-mail" ng-model="user.profile.email" ng-disabled="!isNew()" required/>
-                        <div class="error" ng-show="userForm.email.$dirty && userForm.email.$invalid">Invalid:
-                            <span ng-show="userForm.email.$error.required">Specify email</span>
-                            <span ng-show="userForm.email.$error.email">This is not a valid email</span>
+                        <div class="error" ng-show="userForm.email.$dirty && userForm.email.$invalid">{{'_invalid-field-message_' | i18n}}:
+                            <span ng-show="userForm.email.$error.required" data-i18n="_email-missed-message_"></span>
+                            <span ng-show="userForm.email.$error.email" data-i18n="_malformed-email-message_"></span>
                         </div>
                     </div>
                 </div>

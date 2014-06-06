@@ -39,8 +39,8 @@
             <label for="number" class="col-lg-4 control-label" data-i18n="_acc-doc-number_"></label>
             <div class="col-lg-8">
                 <input type="text" class="form-control" id="number" name="number" ng-model="document.accDocumentNumber" data-i18n-attr="_fill-doc-number_|placeholder" required regex-validate="docNumber" />
-                <div class="error" ng-show="documentForm.number.$dirty && documentForm.number.$invalid">Invalid:
-                    <span ng-show="documentForm.number.$error.required || documentForm.number.$error.regexValidate">Specify valid ACC document number</span>
+                <div class="error" ng-show="documentForm.number.$dirty && documentForm.number.$invalid">{{'_invalid-field-message_' | i18n}}:
+                    <span ng-show="documentForm.number.$error.required || documentForm.number.$error.regexValidate" data-i18n="_malformed-doc-number-message_"></span>
                 </div>
             </div>
         </div>
@@ -48,8 +48,8 @@
             <label for="iteration" class="col-lg-4 control-label" data-i18n="_acc-doc-iteration_"></label>
             <div class="col-lg-8">
                 <input type="text" class="form-control" id="iteration" name="iteration" ng-model="document.accDocumentIteration" data-i18n-attr="_fill-doc-iteration_|placeholder" required regex-validate="docIteration" />
-                <div class="error" ng-show="documentForm.iteration.$dirty && documentForm.iteration.$invalid">Invalid:
-                    <span ng-show="documentForm.iteration.$error.required || documentForm.iteration.$error.regexValidate">Specify valid ACC document iteration</span>
+                <div class="error" ng-show="documentForm.iteration.$dirty && documentForm.iteration.$invalid">{{'_invalid-field-message_' | i18n}}:
+                    <span ng-show="documentForm.iteration.$error.required || documentForm.iteration.$error.regexValidate" data-i18n="_malformed-doc-iteration-message_"></span>
                 </div>
             </div>
         </div>
@@ -57,8 +57,8 @@
             <label for="received" class="col-lg-4 control-label" data-i18n="_date-doc-received_"></label>
             <div class="col-lg-8">
                 <input ui-date="{dateFormat: 'yy-mm-dd'}" ui-date-format="yy-mm-dd" class="form-control" id="received" name="received" ng-model="document.dateReceived" required />
-                <div class="error" ng-show="documentForm.received.$dirty && documentForm.received.$invalid">Invalid:
-                    <span ng-show="documentForm.received.$error.required">Specify received date</span>
+                <div class="error" ng-show="documentForm.received.$dirty && documentForm.received.$invalid">{{'_invalid-field-message_' | i18n}}:
+                    <span ng-show="documentForm.received.$error.required" data-i18n="_doc-received-date-missed-message_"></span>
                 </div>
             </div>
         </div>
