@@ -359,3 +359,7 @@ form{
     margin-top: 15px;
     margin-left: 15px;
 }
+
+.modal-wide {
+    width: 70%;
+}
