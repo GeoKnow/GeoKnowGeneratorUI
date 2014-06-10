@@ -1340,10 +1340,6 @@ module.factory("DocumentsService", function($http, $q, Config, DateService, Conf
             uploader: doc["acc:uploader"][0],
             dateUploaded: doc["acc:dateUploaded"][0]
         };
-        //accNote
-        if (res.accNote!=null && res.accNote.value==="") res.accNote = "";
-        //accDescription
-        if (res.accDescription!=null && res.accDescription.value==="") res.accDescription = null;
         //dateReceived
         var dr = new Date();
         dr.setTime(Date.parse(doc["acc:dateReceived"][0]));
@@ -1425,13 +1421,13 @@ module.factory("DocumentsService", function($http, $q, Config, DateService, Conf
                             + " ?s dc:creator " + document.owner.uri + " . "
                             + newOwnerTriples
                             + " ?s acc:documentType \"" + document.documentType + "\" . "
-                            + (document.ownerDocumentNumber==null || document.ownerDocumentNumber=="" ? "" : " ?s acc:ownerDocumentNumber \"" + document.ownerDocumentNumber + "\" . ")
-                            + (document.ownerDocumentName==null || document.ownerDocumentName=="" ? "" : " ?s acc:ownerDocumentName \"" + document.ownerDocumentName + "\" . ")
-                            + (document.ownerDocumentRevision==null || document.ownerDocumentRevision=="" ? "" : " ?s acc:ownerDocumentRevision \"" + document.ownerDocumentRevision + "\" . ")
-                            + (document.ownerDocumentRevisionData==null || document.ownerDocumentRevisionData=="" ? "" : " ?s acc:ownerDocumentRevisionData \"" + document.ownerDocumentRevisionData + "\"^^xsd:date . ")
+                            + (!document.ownerDocumentNumber ? "" : " ?s acc:ownerDocumentNumber \"" + document.ownerDocumentNumber + "\" . ")
+                            + (!document.ownerDocumentName ? "" : " ?s acc:ownerDocumentName \"" + document.ownerDocumentName + "\" . ")
+                            + (!document.ownerDocumentRevision ? "" : " ?s acc:ownerDocumentRevision \"" + document.ownerDocumentRevision + "\" . ")
+                            + (!document.ownerDocumentRevisionData ? "" : " ?s acc:ownerDocumentRevisionData \"" + document.ownerDocumentRevisionData + "\"^^xsd:date . ")
                             + " ?s acc:isApplicable \"" + document.isApplicable + "\" . "
-                            + (document.accDescription==null || document.accDescription=="" ? "" : " ?s acc:accDescription \"" + document.accDescription + "\" . ")
-                            + (document.accNote==null || document.accNote=="" ? "" : " ?s acc:accNote \"" + document.accNote + "\" . ")
+                            + (!document.accDescription ? "" : " ?s acc:accDescription \"" + document.accDescription + "\" . ")
+                            + (!document.accNote ? "" : " ?s acc:accNote \"" + document.accNote + "\" . ")
                             + " ?s acc:dateReceived \"" + document.dateReceived + "\"^^xsd:date .} "
                     + " WHERE {?s acc:uuid \"" + document.uuid + "\" . "
                             + " ?s acc:accDocumentNumber ?adn . "

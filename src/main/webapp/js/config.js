@@ -100,7 +100,7 @@ angular.module("app.configuration", [])
 
         var ns = function(v)
         {
-                var value = v.value || v;
+                var value = v.value==undefined ? v : v.value;
 
                 if (!v.type || v.type == "uri")
                 {
