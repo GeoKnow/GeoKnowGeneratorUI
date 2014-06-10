@@ -78,14 +78,14 @@
             
 										<div class="form-group">
                                             <label class="sr-only" for="login" data-i18n="_username-email_"></label>
-                                            <input type="text" class="form-control col-xs-3 input-sm" id="login" data-i18n-attr="_username-email_|placeholder" ng-model="login.username" required>
+                                            <input type="text" class="form-control col-xs-3 input-sm" id="login" data-i18n-attr="_username-email_|placeholder" ng-model="login.username" autofillable required>
                                             <div class="error" ng-show="loginForm.login.$dirty && loginForm.login.$invalid">{{'_invalid-field-message_' | i18n}}:
                                                 <span ng-show="loginForm.login.$error.required" data-i18n="_username-missed-message_"></span>
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <label class="sr-only" for="password" data-i18n="_password_"></label>
-                                            <input type="password" class="form-control col-xs-3 input-sm" id="password" data-i18n-attr="_password_|placeholder" ng-model="login.password" required>
+                                            <input type="password" class="form-control col-xs-3 input-sm" id="password" data-i18n-attr="_password_|placeholder" ng-model="login.password" autofillable required>
                                         </div>
                                         <div class="error" ng-show="loginForm.password.$dirty && loginForm.password.$invalid">{{'_invalid-field-message_' | i18n}}:
                                             <span ng-show="loginForm.password.$error.required" data-i18n="_password-missed-message_"></span>

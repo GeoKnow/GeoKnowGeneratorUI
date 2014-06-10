@@ -62,6 +62,24 @@ app.directive('ngConfirmClick', [
   }
 ]);
 
+//directive to fix angularjs autofill issue (update form model on autofill)
+app.directive('autofillable', function ($timeout) {
+    return {
+        restrict: 'A',
+        require: 'ngModel',
+        link: function (scope, elem, attrs, ctrl) {
+            scope.check = function(){
+                var val = elem[0].value;
+                if(ctrl.$viewValue !== val){
+                    ctrl.$setViewValue(val)
+                }
+                $timeout(scope.check, 300);
+            };
+            scope.check();
+        }
+    }
+});
+
 /****************************************************************************************************
 *
 * GEOLIFT Directives
