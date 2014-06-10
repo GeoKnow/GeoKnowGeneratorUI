@@ -31,7 +31,7 @@ public class FrameworkConfiguration {
     private String resourceNamespace = "http://generator.geoknow.eu/resource/";
 
     //email
-	private String smtpHost		= "smtp-relay.gmail.com";
+	private String smtpHost		= "smtp.gmail.com";
 	private String smtpTLSPort	= "587";
 	private String smtpSSLPort	= "465";
     //set this parameters before run
