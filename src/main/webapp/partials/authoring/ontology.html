@@ -72,7 +72,7 @@
                 <div class="row">
                     <label for="source-type" class="col-xs-4 control-label" data-i18n="_import-from_"></label>
                     <div class="col-xs-8">
-                        <select id="source-type" class="form-control" ng-model="sourceType" ng-options="c.label for c in sourceTypes" ng-change="updateForm()" required></select>
+                        <select id="source-type" class="form-control" ng-model="sourceType" ng-options="c as localize(c.label) for c in sourceTypes" ng-change="updateForm()" required></select>
                     </div>
                 </div>
             </form>
