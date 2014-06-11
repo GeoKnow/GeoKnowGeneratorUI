@@ -2454,7 +2454,7 @@ var GoogleMapWindow = function ($scope, $timeout, $log) {
 * Ontologies Controller
 *
 ***************************************************************************************************/
-var OntologyCtrl = function($scope, $http, flash, ServerErrorResponse, AccountService, OntologyService, ConfigurationService, localize) {
+var OntologyCtrl = function($scope, $http, flash, ServerErrorResponse, AccountService, OntologyService, ConfigurationService, localize, DocumentErrorResponse) {
     var miniDixServices = ConfigurationService.getComponentServices(":MiniDix");
 	var miniDixServiceUrl = miniDixServices[0].serviceUrl;
 
@@ -2598,7 +2598,8 @@ var OntologyCtrl = function($scope, $http, flash, ServerErrorResponse, AccountSe
                 $scope.close('#reindexDocuments');
                 console.log("reindex failed");
                 console.log(response);
-                flash.error = ServerErrorResponse.getMessage(response.status);
+                if (response.status==500) flash.error = ServerErrorResponse.getMessage(response.status) + ": " + DocumentErrorResponse.getMessage(parseInt(response.data));
+                else flash.error = ServerErrorResponse.getMessage(response.status);
                 $scope.reindexing = false;
             });
     };
@@ -3508,7 +3509,7 @@ var D2RQMappingCtrl = function($scope, $http, $q, flash, ServerErrorResponse, Ac
     };
 };
 
-var UploadedDocsCtrl = function($scope, $http, flash, filterFilter, orderByFilter, DocumentsService, ServerErrorResponse, ConfigurationService, localize) {
+var UploadedDocsCtrl = function($scope, $http, flash, filterFilter, orderByFilter, DocumentsService, ServerErrorResponse, ConfigurationService, localize, DocumentErrorResponse) {
     $scope.filterFields = [
         {value: "all", label: "_all-fields_"},
         {value: "docId", label: "_acc-doc_"},
@@ -3715,7 +3716,8 @@ var UploadedDocsCtrl = function($scope, $http, flash, filterFilter, orderByFilte
             $scope.refreshDocuments();
             console.log("Document " + id + " was deleted")
         }, function(response) {
-            flash.error = ServerErrorResponse.getMessage(response.status);
+            if (response.status==500) flash.error = ServerErrorResponse.getMessage(response.status) + ": " + DocumentErrorResponse.getMessage(parseInt(response.data));
+            else flash.error = ServerErrorResponse.getMessage(response.status);
         });
     };
 
@@ -3822,7 +3824,7 @@ var UploadedDocsCtrl = function($scope, $http, flash, filterFilter, orderByFilte
     };
 };
 
-var UploadDocCtrl = function($scope, $http, flash, ServerErrorResponse, ConfigurationService, DocumentsService, AccountService, localize) {
+var UploadDocCtrl = function($scope, $http, flash, ServerErrorResponse, ConfigurationService, DocumentsService, AccountService, localize, DocumentErrorResponse) {
     var services = ConfigurationService.getComponentServices(":SolrUploadProxy");
 	var solrUploadServiceUrl = services[0].serviceUrl;
 
@@ -3855,7 +3857,8 @@ var UploadDocCtrl = function($scope, $http, flash, ServerErrorResponse, Configur
                     flash.success = localize.getLocalizedString("_uploading-finished-message_");;
                 }, function(response) {
                     $scope.uploading = false;
-                    flash.error = ServerErrorResponse.getMessage(response.status);
+                    if (response.status == 500) flash.error = ServerErrorResponse.getMessage(response.status) + ": " + DocumentErrorResponse.getMessage(parseInt(response.data));
+                    else flash.error = ServerErrorResponse.getMessage(response.status);
                 });
         }
     };

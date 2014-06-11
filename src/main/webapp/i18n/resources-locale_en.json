@@ -922,5 +922,64 @@
         "key":"_uploading-finished-message_",
         "value":"Uploaded",
         "description":"message shown when some upload operation finished successfully (documents, etc.)"
+    },
+
+
+    {
+        "key":"_bad-request_",
+        "value":"Bad Request",
+        "description":"bad request http status (400)"
+    },
+    {
+        "key":"_unauthorized_",
+        "value":"Unauthorized",
+        "description":"unauthorized http status (401)"
+    },
+    {
+        "key":"_forbidden_",
+        "value":"Forbidden",
+        "description":"forbidden http status (403)"
+    },
+    {
+        "key":"_not-found_",
+        "value":"Not Found",
+        "description":"not found http status (404)"
+    },
+    {
+        "key":"_internal-server-error_",
+        "value":"Internal Server Error",
+        "description":"internal server error http status (500)"
+    },
+    {
+        "key":"_error-occurred_",
+        "value":"An error occurred",
+        "description":"http error occurred"
+    },
+
+
+    {
+        "key":"_doc-upload-protected-error_",
+        "value":"The uploaded file is password protected and could not be analyzed",
+        "description":"The uploaded file is password protected and could not be analyzed (documents uploading)"
+    },
+    {
+        "key":"_doc-upload-required-error_",
+        "value":"Not all required information provided",
+        "description":"Not all required information provided (documents uploading)"
+    },
+    {
+        "key":"_doc-upload-analyzing-error_",
+        "value":"Internal problems while analyzing the document. Contact the administrator",
+        "description":"Internal problems while analyzing the document (documents uploading)"
+    },
+    {
+        "key":"_doc-delete-error_",
+        "value":"Error while deleting the document",
+        "description":"Error while deleting the document"
+    },
+    {
+        "key":"_doc-reindex-error_",
+        "value":"Error while re-indexing the document",
+        "description":"Error while re-indexing the document"
     }
 ]

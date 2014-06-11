@@ -38,7 +38,7 @@ module.factory('DateService', function(){
   return DateService;
 });
 
-module.factory('ServerErrorResponse', function() {
+module.factory('ServerErrorResponse', function(localize) {
 
   var ServerErrorResponseService = {
 
@@ -47,22 +47,22 @@ module.factory('ServerErrorResponse', function() {
     var statusText = '';
       switch (status) {
       case 400:
-        statusText = 'Bad Request';
+        statusText = localize.getLocalizedString('_bad-request_');
         break;
       case 401:
-        statusText = 'Unauthorized';
+        statusText = localize.getLocalizedString('_unauthorized_');
         break;
       case 403:
-        statusText = 'Forbidden';
+        statusText = localize.getLocalizedString('_forbidden_');
         break;
       case 404:
-        statusText = 'Not Found ';
+        statusText = localize.getLocalizedString('_not-found_');
         break;
       case 500:
-        statusText = 'Internal Server Error';
+        statusText = localize.getLocalizedString('_internal-server-error_');
         break;
       default:
-        statusText = 'An error occurred:'+status;
+        statusText = localize.getLocalizedString('_error-occurred_')+':'+status;
       };
       return statusText;
     }
@@ -1525,4 +1525,33 @@ module.factory("DocumentsService", function($http, $q, Config, DateService, Conf
         readOwners      : readOwners,
         getAllOwners    : getAllOwners
     };
+});
+
+module.factory('DocumentErrorResponse', function(localize) {
+    var DocumentErrorResponseService = {
+        getMessage: function(code) {
+            var errorText = '';
+            switch (code) {
+                case 1:
+                    errorText = localize.getLocalizedString("_doc-upload-protected-error_");
+                    break;
+                case 2:
+                    errorText = localize.getLocalizedString("_doc-upload-required-error_");
+                    break;
+                case 3:
+                    errorText = localize.getLocalizedString("_doc-upload-analyzing-error_");
+                    break;
+                case 4:
+                    errorText = localize.getLocalizedString("_doc-delete-error_");
+                    break;
+                case 5:
+                    errorText = localize.getLocalizedString("_doc-reindex-error_");
+                    break;
+                default:
+                    errorText = code;
+            };
+            return errorText;
+        }
+    };
+    return DocumentErrorResponseService;
 });
