@@ -14,32 +14,13 @@ These option will not install any integrated component from the stack and you re
 
 ### Application configuration
 
-1. You can editt the following default variables in `src/webapp/js/config.js`:
+1. Make a copy of the `src/main/resources/framework-configuration-template.ttl` to `src/main/resources/framework-configuration.ttl` and provide the ***REMOVED*** data.
 
-			// the public and authenticated enpoints that will be used by the application
-      var AUTH_ENDPOINT           = "http://generator.geoknow.eu:8890/sparql-auth";
-      var PUBLIC_ENDPOINT         = "http://generator.geoknow.eu:8890/sparql";
-      // if new resorces are created they will use this name space, and it can be changed
-      var NS                      = "http://generator.geoknow.eu/resource/";
-      // this is the graph where settings are stored, it doesnt change, and independent on the Namespace
-      var DEFAULT_SETTINGS_GRAPH  = "http://generator.geoknow.eu/resource/settingsGraph";
-      // SETTINGS_GRAPH is initalized with DEFAULT_SETTINGS_GRAPH, but can be changed with setGraph, 
-      var SETTINGS_GRAPH          = DEFAULT_SETTINGS_GRAPH;
-      // Create a graph for groups of users
-      var GROUPS_GRAPH        = "http://generator.geoknow.eu/resource/groupsGraph";
+1. Make a copy of the `src/main/webapp/WEB-INF/web-template.xml` to `src/main/webapp/WEB-INF/web.xml` and provide the ***REMOVED*** data.
+
 
 Note that the endpoint has to support [UPDATE](http://www.w3.org/TR/2013/REC-sparql11-update-20130321/) service and [Graph Store HTTP Protocol](http://www.w3.org/TR/2013/REC-sparql11-http-rdf-update-20130321/) 
 	
-2. Create the DEFAULT_SETTINGS_GRAPH in the application ENDPOINT
-
-3. Edit the configuration files provided in `src/main/resources` these files stand for the follwing:
-	* ldsi-schema.ttl : a schema for integrating tools form the linked data stack
-	* generator-ontology.ttl : a schema for managing data sources and datasets in the GeoKnow Generator
-	* geoknow-initial-settings.ttl : description of integrated services, this may depend on the integration you want to have in your application. It will provide required infomration about the stack components. This file also contains information about some data sources and graphs used in the application (i.e. GraphSettings)
-
-	And load these files in the DEFAULT_SETTINGS_GRAPH
-
-4. Load the generator-accounts-ontology.ttl in to the GROUPS_GRAPH.
 
 ## Optional Extra Configutation
 
