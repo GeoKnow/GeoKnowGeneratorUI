@@ -95,6 +95,11 @@ module.factory("LoginService", function ($http, $location, $cookieStore, Account
             data: $.param(postData),
             contentType: "application/x-www-form-urlencoded"
         });
+        var encodedUser = Base64.encode(AccountService.getUsername());
+        var encodedPass = Base64.encode(newPassword);
+        $http.defaults.headers.common.Authorization = 'User ' + encodedUser + ' Pass ' + encodedPass;
+        $cookieStore.put('User', encodedUser);
+        $cookieStore.put('Pass', encodedPass);
     };
 
     var restorePassword = function (username) {
