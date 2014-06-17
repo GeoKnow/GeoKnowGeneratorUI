@@ -37,15 +37,15 @@ angular.module("app.configuration", [])
     var AUTH_ENDPOINT;
     var PUBLIC_ENDPOINT;
     
-    var FRAMEWORK_URI  = "http://generator.geoknow.eu/resource/GeoKnowGenerator";
+    var FRAMEWORK_URI  = "http://ldiw.ontos.com/resource/GeoKnowGenerator";
     // if new resorces are created they will use this name space, and it can be changed
-    var NS                          = "http://generator.geoknow.eu/resource/";
+    var NS                          = "http://ldiw.ontos.com/resource/";
     // this is the graph where settings are stored, it doesnt change, and independent on the Namespace
-    var DEFAULT_SETTINGS_GRAPH_URI  = "http://generator.geoknow.eu/resource/settingsGraph";
+    var DEFAULT_SETTINGS_GRAPH_URI  = "http://ldiw.ontos.com/resource/settingsGraph";
     // SETTINGS_GRAPH_URI is initalized with DEFAULT_SETTINGS_GRAPH_URI, but can be changed with setGraph, 
     var SETTINGS_GRAPH_URI          = DEFAULT_SETTINGS_GRAPH_URI;
     // Create a graph for groups of users
-    var GROUPS_GRAPH_URI            = "http://generator.geoknow.eu/resource/groupsGraph";
+    var GROUPS_GRAPH_URI            = "http://ldiw.ontos.com/resource/groupsGraph";
     
 
     var namespaces =
@@ -55,7 +55,7 @@ angular.module("app.configuration", [])
         "http://purl.org/dc/terms/"                        : "dcterms:",
         "http://xmlns.com/foaf/0.1/"                       : "foaf:",
         "http://stack.linkeddata.org/ldis-schema/"   	   : "lds:",
-        "http://generator.geoknow.eu/ontology/"            : "gkg:",
+        "http://ldiw.ontos.com/ontology/"            : "gkg:",
         "http://www.w3.org/1999/02/22-rdf-syntax-ns#"      : "rdf:",
         "http://www.w3.org/2000/01/rdf-schema#"            : "rdfs:",
         "http://www.w3.org/ns/sparql-service-description#" : "sd:",

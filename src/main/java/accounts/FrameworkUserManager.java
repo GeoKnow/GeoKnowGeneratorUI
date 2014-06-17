@@ -394,9 +394,9 @@ public class FrameworkUserManager implements UserManager {
       else if (predicate.equals("http://xmlns.com/foaf/0.1/mbox")) {
         String mbox = bindingNode.path("o").path("value").getTextValue();
         userProfile.setEmail(mbox.substring("mailto:".length()));
-      } else if (predicate.equals("http://generator.geoknow.eu/accounts/ontology/role")) {
+      } else if (predicate.equals("http://ldiw.ontos.com/accounts/ontology/role")) {
         String role = bindingNode.path("o").path("value").getTextValue();
-        userProfile.setAdmin(role.equals("http://generator.geoknow.eu/accounts/admin"));
+        userProfile.setAdmin(role.equals("http://ldiw.ontos.com/accounts/admin"));
       }
     }
     return userProfile;
