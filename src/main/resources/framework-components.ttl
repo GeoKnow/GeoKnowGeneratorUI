@@ -62,15 +62,15 @@
 
 :VirtuosoConductor 
   a  lds:StorageService  ;
-  lds:serviceUrl <http://10.0.0.84:8890/conductor> .
+  lds:serviceUrl <http://localhost:8890/conductor> .
 
 :VirtuosoAuthSPARQLEndpoint
   a       lds:SecuredSPARQLEndPointService ;
-  lds:serviceUrl <http://10.0.0.84:8890/sparql-auth> .
+  lds:serviceUrl <http://localhost:8890/sparql-auth> .
 
 :VirtuosoEndpoint
   a       lds:SPARQLEndPointService ;
-  lds:serviceUrl <http://10.0.0.84:8890/sparql> .
+  lds:serviceUrl <http://localhost:8890/sparql> .
 
 :Sparqlify
       a       lds:StackComponent ;
@@ -142,3 +142,21 @@
 :MappifyService
       a       lds:ExplorationService ;
       lds:serviceUrl <http://cstadler.aksw.org/mappify2/> .
+
+:D2RQ
+      a       lds:StackComponent ;
+      rdfs:label "D2RQ"^^xsd:string ;
+      lds:providesService :D2RQService ;
+      lds:version "0.1-SNAPSHOT"^^xsd:string .
+:D2RQService
+      a       lds:ExtractionService ;
+      lds:serviceUrl <http://localhost:8080/d2rq-mapper-web-service/api> .
+
+:MiniDix
+      a       lds:StackComponent ;
+      rdfs:label "MiniDix"^^xsd:string ;
+      lds:providesService :MiniDixService ;
+      lds:version "0.1-SNAPSHOT"^^xsd:string .
+:MiniDixService
+      a       lds:AuthoringService ;
+      lds:serviceUrl <http://localhost:8080/minidix-web> .

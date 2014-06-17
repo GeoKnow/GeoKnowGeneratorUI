@@ -9,7 +9,7 @@
     <div class="modal-content">
     <form name="graphForm" class="form-horizontal InputForm" role="form" novalidate>
       <div class="modal-header">
-        <button type="button" class="close" ng-click="close('#modalLogin')" aria-hidden="true">&times;</button>
+        <button type="button" class="close" ng-click="close('#modalGraph')" aria-hidden="true">&times;</button>
         <h5 class="modal-title green bold">{{modaltitle}}</h5>
       </div>
 
@@ -92,7 +92,7 @@
       </div>
       <div class="modal-footer">
         <button type="submit" class="btn-sm btn-success" ng-click="save();" ng-disabled="graphForm.$invalid || isUnchanged(namedgraph)">Save</button>
-        <button type="button" class="btn-sm btn-default" ng-click="close('#modalLogin')">Cancel</button>
+        <button type="button" class="btn-sm btn-default" ng-click="close('#modalGraph')">Cancel</button>
       </div>      
     </form>
  	</div>
@@ -236,7 +236,7 @@
     <div class="modal-content">
       <form name="groupForm" class="form-horizontal InputForm" role="form" novalidate>
           <div class="modal-header">
-              <button type="button" class="close" ng-click="close('#modalLogin')" aria-hidden="true">&times;</button>
+              <button type="button" class="close" ng-click="close('#modalGroup')" aria-hidden="true">&times;</button>
               <h5 class="modal-title green bold">{{modaltitle}}</h5>
           </div>
 
@@ -292,7 +292,7 @@
           </div>
           <div class="modal-footer">
               <button type="submit" class="btn-sm btn-success" ng-click="saveGroup();" ng-disabled="groupForm.$invalid || isUnchanged(graphgroup)">Save</button>
-              <button type="button" class="btn-sm btn-default" ng-click="close('#modalLogin')">Cancel</button>
+              <button type="button" class="btn-sm btn-default" ng-click="close('#modalGroup')">Cancel</button>
           </div>
       </form>
       </div>

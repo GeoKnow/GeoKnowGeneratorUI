@@ -155,6 +155,15 @@
       <url-pattern>/UserManagerServlet</url-pattern>
   </servlet-mapping>
 
+  <servlet>
+      <servlet-name>ExecuteD2RQTaskServlet</servlet-name>
+      <servlet-class>ExecuteD2RQTaskServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+      <servlet-name>ExecuteD2RQTaskServlet</servlet-name>
+      <url-pattern>/ExecuteD2RQTaskServlet</url-pattern>
+  </servlet-mapping>
+
   <mime-mapping>
     <extension>n3</extension>
     <mime-type>text/n3</mime-type>

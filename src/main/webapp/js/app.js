@@ -8,6 +8,8 @@ var app = angular.module('app', ['ngRoute',
                                  'app.account-service',
                                  'app.graph-group-service',
                                  'app.login-service',
+                                 'app.ontology-service',
+                                 'app.d2rq-service',
                                  'app.directives', 
                                  'app.configuration',
                                  'ui.bootstrap',
@@ -36,17 +38,21 @@ app.config(function($routeSegmentProvider, $routeProvider)
         .when('/settings/datasets', 'settings.datasets')
         .when('/settings/namespaces', 'settings.namespaces')
         .when('/settings/components', 'settings.components')
-        // .when('/settings/users', 'settings.users')
+        .when('/settings/users', 'settings.users')
         .when('/home/extraction-and-loading/import-rdf', 'default.import-rdf')
         .when('/home/extraction-and-loading/sparqlify', 'default.sparqlify')
         .when('/home/extraction-and-loading/triplegeo', 'default.triplegeo')
         .when('/home/extraction-and-loading/triplegeo-result', 'default.triplegeo-result')
+        .when('/home/extraction-and-loading/d2rq', 'default.d2rq.mapping')
+        .when('/home/extraction-and-loading/d2rq/mapping', 'default.d2rq.mapping')
+        .when('/home/extraction-and-loading/d2rq/task', 'default.d2rq.task')
         .when('/home/search-querying-and-exploration/virtuoso', 'default.virtuoso')
         .when('/home/search-querying-and-exploration/geospatial', 'default.geospatial')
      /*   .when('/home/search-querying-and-exploration/googlemap', 'default.googlemap') */
         .when('/home/search-querying-and-exploration/facete', 'default.facete')
         .when('/home/search-querying-and-exploration/mappify', 'default.mappify')
         .when('/home/manual-revision-and-authoring/ontowiki', 'default.ontowiki')
+        .when('/home/manual-revision-and-authoring/ontology', 'default.ontology')
         .when('/home/linking-and-fusing/limes', 'default.limes')
         .when('/home/classification-and-enrichment/geolift', 'default.geolift')
 
@@ -94,6 +100,32 @@ app.config(function($routeSegmentProvider, $routeProvider)
                     templateUrl: 'js/workbench/extraction-and-loading/triplegeo.html' })
                 .segment('triplegeo-result', {
                     templateUrl: 'js/workbench/extraction-and-loading/triplegeo-result.html' })
+                .segment('d2rq', {
+                    templateUrl: 'js/workbench/extraction-and-loading/d2rq.html' })
+                    .within()
+                        .segment('mapping', {
+                            templateUrl: 'js/workbench/extraction-and-loading/d2rq-mapping.html',
+                            resolve: {
+                                    mappingGroups: function(D2RQService) {
+                                        return D2RQService.readMappingGroups();
+                                    },
+                                    settings: function (Config) {
+                                        return Config.read();
+                                    }
+                                }
+                            })
+                        .segment('task', {
+                            templateUrl: 'js/workbench/extraction-and-loading/d2rq-task.html',
+                            resolve: {
+                                    tasks: function(D2RQService) {
+                                        return D2RQService.readTasks();
+                                    },
+                                    settings: function (Config) {
+                                        return Config.read();
+                                    }
+                                }
+                            })
+                    .up()
                 .segment('geospatial', {
                     templateUrl: 'js/workbench/search-querying-and-exploration/geospatial.html'})
      /*           .segment('googlemap', {
@@ -106,6 +138,17 @@ app.config(function($routeSegmentProvider, $routeProvider)
                     templateUrl: 'js/workbench/search-querying-and-exploration/virtuoso.html'})
                 .segment('ontowiki', {
                     templateUrl: 'js/workbench/manual-revision-and-authoring/ontowiki.html' })
+                .segment('ontology', {
+                    templateUrl: 'js/workbench/manual-revision-and-authoring/ontology.html',
+                    resolve: {
+                            ontologies: function (OntologyService) {
+                                return OntologyService.readOntologies();
+                            },
+                            settings: function (Config) {
+                                return Config.read();
+                            }
+                        }
+                    })
                 .segment('geolift', {
                     templateUrl: 'js/workbench/classification-and-enrichment/geolift.html' })
                 .segment('limes', {
@@ -130,8 +173,8 @@ app.config(function($routeSegmentProvider, $routeProvider)
                     templateUrl: 'js/settings/namespaces/namespaces.html'})
                 .segment('components', {
                     templateUrl: 'js/settings/components/components.html'})
-                // .segment('users', {
-                    // templateUrl: 'js/admin/users.html'})
+                .segment('users', {
+                    templateUrl: 'js/admin/users.html'})
             .up()
            
         .segment('account', {

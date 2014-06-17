@@ -11,7 +11,7 @@
   <div class="modal-dialog">
     <div class="modal-content">
     <div class="modal-header">
-      <button type="button" class="close" ng-click="close('#modalLogin')" aria-hidden="true">&times;</button>
+      <button type="button" class="close" ng-click="close('#modalEndpoint')" aria-hidden="true">&times;</button>
       <h5 class="modal-title green bold">{{modaltitle}}</h5>
     </div>
     <div class="modal-body">
@@ -57,7 +57,7 @@
     </div>
     <div class="modal-footer">
       <button type="submit" class="btn-sm btn-success" ng-click="save()" ng-disabled="endpointForm.$invalid || isUnchanged(endpoint)">Save</button>
-      <button type="button" class="btn-sm btn-default" ng-click="close('#modalLogin')">Cancel</button>
+      <button type="button" class="btn-sm btn-default" ng-click="close('#modalEndpoint')">Cancel</button>
     </div>
     </div>
     </div>
@@ -101,7 +101,7 @@
   <div class="modal-dialog">
     <div class="modal-content">
     <div class="modal-header">
-      <button type="button" class="close" ng-click="close('#modalLogin')" aria-hidden="true">&times;</button>
+      <button type="button" class="close" ng-click="close('#modalDatabase')" aria-hidden="true">&times;</button>
       <h5 class="modal-title green bold">{{modaltitle}}</h5>
     </div>
     <div class="modal-body">
@@ -183,7 +183,7 @@
     </div>
     <div class="modal-footer">
       <button type="submit" class="btn-sm btn-success" ng-click="save()" ng-disabled="databaseForm.$invalid || isUnchanged(database)">Save</button>
-      <button type="button" class="btn-sm btn-default" ng-click="close('#modalLogin')">Cancel</button>
+      <button type="button" class="btn-sm btn-default" ng-click="close('#modalDatabase')">Cancel</button>
     </div>
     </div>
     </div>

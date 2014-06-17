@@ -18,7 +18,11 @@ function GraphCtrl($scope, $http, flash, ConfigurationService, Helpers, AccountS
             contentType: "application/json; charset=utf-8"
         })
             .success(function (data, status, headers, config) {
-                $scope.users = data;
+                $scope.users = [];
+                var ns = ConfigurationService.getUriBase();
+                for (var ind in data) {
+                    $scope.users.push(data[ind].replace(ns, ":"));
+                }
             })
             .error(function (data, status, headers, config) {
                 flash.error = data;
@@ -115,7 +119,7 @@ function GraphCtrl($scope, $http, flash, ConfigurationService, Helpers, AccountS
         }
 
         if (success) {
-            $('#modalGraph').modal('hide');
+            $scope.close('#modalGraph');
             $scope.refreshTable();
             $scope.refreshAllGraphs();
         } else {
@@ -222,12 +226,12 @@ function GraphCtrl($scope, $http, flash, ConfigurationService, Helpers, AccountS
         $scope.graphgroup.name = ":" + $scope.graphgroup.name;
         if (newGroup) {
             GraphGroupService.addGraphGroup($scope.graphgroup).then(function (result) {
-                $('#modalGroup').modal('hide');
+                $scope.close('#modalGroup');
                 $scope.refreshGraphGroups();
             });
         } else {
             GraphGroupService.updateGraphGroup($scope.graphgroup).then(function (result) {
-                $('#modalGroup').modal('hide');
+                $scope.close('#modalGroup');
                 $scope.refreshGraphGroups();
             });
         }
@@ -252,6 +256,13 @@ function GraphCtrl($scope, $http, flash, ConfigurationService, Helpers, AccountS
         } else { // is newly selected
             $scope.graphgroup.namedGraphs.push(graphName);
         }
+    };
+
+    $scope.close = function(modalID) {
+    	$(modalID).modal('hide');
+        $('body').removeClass('modal-open');
+      	$('.modal-backdrop').slideUp();
+      	$('.modal-scrollable').slideUp();
     };
 
     //watch

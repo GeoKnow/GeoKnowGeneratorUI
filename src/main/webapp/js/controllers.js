@@ -18,7 +18,8 @@ function StackMenuCtrl($scope) {
 	      items: [
 	        {name: 'Import RDF data', route:'#/home/extraction-and-loading/import-rdf',  url:'/home/extraction-and-loading/import-rdf' },
 	        {name: 'Sparqlify Extraction', route:'#/home/extraction-and-loading/sparqlify', url:'/home/extraction-and-loading/sparqlify' },
-	        {name: 'TripleGeo Extraction', route:'#/home/extraction-and-loading/triplegeo', url:'/home/extraction-and-loading/triplegeo' }]
+	        {name: 'TripleGeo Extraction', route:'#/home/extraction-and-loading/triplegeo', url:'/home/extraction-and-loading/triplegeo' },
+	        {name: 'D2RQ Extraction', route:'#/home/extraction-and-loading/d2rq', url:'/home/extraction-and-loading/d2rq' }]
 	    },
 	    {
 		      title: "Search Querying and Exploration",
@@ -32,7 +33,8 @@ function StackMenuCtrl($scope) {
 	      title: "Manual revision and Authoring",
 	      id:"manual-revision-and-authoring",
 	      items: [
-	       {name: 'OntoWiki', route:'#/home/manual-revision-and-authoring/ontowiki', url:'/home/manual-revision-and-authoring/ontowiki' }]
+	       {name: 'OntoWiki', route:'#/home/manual-revision-and-authoring/ontowiki', url:'/home/manual-revision-and-authoring/ontowiki' },
+	       {name: "Ontologies", route:'#/home/manual-revision-and-authoring/ontology', url:'/home/manual-revision-and-authoring/ontology' }]
 	    },
 	    {
 		    title: "Linking and Fusing",

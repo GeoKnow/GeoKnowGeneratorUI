@@ -47,12 +47,19 @@ function EndpointCtrl($scope, ConfigurationService,  AccountService){
 			success = ConfigurationService.updateEndpoint($scope.endpoint);
 
 		if(success){
-			$('#modalEndpoint').modal('hide');
+			$scope.close('#modalEndpoint');
 			$scope.refreshTable();
 		}
 		else{
 			// TODO: check if success then close the window or where to put error messages		
 		}
 	};
+
+    $scope.close = function(modalID) {
+    	$(modalID).modal('hide');
+        $('body').removeClass('modal-open');
+      	$('.modal-backdrop').slideUp();
+      	$('.modal-scrollable').slideUp();
+    };
 
 }
