@@ -21,7 +21,7 @@ module.factory("LoginService", function ($http, $location, $cookieStore, Account
             contentType: "application/x-www-form-urlencoded"
         }).then(function (response) {
             AccountService.setUsername(response.data.username);
-            AccountService.setAccountURI(response.data.accountURI);
+            AccountService.setAccountURI(response.data.accountURI.replace(ConfigurationService.getUriBase(), ':'));
             AccountService.setEmail(response.data.email);
             AccountService.setAdmin(response.data.admin);
             ConfigurationService.setSettingsGraph(response.data.settingsGraph);

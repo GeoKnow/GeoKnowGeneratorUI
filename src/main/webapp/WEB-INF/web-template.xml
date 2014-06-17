@@ -88,7 +88,7 @@
   
   <servlet>
      <servlet-name>ImportRDF</servlet-name>
-     <servlet-class>ImportRDFServlet</servlet-class>
+     <servlet-class>ImportRDF</servlet-class>
   </servlet>
 
   <servlet-mapping>
