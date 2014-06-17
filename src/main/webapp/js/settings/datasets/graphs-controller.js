@@ -18,7 +18,11 @@ function GraphCtrl($scope, $http, flash, ConfigurationService, Helpers, AccountS
             contentType: "application/json; charset=utf-8"
         })
             .success(function (data, status, headers, config) {
-                $scope.users = data;
+                $scope.users = [];
+                var ns = ConfigurationService.getUriBase();
+                for (var ind in data) {
+                    $scope.users.push(data[ind].replace(ns, ":"));
+                }
             })
             .error(function (data, status, headers, config) {
                 flash.error = data;
