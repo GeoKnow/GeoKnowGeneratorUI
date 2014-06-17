@@ -3,6 +3,11 @@
 var app = angular.module('app', ['ngRoute',
                                  'ngCookies',
                                  'app.services', 
+                                 'app.configuration-service',
+                                 'app.graph-service',
+                                 'app.account-service',
+                                 'app.graph-group-service',
+                                 'app.login-service',
                                  'app.directives', 
                                  'app.configuration',
                                  'ui.bootstrap',
@@ -31,27 +36,22 @@ app.config(function($routeSegmentProvider, $routeProvider)
         .when('/settings/datasets', 'settings.datasets')
         .when('/settings/namespaces', 'settings.namespaces')
         .when('/settings/components', 'settings.components')
-        .when('/settings/users', 'settings.users')
+        // .when('/settings/users', 'settings.users')
         .when('/home/extraction-and-loading/import-rdf', 'default.import-rdf')
         .when('/home/extraction-and-loading/sparqlify', 'default.sparqlify')
         .when('/home/extraction-and-loading/triplegeo', 'default.triplegeo')
         .when('/home/extraction-and-loading/triplegeo-result', 'default.triplegeo-result')
-        .when('/home/extraction-and-loading/d2rq', 'default.d2rq.mapping')
-        .when('/home/extraction-and-loading/d2rq/mapping', 'default.d2rq.mapping')
-        .when('/home/extraction-and-loading/d2rq/task', 'default.d2rq.task')
-        .when('/home/storage-querying/virtuoso', 'default.virtuoso')
-        .when('/home/querying-and-exploration/geospatial', 'default.geospatial')
-     /*   .when('/home/querying-and-exploration/googlemap', 'default.googlemap') */
-        .when('/home/querying-and-exploration/facete', 'default.facete')
-        .when('/home/querying-and-exploration/mappify', 'default.mappify')
-        .when('/home/querying-and-exploration/virtuoso', 'default.virtuoso')
-        .when('/home/authoring/ontowiki', 'default.ontowiki')
-        .when('/home/authoring/ontology', 'default.ontology')
-        .when('/home/linking/limes', 'default.limes')
-        .when('/home/enriching-and-cleaning/geolift', 'default.geolift')
+        .when('/home/search-querying-and-exploration/virtuoso', 'default.virtuoso')
+        .when('/home/search-querying-and-exploration/geospatial', 'default.geospatial')
+     /*   .when('/home/search-querying-and-exploration/googlemap', 'default.googlemap') */
+        .when('/home/search-querying-and-exploration/facete', 'default.facete')
+        .when('/home/search-querying-and-exploration/mappify', 'default.mappify')
+        .when('/home/manual-revision-and-authoring/ontowiki', 'default.ontowiki')
+        .when('/home/linking-and-fusing/limes', 'default.limes')
+        .when('/home/classification-and-enrichment/geolift', 'default.geolift')
 
         .segment('popup-limes', {
-            templateUrl: 'partials/linking/limes-result.html',
+            templateUrl: 'js/workbench/linking-and-fusing/limes-result.html',
             resolve: {
                       settings: function (Config) {
                         return Config.read();
@@ -60,7 +60,7 @@ app.config(function($routeSegmentProvider, $routeProvider)
             })
             
         .segment('popup-triplegeo', {
-            templateUrl: 'partials/extraction-and-loading/triplegeo-result.html',
+            templateUrl: 'js/workbench/extraction-and-loading/triplegeo-result.html',
             resolve: {
                       settings: function (Config) {
                         return Config.read();
@@ -69,7 +69,7 @@ app.config(function($routeSegmentProvider, $routeProvider)
             })
             
         .segment('popup-geolift', {
-            templateUrl: 'partials/enriching-and-cleaning/geolift-result.html',
+            templateUrl: 'js/workbench/classification-and-enrichment/geolift-result.html',
             resolve: {
                       settings: function (Config) {
                         return Config.read();
@@ -78,7 +78,7 @@ app.config(function($routeSegmentProvider, $routeProvider)
             })
          
         .segment('default', {
-            templateUrl :'partials/default.html',
+            templateUrl :'js/workbench/default.html',
             resolve: {
                       settings: function (Config) {
                         return Config.read();
@@ -87,71 +87,34 @@ app.config(function($routeSegmentProvider, $routeProvider)
             })
             .within()
                 .segment('import-rdf', {
-                    templateUrl: 'partials/extraction-and-loading/import-rdf.html' })
+                    templateUrl: 'js/workbench/extraction-and-loading/import-rdf.html' })
                 .segment('sparqlify', {
-                    templateUrl: 'partials/extraction-and-loading/sparqlify.html' })
+                    templateUrl: 'js/workbench/extraction-and-loading/sparqlify.html' })
                 .segment('triplegeo', {
-                    templateUrl: 'partials/extraction-and-loading/triplegeo.html' })
+                    templateUrl: 'js/workbench/extraction-and-loading/triplegeo.html' })
                 .segment('triplegeo-result', {
-                    templateUrl: 'partials/extraction-and-loading/triplegeo-result.html' })
-                .segment('d2rq', {
-                    templateUrl: 'partials/extraction-and-loading/d2rq.html' })
-                    .within()
-                        .segment('mapping', {
-                            templateUrl: 'partials/extraction-and-loading/d2rq-mapping.html',
-                            resolve: {
-                                    mappingGroups: function(D2RQService) {
-                                        return D2RQService.readMappingGroups();
-                                    },
-                                    settings: function (Config) {
-                                        return Config.read();
-                                    }
-                                }
-                            })
-                        .segment('task', {
-                            templateUrl: 'partials/extraction-and-loading/d2rq-task.html',
-                            resolve: {
-                                    tasks: function(D2RQService) {
-                                        return D2RQService.readTasks();
-                                    },
-                                    settings: function (Config) {
-                                        return Config.read();
-                                    }
-                                }
-                            })
-                    .up()
+                    templateUrl: 'js/workbench/extraction-and-loading/triplegeo-result.html' })
                 .segment('geospatial', {
-                    templateUrl: 'partials/querying-and-exploration/geospatial.html'})
+                    templateUrl: 'js/workbench/search-querying-and-exploration/geospatial.html'})
      /*           .segment('googlemap', {
-                    templateUrl: 'partials/querying-and-exploration/googlemap.html'}) */
+                    templateUrl: 'js/workbench/search-querying-and-exploration/googlemap.html'}) */
                 .segment('facete', {
-                    templateUrl: 'partials/querying-and-exploration/facete.html'})
+                    templateUrl: 'js/workbench/search-querying-and-exploration/facete.html'})
                 .segment('mappify', {
-                    templateUrl: 'partials/querying-and-exploration/mappify.html'})
+                    templateUrl: 'js/workbench/search-querying-and-exploration/mappify.html'})
                 .segment('virtuoso', {
-                    templateUrl: 'partials/querying-and-exploration/virtuoso.html'})
+                    templateUrl: 'js/workbench/search-querying-and-exploration/virtuoso.html'})
                 .segment('ontowiki', {
-                    templateUrl: 'partials/authoring/ontowiki.html' })
-                .segment('ontology', {
-                    templateUrl: 'partials/authoring/ontology.html',
-                    resolve: {
-                            ontologies: function (OntologyService) {
-                                return OntologyService.readOntologies();
-                            },
-                            settings: function (Config) {
-                                return Config.read();
-                            }
-                        }
-                    })
+                    templateUrl: 'js/workbench/manual-revision-and-authoring/ontowiki.html' })
                 .segment('geolift', {
-                    templateUrl: 'partials/enriching-and-cleaning/geolift.html' })
+                    templateUrl: 'js/workbench/classification-and-enrichment/geolift.html' })
                 .segment('limes', {
-                    templateUrl: 'partials/linking/limes.html' })
+                    templateUrl: 'js/workbench/linking-and-fusing/limes.html' })
             .up()
 
 		.segment('settings',
 		{
-			templateUrl: 'partials/settings.html',
+			templateUrl: 'js/settings/settings.html',
             resolve: {
               settings: function (Config) {
                 return Config.read();
@@ -160,28 +123,28 @@ app.config(function($routeSegmentProvider, $routeProvider)
 		})
             .within()
                 .segment('datasets', {
-                    templateUrl: 'partials/settings/datasets.html'})
+                    templateUrl: 'js/settings/datasets/graphs.html'})
                 .segment('data-sources', {
-                    templateUrl: 'partials/settings/data-sources.html'})
+                    templateUrl: 'js/settings/data-sources/data-sources.html'})
                 .segment('namespaces', {
-                    templateUrl: 'partials/settings/namespaces.html'})
+                    templateUrl: 'js/settings/namespaces/namespaces.html'})
                 .segment('components', {
-                    templateUrl: 'partials/settings/components.html'})
-                .segment('users', {
-                    templateUrl: 'partials/admin/users.html'})
+                    templateUrl: 'js/settings/components/components.html'})
+                // .segment('users', {
+                    // templateUrl: 'js/admin/users.html'})
             .up()
            
         .segment('account', {
-            templateUrl:'partials/account.html' })
+            templateUrl:'js/account/account.html' })
             .within()
                 .segment('preferences', {
-                    templateUrl: 'partials/settings/preferences.html' })
+                    templateUrl: 'js/account/preferences/preferences.html' })
             .up()
 
         .segment('about', {
-            templateUrl:'partials/about.html' })
+            templateUrl:'about.html' })
         .segment('under-construction', {
-            templateUrl:'partials/under-construction.html' });
+            templateUrl:'under-construction.html' });
 
     // TODO: replace with a not found page or something like that
     $routeProvider.otherwise({redirectTo: '/home'}); 
