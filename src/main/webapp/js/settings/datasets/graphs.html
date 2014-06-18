@@ -1,85 +1,85 @@
-<h3 class="green bold">Named Graphs Management</h3>
+<h3 class="green bold" data-i18n="_named-graphs-management_"></h3>
 
 <div ng-controller="GraphCtrl">
 
-  <button ng-if="isUserAuthenticated()" type="button" class="btn btn-success btn-large" data-toggle="modal" data-target="#modalGraph" ng-click="new();">Add new dataset</button>
+  <button ng-if="isUserAuthenticated()" type="button" class="btn btn-primary btn-large" data-toggle="modal" data-target="#modalGraph" ng-click="new();" data-i18n="_add-dataset_"></button>
 
   <div class="modal fade" id="modalGraph">
   <div class="modal-dialog">
-    <div class="modal-content">
+  <div class="modal-content">
     <form name="graphForm" class="form-horizontal InputForm" role="form" novalidate>
       <div class="modal-header">
         <button type="button" class="close" ng-click="close('#modalGraph')" aria-hidden="true">&times;</button>
-        <h5 class="modal-title green bold">{{modaltitle}}</h5>
+        <h5 class="modal-title green bold" data-i18n="{{modaltitle}}"></h5>
       </div>
 
       <div class="modal-body">
          <div class="form-group">
-          <label class="col-lg-2 control-label">Name</label>
+          <label class="col-lg-2 control-label" data-i18n="_name_"></label>
           <div class="col-lg-10">
-            <input type="text" class="form-control" id="name" name="name" placeholder="Name" ng-model="namedgraph.name" ng-disabled="!isNew()" required regex-validate="identifier" unique-identifier/>
-            <div class="error"  ng-show="graphForm.name.$dirty && graphForm.name.$invalid">Invalid:
-              <span ng-show="graphForm.name.$error.required || graphForm.name.$error.regexValidate ">Specify a valid identifier (letters and or numbers)</span>
-              <span ng-show="graphForm.name.$error.uniqueIdentifier">This identifier already exist</span>
+            <input type="text" class="form-control" id="name" name="name" data-i18n-attr="_name_|placeholder" ng-model="namedgraph.name" ng-disabled="!isNew()" required regex-validate="identifier" unique-identifier/>
+            <div class="error"  ng-show="graphForm.name.$dirty && graphForm.name.$invalid">{{'_invalid-field-message_' | i18n}}:
+              <span ng-show="graphForm.name.$error.required || graphForm.name.$error.regexValidate" data-i18n="_malformed-letters-number-id-message_"></span>
+              <span ng-show="graphForm.name.$error.uniqueIdentifier" data-i18n="_id-already-exists-message_"></span>
             </div>
           </div>
         </div>
         <div class="form-group">
-          <label for="name" class="col-lg-2 control-label">Label</label>
+          <label for="name" class="col-lg-2 control-label" data-i18n="_label_"></label>
           <div class="col-lg-10">
-            <input type="text" class="form-control" id="label" name="label" placeholder="Label" ng-model="namedgraph.graph.label" required />
-            <div class="error"  ng-show="graphForm.label.$dirty && graphForm.label.$invalid">Invalid:
-              <span ng-show="graphForm.label.$error.required">Specify a label</span>
+            <input type="text" class="form-control" id="label" name="label" data-i18n-attr="_label_|placeholder" ng-model="namedgraph.graph.label" required />
+            <div class="error"  ng-show="graphForm.label.$dirty && graphForm.label.$invalid">{{'_invalid-field-message_' | i18n}}:
+              <span ng-show="graphForm.label.$error.required" data-i18n="_label-missed-message_"></span>
             </div>
           </div>
         </div>
         <div class="form-group">
-          <label for="description" class="col-lg-2 control-label">Description</label>
+          <label for="description" class="col-lg-2 control-label" data-i18n="_description_"></label>
           <div class="col-lg-10">
-            <input type="text" class="form-control" name="description" id="description" placeholder="Description" ng-model="namedgraph.graph.description" required />
-            <div class="error"  ng-show="graphForm.description.$dirty && graphForm.description.$invalid">Invalid:
-              <span ng-show="graphForm.description.$error.required">Give a description</span>
+            <input type="text" class="form-control" name="description" id="description" data-i18n-attr="_description_|placeholder" ng-model="namedgraph.graph.description" required />
+            <div class="error"  ng-show="graphForm.description.$dirty && graphForm.description.$invalid">{{'_invalid-field-message_' | i18n}}:
+              <span ng-show="graphForm.description.$error.required" data-i18n="_description-missed-message_"></span>
             </div>
           </div>
         </div>
         <div class="form-group">
-          <label class="col-lg-2 control-label">Created</label>
+          <label class="col-lg-2 control-label" data-i18n="_created_"></label>
           <div class="col-lg-10">
             <p class="form-control-static">{{namedgraph.graph.created}}</p>
           </div>
         </div>
         <div class="form-group">
-          <label class="col-lg-2 control-label">Modified</label>
+          <label class="col-lg-2 control-label" data-i18n="_modified_"></label>
           <div class="col-lg-10">
             <p class="form-control-static">{{namedgraph.graph.modified}}</p>
           </div>
         </div>
         <div class="form-group" ng-if="namedgraph.owner != null">
-          <label class="col-lg-2 control-label">Owner</label>
+          <label class="col-lg-2 control-label" data-i18n="_owner_"></label>
           <div class="col-lg-10">
               <p class="form-control-static">{{namedgraph.owner}}</p>
           </div>
         </div>
         <div class="form-group">
-          <label class="col-lg-2 control-label">SPARQL Endpoint</label>
+          <label class="col-lg-2 control-label" data-i18n="_sparql-endpoint_"></label>
           <div class="col-lg-10">
             <p class="form-control-static">{{namedgraph.graph.endpoint}}</p>
           </div>
         </div>
           <div class="form-group" ng-if="isUserAuthenticated()">
-              <label class="col-lg-2 control-label">Access</label>
+              <label class="col-lg-2 control-label" data-i18n="_access_"></label>
               <div class="col-lg-10">
-                  <select id="access" class="form-control" ng-model="namedgraph.publicAccess" ng-options="uri as title for (uri, title) in accessModes"></select>
+                  <select id="access" class="form-control" ng-model="namedgraph.publicAccess" ng-options="uri as localize(title) for (uri, title) in accessModes"></select>
               </div>
           </div>
           <div class="row" ng-if="isUserAuthenticated()">
-              <label class="col-xs-2 text-left">User access</label>
+              <label class="col-xs-2 text-left" data-i18n="_user-access_"></label>
               <div class="col-xs-10">
                   <table class="table table-striped">
                       <tr>
-                          <th>User</th>
-                          <th>Read</th>
-                          <th>Write</th>
+                          <th data-i18n="_user_"></th>
+                          <th data-i18n="_read_"></th>
+                          <th data-i18n="_write_"></th>
                       </tr>
                       <tr ng-repeat="user in users | filter:userFilter">
                           <td>{{user}}</td>
@@ -91,27 +91,28 @@
           </div>
       </div>
       <div class="modal-footer">
-        <button type="submit" class="btn-sm btn-success" ng-click="save();" ng-disabled="graphForm.$invalid || isUnchanged(namedgraph)">Save</button>
-        <button type="button" class="btn-sm btn-default" ng-click="close('#modalGraph')">Cancel</button>
+        <button type="submit" class="btn-sm btn-primary" ng-click="save();" ng-disabled="graphForm.$invalid || isUnchanged(namedgraph)" data-i18n="_save_"></button>
+        <button type="button" class="btn-sm btn-default" ng-click="close('#modalGraph')" data-i18n="_cancel_"></button>
       </div>      
     </form>
  	</div>
  	</div>
  	</div>
 
-  <h4 ng-if="isUserAuthenticated()" >User Graphs</h4>
+  <h4 ng-if="isUserAuthenticated()" data-i18n="_user-graphs_"></h4>
+
   <table ng-if="isUserAuthenticated()" class="table table-striped">
   <thead>
     <tr>
-      <th>Action</th>
+      <th data-i18n="_action_"></th>
       <th>URI</th>
-      <th>Label</th>
-      <th>Description</th>
-      <th>Created</th>
-      <th>Modified</th>
-      <th>Public Access</th>
-      <th>Read Access</th>
-      <th>Write Access</th>
+      <th data-i18n="_label_"></th>
+      <th data-i18n="_description_"></th>
+      <th data-i18n="_created_"></th>
+      <th data-i18n="_modified_"></th>
+      <th data-i18n="_public-access_"></th>
+      <th data-i18n="_read-access_"></th>
+      <th data-i18n="_write-access_"></th>
     </tr>
   </thead>
   <tbody>
@@ -149,17 +150,17 @@
                 <i class="glyphicon glyphicon-refresh" aria-hidden="true"></i>
             </button>
         </span>
-        Accessible Graphs
+        {{'_accessible-graphs_' | i18n}}
     </h4>
     <table class="table table-striped">
         <thead>
         <tr>
             <th>URI</th>
-            <th>Label</th>
-            <th>Description</th>
-            <th>Created</th>
-            <th>Modified</th>
-            <th>Access</th>
+            <th data-i18n="_label_"></th>
+            <th data-i18n="_description_"></th>
+            <th data-i18n="_created_"></th>
+            <th data-i18n="_modified_"></th>
+            <th data-i18n="_access_"></th>
         </tr>
         </thead>
         <tbody>
@@ -182,21 +183,21 @@
                 <i class="glyphicon glyphicon-refresh" aria-hidden="true"></i>
             </button>
         </span>
-        All Graphs
+        {{'_all-graphs_' | i18n}}
     </h4>
     <table class="table table-striped">
         <thead>
         <tr>
-            <th ng-if="isUserAuthenticated()">Action</th>
+            <th ng-if="isUserAuthenticated()" data-i18n="_action_"></th>
             <th>URI</th>
-            <th>Label</th>
-            <th>Description</th>
-            <th>Created</th>
-            <th>Modified</th>
-            <th>Owner</th>
-            <th>Public access</th>
-            <th>Read access</th>
-            <th>Write access</th>
+            <th data-i18n="_label_"></th>
+            <th data-i18n="_description_"></th>
+            <th data-i18n="_created_"></th>
+            <th data-i18n="_modified_"></th>
+            <th data-i18n="_owner_"></th>
+            <th data-i18n="_public-access_"></th>
+            <th data-i18n="_read-access_"></th>
+            <th data-i18n="_write-access_"></th>
         </tr>
         </thead>
         <tbody>
@@ -229,60 +230,60 @@
 
   <br/>
 
-  <button ng-if="isUserAuthenticated()" type="button" class="btn btn-success btn-large" data-toggle="modal" data-target="#modalGroup" ng-click="newGroup();">Add new graph group</button>
+  <button ng-if="isUserAuthenticated()" type="button" class="btn btn-primary btn-large" data-toggle="modal" data-target="#modalGroup" ng-click="newGroup();" data-i18n="_add-graph-group_"></button>
 
   <div class="modal fade" id="modalGroup">
   <div class="modal-dialog">
-    <div class="modal-content">
+  <div class="modal-content">
       <form name="groupForm" class="form-horizontal InputForm" role="form" novalidate>
           <div class="modal-header">
               <button type="button" class="close" ng-click="close('#modalGroup')" aria-hidden="true">&times;</button>
-              <h5 class="modal-title green bold">{{modaltitle}}</h5>
+              <h5 class="modal-title green bold" data-i18n="{{modaltitle}}"></h5>
           </div>
 
           <div class="modal-body">
               <div class="form-group">
-                  <label class="col-lg-2 control-label">Name</label>
+                  <label class="col-lg-2 control-label" data-i18n="_name_"></label>
                   <div class="col-lg-10">
-                      <input type="text" class="form-control" id="name" name="name" placeholder="Name" ng-model="graphgroup.name" ng-disabled="!isNewGroup()" required regex-validate="identifier" unique-identifier/>
-                      <div class="error"  ng-show="groupForm.name.$dirty && groupForm.name.$invalid">Invalid:
-                          <span ng-show="groupForm.name.$error.required || groupForm.name.$error.regexValidate ">Specify a valid identifier (letters and or numbers)</span>
-                          <span ng-show="groupForm.name.$error.uniqueIdentifier">This identifier already exist</span>
+                      <input type="text" class="form-control" id="name" name="name" data-i18n-attr="_name_|placeholder" ng-model="graphgroup.name" ng-disabled="!isNewGroup()" required regex-validate="identifier" unique-identifier/>
+                      <div class="error"  ng-show="groupForm.name.$dirty && groupForm.name.$invalid">{{'_invalid-field-message_' | i18n}}:
+                          <span ng-show="groupForm.name.$error.required || groupForm.name.$error.regexValidate" data-i18n="_malformed-letters-number-id-message_"></span>
+                          <span ng-show="groupForm.name.$error.uniqueIdentifier" data-i18n="_id-already-exists-message_"></span>
                       </div>
                   </div>
               </div>
               <div class="form-group">
-                  <label for="name" class="col-lg-2 control-label">Label</label>
+                  <label for="name" class="col-lg-2 control-label" data-i18n="_label_"></label>
                   <div class="col-lg-10">
-                      <input type="text" class="form-control" id="label" name="label" placeholder="Label" ng-model="graphgroup.label" required />
-                      <div class="error"  ng-show="groupForm.label.$dirty && groupForm.label.$invalid">Invalid:
-                          <span ng-show="groupForm.label.$error.required">Specify a label</span>
+                      <input type="text" class="form-control" id="label" name="label" data-i18n-attr="_label_|placeholder" ng-model="graphgroup.label" required />
+                      <div class="error"  ng-show="groupForm.label.$dirty && groupForm.label.$invalid">{{'_invalid-field-message_' | i18n}}:
+                          <span ng-show="groupForm.label.$error.required" data-i18n="_label-missed-message_"></span>
                       </div>
                   </div>
               </div>
               <div class="form-group">
-                  <label for="description" class="col-lg-2 control-label">Description</label>
+                  <label for="description" class="col-lg-2 control-label" data-i18n="_description_"></label>
                   <div class="col-lg-10">
-                      <input type="text" class="form-control" name="description" id="description" placeholder="Description" ng-model="graphgroup.description" required />
-                      <div class="error"  ng-show="groupForm.description.$dirty && groupForm.description.$invalid">Invalid:
-                          <span ng-show="groupForm.description.$error.required">Give a description</span>
+                      <input type="text" class="form-control" name="description" id="description" data-i18n-attr="_description_|placeholder" ng-model="graphgroup.description" required />
+                      <div class="error"  ng-show="groupForm.description.$dirty && groupForm.description.$invalid">{{'_invalid-field-message_' | i18n}}:
+                          <span ng-show="groupForm.description.$error.required" data-i18n="_description-missed-message_"></span>
                       </div>
                   </div>
               </div>
               <div class="form-group">
-                  <label class="col-lg-2 control-label">Created</label>
+                  <label class="col-lg-2 control-label" data-i18n="_created_"></label>
                   <div class="col-lg-10">
                       <p class="form-control-static">{{graphgroup.created}}</p>
                   </div>
               </div>
               <div class="form-group">
-                  <label class="col-lg-2 control-label">Modified</label>
+                  <label class="col-lg-2 control-label" data-i18n="_modified_"></label>
                   <div class="col-lg-10">
                       <p class="form-control-static">{{graphgroup.modified}}</p>
                   </div>
               </div>
               <div class="row">
-                  <label class="col-xs-2 text-left">Graphs</label>
+                  <label class="col-xs-2 text-left" data-i18n="_graphs_"></label>
                   <div class="col-xs-10">
                       <div ng-repeat="graph in allgraphs">
                           <input type="checkbox" ng-checked="graphgroup.namedGraphs.indexOf(graph.name) > -1" ng-click="toggleGraph(graph.name)"/>{{graph.name}}
@@ -291,8 +292,8 @@
               </div>
           </div>
           <div class="modal-footer">
-              <button type="submit" class="btn-sm btn-success" ng-click="saveGroup();" ng-disabled="groupForm.$invalid || isUnchanged(graphgroup)">Save</button>
-              <button type="button" class="btn-sm btn-default" ng-click="close('#modalGroup')">Cancel</button>
+              <button type="submit" class="btn-sm btn-primary" ng-click="saveGroup();" ng-disabled="groupForm.$invalid || isUnchanged(graphgroup)" data-i18n="_save_"></button>
+              <button type="button" class="btn-sm btn-default" ng-click="close('#modalGroup')" data-i18n="_cancel_"></button>
           </div>
       </form>
       </div>
@@ -305,19 +306,19 @@
               <i class="glyphicon glyphicon-refresh" aria-hidden="true"></i>
           </button>
       </span>
-      Graph Groups
+      {{'_graph-groups_' | i18n}}
   </h4>
 
   <table class="table table-striped">
       <thead>
       <tr>
-          <th ng-if="isUserAuthenticated()">Action</th>
+          <th ng-if="isUserAuthenticated()" data-i18n="_action_"></th>
           <th>URI</th>
-          <th>Label</th>
-          <th>Description</th>
-          <th>Created</th>
-          <th>Modified</th>
-          <th>Graphs</th>
+          <th data-i18n="_label_"></th>
+          <th data-i18n="_description_"></th>
+          <th data-i18n="_created_"></th>
+          <th data-i18n="_modified_"></th>
+          <th data-i18n="_graphs_"></th>
       </tr>
       </thead>
       <tbody>

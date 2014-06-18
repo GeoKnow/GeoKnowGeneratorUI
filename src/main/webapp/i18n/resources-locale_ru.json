@@ -1,0 +1,986 @@
+[
+    {
+        "key":"_home-title_",
+        "value":"Связанные данные",
+        "description":"Home page title"
+    },
+
+
+    {
+        "key":"_components-page-description_",
+        "value":"Текущая конфигурация включает в себя следующие компоненты.",
+        "description":"description shown on components page under the title"
+    },
+
+
+    {
+        "key":"_workbench_",
+        "value":"Инструменты",
+        "description":"top navbar item"
+    },
+    {
+        "key":"_forgot-password_",
+        "value":"Забыли пароль?",
+        "description":"top navbar item"
+    },
+    {
+        "key":"_logged-in-as_",
+        "value":"Вы вошли как ",
+        "description":"top navbar message"
+    },
+
+
+    {
+        "key":"_change-password_",
+        "value":"Изменить пароль",
+        "description":"change password button, dialog title"
+    },
+    {
+        "key":"_old-password_",
+        "value":"Старый пароль",
+        "description":"change password form field"
+    },
+    {
+        "key":"_new-password_",
+        "value":"Новый пароль",
+        "description":"change password form field"
+    },
+
+
+    {
+        "key":"_extraction-loading_",
+        "value":"Извлечение и загрузка данных",
+        "description":"stack menu group title"
+    },
+    {
+        "key":"_authoring_",
+        "value":"Редактирование данных",
+        "description":"stack menu group title"
+    },
+    {
+        "key":"_querying-exploration_",
+        "value":"Просмотр данных",
+        "description":"stack menu group title"
+    },
+
+
+    {
+        "key":"_upload-files_",
+        "value":"Загрузить новые файлы",
+        "description":"page and stack menu item title"
+    },
+    {
+        "key":"_thesaurus-management_",
+        "value":"Управление тезаурусами",
+        "description":"page and stack/settings menu item title"
+    },
+    {
+        "key":"_edit-uploads_",
+        "value":"Редактор загруженных документов",
+        "description":"page and stack menu item title"
+    },
+
+
+    {
+        "key":"_data-sources_",
+        "value":"Источники данных",
+        "description":"page and settings menu item title"
+    },
+    {
+        "key":"_datasets_",
+        "value":"Наборы данных",
+        "description":"page and settings menu item title"
+    },
+    {
+        "key":"_components_",
+        "value":"Компоненты",
+        "description":"page and settings menu item title"
+    },
+    {
+        "key":"_users_",
+        "value":"Пользователи",
+        "description":"page and settings menu item title"
+    },
+
+
+    {
+        "key":"_faceted-search_",
+        "value":"Фасетный поиск",
+        "description":"modal dialog title"
+    },
+
+
+    {
+        "key":"_user-account_",
+        "value":"Аккаунт",
+        "description":"page title"
+    },
+
+
+    {
+        "key":"_username-email_",
+        "value":"Имя пользователя или e-mail",
+        "description":"login form field, restore password form field"
+    },
+
+
+    {
+        "key":"_request-password_",
+        "value":"Запросить пароль",
+        "description":"restore password dialog title, button"
+    },
+
+
+    {
+        "key":"_acc-project-number_",
+        "value":"Номер проекта",
+        "description":"upload document, edit document form field"
+    },
+    {
+        "key":"_acc-project-name_",
+        "value":"Имя проекта",
+        "description":"upload document, edit document form field"
+    },
+    {
+        "key":"_acc-doc-number_",
+        "value":"Номер документа",
+        "description":"upload document, edit document form field"
+    },
+    {
+        "key":"_acc-doc-iteration_",
+        "value":"Версия документа",
+        "description":"upload document, edit document form field"
+    },
+    {
+        "key":"_date-doc-received_",
+        "value":"Дата получения документа",
+        "description":"upload document, edit document form field"
+    },
+    {
+        "key":"_owner-name_",
+        "value":"Имя владельца",
+        "description":"upload document, edit document form field"
+    },
+    {
+        "key":"_short-description_",
+        "value":"Краткое описание",
+        "description":"upload document, edit document form field"
+    },
+    {
+        "key":"_owner-doc-number_",
+        "value":"Номер документа, указанный владельцем",
+        "description":"upload document, edit document form field"
+    },
+    {
+        "key":"_owner-doc-name_",
+        "value":"Имя документа, указанное владельцем",
+        "description":"upload document, edit document form field"
+    },
+    {
+        "key":"_owner-doc-revision_",
+        "value":"Ревизия документа",
+        "description":"upload document, edit document form field"
+    },
+    {
+        "key":"_owner-doc-revision-date_",
+        "value":"Дата ревизии документа",
+        "description":"upload document, edit document form field"
+    },
+    {
+        "key":"_additional-notes_",
+        "value":"Дополнительная информация",
+        "description":"upload document, edit document form field"
+    },
+    {
+        "key":"_doc-applicable_",
+        "value":"Document Applicable",
+        "description":"upload document, edit document form field"
+    },
+    {
+        "key":"_doc-uploader_",
+        "value":"Загружен",
+        "description":"edit document form field"
+    },
+    {
+        "key":"_doc-uploaded_",
+        "value":"Дата загрузки",
+        "description":"edit document form field, documents table field"
+    },
+    {
+        "key":"_acc-doc_",
+        "value":"Документ",
+        "description":"documents table field"
+    },
+    {
+        "key":"_doc-projects_",
+        "value":"Проекты",
+        "description":"documents table field"
+    },
+    {
+        "key":"_edit-doc_",
+        "value":"Редактировать документ",
+        "description":"edit document dialog title"
+    },
+    {
+        "key":"_project-number_",
+        "value":"Номер проекта",
+        "description":"document search field"
+    },
+    {
+        "key":"_all-fields_",
+        "value":"Все",
+        "description":"document search field"
+    },
+
+
+    {
+        "key":"_new-project-number_",
+        "value":"Номер нового проекта",
+        "description":"upload document, edit document form placeholder"
+    },
+    {
+        "key":"_new-project-name_",
+        "value":"Имя нового проекта",
+        "description":"upload document, edit document form placeholder"
+    },
+    {
+        "key":"_new-owner-name_",
+        "value":"Имя нового владельца, например, SIEMENS",
+        "description":"upload document, edit document form placeholder"
+    },
+    {
+        "key":"_fill-doc-number_",
+        "value":"Укажите номер, например, D100",
+        "description":"upload document form placeholder"
+    },
+    {
+        "key":"_fill-doc-iteration_",
+        "value":"Укажите версию, например, IT1",
+        "description":"upload document form placeholder"
+    },
+    {
+        "key":"_fill-short-description_",
+        "value":"Добавьте крткое описание",
+        "description":"upload document form placeholder"
+    },
+    {
+        "key":"_fill-owner-doc-number_",
+        "value":"Укажите номер, например, 10080-1-SS-CI-010",
+        "description":"upload document form placeholder"
+    },
+    {
+        "key":"_fill-owner-doc-name_",
+        "value":"Укажите имя, например, 10080-1-SS-CI-001_01",
+        "description":"upload document form placeholder"
+    },
+    {
+        "key":"_fill-owner-doc-revision_",
+        "value":"Укажите версию, например, Rev.1",
+        "description":"upload document form placeholder"
+    },
+    {
+        "key":"_fill-additional-notes_",
+        "value":"Дополнительная информация?",
+        "description":"upload document form placeholder"
+    },
+
+
+    {
+        "key":"_uploaded-docs_",
+        "value":"Загруженные документы",
+        "description":"documents table title"
+    },
+
+
+    {
+        "key":"_sign-in_",
+        "value":"Войти",
+        "description":"Sign in button"
+    },
+    {
+        "key":"_clear-form_",
+        "value":"Очистить форму",
+        "description":"Clear form button"
+    },
+    {
+        "key":"_upload-doc_",
+        "value":"Загрузить документ",
+        "description":"Upload document button"
+    },
+
+
+    {
+        "key":"_uploading_",
+        "value":"Идет загрузка...",
+        "description":"Uploading message"
+    },
+
+
+    {
+        "key":"_ontologies_",
+        "value":"Онтологии",
+        "description":"page title"
+    },
+    {
+        "key":"_add-ontology_",
+        "value":"Добавить онтологию",
+        "description":"add ontology button, dialog title"
+    },
+    {
+        "key":"_reindex-cur-thesaurus_",
+        "value":"Переиндексировать документы",
+        "description":"button"
+    },
+    {
+        "key":"_reindex-docs_",
+        "value":"Переиндексировать документы",
+        "description":"dialog title"
+    },
+    {
+        "key":"_reindex-confirm_",
+        "value":"Переиндексировать все документы по последней версии тезауруса?",
+        "description":"reindex confirmation question"
+    },
+    {
+        "key":"_reindexing_",
+        "value":"Идет переиндексация...",
+        "description":"reindexing message"
+    },
+
+
+    {
+        "key":"_import-from_",
+        "value":"Импортировать из ",
+        "description":"import ontology dialog field"
+    },
+    {
+        "key":"_file-input_",
+        "value":"Файл",
+        "description":"import ontology dialog field"
+    },
+
+
+    {
+        "key":"_change_",
+        "value":"Изменить",
+        "description":"Change button"
+    },
+    {
+        "key":"_cancel_",
+        "value":"Закрыть",
+        "description":""
+    },
+    {
+        "key":"_yes_",
+        "value":"Да",
+        "description":""
+    },
+    {
+        "key":"_no_",
+        "value":"Нет",
+        "description":""
+    },
+    {
+        "key":"_add_",
+        "value":"Добавить",
+        "description":""
+    },
+    {
+        "key":"_save_",
+        "value":"Сохранить",
+        "description":""
+    },
+    {
+        "key":"_search_",
+        "value":"Поиск",
+        "description":""
+    },
+    {
+        "key":"_identifier_",
+        "value":"Идентификатор",
+        "description":""
+    },
+    {
+        "key":"_label_",
+        "value":"Лейбл",
+        "description":""
+    },
+    {
+        "key":"_endpoint_",
+        "value":"Эндпоинт",
+        "description":""
+    },
+    {
+        "key":"_homepage_",
+        "value":"Домашняя страница",
+        "description":""
+    },
+    {
+        "key":"_action_",
+        "value":"Операция",
+        "description":""
+    },
+    {
+        "key":"_type_",
+        "value":"Тип",
+        "description":""
+    },
+    {
+        "key":"_host_",
+        "value":"Хост",
+        "description":""
+    },
+    {
+        "key":"_port_",
+        "value":"Порт",
+        "description":""
+    },
+    {
+        "key":"_user_",
+        "value":"Пользователь",
+        "description":""
+    },
+    {
+        "key":"_password_",
+        "value":"Пароль",
+        "description":""
+    },
+    {
+        "key":"_name_",
+        "value":"Имя",
+        "description":""
+    },
+    {
+        "key":"_db_",
+        "value":"База данных",
+        "description":""
+    },
+    {
+        "key":"_description_",
+        "value":"Описание",
+        "description":""
+    },
+    {
+        "key":"_created_",
+        "value":"Создан",
+        "description":""
+    },
+    {
+        "key":"_modified_",
+        "value":"Изменен",
+        "description":""
+    },
+    {
+        "key":"_owner_",
+        "value":"Владелец",
+        "description":""
+    },
+    {
+        "key":"_access_",
+        "value":"Доступ",
+        "description":""
+    },
+    {
+        "key":"_read_",
+        "value":"Чтение",
+        "description":""
+    },
+    {
+        "key":"_write_",
+        "value":"Запись",
+        "description":""
+    },
+    {
+        "key":"_graph_",
+        "value":"Граф",
+        "description":""
+    },
+    {
+        "key":"_graphs_",
+        "value":"Графы",
+        "description":""
+    },
+    {
+        "key":"_services_",
+        "value":"Сервисы",
+        "description":""
+    },
+    {
+        "key":"_version_",
+        "value":"Версии",
+        "description":""
+    },
+    {
+        "key":"_settings_",
+        "value":"Настройки",
+        "description":""
+    },
+    {
+        "key":"_account_",
+        "value":"Аккаунт",
+        "description":""
+    },
+    {
+        "key":"_login_",
+        "value":"Войти",
+        "description":""
+    },
+    {
+        "key":"_logout_",
+        "value":"Выйти",
+        "description":""
+    },
+    {
+        "key":"_register_",
+        "value":"Создать аккаунт",
+        "description":""
+    },
+    {
+        "key":"_username_",
+        "value":"Имя пользователя",
+        "description":""
+    },
+    {
+        "key":"_email_",
+        "value":"E-mail",
+        "description":""
+    },
+    {
+        "key":"_fields_",
+        "value":"Поля",
+        "description":""
+    },
+    {
+        "key":"_file_",
+        "value":"Файл",
+        "description":""
+    },
+
+
+    {
+        "key":"_sparql-endpoint_",
+        "value":"SPARQL Endpoint",
+        "description":""
+    },
+    {
+        "key":"_user-access_",
+        "value":"Пользовательский доступ",
+        "description":""
+    },
+
+
+    {
+        "key":"_named-graphs-management_",
+        "value":"Управление именованными графами",
+        "description":"datasets page title"
+    },
+    {
+        "key":"_user-graphs_",
+        "value":"Пользовательские графы",
+        "description":"datasets page (table title)"
+    },
+    {
+        "key":"_public-access_",
+        "value":"Публичный доступ",
+        "description":"datasets page"
+    },
+    {
+        "key":"_read-access_",
+        "value":"Доступ на чтение",
+        "description":"datasets page"
+    },
+    {
+        "key":"_write-access_",
+        "value":"Доступ на запись",
+        "description":"datasets page"
+    },
+    {
+        "key":"_all-graphs_",
+        "value":"Все графы",
+        "description":"datasets page (table title)"
+    },
+    {
+        "key":"_accessible-graphs_",
+        "value":"Доступные графы",
+        "description":"datasets page (table title)"
+    },
+    {
+        "key":"_add-graph-group_",
+        "value":"Добавить новую группу графов",
+        "description":"button on datasets page"
+    },
+    {
+        "key":"_add-dataset_",
+        "value":"Добавить новый набор данных",
+        "description":"button on datasets page"
+    },
+    {
+        "key":"_graph-groups_",
+        "value":"Группы графов",
+        "description":"datasets page (table title)"
+    },
+
+
+    {
+        "key":"_rel-databases_",
+        "value":"Базы данных",
+        "description":"data sources page"
+    },
+    {
+        "key":"_db-name_",
+        "value":"Имя базы данных",
+        "description":"data sources page"
+    },
+    {
+        "key":"_add-db_",
+        "value":"Добавить новую базу данных",
+        "description":"button on data sources page"
+    },
+    {
+        "key":"_add-endpoint_",
+        "value":"Добавить новый эндпоинт",
+        "description":"button on data sources page"
+    },
+
+
+    {
+        "key":"_components-management_",
+        "value":"Управление компонентами",
+        "description":"components page title"
+    },
+
+
+    {
+        "key":"_users-management_",
+        "value":"Управление пользователями",
+        "description":"users management page title"
+    },
+    {
+        "key":"_add-user_",
+        "value":"Добавит нового пользователя",
+        "description":"button on users management page"
+    },
+    {
+        "key":"_user-account-uri_",
+        "value":"URI аккаунта",
+        "description":"user account URI field in user manager"
+    },
+    {
+        "key":"_graph-access_",
+        "value":"Доступ к графу",
+        "description":"field in user manager"
+    },
+    {
+        "key":"_user-own-graphs_",
+        "value":"Графы рользователя",
+        "description":"field in user manager"
+    },
+    {
+        "key":"_user-readable-graphs_",
+        "value":"Графы, доступные для чтения",
+        "description":"field in user manager"
+    },
+    {
+        "key":"_user-writable-graphs_",
+        "value":"Графы, доступные для записи",
+        "description":"field in user manager"
+    },
+    
+    
+    {
+        "key":"_new-endpoint-title_",
+        "value":"Новый эндпоинт",
+        "description":"dialog title"
+    },
+    {
+        "key":"_edit-endpoint-title_",
+        "value":"Редактировать эндпоинт",
+        "description":"dialog title"
+    },
+    {
+        "key":"_new-db-title_",
+        "value":"Новая база данных",
+        "description":"dialog title"
+    },
+    {
+        "key":"_edit-db-title_",
+        "value":"Редактировать базу данных",
+        "description":"dialog title"
+    },
+    {
+        "key":"_new-ngraph-title_",
+        "value":"Новый именованный граф",
+        "description":"dialog title"
+    },
+    {
+        "key":"_edit-ngraph-title_",
+        "value":"Редактировать именованный граф",
+        "description":"dialog title"
+    },
+    {
+        "key":"_new-graph-group-title_",
+        "value":"Новая группа графов",
+        "description":"dialog title"
+    },
+    {
+        "key":"_edit-graph-group-title_",
+        "value":"Редактировать группу графов",
+        "description":"dialog title"
+    },
+    {
+        "key":"_new-user-title_",
+        "value":"Новы йпользователь",
+        "description":"dialog title"
+    },
+    {
+        "key":"_edit-user-title_",
+        "value":"Редактировать пользователя",
+        "description":"dialog title"
+    },
+
+
+    {
+        "key":"_settings-base-uri_",
+        "value":"Базовый URI",
+        "description":"information on settings page"
+    },
+    {
+        "key":"_settings-graph_",
+        "value":"Граф настроек",
+        "description":"information on settings page"
+    },
+    {
+        "key":"_settings-endpoint_",
+        "value":"Эндпоинт",
+        "description":"information on settings page"
+    },
+
+
+    {
+        "key":"_pagination-first_",
+        "value":"Первая",
+        "description":"text for First button in pagination element"
+    },
+    {
+        "key":"_pagination-last_",
+        "value":"Последняя",
+        "description":"text for Last button in pagination element"
+    },
+    {
+        "key":"_pagination-previous_",
+        "value":"Предыдущая",
+        "description":"text for Previous button in pagination element"
+    },
+    {
+        "key":"_pagination-next_",
+        "value":"Следующая",
+        "description":"text for Next button in pagination element"
+    },
+
+
+    {
+        "key":"_invalid-field-message_",
+        "value":"Ошибка",
+        "description":"part of text shown below form field when it's value is invalid or missed (for required fields)"
+    },
+
+
+    {
+        "key":"_username-missed-message_",
+        "value":"Укажите имя пользователя",
+        "description":"shown in forms below required username field when it's not specified"
+    },
+    {
+        "key":"_email-missed-message_",
+        "value":"Укажите e-mail",
+        "description":"shown in forms below required e-mail field when it's not specified"
+    },
+    {
+        "key":"_project-missed-message_",
+        "value":"Требуется указать хотя бы один проект",
+        "description":"shown in forms below project field when the value is not specified"
+    },
+    {
+        "key":"_doc-received-date-missed-message_",
+        "value":"Укажите дату получения",
+        "description":"shown in forms below document received date field when the value is not specified"
+    },
+    {
+        "key":"_uri-missed-message_",
+        "value":"Укажите URI",
+        "description":"shown in forms below URI field when the value is not specified"
+    },
+    {
+        "key":"_host-missed-message_",
+        "value":"Укажите хост",
+        "description":"shown in forms below host field when the value is not specified"
+    },
+    {
+        "key":"_port-missed-message_",
+        "value":"Укажите порт",
+        "description":"shown in forms below port field when the value is not specified"
+    },
+    {
+        "key":"_label-missed-message_",
+        "value":"Укажите лейбл",
+        "description":"shown in forms below label field when the value is not specified"
+    },
+    {
+        "key":"_db-name-missed-message_",
+        "value":"Укажите имя базы данных",
+        "description":"shown in forms below database name field when the value is not specified"
+    },
+    {
+        "key":"_user-missed-message_",
+        "value":"Укажите пользователя",
+        "description":"shown in forms below user field when the value is not specified"
+    },
+    {
+        "key":"_password-missed-message_",
+        "value":"Укажите пароль",
+        "description":"shown in forms below password field when the value is not specified"
+    },
+    {
+        "key":"_new-password-missed-message_",
+        "value":"Укажите новый пароль",
+        "description":"shown in change password form below new password field when the value is not specified"
+    },
+    {
+        "key":"_old-password-missed-message_",
+        "value":"Укажите старый пароль",
+        "description":"shown in change password form below old password field when the value is not specified"
+    },
+    {
+        "key":"_description-missed-message_",
+        "value":"Добавьте описание",
+        "description":"shown in forms below description field when the value is not specified"
+    },
+    {
+        "key":"_username-email-missed-message_",
+        "value":"Укажите имя пользователя или e-mail",
+        "description":"shown in forms below username-or-email field when the value is not specified"
+    },
+
+
+    {
+        "key":"_malformed-email-message_",
+        "value":"Указан некорректный e-mail",
+        "description":"shown in forms below e-mail field when the value is malformed"
+    },
+    {
+        "key":"_malformed-doc-number-message_",
+        "value":"Указан некорректный номер документа",
+        "description":"shown in forms below document number field when the value is malformed"
+    },
+    {
+        "key":"_malformed-doc-iteration-message_",
+        "value":"Указана некорректная версия документа",
+        "description":"shown in forms below document iteration field when the value is malformed"
+    },
+    {
+        "key":"_malformed-endpoint-message_",
+        "value":"Указан некорректный эндпоинт",
+        "description":"shown in forms below endpoint field when the value is malformed"
+    },
+    {
+        "key":"_malformed-homepage-message_",
+        "value":"Указан некорректный адрес домашней страницы",
+        "description":"shown in forms below homepage field when the value is malformed"
+    },
+    {
+        "key":"_malformed-letters-number-id-message_",
+        "value":"Укажите корректный идентификатор (буквы и/или цифры)",
+        "description":"shown in forms below letters-and-numbers id field when the value is malformed"
+    },
+
+
+    {
+        "key":"_id-already-exists-message_",
+        "value":"Указанный идентификатор уже существует",
+        "description":"shown in forms below unique id fields when specified value already exists"
+    },
+
+
+    {
+        "key":"_delete-ontology-confirm-message_",
+        "value":"Вы уверены, что хотите удалить онтологию",
+        "description":"text in delete ontology confirmation dialog"
+    },
+    {
+        "key":"_delete-doc-confirm-message_",
+        "value":"Вы уверены, что хотите удалить документ",
+        "description":"text in delete document confirmation dialog"
+    },
+
+
+    {
+        "key":"_changes-saved-message_",
+        "value":"Изменения сохранены",
+        "description":"saved message shown when some save operation finished successfully (documents, etc.)"
+    },
+    {
+        "key":"_uploading-finished-message_",
+        "value":"Загрузка завершена",
+        "description":"message shown when some upload operation finished successfully (documents, etc.)"
+    },
+
+
+    {
+        "key":"_bad-request_",
+        "value":"Неверны запрос",
+        "description":"bad request http status (400)"
+    },
+    {
+        "key":"_unauthorized_",
+        "value":"Неавторизован",
+        "description":"unauthorized http status (401)"
+    },
+    {
+        "key":"_forbidden_",
+        "value":"Доступ запрещен",
+        "description":"forbidden http status (403)"
+    },
+    {
+        "key":"_not-found_",
+        "value":"Не найден",
+        "description":"not found http status (404)"
+    },
+    {
+        "key":"_internal-server-error_",
+        "value":"Внутренняя ошибка сервера",
+        "description":"internal server error http status (500)"
+    },
+    {
+        "key":"_error-occurred_",
+        "value":"Возникла ошибка",
+        "description":"http error occurred"
+    },
+
+
+    {
+        "key":"_doc-upload-protected-error_",
+        "value":"Загружаемый файл защищен паролем и не может быть проанализирован",
+        "description":"The uploaded file is password protected and could not be analyzed (documents uploading)"
+    },
+    {
+        "key":"_doc-upload-required-error_",
+        "value":"Не все обязательные поля заполнены",
+        "description":"Not all required information provided (documents uploading)"
+    },
+    {
+        "key":"_doc-upload-analyzing-error_",
+        "value":"Возникли проблемы при анализе документа. Свяжитесь с администратором.",
+        "description":"Internal problems while analyzing the document (documents uploading)"
+    },
+    {
+        "key":"_doc-delete-error_",
+        "value":"Ошибка при удалении документа",
+        "description":"Error while deleting the document"
+    },
+    {
+        "key":"_doc-reindex-error_",
+        "value":"Ошибка при переиндексации документа",
+        "description":"Error while re-indexing the document"
+    }
+
+]

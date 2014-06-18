@@ -13,7 +13,7 @@ function StackMenuCtrl($scope) {
 	  // these data can be replaced later with the configuration
 	  $scope.groups = [
 	    {
-	      title: "Extraction and Loading",
+	      title: "_extraction-loading_",
 	      id:"extraction-loading",
 	      items: [
 	        {name: 'Import RDF data', route:'#/home/extraction-and-loading/import-rdf',  url:'/home/extraction-and-loading/import-rdf' },
@@ -52,7 +52,7 @@ function StackMenuCtrl($scope) {
 
 	}
 
-app.controller('NavbarCtrl', function($scope, $location) {
+app.controller('NavbarCtrl', function($scope, $location, localize) {
 		//if($location.path === "/"){
 		//	$location.path('/home')
 		//}
@@ -63,6 +63,12 @@ app.controller('NavbarCtrl', function($scope, $location) {
 			      return "";
 			    }
 			};
+
+        $scope.languages = localize.getLanguages();
+        $scope.currentLanguage = localize.language;
+        $scope.setLanguage = function() {
+            localize.setLanguage($scope.currentLanguage);
+        };
 	});
 
 app.controller('SidebarCtrl', function($scope, $location) {

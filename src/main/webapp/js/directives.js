@@ -8,14 +8,16 @@ app.directive("modalIframe", function ($compile) {
     restrict: 'E',
     link: function (scope, elm, attr) {
         
-        scope.openModal = function(){
+        scope.openModal = function(modalId){
             // $('#modal').modal({
             //     width:'100%',
             //     height : $(window).height() - 165
             // });
             //console.log("URL:" + scope.url);
 
-            $('#fullModal').css({
+            if (modalId==null) modalId = 'fullModal';
+
+            $('#'+modalId).css({
                 width: $(window).width() ,
                 height : $(window).height(),
                 position: 'fixed',
@@ -27,7 +29,7 @@ app.directive("modalIframe", function ($compile) {
                 // }
             });
 
-            $('#fullModal').find('.modal-body').css({
+            $('#'+modalId).find('.modal-body').css({
                 width:'auto',
                 padding:'0px', 
                 height: function(){ 
@@ -35,10 +37,47 @@ app.directive("modalIframe", function ($compile) {
                 }, 
             });
 
-            $('#fullModal').modal('show');
+            $('#'+modalId).modal('show');
         };
     }
   };
+});
+
+app.directive('ngConfirmClick', [
+  function() {
+    return {
+        restrict: 'A',
+        link: function(scope, element, attrs) {
+            element.bind('click', function() {
+                var message = attrs.ngConfirmMessage;
+                if (message && confirm(message)) {
+                    scope.$apply(attrs.ngConfirmClick);
+                }
+            });
+            scope.$on('$destroy', function() {
+                element.off('click');
+            });
+        }
+    }
+  }
+]);
+
+//directive to fix angularjs autofill issue (update form model on autofill)
+app.directive('autofillable', function ($timeout) {
+    return {
+        restrict: 'A',
+        require: 'ngModel',
+        link: function (scope, elem, attrs, ctrl) {
+            scope.check = function(){
+                var val = elem[0].value;
+                if(ctrl.$viewValue !== val){
+                    ctrl.$setViewValue(val)
+                }
+                $timeout(scope.check, 300);
+            };
+            scope.check();
+        }
+    }
 });
 
 /****************************************************************************************************
@@ -119,6 +158,8 @@ app.directive('regexValidate', function() {
     expressions['uri']            =  /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/;
     expressions['identifier']     =  /^[a-zA-Z0-9_]*$/ ;
     expressions['sparqlEndpoint'] =  /^https?:\/\/.+\/sparql\/?$/; // /^https?:\/\/[^\/]+\/sparql\/?$/
+    expressions['docNumber']        =  /^D([0-9]{3})$/;
+    expressions['docIteration']   =  /^IT([0-9]+)$/;
     return {
         restrict: 'A',
         require: 'ngModel',

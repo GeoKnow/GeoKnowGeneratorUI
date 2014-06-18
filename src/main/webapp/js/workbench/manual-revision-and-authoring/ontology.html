@@ -1,58 +1,88 @@
 <div ng-controller="OntologyCtrl">
+    <!-- Subscribe to all flash messages. -->
+    <div flash-alert active-class="in alert" class="fade" duration="0">
+        <button type="button" class="close" ng-click="hide()">&times;</button>
+        <span class="alert-message">{{flash.message}}</span>
+    </div>
 
-<div class="row below">
+    <div class="row below">
     <h3 class="green bold">
         <span class="btn-group">
             <button type="button" class="btn btn-link reset" ng-click="refreshOntologies()">
                 <i class="glyphicon glyphicon-refresh" aria-hidden="true"></i>
             </button>
         </span>
-        Ontologies
+        {{'_ontologies_' | i18n}}
     </h3>
 
     <table class="table table-striped">
         <thead>
         <tr>
-            <th>Action</th>
+            <th data-i18n="_action_"></th>
             <th>URI</th>
         </tr>
         </thead>
         <tbody>
         <tr ng-repeat="onto in ontologies">
             <td>
-                <button type="button" class="btn btn-default btn-xs" ng-click="delete('{{onto}}')"><span class="glyphicon glyphicon-trash"></span></button>
-                <button type="button" class="btn btn-default btn-xs" data-toggle="modal" ng-click="setUrl('{{onto}}'); openModal();"><span class="glyphicon glyphicon-edit"></span></button>
+                <button type="button" class="btn btn-default btn-xs" ng-confirm-click="delete('{{onto}}')" ng-confirm-message="{{'_delete-ontology-confirm-message_' | i18n}} {{onto}}?" ng-disabled="!isLoggedIn()">
+                    <span class="glyphicon glyphicon-trash"></span>
+                </button>
+                <button type="button" class="btn btn-default btn-xs" data-toggle="modal" ng-click="setUrl('{{onto}}'); openModal();">
+                    <span class="glyphicon glyphicon-edit"></span>
+                </button>
             </td>
             <td>{{onto}}</td>
         </tr>
         </tbody>
     </table>
     
-    <button type="button" class="btn btn-primary btn-large" data-toggle="modal" data-target="#modalOntology" ng-click="new();">Add new ontology</button>
+    <button type="button" class="btn btn-primary btn-large" data-toggle="modal" data-target="#modalOntology" ng-click="new();" ng-disabled="!isLoggedIn()" data-i18n="_add-ontology_"></button>
+    <button type="button" class="btn btn-primary btn-large" data-toggle="modal" data-target="#reindexDocuments" ng-click="beforeReindex()" ng-disabled="!isLoggedIn()" data-i18n="_reindex-cur-thesaurus_"></button>
+
+    <div class="modal fade" id="reindexDocuments">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" ng-click="close('#reindexDocuments')" aria-hidden="true">&times;</button>
+                    <h5 class="modal-title green bold" data-i18n="_reindex-docs_"></h5>
+                </div>
+                <div class="modal-body">
+                    <p data-i18n="_reindex-confirm_"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn-sm btn-primary" ng-click="reindex();" ng-disabled="reindexing" data-i18n="_yes_"></button>
+                    <button type="button" class="btn-sm btn-default" ng-click="close('#reindexDocuments')" ng-disabled="reindexing" data-i18n="_no_"></button>
+                    <span ng-show="reindexing" data-i18n="_reindexing_"></span>
+                </div>
+            </div>
+        </div>
+    </div>
 
 <div class="modal fade" id="modalOntology">
+    <div class="modal-dialog">
     <div class="modal-content">
         <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-            <h5 class="modal-title green bold">Add ontology</h5>
+            <button type="button" class="close" ng-click="close('#modalOntology')" aria-hidden="true">&times;</button>
+            <h5 class="modal-title green bold" data-i18n="_add-ontology_"></h5>
         </div>
 
         <div class="modal-body">
-            <form class="form-horizontal InputForm col-xs-11" role="form" name="typeForm">
+            <form class="form-horizontal InputForm" role="form" name="typeForm">
                 <div class="row">
-                    <label for="source-type" class="col-xs-2 control-label">Import from a </label>
-                    <div class="col-xs-10">
-                        <select id="source-type" class="form-control" ng-model="sourceType" ng-options="c.label for c in sourceTypes" ng-change="updateForm()" required></select>
+                    <label for="source-type" class="col-xs-4 control-label" data-i18n="_import-from_"></label>
+                    <div class="col-xs-8">
+                        <select id="source-type" class="form-control" ng-model="sourceType" ng-options="c as localize(c.label) for c in sourceTypes" ng-change="updateForm()" required></select>
                     </div>
                 </div>
             </form>
 
             <!-- Import from file form -->
             <div ng-show="fileElements" class="animate-show">
-                <form class="form-horizontal InputForm col-xs-11" role="form" name="fileForm" novalidate>
+                <form class="form-horizontal InputForm" role="form" name="fileForm" novalidate>
                     <div class="form-group">
-                        <label class="col-xs-2 control-label">File input</label>
-                        <div class="col-xs-10">
+                        <label class="col-xs-4 control-label" data-i18n="_file-input_"></label>
+                        <div class="col-xs-8">
                             <input type="file" ng-file-select="onFileSelect($files)" name="fileName" accept=".ttl, .rdf">
                         </div>
                     </div>
@@ -61,14 +91,14 @@
 
             <!-- Import from URL form  -->
             <div ng-show="urlElements" class="animate-show">
-                <form name="urlForm" class="form-horizontal InputForm col-xs-11" role="form" novalidate>
+                <form name="urlForm" class="form-horizontal InputForm" role="form" novalidate>
                     <div class="form-group">
-                        <label class="col-xs-2 control-label">URI</label>
-                        <div class="col-xs-10">
+                        <label class="col-xs-4 control-label">URI</label>
+                        <div class="col-xs-8">
                             <input type="text" class="form-control" id="uri" name="uri" placeholder="URI" ng-model="ontology.uri" required unique-identifier/>
-                            <div class="error"  ng-show="urlForm.uri.$dirty && urlForm.uri.$invalid">Invalid:
-                                <span ng-show="urlForm.uri.$error.required">Specify URI</span>
-                                <span ng-show="urlForm.uri.$error.uniqueIdentifier">This identifier already exist</span>
+                            <div class="error"  ng-show="urlForm.uri.$dirty && urlForm.uri.$invalid">{{'_invalid-field-message_' | i18n}}:
+                                <span ng-show="urlForm.uri.$error.required" data-i18n="_uri-missed-message_"></span>
+                                <span ng-show="urlForm.uri.$error.uniqueIdentifier" data-i18n="_id-already-exists-message_"></span>
                             </div>
                         </div>
                     </div>
@@ -77,16 +107,17 @@
         </div>
 
         <div class="modal-footer">
-            <button type="submit" class="btn-sm btn-primary" ng-click="add();">Add</button>
-            <button type="button" class="btn-sm btn-default" data-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn-sm btn-primary" ng-click="add();" data-i18n="_add_"></button>
+            <button type="button" class="btn-sm btn-default" ng-click="close('#modalOntology')" data-i18n="_cancel_"></button>
         </div>
     </div>
     </div>
+    </div>
 
-    <div class="modal fade" id="fullModal">
+    <div class="modal" id="fullModal">
     <div class="modal-content">
         <div class="modal-header">
-            <button type="button" class="close" ng-click="close('#modalLogin')" aria-hidden="true">&times;</button>
+            <button type="button" class="close"  ng-click="close('#fullModal')" aria-hidden="true">&times;</button>
             <h5 class="modal-title green bold">MiniDix</h5>
         </div>
         <div class="modal-body">

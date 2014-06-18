@@ -17,7 +17,8 @@ var app = angular.module('app', ['ngRoute',
                                  'view-segment', 
                                  'angularFileUpload',
                                  'angular-flash.service', 
-                                 'angular-flash.flash-alert-directive']);
+                                 'angular-flash.flash-alert-directive',
+                                 'localization']);
 
 
 app.config(function($routeSegmentProvider, $routeProvider)
@@ -206,5 +207,10 @@ app.config(function($routeSegmentProvider, $routeProvider)
 // Error: [$sce:insecurl] Blocked loading resource from url not allowed by $sceDelegate policy.
 .config(function($sceDelegateProvider) {
     $sceDelegateProvider.resourceUrlWhitelist(['.*']);
+})
+.config(function(localizeProvider) {
+    localizeProvider.languages = ['en', 'ru'];
+    localizeProvider.defaultLanguage = 'en';
+    localizeProvider.ext = 'json';
 });
 

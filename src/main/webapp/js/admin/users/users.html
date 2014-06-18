@@ -1,48 +1,48 @@
-<h3 class="green bold">Users Management</h3>
+<h3 class="green bold" data-i18n="_users-management_"></h3>
 
-<div ng-controller="UsersCtrl">
-    <button type="button" class="btn btn-success btn-large" data-toggle="modal" data-target="#modalUser" ng-click="new();">Add new user</button>
+<div ng-controller="UserCtrl">
+    <button type="button" class="btn btn-primary btn-large" data-toggle="modal" data-target="#modalUser" ng-click="new();" data-i18n="_add-user_"></button>
 
     <div class="modal fade" id="modalUser">
         <form name="userForm" class="form-horizontal InputForm" role="form">
             <div class="modal-header">
-                <button type="button" class="close" ng-click="close('#modalLogin')" aria-hidden="true">&times;</button>
-                <h5 class="modal-title green bold">{{modaltitle}}</h5>
+                <button type="button" class="close" ng-click="close('#modalUser')" aria-hidden="true">&times;</button>
+                <h5 class="modal-title green bold" data-i18n="{{modaltitle}}"></h5>
             </div>
             <div class="modal-body">
                 <div class="form-group" ng-show="!isNew()">
-                    <label class="col-lg-2 control-label">Account URI</label>
+                    <label class="col-lg-2 control-label" data-i18n="_user-account-uri_"></label>
                     <div class="col-lg-10">
                         <p class="form-control-static">{{user.profile.accountURI}}</p>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="username" class="col-lg-2 control-label">Login</label>
+                    <label for="username" class="col-lg-2 control-label" data-i18n="_login_"></label>
                     <div class="col-lg-10">
                         <input type="text" id="username" name="username" class="form-control" placeholder="Username" ng-model="user.profile.username" ng-disabled="!isNew()" required/>
-                        <div class="error" ng-show="userForm.username.$dirty && userForm.username.$invalid">Invalid:
-                            <span ng-show="userForm.username.$error.required">Specify a username</span>
+                        <div class="error" ng-show="userForm.username.$dirty && userForm.username.$invalid">{{'_invalid-field-message_' | i18n}}:
+                            <span ng-show="userForm.username.$error.required" data-i18n="_username-missed-message_"></span>
                         </div>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="email" class="col-lg-2 control-label">E-mail</label>
+                    <label for="email" class="col-lg-2 control-label" data-i18n="_email_"></label>
                     <div class="col-lg-10">
                         <input type="email" id="email" name="email" class="form-control" placeholder="E-mail" ng-model="user.profile.email" ng-disabled="!isNew()" required/>
-                        <div class="error" ng-show="userForm.email.$dirty && userForm.email.$invalid">Invalid:
-                            <span ng-show="userForm.email.$error.required">Specify email</span>
-                            <span ng-show="userForm.email.$error.email">This is not a valid email</span>
+                        <div class="error" ng-show="userForm.email.$dirty && userForm.email.$invalid">{{'_invalid-field-message_' | i18n}}:
+                            <span ng-show="userForm.email.$error.required" data-i18n="_email-missed-message_"></span>
+                            <span ng-show="userForm.email.$error.email" data-i18n="_malformed-email-message_"></span>
                         </div>
                     </div>
                 </div>
                 <div class="row">
-                    <label class="col-xs-2 text-left">Graph access</label>
+                    <label class="col-xs-2 text-left" data-i18n="_graph-access_"></label>
                     <div class="col-xs-10">
                         <table class="table table-striped">
                             <tr>
-                                <th>Graph</th>
-                                <th>Read</th>
-                                <th>Write</th>
+                                <th data-i18n="_graph_"></th>
+                                <th data-i18n="_read_"></th>
+                                <th data-i18n="_write_"></th>
                             </tr>
                             <tr ng-repeat="graph in graphs | filter:notOwn">
                                 <td>{{graph}}</td>
@@ -54,8 +54,8 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="submit" class="btn-sm btn-success" ng-click="save();" ng-disabled="userForm.$invalid">Save</button>
-                <button type="button" class="btn-sm btn-default" ng-click="close('#modalLogin')">Cancel</button>
+                <button type="submit" class="btn-sm btn-primary" ng-click="save();" ng-disabled="userForm.$invalid" data-i18n="_save_"></button>
+                <button type="button" class="btn-sm btn-default" ng-click="close('#modalUser')" data-i18n="_cancel_"></button>
             </div>
         </form>
     </div>
@@ -66,19 +66,19 @@
                 <i class="glyphicon glyphicon-refresh" aria-hidden="true"></i>
             </button>
         </span>
-        Users
+        {{'_users_' | i18n}}
     </h4>
 
     <table class="table table-striped">
         <thead>
         <tr>
-            <th>Action</th>
-            <th>Account URI</th>
-            <th>Username</th>
-            <th>E-mail</th>
-            <th>Own graphs</th>
-            <th>Readable graphs</th>
-            <th>Writable graphs</th>
+            <th data-i18n="_action_"></th>
+            <th data-i18n="_user-account-uri_"></th>
+            <th data-i18n="_username_"></th>
+            <th data-i18n="_email_"></th>
+            <th data-i18n="_user-own-graphs_"></th>
+            <th data-i18n="_user-readable-graphs_"></th>
+            <th data-i18n="_user-writable-graphs_"></th>
         </tr>
         </thead>
         <tbody>
