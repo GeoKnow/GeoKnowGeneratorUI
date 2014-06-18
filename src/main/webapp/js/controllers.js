@@ -5,7 +5,7 @@ function AccountMenuCtrl($scope) {
   $scope.oneAtATime = true;
   // these data can be replaced later with the configuration
   $scope.items = [
-    { name: "User Preferences",   route:'#/account/preferences', url:'/account/preferences' }];
+    { name: "_user-pref_",   route:'#/account/preferences', url:'/account/preferences' }];
 }
 
 function StackMenuCtrl($scope) {
@@ -16,13 +16,13 @@ function StackMenuCtrl($scope) {
 	      title: "_extraction-loading_",
 	      id:"extraction-loading",
 	      items: [
-	        {name: 'Import RDF data', route:'#/home/extraction-and-loading/import-rdf',  url:'/home/extraction-and-loading/import-rdf' },
+	        {name: '_import-rdf_', route:'#/home/extraction-and-loading/import-rdf',  url:'/home/extraction-and-loading/import-rdf' },
 	        {name: 'Sparqlify Extraction', route:'#/home/extraction-and-loading/sparqlify', url:'/home/extraction-and-loading/sparqlify' },
 	        {name: 'TripleGeo Extraction', route:'#/home/extraction-and-loading/triplegeo', url:'/home/extraction-and-loading/triplegeo' },
 	        {name: 'D2RQ Extraction', route:'#/home/extraction-and-loading/d2rq', url:'/home/extraction-and-loading/d2rq' }]
 	    },
 	    {
-		      title: "Search Querying and Exploration",
+		      title: "_search-querying-exploration_",
 		      id:"search-querying-and-exploration",
 		      items: [
 		       {name: 'Virtuoso', route:'#/home/search-querying-and-exploration/virtuoso', url:'/home/search-querying-and-exploration/virtuoso' },
@@ -30,20 +30,20 @@ function StackMenuCtrl($scope) {
 		       {name: 'Mappify', route:'#/home/search-querying-and-exploration/mappify', url:'/home/search-querying-and-exploration/mappify' }]
 		    },
 	    {
-	      title: "Manual revision and Authoring",
+	      title: "_man-revision-authoring_",
 	      id:"manual-revision-and-authoring",
 	      items: [
 	       {name: 'OntoWiki', route:'#/home/manual-revision-and-authoring/ontowiki', url:'/home/manual-revision-and-authoring/ontowiki' },
-	       {name: "Ontologies", route:'#/home/manual-revision-and-authoring/ontology', url:'/home/manual-revision-and-authoring/ontology' }]
+	       {name: "_ontologies_", route:'#/home/manual-revision-and-authoring/ontology', url:'/home/manual-revision-and-authoring/ontology' }]
 	    },
 	    {
-		    title: "Linking and Fusing",
+		    title: "_linking-fusing_",
 		    id:"linking-and-fusing",
 		    items: [
 		     {name: 'LIMES', route:'#/home/linking-and-fusing/limes', url:'/home/linking-and-fusing/limes' }]
 		  },
 		{
-			 title: "Classification and Enrichment",
+			 title: "_classification-enrichment_",
 			 id:"classification-and-enrichment",
 			 items: [
 			   {name: 'GeoLift', route:'#/home/classification-and-enrichment/geolift', url:'/home/classification-and-enrichment/geolift' }]

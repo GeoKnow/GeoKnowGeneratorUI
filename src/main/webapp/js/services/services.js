@@ -31,7 +31,7 @@ module.factory('Helpers', function(){
 
 });
 
-module.factory('ServerErrorResponse', function() {
+module.factory('ServerErrorResponse', function(localize) {
 
   var ServerErrorResponseService = {
 
@@ -40,22 +40,22 @@ module.factory('ServerErrorResponse', function() {
     var statusText = '';
       switch (status) {
       case 400:
-        statusText = 'Bad Request';
+        statusText = localize.getLocalizedString('_bad-request_');
         break;
       case 401:
-        statusText = 'Unauthorized';
+        statusText = localize.getLocalizedString('_unauthorized_');
         break;
       case 403:
-        statusText = 'Forbidden';
+        statusText = localize.getLocalizedString('_forbidden_');
         break;
       case 404:
-        statusText = 'Not Found ';
+        statusText = localize.getLocalizedString('_not-found_');
         break;
       case 500:
-        statusText = 'Internal Server Error';
+        statusText = localize.getLocalizedString('_internal-server-error_');
         break;
       default:
-        statusText = 'An error occurred:'+status;
+        statusText = localize.getLocalizedString('_error-occurred_')+':'+status;
       };
       return statusText;
     }

@@ -4,11 +4,11 @@ function SettingsMenuCtrl($scope, AccountService) {
   $scope.oneAtATime = true;
   // these data can be replaced later with the configuration
   $scope.items = [
-  	{ name: "Data Sources", route:'#/settings/data-sources', url:'/settings/data-sources', admin: false },
-  	{ name: "Datasets", route:'#/settings/datasets', url:'/settings/datasets', admin: false },
-    // { name: "Namespaces", route:'#/settings/namespaces', url:'/settings/namespaces' },
-  	{ name: "Components", route:'#/settings/components', url:'/settings/components', admin: false },
-    { name: "Users", route:'#/settings/users', url:'/settings/users', admin: true }
+  	{ name: "_data-sources_", route:'#/settings/data-sources', url:'/settings/data-sources', admin: false },
+  	{ name: "_datasets_", route:'#/settings/datasets', url:'/settings/datasets', admin: false },
+    // { name: "_namespaces-title_", route:'#/settings/namespaces', url:'/settings/namespaces' },
+  	{ name: "_components_", route:'#/settings/components', url:'/settings/components', admin: false },
+    { name: "_users_", route:'#/settings/users', url:'/settings/users', admin: true }
   ];
 
   $scope.showAdmin = AccountService.isAdmin();

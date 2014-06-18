@@ -6,7 +6,7 @@
 *
 ***************************************************************************************************/
 
-var ImportFormCtrl = function($scope, $http, ConfigurationService, flash, AccountService, GraphService) {
+var ImportFormCtrl = function($scope, $http, ConfigurationService, flash, AccountService, GraphService, localize) {
 
 	$scope.namedGraphs = [];
     $scope.refreshGraphList = function() {
@@ -26,9 +26,9 @@ var ImportFormCtrl = function($scope, $http, ConfigurationService, flash, Accoun
   $scope.importSparql = { sparqlQuery : "CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o } LIMIT 10"};
 
 	$scope.sourceTypes = [
-		{value:'file', label:'File'},
+		{value:'file', label:'_file_'},
 		{value:'url', label:'URL'},
-		{value:'query', label:'SPARQL Query'}
+		{value:'query', label:'_sparql-query_'}
 	];
 	var type = '';
 
@@ -173,6 +173,10 @@ var ImportFormCtrl = function($scope, $http, ConfigurationService, flash, Accoun
     $scope.importUrl = {url:"", graph:"?"};
     $scope.importSparql = {endpoint:"", sparqlQuery:"", graph:"?"};
   };
+
+    $scope.localize = function(str) {
+        return localize.getLocalizedString(str);
+    };
 
   $scope.$watch( function () { return AccountService.getUsername(); }, function () {
     $scope.refreshGraphList();

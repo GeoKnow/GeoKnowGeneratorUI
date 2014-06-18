@@ -4,9 +4,9 @@ var module = angular.module('app.graph-service', []);
 
 module.factory("GraphService", function ($http, $q, Config, AccountService) {
     var accessModes = {
-        ":No": "No",
-        "acl:Read": "Read",
-        "acl:Write": "Write"
+        ":No": "_no_",
+        "acl:Read": "_read_",
+        "acl:Write": "_write_"
     };
 
     var getNoAccessMode = function () {

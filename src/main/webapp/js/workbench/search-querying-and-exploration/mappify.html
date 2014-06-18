@@ -4,11 +4,11 @@
   <h3 class="green bold">{{component.label}}</h3>
 
   <dl class="dl-horizontal">
-    <dt>Version:</dt><dd>{{component.version}}</dd>
-    <dt>Homepage:</dt><dd>{{component.homepage}}</dd>
+    <dt>{{'_version_' | i18n}}:</dt><dd>{{component.version}}</dd>
+    <dt>{{'_homepage_' | i18n}}:</dt><dd>{{component.homepage}}</dd>
   </dl>
 
-  <p>A tool for exploring (geographical) Linked Data datasets on the Web. To get started select a data set from the drop down menu.</p>
+  <p data-i18n="_mappify-description_"></p>
   <form class="form-horizontal InputForm" role="form" >
     <div class="form-group">
     <!-- 
@@ -27,6 +27,7 @@
     <div class="form-group">
       <div class="col-xs-1"></div>
       <a class="btn btn-success btn-large" data-toggle="modal" ng-click="setUrl(); openModal();">Launch Mappify</a>
+    </div>
     </div>
   </form>
 

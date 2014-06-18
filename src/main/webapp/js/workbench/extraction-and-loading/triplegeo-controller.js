@@ -72,16 +72,6 @@ var TripleGeoCtrl = function($scope, $http, ConfigurationService, flash, ServerE
 	dbConfigArray[21] = ['targetRS', ''];
 	dbConfigArray[22] = ['defaultLang', ''];
 	
-	$scope.tooltips = { files: "When the file upload dialog opens, select the .shp, .shx, and .dbf files " +
-								"you wish to upload and process. Only these 3 files are necessary.",
-						data: "Change parameters to reflect the shapefile contents that will be extracted - case sensitive!",
-						ns: "Optional parameters. Change these parameters if you want to use different"+
-							" values for the namespaces and prefixes nsPrefix=georesource",
-						spatial: "Optional parameters. These fields should be filled in if a transformation between EPSG reference systems is needed. "+
-								 "If not specified, geometries are assumed to be WGS84 reference system (EPSG:4326).",
-						other: "Optional parameter. Default languages for the labels created in the output RDF. By default, the value is English - en."
-	};
-	
 	$scope.options = { 		
 							database: false,
 							file: false,

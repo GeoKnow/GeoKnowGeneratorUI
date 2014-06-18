@@ -65,7 +65,7 @@ function UsersCtrl($scope, $http, flash, Helpers, AccountService) {
 
 	$scope.new = function(){
 	    newUser = true;
-	    $scope.modaltitle = "New User";
+	    $scope.modaltitle = "_new-user-title_";
 		$scope.userForm.$setPristine();
 		$scope.user = angular.copy(emptyUser);
 		$scope.refreshGraphsList();
@@ -73,7 +73,7 @@ function UsersCtrl($scope, $http, flash, Helpers, AccountService) {
 
     $scope.edit = function(username) {
    		newUser = false;
-   		$scope.modaltitle = "Edit User";
+   		$scope.modaltitle = "_edit-user-title_";
    		for (var ind in $scope.users) {
    		    if ($scope.users[ind].profile.username == username) {
    		        $scope.user = angular.copy($scope.users[ind]);

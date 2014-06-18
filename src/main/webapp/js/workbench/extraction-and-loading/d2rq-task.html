@@ -1,6 +1,6 @@
 <div ng-controller="D2RQTaskCtrl">
     <div class="row below">
-    <button type="button" class="btn btn-primary btn-large" data-toggle="modal" data-target="#modalTask" ng-click="new();">Add new task</button>
+    <button type="button" class="btn btn-primary btn-large" data-toggle="modal" data-target="#modalTask" ng-click="new();" data-i18n="_add-task_"></button>
 	</div>
 	
     <div class="modal fade" id="modalTask">
@@ -9,39 +9,39 @@
         <form name="taskForm" class="form-horizontal InputForm" role="form" novalidate>
             <div class="modal-header">
                 <button type="button" class="close" ng-click="close('#modalTask')" aria-hidden="true">&times;</button>
-                <h5 class="modal-title green bold">Add task</h5>
+                <h5 class="modal-title green bold" data-i18n="_new-task_"></h5>
             </div>
             <div class="modal-body">
                 <div class="form-group">
-                    <label class="col-lg-2 control-label">Name</label>
+                    <label class="col-lg-2 control-label" data-i18n="_name_"></label>
                     <div class="col-lg-10">
                         <input type="text" class="form-control" id="name" name="name" ng-model="task.name" required/>
-                        <div class="error" ng-show="taskForm.name.$dirty && taskForm.name.$invalid">Invalid:
-                            <span ng-show="taskForm.name.$error.required">Specify name</span>
+                        <div class="error" ng-show="taskForm.name.$dirty && taskForm.name.$invalid">{{'_invalid-field-message_' | i18n}}:
+                            <span ng-show="taskForm.name.$error.required" data-i18n="_name-missed-message_"></span>
                         </div>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="col-lg-2 control-label">Mapping</label>
+                    <label class="col-lg-2 control-label" data-i18n="_mapping_"></label>
                     <div class="col-lg-10">
                         <select id="mapping" class="form-control" ng-model="task.mapping" ng-options="mapping as mapping.name for mapping in mappings" required></select>
-                        <div class="error" ng-show="taskForm.mapping.$dirty && taskForm.mapping.$invalid">Invalid:
-                            <span ng-show="taskForm.mapping.$error.required">Select mapping</span>
+                        <div class="error" ng-show="taskForm.mapping.$dirty && taskForm.mapping.$invalid">{{'_invalid-field-message_' | i18n}}:
+                            <span ng-show="taskForm.mapping.$error.required" data-i18n="_mapping-missed-message_"></span>
                         </div>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="col-lg-2 control-label">Named graph</label>
+                    <label class="col-lg-2 control-label" data-i18n="_named-graph_"></label>
                     <div class="col-lg-10">
                         <select id="graph" class="form-control" ng-model="task.namedgraph" ng-options="ng as ng.name for ng in namedgraphs" required></select>
-                        <div class="error" ng-show="taskForm.graph.$dirty && taskForm.graph.$invalid">Invalid:
-                            <span ng-show="taskForm.graph.$error.required">Select named graph</span>
+                        <div class="error" ng-show="taskForm.graph.$dirty && taskForm.graph.$invalid">{{'_invalid-field-message_' | i18n}}:
+                            <span ng-show="taskForm.graph.$error.required" data-i18n="_named-graph-missed-message_"></span>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn-sm btn-primary" ng-click="add();" ng-disabled="taskForm.$invalid || isAdding()">Add</button>
-                    <button type="button" class="btn-sm btn-default" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn-sm btn-primary" ng-click="add();" ng-disabled="taskForm.$invalid || isAdding()" data-i18n="_add_"></button>
+                    <button type="button" class="btn-sm btn-default" data-dismiss="modal" data-i18n="_cancel_"></button>
                 </div>
             </div>
         </form>
@@ -56,17 +56,17 @@
                 <i class="glyphicon glyphicon-refresh" aria-hidden="true"></i>
             </button>
         </span>
-        Tasks
+        {{'_tasks_' | i18n}}
     </h4>
 
     <table class="table table-striped">
         <thead>
         <tr>
-            <th>Action</th>
-            <th>Name</th>
-            <th>Mapping</th>
-            <th>Dataset</th>
-            <th>Status</th>
+            <th data-i18n="_action_"></th>
+            <th data-i18n="_name_"></th>
+            <th data-i18n="_mapping_"></th>
+            <th data-i18n="_dataset_"></th>
+            <th data-i18n="_status_"></th>
         </tr>
         </thead>
         <tbody>

@@ -55,7 +55,7 @@ angular.module("app.configuration", [])
         "http://purl.org/dc/terms/"                        : "dcterms:",
         "http://xmlns.com/foaf/0.1/"                       : "foaf:",
         "http://stack.linkeddata.org/ldis-schema/"   	   : "lds:",
-        "http://ldiw.ontos.com/ontology/"            : "gkg:",
+        "http://ldiw.ontos.com/ontology/"                  : "gkg:",
         "http://www.w3.org/1999/02/22-rdf-syntax-ns#"      : "rdf:",
         "http://www.w3.org/2000/01/rdf-schema#"            : "rdfs:",
         "http://www.w3.org/ns/sparql-service-description#" : "sd:",

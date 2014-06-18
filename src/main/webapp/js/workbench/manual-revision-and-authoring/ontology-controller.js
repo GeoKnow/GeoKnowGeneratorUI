@@ -5,7 +5,7 @@
 * Ontologies Controller
 *
 ***************************************************************************************************/
-var OntologyCtrl = function($scope, $http, flash, ServerErrorResponse, AccountService, OntologyService, ConfigurationService) {
+var OntologyCtrl = function($scope, $http, flash, ServerErrorResponse, AccountService, OntologyService, ConfigurationService, localize) {
     var miniDixServices = ConfigurationService.getComponentServices(":MiniDix");
 	var miniDixServiceUrl = miniDixServices[0].serviceUrl;
 
@@ -21,13 +21,17 @@ var OntologyCtrl = function($scope, $http, flash, ServerErrorResponse, AccountSe
     };
 
     $scope.sourceTypes = [
-        {value:'file', label:'File'},
+        {value:'file', label:'_file_'},
     	{value:'url', label:'URL'},
     ];
     var type = '';
 
     $scope.fileElements = false;
     $scope.urlElements = false;
+
+    $scope.localize = function(str) {
+        return localize.getLocalizedString(str);
+    };
 
     $scope.updateForm = function() {
         if ($scope.sourceType.value == 'file') {
@@ -102,7 +106,7 @@ var OntologyCtrl = function($scope, $http, flash, ServerErrorResponse, AccountSe
 
     $scope.url = "";
 	$scope.setUrl = function(ontology){
-	    $scope.url= miniDixServiceUrl + "/?ontology=" + ontology + "&newConceptsOntology=" + ontology + "&writableOntologies=" + ontology + "&locale=en";
+	    $scope.url= miniDixServiceUrl + "/?ontology=" + ontology + "&newConceptsOntology=" + ontology + "&writableOntologies=" + ontology + "&locale=" + localize.language;
 	};
 
 	$scope.onFileSelect = function($files) {

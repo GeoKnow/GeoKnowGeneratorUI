@@ -5,19 +5,19 @@
 
 
     <dl class="dl-horizontal">
-      <dt>Version:</dt><dd>{{component.version}}</dd>
-      <dt>Homepage:</dt><dd>{{component.homepage}}</dd>
+      <dt>{{'_version_' | i18n}}:</dt><dd>{{component.version}}</dd>
+      <dt>{{'_homepage_' | i18n}}:</dt><dd>{{component.homepage}}</dd>
     </dl>
 
     <h4>Launch SPARQLEndPoint Services</h4>
 
     <form name="virtuosoForm" class="form-horizontal InputForm" role="form" novalidate>
       <div class="form-group">
-        <label for="Endpoint">Endpoint</label>
-        <input type="url" class="form-control" id="Endpoint" disabled="disabled" ng-model="virtuoso.service"></input>
+        <label for="Endpoint" data-i18n="_endpoint_"></label>
+        <input type="url" class="form-control" id="Endpoint" disabled="disabled" ng-model="virtuoso.service"/>
       </div>
       <div class="form-group">
-        <label for="DataSet">DataSet</label>
+        <label for="DataSet" data-i18n="_dataset_"></label>
         <div class="input-group">
             <select id="DataSet" class="form-control" ng-model="virtuoso.dataset" ng-options="namedgraph.name as namedgraph.name for namedgraph in namedGraphs" required></select>
             <span class="input-group-btn">
@@ -28,7 +28,7 @@
         </div>
       </div>
       <div class="form-group">
-        <a class="btn btn-success btn-large" data-toggle="modal" ng-click="setUrl(); openModal();">Launch</a>
+        <a class="btn btn-success btn-large" data-toggle="modal" ng-click="setUrl(); openModal();" data-i18n="_launch_"></a>
       </div>
    
       <!-- <a class="btn btn-success btn-large" data-toggle="modal" ng-click="openModal();">Launch</a> -->

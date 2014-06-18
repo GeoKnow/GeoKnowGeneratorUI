@@ -9,7 +9,7 @@
 
 <ul class="nav nav-tabs" ng-controller="D2RQMenuCtrl">
     <li ng-class="{active:isActive('{{item.id}}')}" ng-repeat="item in items">
-        <a href="{{item.route}}">{{item.name}}</a>
+        <a href="{{item.route}}" data-i18n="{{item.name}}"></a>
     </li>
 </ul>
 </div>

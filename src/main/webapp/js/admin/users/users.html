@@ -1,7 +1,7 @@
 <h3 class="green bold" data-i18n="_users-management_"></h3>
 
 <div ng-controller="UserCtrl">
-    <button type="button" class="btn btn-primary btn-large" data-toggle="modal" data-target="#modalUser" ng-click="new();" data-i18n="_add-user_"></button>
+    <button type="button" class="btn btn-success btn-large" data-toggle="modal" data-target="#modalUser" ng-click="new();" data-i18n="_add-user_"></button>
 
     <div class="modal fade" id="modalUser">
         <form name="userForm" class="form-horizontal InputForm" role="form">
@@ -54,7 +54,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="submit" class="btn-sm btn-primary" ng-click="save();" ng-disabled="userForm.$invalid" data-i18n="_save_"></button>
+                <button type="submit" class="btn-sm btn-success" ng-click="save();" ng-disabled="userForm.$invalid" data-i18n="_save_"></button>
                 <button type="button" class="btn-sm btn-default" ng-click="close('#modalUser')" data-i18n="_cancel_"></button>
             </div>
         </form>

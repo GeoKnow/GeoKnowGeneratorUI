@@ -1,6 +1,6 @@
 'use strict';
 
-var D2RQMappingCtrl = function($scope, $http, $q, flash, ServerErrorResponse, AccountService, ConfigurationService, D2RQService) {
+var D2RQMappingCtrl = function($scope, $http, $q, flash, ServerErrorResponse, AccountService, ConfigurationService, D2RQService, localize) {
     var services = ConfigurationService.getComponentServices(":D2RQ");
 	var d2rqServiceUrl = services[0].serviceUrl;
 
@@ -180,13 +180,13 @@ var D2RQMappingCtrl = function($scope, $http, $q, flash, ServerErrorResponse, Ac
     $scope.ontologyClasses = []; //array of objects
 
     $scope.patternTypes = [
-        {value:'uriColumn', label:'URI Column'},
-    	{value:'patternColumns', label:'Pattern Columns'},
+        {value:'uriColumn', label:'_uri-column_'},
+    	{value:'patternColumns', label:'_uri-pattern-columns_'},
     ];
 
     $scope.joinConditionTypes = [
-        {value:'fk', label:'Foreign Key'},
-        {value:'linkingTable', label:'Linking Table'},
+        {value:'fk', label:'_foreign-key_'},
+        {value:'linkingTable', label:'_linking-table_'},
     ];
 
     var table2columns = {}; //property - table name, value - columns list
@@ -276,8 +276,8 @@ var D2RQMappingCtrl = function($scope, $http, $q, flash, ServerErrorResponse, Ac
     };
 
     $scope.objectPropMappingTypes = [
-        {value:"column", label:"URI Column"},
-        {value:"ref", label:"Mapping Reference"}
+        {value:"column", label:"_uri-column_"},
+        {value:"ref", label:"_mapping-ref_"}
     ];
 
     var emptyDataProperty = {id: 0
@@ -310,7 +310,7 @@ var D2RQMappingCtrl = function($scope, $http, $q, flash, ServerErrorResponse, Ac
     $scope.isNew = false;
 
     $scope.newMapping = function(mappingGroup) {
-        $scope.modaltitle = "New mapping";
+        $scope.modaltitle = "_new-mapping_";
 
         $scope.isNew = true;
 
@@ -378,7 +378,7 @@ var D2RQMappingCtrl = function($scope, $http, $q, flash, ServerErrorResponse, Ac
     };
 
     $scope.editMapping = function(mapping, mappingGroup) {
-        $scope.modaltitle = "Edit mapping";
+        $scope.modaltitle = "_edit-mapping_";
 
         $scope.isNew = false;
 
@@ -733,5 +733,9 @@ var D2RQMappingCtrl = function($scope, $http, $q, flash, ServerErrorResponse, Ac
 
     $scope.notCurrent = function(mapping) {
         return $scope.isNew || mapping.id != $scope.mapping.id;
+    };
+
+    $scope.localize = function(str) {
+        return localize.getLocalizedString(str);
     };
 };

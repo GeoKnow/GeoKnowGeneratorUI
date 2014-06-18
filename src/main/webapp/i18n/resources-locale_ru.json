@@ -11,6 +11,56 @@
         "value":"Текущая конфигурация включает в себя следующие компоненты.",
         "description":"description shown on components page under the title"
     },
+    {
+        "key":"_geolift-description_",
+        "value":"Framework to Enrich Geographic Content in the Semantic Web",
+        "description":"description shown on GeoLift page"
+    },
+    {
+        "key":"_geolift-instructions_",
+        "value":"To get started choose whether to process a file or endpoint, you can then choose an example or specify your own parameters.",
+        "description":"instructions (how to start) shown on GeoLift page"
+    },
+
+    {
+        "key":"_sparqlify-description_",
+        "value":"Sparqlify is a scalable SPARQL-SQL rewriter. To get started select a data set from the drop down menu.",
+        "description":"description shown on Sparqlify page"
+    },
+
+    {
+        "key":"_triplegeo-description_",
+        "value":"Utility for Converting Geospatial Data into Triples",
+        "description":"description shown on TripleGeo page"
+    },
+    {
+        "key":"_triplegeo-instructions_",
+        "value":"To get started choose whether to process a file or database, you can then choose an example or specify your own parameters.",
+        "description":"instructions (how to start) shown on TripleGeo page"
+    },
+
+    {
+        "key":"_limes-description_",
+        "value":"Link Discovery Framework for Metric Spaces",
+        "description":"description shown on Limes page"
+    },
+    {
+        "key":"_limes-instructions_",
+        "value":"To get started either upload a configuration file, choose an example, or fill in the options form.",
+        "description":"instructions (how to start) shown on Limes page"
+    },
+
+    {
+        "key":"_facete-description_",
+        "value":"A tool for exploring (geographical) Linked Data datasets on the Web. To get started select a data set from the drop down menu.",
+        "description":"description shown on Facete page"
+    },
+
+    {
+        "key":"_mappify-description_",
+        "value":"A tool for exploring (geographical) Linked Data datasets on the Web. To get started select a data set from the drop down menu.",
+        "description":"description shown on Mappify page"
+    },
 
 
     {
@@ -53,31 +103,48 @@
         "description":"stack menu group title"
     },
     {
-        "key":"_authoring_",
+        "key":"_man-revision-authoring_",
         "value":"Редактирование данных",
         "description":"stack menu group title"
     },
     {
-        "key":"_querying-exploration_",
+        "key":"_search-querying-exploration_",
         "value":"Просмотр данных",
+        "description":"stack menu group title"
+    },
+    {
+        "key":"_linking-fusing_",
+        "value":"Связывание",
+        "description":"stack menu group title"
+    },
+    {
+        "key":"_classification-enrichment_",
+        "value":"Классификация и расширение",
         "description":"stack menu group title"
     },
 
 
     {
-        "key":"_upload-files_",
-        "value":"Загрузить новые файлы",
+        "key":"_user-pref_",
+        "value":"Пользовательские настройки",
+        "description":"Account menu item, page title"
+    },
+
+
+    {
+        "key":"_import-rdf_",
+        "value":"Импорт данных из RDF файла",
         "description":"page and stack menu item title"
     },
     {
-        "key":"_thesaurus-management_",
-        "value":"Управление тезаурусами",
-        "description":"page and stack/settings menu item title"
+        "key":"_to-dataset_",
+        "value":"в набор данных",
+        "description":"in import to dataset forms"
     },
     {
-        "key":"_edit-uploads_",
-        "value":"Редактор загруженных документов",
-        "description":"page and stack menu item title"
+        "key":"_url-input_",
+        "value":"исходный URL",
+        "description":"in import forms"
     },
 
 
@@ -100,6 +167,40 @@
         "key":"_users_",
         "value":"Пользователи",
         "description":"page and settings menu item title"
+    },
+    {
+        "key":"_namespaces-title_",
+        "value":"Пространства имен",
+        "description":"page and settings menu item title"
+    },
+
+
+    {
+        "key":"_add-namespace_",
+        "value":"Добавить новое пространство имен",
+        "description":"button on namespaces page"
+    },
+
+
+    {
+        "key":"_ns-prefix_",
+        "value":"Префикс пространства имен",
+        "description":""
+    },
+    {
+        "key":"_onto-ns-prefix_",
+        "value":"Префикс пространства имен онтологии",
+        "description":""
+    },
+    {
+        "key":"_onto-ns_",
+        "value":"Пространство имен онтологии",
+        "description":""
+    },
+    {
+        "key":"_ns-parameters_",
+        "value":"Параметры пространства имен",
+        "description":""
     },
 
 
@@ -132,167 +233,6 @@
 
 
     {
-        "key":"_acc-project-number_",
-        "value":"Номер проекта",
-        "description":"upload document, edit document form field"
-    },
-    {
-        "key":"_acc-project-name_",
-        "value":"Имя проекта",
-        "description":"upload document, edit document form field"
-    },
-    {
-        "key":"_acc-doc-number_",
-        "value":"Номер документа",
-        "description":"upload document, edit document form field"
-    },
-    {
-        "key":"_acc-doc-iteration_",
-        "value":"Версия документа",
-        "description":"upload document, edit document form field"
-    },
-    {
-        "key":"_date-doc-received_",
-        "value":"Дата получения документа",
-        "description":"upload document, edit document form field"
-    },
-    {
-        "key":"_owner-name_",
-        "value":"Имя владельца",
-        "description":"upload document, edit document form field"
-    },
-    {
-        "key":"_short-description_",
-        "value":"Краткое описание",
-        "description":"upload document, edit document form field"
-    },
-    {
-        "key":"_owner-doc-number_",
-        "value":"Номер документа, указанный владельцем",
-        "description":"upload document, edit document form field"
-    },
-    {
-        "key":"_owner-doc-name_",
-        "value":"Имя документа, указанное владельцем",
-        "description":"upload document, edit document form field"
-    },
-    {
-        "key":"_owner-doc-revision_",
-        "value":"Ревизия документа",
-        "description":"upload document, edit document form field"
-    },
-    {
-        "key":"_owner-doc-revision-date_",
-        "value":"Дата ревизии документа",
-        "description":"upload document, edit document form field"
-    },
-    {
-        "key":"_additional-notes_",
-        "value":"Дополнительная информация",
-        "description":"upload document, edit document form field"
-    },
-    {
-        "key":"_doc-applicable_",
-        "value":"Document Applicable",
-        "description":"upload document, edit document form field"
-    },
-    {
-        "key":"_doc-uploader_",
-        "value":"Загружен",
-        "description":"edit document form field"
-    },
-    {
-        "key":"_doc-uploaded_",
-        "value":"Дата загрузки",
-        "description":"edit document form field, documents table field"
-    },
-    {
-        "key":"_acc-doc_",
-        "value":"Документ",
-        "description":"documents table field"
-    },
-    {
-        "key":"_doc-projects_",
-        "value":"Проекты",
-        "description":"documents table field"
-    },
-    {
-        "key":"_edit-doc_",
-        "value":"Редактировать документ",
-        "description":"edit document dialog title"
-    },
-    {
-        "key":"_project-number_",
-        "value":"Номер проекта",
-        "description":"document search field"
-    },
-    {
-        "key":"_all-fields_",
-        "value":"Все",
-        "description":"document search field"
-    },
-
-
-    {
-        "key":"_new-project-number_",
-        "value":"Номер нового проекта",
-        "description":"upload document, edit document form placeholder"
-    },
-    {
-        "key":"_new-project-name_",
-        "value":"Имя нового проекта",
-        "description":"upload document, edit document form placeholder"
-    },
-    {
-        "key":"_new-owner-name_",
-        "value":"Имя нового владельца, например, SIEMENS",
-        "description":"upload document, edit document form placeholder"
-    },
-    {
-        "key":"_fill-doc-number_",
-        "value":"Укажите номер, например, D100",
-        "description":"upload document form placeholder"
-    },
-    {
-        "key":"_fill-doc-iteration_",
-        "value":"Укажите версию, например, IT1",
-        "description":"upload document form placeholder"
-    },
-    {
-        "key":"_fill-short-description_",
-        "value":"Добавьте крткое описание",
-        "description":"upload document form placeholder"
-    },
-    {
-        "key":"_fill-owner-doc-number_",
-        "value":"Укажите номер, например, 10080-1-SS-CI-010",
-        "description":"upload document form placeholder"
-    },
-    {
-        "key":"_fill-owner-doc-name_",
-        "value":"Укажите имя, например, 10080-1-SS-CI-001_01",
-        "description":"upload document form placeholder"
-    },
-    {
-        "key":"_fill-owner-doc-revision_",
-        "value":"Укажите версию, например, Rev.1",
-        "description":"upload document form placeholder"
-    },
-    {
-        "key":"_fill-additional-notes_",
-        "value":"Дополнительная информация?",
-        "description":"upload document form placeholder"
-    },
-
-
-    {
-        "key":"_uploaded-docs_",
-        "value":"Загруженные документы",
-        "description":"documents table title"
-    },
-
-
-    {
         "key":"_sign-in_",
         "value":"Войти",
         "description":"Sign in button"
@@ -303,9 +243,9 @@
         "description":"Clear form button"
     },
     {
-        "key":"_upload-doc_",
-        "value":"Загрузить документ",
-        "description":"Upload document button"
+        "key":"_show-form_",
+        "value":"Показать форму",
+        "description":""
     },
 
 
@@ -313,6 +253,11 @@
         "key":"_uploading_",
         "value":"Идет загрузка...",
         "description":"Uploading message"
+    },
+    {
+        "key":"_importing_",
+        "value":"Импорт ...",
+        "description":"importing in progress message"
     },
 
 
@@ -325,26 +270,6 @@
         "key":"_add-ontology_",
         "value":"Добавить онтологию",
         "description":"add ontology button, dialog title"
-    },
-    {
-        "key":"_reindex-cur-thesaurus_",
-        "value":"Переиндексировать документы",
-        "description":"button"
-    },
-    {
-        "key":"_reindex-docs_",
-        "value":"Переиндексировать документы",
-        "description":"dialog title"
-    },
-    {
-        "key":"_reindex-confirm_",
-        "value":"Переиндексировать все документы по последней версии тезауруса?",
-        "description":"reindex confirmation question"
-    },
-    {
-        "key":"_reindexing_",
-        "value":"Идет переиндексация...",
-        "description":"reindexing message"
     },
 
 
@@ -555,16 +480,221 @@
         "value":"Файл",
         "description":""
     },
+    {
+        "key":"_browse_",
+        "value":"Обзор",
+        "description":""
+    },
+    {
+        "key":"_namespace_",
+        "value":"Пространство имен",
+        "description":""
+    },
+    {
+        "key":"_prefix_",
+        "value":"Префикс",
+        "description":""
+    },
+    {
+        "key":"_mapping_",
+        "value":"Отображение",
+        "description":""
+    },
+    {
+        "key":"_mappings_",
+        "value":"Отображения",
+        "description":""
+    },
+    {
+        "key":"_tasks_",
+        "value":"Задачи",
+        "description":""
+    },
+    {
+        "key":"_table_",
+        "value":"Таблица",
+        "description":"database table select"
+    },
+    {
+        "key":"_column_",
+        "value":"Столбец",
+        "description":"database table column"
+    },
+    {
+        "key":"_class_",
+        "value":"Класс",
+        "description":"ontology class select"
+    },
+    {
+        "key":"_property_",
+        "value":"Свойство",
+        "description":""
+    },
+    {
+        "key":"_threshold_",
+        "value":"Порог",
+        "description":""
+    },
+    {
+        "key":"_relation_",
+        "value":"Отношение",
+        "description":""
+    },
+    {
+        "key":"_delete_",
+        "value":"Удалить",
+        "description":""
+    },
+    {
+        "key":"_metric_",
+        "value":"Метрика",
+        "description":""
+    },
+    {
+        "key":"_execution_",
+        "value":"Выполнение",
+        "description":""
+    },
+    {
+        "key":"_granularity_",
+        "value":"Granularity",
+        "description":"Limes configuration"
+    },
+    {
+        "key":"_variable_",
+        "value":"Variable",
+        "description":"Limes configuration"
+    },
+    {
+        "key":"_pagesize_",
+        "value":"Размер страницы",
+        "description":""
+    },
+    {
+        "key":"_restriction_",
+        "value":"Restriction",
+        "description":"Limes configuration"
+    },
+    {
+        "key":"_source_",
+        "value":"Source",
+        "description":"TripleGeo configuration"
+    },
+    {
+        "key":"_target_",
+        "value":"Target",
+        "description":"TripleGeo configuration"
+    },
+    {
+        "key":"_examples_",
+        "value":"Примеры",
+        "description":""
+    },
+    {
+        "key":"_index_",
+        "value":"Индекс",
+        "description":""
+    },
+    {
+        "key":"_module_",
+        "value":"Модуль",
+        "description":""
+    },
+    {
+        "key":"_parameter_",
+        "value":"Параметр",
+        "description":""
+    },
+    {
+        "key":"_value_",
+        "value":"Значение",
+        "description":""
+    },
+    {
+        "key":"_import_",
+        "value":"Импорт",
+        "description":""
+    },
+    {
+        "key":"_query_",
+        "value":"Запрос",
+        "description":""
+    },
+    {
+        "key":"_launch_",
+        "value":"Запустить",
+        "description":""
+    },
+    {
+        "key":"_endpoints_",
+        "value":"Эндпоинты",
+        "description":""
+    },
+    {
+        "key":"_dataset_",
+        "value":"Набор данных",
+        "description":""
+    },
+    {
+        "key":"_status_",
+        "value":"Статус",
+        "description":""
+    },
+    {
+        "key":"_condition_",
+        "value":"Условие",
+        "description":""
+    },
+    {
+        "key":"_attribute_",
+        "value":"Атрибут",
+        "description":""
+    },
+    {
+        "key":"_ignore_",
+        "value":"Игнорировать",
+        "description":""
+    },
+    {
+        "key":"_results_",
+        "value":"Результаты",
+        "description":""
+    },
 
 
     {
         "key":"_sparql-endpoint_",
-        "value":"SPARQL Endpoint",
+        "value":"SPARQL эндпоинт",
+        "description":""
+    },
+    {
+        "key":"_sparql-query_",
+        "value":"SPARQL запрос",
+        "description":""
+    },
+    {
+        "key":"_endpoint-url_",
+        "value":"URL эндпоинта",
         "description":""
     },
     {
         "key":"_user-access_",
         "value":"Пользовательский доступ",
+        "description":""
+    },
+    {
+        "key":"_save-changes_",
+        "value":"Сохранить изменения",
+        "description":""
+    },
+    {
+        "key":"_save-results_",
+        "value":"Сохранить результаты",
+        "description":""
+    },
+    {
+        "key":"_data-source_",
+        "value":"Источник данных",
         "description":""
     },
 
@@ -622,6 +752,13 @@
 
 
     {
+        "key":"_named-graph_",
+        "value":"Именованный граф",
+        "description":""
+    },
+
+
+    {
         "key":"_rel-databases_",
         "value":"Базы данных",
         "description":"data sources page"
@@ -640,6 +777,38 @@
         "key":"_add-endpoint_",
         "value":"Добавить новый эндпоинт",
         "description":"button on data sources page"
+    },
+
+
+    {
+        "key":"_db-user-name_",
+        "value":"Имя пользователя базы данных",
+        "description":""
+    },
+    {
+        "key":"_db-password_",
+        "value":"Пароль базы данных",
+        "description":""
+    },
+    {
+        "key":"_db-host_",
+        "value":"Хост базы данных",
+        "description":""
+    },
+    {
+        "key":"_db-port_",
+        "value":"Порт базы данных",
+        "description":""
+    },
+    {
+        "key":"_table-name_",
+        "value":"Имя таблицы",
+        "description":""
+    },
+    {
+        "key":"_foreign-key_",
+        "value":"Внешний ключ",
+        "description":"database table foreign key"
     },
 
 
@@ -860,6 +1029,61 @@
         "value":"Укажите имя пользователя или e-mail",
         "description":"shown in forms below username-or-email field when the value is not specified"
     },
+    {
+        "key":"_prefix-missed-message_",
+        "value":"Укажите префикс",
+        "description":"shown in forms below required prefix field when it's not specified"
+    },
+    {
+        "key":"_name-missed-message_",
+        "value":"Укажите имя",
+        "description":"shown in forms below required name field when it's not specified"
+    },
+    {
+        "key":"_ontology-missed-message_",
+        "value":"Укажите онтологию",
+        "description":"shown in forms below required ontology field when it's not specified"
+    },
+    {
+        "key":"_database-missed-message_",
+        "value":"Укажите базу данных",
+        "description":"shown in forms below required database field when it's not specified"
+    },
+    {
+        "key":"_table-missed-message_",
+        "value":"Укажите таблицу",
+        "description":"shown in forms below required table field when it's not specified"
+    },
+    {
+        "key":"_class-missed-message_",
+        "value":"Укажите класс",
+        "description":"shown in forms below required table field when it's not specified"
+    },
+    {
+        "key":"_uri-pattern-type-missed-message_",
+        "value":"Укажите метод построение URI",
+        "description":"shown in forms below required pattern type (d2rq) field when it's not specified"
+    },
+    {
+        "key":"_mapping-missed-message_",
+        "value":"Укажите отображение",
+        "description":"shown in forms below required mapping field when it's not specified"
+    },
+    {
+        "key":"_named-graph-missed-message_",
+        "value":"Укажите именованный граф",
+        "description":"shown in forms below required named graph field when it's not specified"
+    },
+    {
+        "key":"_url-missed-message_",
+        "value":"Укажите URL",
+        "description":"shown in forms below required url field when the value is not specified"
+    },
+    {
+        "key":"_endpoint-missed-message_",
+        "value":"Укажите эндпоинт",
+        "description":"shown in forms below required endpoint field when the value is not specified"
+    },
 
 
     {
@@ -891,6 +1115,11 @@
         "key":"_malformed-letters-number-id-message_",
         "value":"Укажите корректный идентификатор (буквы и/или цифры)",
         "description":"shown in forms below letters-and-numbers id field when the value is malformed"
+    },
+    {
+        "key":"_malformed-url-message_",
+        "value":"Указан некорректный URL",
+        "description":"shown in forms below url field when the value is malformed"
     },
 
 
@@ -958,29 +1187,317 @@
 
 
     {
-        "key":"_doc-upload-protected-error_",
-        "value":"Загружаемый файл защищен паролем и не может быть проанализирован",
-        "description":"The uploaded file is password protected and could not be analyzed (documents uploading)"
+        "key":"_mapping-groups_",
+        "value":"Группы отображений",
+        "description":"d2rq"
     },
     {
-        "key":"_doc-upload-required-error_",
-        "value":"Не все обязательные поля заполнены",
-        "description":"Not all required information provided (documents uploading)"
+        "key":"_mapping-group_",
+        "value":"Группа отображений",
+        "description":"d2rq"
     },
     {
-        "key":"_doc-upload-analyzing-error_",
-        "value":"Возникли проблемы при анализе документа. Свяжитесь с администратором.",
-        "description":"Internal problems while analyzing the document (documents uploading)"
+        "key":"_add-mapping-group_",
+        "value":"Добавить новую группу отображений",
+        "description":"d2rq"
     },
     {
-        "key":"_doc-delete-error_",
-        "value":"Ошибка при удалении документа",
-        "description":"Error while deleting the document"
+        "key":"_uri-pattern-type_",
+        "value":"Метод формирования URI",
+        "description":"URI pattern type for d2rq mapping"
     },
     {
-        "key":"_doc-reindex-error_",
-        "value":"Ошибка при переиндексации документа",
-        "description":"Error while re-indexing the document"
-    }
+        "key":"_uri-column_",
+        "value":"Стобец URI",
+        "description":"URI column for d2rq mapping"
+    },
+    {
+        "key":"_uri-pattern-columns_",
+        "value":"Столбцы для формирования URI",
+        "description":"URI pattern columns for d2rq mapping"
+    },
+    {
+        "key":"_data-properties_",
+        "value":"Простые свойства",
+        "description":"owl data properties"
+    },
+    {
+        "key":"_add-data-property_",
+        "value":"Добавить новое простое свойство",
+        "description":"add owl data properties button"
+    },
+    {
+        "key":"_object-properties_",
+        "value":"Свойства-ссылки",
+        "description":"owl object properties"
+    },
+    {
+        "key":"_add-object-property_",
+        "value":"Добавит новое свойство-ссылку",
+        "description":"add owl object properties button"
+    },
+    {
+        "key":"_mapping-type_",
+        "value":"Тип отображения",
+        "description":"d2rq mapping type (for object properties: column or reference)"
+    },
+    {
+        "key":"_join-condition_",
+        "value":"Условия объединения",
+        "description":"tables join condition for d2rq mapping"
+    },
+    {
+        "key":"_linking-table_",
+        "value":"Таблица связи",
+        "description":"linking table in d2rq mapping"
+    },
+    {
+        "key":"_new-mapping_",
+        "value":"Новое отображение",
+        "description":"create mapping dialog title"
+    },
+    {
+        "key":"_edit-mapping_",
+        "value":"Редактировать отображение",
+        "description":"edit mapping dialog title"
+    },
+    {
+        "key":"_mapping-ref_",
+        "value":"Ссылка на отображение",
+        "description":"d2rq refers mapping"
+    },
 
+
+    {
+        "key":"_add-task_",
+        "value":"Добавить новую задачу",
+        "description":""
+    },
+    {
+        "key":"_new-task_",
+        "value":"Новая задача",
+        "description":"create task dialog title"
+    },
+
+
+    {
+        "key":"_database-choose-option_",
+        "value":"Выберите базу данных",
+        "description":"default option in select"
+    },
+    {
+        "key":"_data-source-type-choose-option_",
+        "value":"Выберите тип источника данных",
+        "description":"default option in select"
+    },
+    {
+        "key":"_example-choose-option_",
+        "value":"Выберите пример",
+        "description":"default option in select"
+    },
+    {
+        "key":"_endpoint-choose-option_",
+        "value":"Выберите эндпоинт",
+        "description":"default option in select"
+    },
+
+
+    {
+        "key":"_file-examples_",
+        "value":"Примеры файлов",
+        "description":""
+    },
+    {
+        "key":"_endpoint-examples_",
+        "value":"Примеры эндпоинтов",
+        "description":""
+    },
+    {
+        "key":"_uri-examples_",
+        "value":"Примеры URI",
+        "description":""
+    },
+    {
+        "key":"_db-examples_",
+        "value":"Примеры баз данных",
+        "description":""
+    },
+
+
+    {
+        "key":"_upload-enrichment-file_",
+        "value":"Загрузить файл для расширения",
+        "description":""
+    },
+    {
+        "key":"_upload-config-file_",
+        "value":"Загрузить конфигурационный файл",
+        "description":""
+    },
+    {
+        "key":"_upload-files_",
+        "value":"Загрузить файлы",
+        "description":""
+    },
+
+
+    {
+        "key":"_add-parameter_",
+        "value":"Добавить параметр",
+        "description":""
+    },
+    {
+        "key":"_input-output-parameters_",
+        "value":"Входные и выходные параметры",
+        "description":""
+    },
+    {
+        "key":"_data-parameters_",
+        "value":"Параметры данных",
+        "description":""
+    },
+    {
+        "key":"_db-parameters_",
+        "value":"Параметры базы данных",
+        "description":""
+    },
+    {
+        "key":"_spatial-ref-parameters_",
+        "value":"Spatial Reference Parameters",
+        "description":"TripleGeo configuration"
+    },
+
+
+    {
+        "key":"_output-format_",
+        "value":"Выходной формат",
+        "description":""
+    },
+    {
+        "key":"_target-store-type_",
+        "value":"Тип целевого хранилища",
+        "description":""
+    },
+    {
+        "key":"_feature-string_",
+        "value":"Feature String",
+        "description":"TripleGeo configuration"
+    },
+    {
+        "key":"_resource-name_",
+        "value":"Имя ресурса",
+        "description":""
+    },
+    {
+        "key":"_label-column-name_",
+        "value":"Колонка лейбла",
+        "description":"TripleGeo configuration"
+    },
+    {
+        "key":"_name-column-name_",
+        "value":"Колонка имени",
+        "description":"TripleGeo configuration"
+    },
+    {
+        "key":"_class-column-name_",
+        "value":"Колонка класса",
+        "description":"TripleGeo configuration"
+    },
+    {
+        "key":"_geometry-column-name_",
+        "value":"Geometry Column Name",
+        "description":"TripleGeo configuration"
+    },
+
+
+    {
+        "key":"_default-lang_",
+        "value":"Язык по умолчанию",
+        "description":""
+    },
+
+
+    {
+        "key":"_options-form_",
+        "value":"Опции",
+        "description":""
+    },
+
+
+    {
+        "key":"_source-data_",
+        "value":"Исходные данные",
+        "description":""
+    },
+    {
+        "key":"_target-data_",
+        "value":"Целевые данные",
+        "description":""
+    },
+    {
+        "key":"_add-properties_",
+        "value":"Добавить свойства",
+        "description":""
+    },
+    {
+        "key":"_acceptance-settings_",
+        "value":"Настройки приема",
+        "description":"Limes configuration"
+    },
+    {
+        "key":"_review-settings_",
+        "value":"Настройки проверки",
+        "description":"Limes configuration"
+    },
+
+
+    {
+        "key":"_wait-results-message_",
+        "value":"This might take a while... Please keep this browser window open. You can view and save the results here when execution is complete.",
+        "description":""
+    },
+
+
+    {
+        "key":"_select-graph-save-message_",
+        "value":"Выберите граф для сохранения результатов.",
+        "description":""
+    },
+
+
+    {
+        "key":"_triplegeo-files-help-tooltip_",
+        "value":"When the file upload dialog opens, select the .shp, .shx, and .dbf files you wish to upload and process. Only these 3 files are necessary.",
+        "description":"TripleGeo configuration help tooltip"
+    },
+    {
+        "key":"_triplegeo-data-help-tooltip_",
+        "value":"Change parameters to reflect the shapefile contents that will be extracted - case sensitive!",
+        "description":"TripleGeo configuration help tooltip"
+    },
+    {
+        "key":"_triplegeo-ns-help-tooltip_",
+        "value":"Optional parameters. Change these parameters if you want to use different values for the namespaces and prefixes nsPrefix=georesource",
+        "description":"TripleGeo configuration help tooltip"
+    },
+    {
+        "key":"_triplegeo-spatial-help-tooltip_",
+        "value":"Optional parameters. These fields should be filled in if a transformation between EPSG reference systems is needed. If not specified, geometries are assumed to be WGS84 reference system (EPSG:4326).",
+        "description":"TripleGeo configuration help tooltip"
+    },
+    {
+        "key":"_triplegeo-other-help-tooltip_",
+        "value":"Optional parameter. Default languages for the labels created in the output RDF. By default, the value is English - en.",
+        "description":"TripleGeo configuration help tooltip"
+    },
+    {
+        "key":"_triplegeo-config_",
+        "value":"Конфигурация TripleGeo",
+        "description":""
+    },
+    {
+        "key":"_triplegeo-start_",
+        "value":"Запустить TripleGeo",
+        "description":""
+    }
 ]

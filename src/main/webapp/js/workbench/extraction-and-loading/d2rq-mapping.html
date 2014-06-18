@@ -1,6 +1,6 @@
 <div ng-controller="D2RQMappingCtrl">
     <div class="row below">
-    <button type="button" class="btn btn-primary btn-large" data-toggle="modal" data-target="#modalMappingGroup" ng-click="newMappingGroup();">Add new mapping group</button>
+    <button type="button" class="btn btn-primary btn-large" data-toggle="modal" data-target="#modalMappingGroup" ng-click="newMappingGroup();" data-i18n="_add-mapping-group_"></button>
 	</div>
 
     <div class="modal fade" id="modalMappingGroup">
@@ -9,39 +9,39 @@
         <form name="mappingGroupForm" class="form-horizontal InputForm" role="form" novalidate>
             <div class="modal-header">
                 <button type="button" class="close" ng-click="close('#modalMappingGroup')" aria-hidden="true">&times;</button>
-                <h5 class="modal-title green bold">Add mapping group</h5>
+                <h5 class="modal-title green bold" data-i18n="_mapping-group_"></h5>
             </div>
             <div class="modal-body">
                 <div class="form-group">
-                    <label class="col-lg-2 control-label">Name</label>
+                    <label class="col-lg-2 control-label" data-i18n="_name_"></label>
                     <div class="col-lg-10">
                         <input type="text" class="form-control" id="name" name="name" ng-model="mgroup.name" required/>
-                        <div class="error" ng-show="mappingGroupForm.name.$dirty && mappingGroupForm.name.$invalid">Invalid:
-                            <span ng-show="mappingGroupForm.name.$error.required">Specify name</span>
+                        <div class="error" ng-show="mappingGroupForm.name.$dirty && mappingGroupForm.name.$invalid">{{'_invalid-field-message_' | i18n}}:
+                            <span ng-show="mappingGroupForm.name.$error.required" data-i18n="_name-missed-message_"></span>
                         </div>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="col-lg-2 control-label">Ontology</label>
+                    <label class="col-lg-2 control-label" data-i18n="_ontology_"></label>
                     <div class="col-lg-10">
                         <select id="ontology" class="form-control" ng-model="mgroup.ontology" ng-options="onto as onto.uri for onto in ontologies | orderBy:'uri'" required></select>
-                        <div class="error" ng-show="mappingGroupForm.ontology.$dirty && mappingGroupForm.ontology.$invalid">Invalid:
-                            <span ng-show="mappingGroupForm.ontology.$error.required">Select ontology</span>
+                        <div class="error" ng-show="mappingGroupForm.ontology.$dirty && mappingGroupForm.ontology.$invalid">{{'_invalid-field-message_' | i18n}}:
+                            <span ng-show="mappingGroupForm.ontology.$error.required" data-i18n="_ontology-missed-message_"></span>
                         </div>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="col-lg-2 control-label">Databases</label>
+                    <label class="col-lg-2 control-label" data-i18n="_database_"></label>
                     <div class="col-lg-10">
                         <select id="database" class="form-control" ng-model="mgroup.database" ng-change="updateConnection()" ng-options="db as db.label for db in databases | orderBy:'label'" required></select>
-                        <div class="error" ng-show="mappingGroupForm.database.$dirty && mappingGroupForm.database.$invalid">Invalid:
-                            <span ng-show="mappingGroupForm.database.$error.required">Select database</span>
+                        <div class="error" ng-show="mappingGroupForm.database.$dirty && mappingGroupForm.database.$invalid">{{'_invalid-field-message_' | i18n}}:
+                            <span ng-show="mappingGroupForm.database.$error.required" data-i18n="_database-missed-message_"></span>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn-sm btn-primary" ng-click="addMappingGroup();" ng-disabled="mappingGroupForm.$invalid || isAdding()">Add</button>
-                    <button type="button" class="btn-sm btn-default" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn-sm btn-primary" ng-click="addMappingGroup();" ng-disabled="mappingGroupForm.$invalid || isAdding()" data-i18n="_add_"></button>
+                    <button type="button" class="btn-sm btn-default" data-dismiss="modal" data-i18n="_cancel_"></button>
                 </div>
             </div>
         </form>
@@ -53,53 +53,53 @@
         <form name="mappingForm" class="form-horizontal InputForm" role="form" novalidate>
             <div class="modal-header">
                 <button type="button" class="close" ng-click="close('#modalMapping')" aria-hidden="true">&times;</button>
-                <h5 class="modal-title green bold">{{modaltitle}}</h5>
+                <h5 class="modal-title green bold" data-i18n="{{modaltitle}}"></h5>
             </div>
             <div class="modal-body">
                 <div class="form-group">
-                    <label class="col-lg-1 control-label">Name</label>
+                    <label class="col-lg-1 control-label" data-i18n="_name_"></label>
                     <div class="col-lg-11">
                         <input type="text" class="form-control" id="name" name="name" ng-model="mapping.name" required/>
-                        <div class="error" ng-show="mappingForm.name.$dirty && mappingForm.name.$invalid">Invalid:
-                            <span ng-show="mappingForm.name.$error.required">Specify name</span>
+                        <div class="error" ng-show="mappingForm.name.$dirty && mappingForm.name.$invalid">{{'_invalid-field-message_' | i18n}}:
+                            <span ng-show="mappingForm.name.$error.required" data-i18n="_name-missed-message_"></span>
                         </div>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="col-lg-1 control-label">Table</label>
+                    <label class="col-lg-1 control-label" data-i18n="_table_"></label>
                     <div class="col-lg-11">
                         <select id="table" class="form-control" ng-model="mapping.table" ng-options="t for t in tables | orderBy:'toString()'" ng-change="updateColumns()" required></select>
-                        <div class="error" ng-show="mappingForm.table.$dirty && mappingForm.table.$invalid">Invalid:
-                            <span ng-show="mappingForm.table.$error.required">Select table</span>
+                        <div class="error" ng-show="mappingForm.table.$dirty && mappingForm.table.$invalid">{{'_invalid-field-message_' | i18n}}:
+                            <span ng-show="mappingForm.table.$error.required" data-i18n="_table-missed-message_"></span>
                         </div>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="col-lg-1 control-label">Class</label>
+                    <label class="col-lg-1 control-label" data-i18n="_class_"></label>
                     <div class="col-lg-11">
                         <select id="class" class="form-control" ng-model="mapping.class" ng-options="c as c.uri for c in ontologyClasses | orderBy:'uri'" ng-change="updateProperties()" required></select>
-                        <div class="error" ng-show="mappingForm.class.$dirty && mappingForm.class.$invalid">Invalid:
-                            <span ng-show="mappingForm.class.$error.required">Select class</span>
+                        <div class="error" ng-show="mappingForm.class.$dirty && mappingForm.class.$invalid">{{'_invalid-field-message_' | i18n}}:
+                            <span ng-show="mappingForm.class.$error.required" data-i18n="_class-missed-message_"></span>
                         </div>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="col-lg-1 control-label">Pattern type</label>
+                    <label class="col-lg-1 control-label" data-i18n="_uri-pattern-type_"></label>
                     <div class="col-lg-11">
-                        <select id="ptype" class="form-control" ng-model="mapping.ptype" ng-options="pt.value as pt.label for pt in patternTypes | orderBy:'label'" required></select>
-                        <div class="error" ng-show="mappingForm.ptype.$dirty && mappingForm.ptype.$invalid">Invalid:
-                            <span ng-show="mappingForm.ptype.$error.required">Select class</span>
+                        <select id="ptype" class="form-control" ng-model="mapping.ptype" ng-options="pt.value as localize(pt.label) for pt in patternTypes | orderBy:'label'" required></select>
+                        <div class="error" ng-show="mappingForm.ptype.$dirty && mappingForm.ptype.$invalid">{{'_invalid-field-message_' | i18n}}:
+                            <span ng-show="mappingForm.ptype.$error.required" data-i18n="_uri-pattern-type-missed-message_"></span>
                         </div>
                     </div>
                 </div>
                 <div class="form-group" ng-show="mapping.ptype=='uriColumn'">
-                    <label class="col-lg-1 control-label">URI Column</label>
+                    <label class="col-lg-1 control-label" data-i18n="_uri-column_"></label>
                     <div class="col-lg-11">
                         <select id="uriColumn" class="form-control" ng-model="mapping.uriColumn" ng-options="c for c in tableColumns | orderBy:'toString()'"></select>
                     </div>
                 </div>
                 <div class="form-group" ng-show="mapping.ptype=='patternColumns'">
-                    <label class="col-lg-1 control-label">Pattern Columns</label>
+                    <label class="col-lg-1 control-label" data-i18n="_uri-pattern-columns_"></label>
                     <div class="col-lg-11">
                         <ul class="list-unstyled">
                             <li ng-repeat="c in tableColumns | orderBy:'toString()'">
@@ -111,13 +111,13 @@
 
                 <div ng-show="mapping.class!=null && mapping.table!=null">
                     <div class="row">
-                        <label class="col-lg-1 control-label">Data Properties</label>
+                        <label class="col-lg-1 control-label" data-i18n="_data-properties_"></label>
                         <div class="col-lg-11">
                             <table class="table table-striped">
                                 <tr>
-                                    <th>Property</th>
-                                    <th>Column</th>
-                                    <th>Action</th>
+                                    <th data-i18n="_property_"></th>
+                                    <th data-i18n="_column_"></th>
+                                    <th data-i18n="_action_"></th>
                                 </tr>
                                 <tr ng-repeat="prop in mapping.dataProperties">
                                     <td>
@@ -134,7 +134,7 @@
                         </div>
                     </div>
                     <div class="row">
-                        <button type="button" ng-click="addNewDataProperty()" class="btn-sm btn-primary col-lg-offset-2">Add New Data Property</button>
+                        <button type="button" ng-click="addNewDataProperty()" class="btn-sm btn-primary col-lg-offset-2" data-i18n="_add-data-property_"></button>
                     </div>
                 </div>
 
@@ -142,39 +142,39 @@
 
                 <div ng-show="mapping.class!=null && mapping.table!=null">
                     <div class="row">
-                        <label class="col-lg-1 control-label">Object Properties</label>
+                        <label class="col-lg-1 control-label" data-i18n="_object-properties_"></label>
                         <div class="col-lg-11">
                             <table class="table table-striped">
                                 <tr>
-                                    <th>Property</th>
-                                    <th>Mapping Type</th>
-                                    <th>Mapping</th>
-                                    <th>Action</th>
+                                    <th data-i18n="_property_"></th>
+                                    <th data-i18n="_mapping-type_"></th>
+                                    <th data-i18n="_mapping_"></th>
+                                    <th data-i18n="_action_"></th>
                                 </tr>
                                 <tr ng-repeat="prop in mapping.objectProperties">
                                     <td>
                                         <select id="oprop" ng-model="prop.property" ng-options="p as p.uri for p in mapping.class.properties | filter:isObjectProperty | orderBy:'uri'"></select>
                                     </td>
                                     <td>
-                                        <select id="mtype" ng-model="prop.mappingType" ng-options="mt.value as mt.label for mt in objectPropMappingTypes | orderBy:'label'"></select>
+                                        <select id="mtype" ng-model="prop.mappingType" ng-options="mt.value as localize(mt.label) for mt in objectPropMappingTypes | orderBy:'label'"></select>
                                     </td>
                                     <td>
                                         <div class="row" ng-show="prop.mappingType=='column'">
-                                            <label class="col-lg-5">URI Column</label>
+                                            <label class="col-lg-5" data-i18n="_uri-column_"></label>
                                             <select id="ocolumn" class="col-lg-7" ng-model="prop.column" ng-options="c for c in tableColumns | orderBy:'toString()'"></select>
                                         </div>
                                         <div class="row" ng-show="prop.mappingType=='ref'">
-                                            <label class="col-lg-3">Mapping</label>
+                                            <label class="col-lg-3" data-i18n="_mapping_"></label>
                                             <select id="ref" class="col-lg-9" ng-model="prop.ref" ng-change="updateRefTable(prop)" ng-options="m as m.name for m in mapping.group.mappings | filter:notCurrent | orderBy:'name'"></select>
                                         </div>
                                         <div ng-show="prop.mappingType=='ref' && prop.ref!=null">
-                                            <label>Join Condition:</label>
+                                            <label>{{'_join-condition_' | i18n}}:</label>
                                             <div class="row">
-                                                <label class="col-lg-3">Type</label>
-                                                <select class="col-lg-9" ng-model="prop.join.type" ng-options="type.value as type.label for type in joinConditionTypes | orderBy:label"></select>
+                                                <label class="col-lg-3" data-i18n="_type_"></label>
+                                                <select class="col-lg-9" ng-model="prop.join.type" ng-options="type.value as localize(type.label) for type in joinConditionTypes | orderBy:label"></select>
                                             </div>
                                             <div class="row" ng-show="prop.join.type=='linkingTable'">
-                                                <label class="col-lg-3">Linking Table</label>
+                                                <label class="col-lg-3" data-i18n="_linking-table_"></label>
                                                 <select class="col-lg-9" ng-model="prop.join.linkingTable" ng-options="t for t in tables | orderBy:'toString()'" ng-change="updateLinkingTable(prop)"></select>
                                             </div>
                                             <div>
@@ -218,13 +218,13 @@
                         </div>
                     </div>
                     <div class="row">
-                        <button type="button" ng-click="addNewObjectProperty()" class="btn-sm btn-primary col-lg-offset-2">Add New Object Property</button>
+                        <button type="button" ng-click="addNewObjectProperty()" class="btn-sm btn-primary col-lg-offset-2" data-i18n="_add-object-property_"></button>
                     </div>
                 </div>
 
                 <div class="modal-footer">
-                    <button type="submit" class="btn-sm btn-primary" ng-click="save();" ng-disabled="mappingForm.$invalid || isAdding()">Save</button>
-                    <button type="button" class="btn-sm btn-default" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn-sm btn-primary" ng-click="save();" ng-disabled="mappingForm.$invalid || isAdding()" data-i18n="_save_"></button>
+                    <button type="button" class="btn-sm btn-default" data-dismiss="modal" data-i18n="_cancel_"></button>
                 </div>
             </div>
         </form>
@@ -237,17 +237,17 @@
                 <i class="glyphicon glyphicon-refresh" aria-hidden="true"></i>
             </button>
         </span>
-        Mapping Groups
+        {{'_mapping-groups_' | i18n}}
     </h4>
 
     <table class="table table-striped">
         <thead>
         <tr>
-            <th>Action</th>
-            <th>Name</th>
-            <th>Ontology</th>
-            <th>Data source</th>
-            <th>Mappings</th>
+            <th data-i18n="_action_"></th>
+            <th data-i18n="_name_"></th>
+            <th data-i18n="_ontology_"></th>
+            <th data-i18n="_data-source_"></th>
+            <th data-i18n="_mappings_"></th>
         </tr>
         </thead>
         <tbody>
