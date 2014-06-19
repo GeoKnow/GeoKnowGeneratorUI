@@ -7,7 +7,7 @@
 
 <div ng-controller="EndpointCtrl">
 
-  <button ng-if="isUserAuthenticated()" type="button" class="btn btn-success btn-large"
+  <button ng-if="isUserAuthenticated()" type="button" class="btn btn-primary btn-large"
     ng-click="new();" data-toggle="modal" data-target="#modalEndpoint" data-i18n="_add-endpoint_"></button>
 
   <div class="modal fade" id="modalEndpoint">
@@ -59,7 +59,7 @@
       </form>
     </div>
     <div class="modal-footer">
-      <button type="submit" class="btn-sm btn-success" ng-click="save()" ng-disabled="endpointForm.$invalid || isUnchanged(endpoint)" data-i18n="_save_"></button>
+      <button type="submit" class="btn-sm btn-primary" ng-click="save()" ng-disabled="endpointForm.$invalid || isUnchanged(endpoint)" data-i18n="_save_"></button>
       <button type="button" class="btn-sm btn-default" ng-click="close('#modalEndpoint')" data-i18n="_cancel_"></button>
     </div>
   </div>
@@ -97,7 +97,7 @@
 
 <div ng-controller="DatabaseCtrl">
 
-  <button ng-if="isUserAuthenticated()" type="button" class="btn btn-success btn-large"
+  <button ng-if="isUserAuthenticated()" type="button" class="btn btn-primary btn-large"
     ng-click="new();" data-toggle="modal" data-target="#modalDatabase" data-i18n="_add-db_"></button>
 
   <div class="modal fade" id="modalDatabase">
@@ -185,7 +185,7 @@
 
     </div>
     <div class="modal-footer">
-      <button type="submit" class="btn-sm btn-success" ng-click="save()" ng-disabled="databaseForm.$invalid || isUnchanged(database)">Save</button>
+      <button type="submit" class="btn-sm btn-primary" ng-click="save()" ng-disabled="databaseForm.$invalid || isUnchanged(database)">Save</button>
       <button type="button" class="btn-sm btn-default" ng-click="close('#modalDatabase')" data-i18n="_cancel_"></button>
     </div>
   </div>

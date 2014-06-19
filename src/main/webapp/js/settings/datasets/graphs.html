@@ -2,7 +2,7 @@
 
 <div ng-controller="GraphCtrl">
 
-  <button ng-if="isUserAuthenticated()" type="button" class="btn btn-success btn-large" data-toggle="modal" data-target="#modalGraph" ng-click="new();" data-i18n="_add-dataset_"></button>
+  <button ng-if="isUserAuthenticated()" type="button" class="btn btn-primary btn-large" data-toggle="modal" data-target="#modalGraph" ng-click="new();" data-i18n="_add-dataset_"></button>
 
   <div class="modal fade" id="modalGraph">
   <div class="modal-dialog">
@@ -91,7 +91,7 @@
           </div>
       </div>
       <div class="modal-footer">
-        <button type="submit" class="btn-sm btn-success" ng-click="save();" ng-disabled="graphForm.$invalid || isUnchanged(namedgraph)" data-i18n="_save_"></button>
+        <button type="submit" class="btn-sm btn-primary" ng-click="save();" ng-disabled="graphForm.$invalid || isUnchanged(namedgraph)" data-i18n="_save_"></button>
         <button type="button" class="btn-sm btn-default" ng-click="close('#modalGraph')" data-i18n="_cancel_"></button>
       </div>      
     </form>
@@ -229,7 +229,7 @@
 
   <br/>
 
-  <button ng-if="isUserAuthenticated()" type="button" class="btn btn-success btn-large" data-toggle="modal" data-target="#modalGroup" ng-click="newGroup();" data-i18n="_add-graph-group_"></button>
+  <button ng-if="isUserAuthenticated()" type="button" class="btn btn-primary btn-large" data-toggle="modal" data-target="#modalGroup" ng-click="newGroup();" data-i18n="_add-graph-group_"></button>
 
   <div class="modal fade" id="modalGroup">
   <div class="modal-dialog">
@@ -291,7 +291,7 @@
               </div>
           </div>
           <div class="modal-footer">
-              <button type="submit" class="btn-sm btn-success" ng-click="saveGroup();" ng-disabled="groupForm.$invalid || isUnchanged(graphgroup)" data-i18n="_save_"></button>
+              <button type="submit" class="btn-sm btn-primary" ng-click="saveGroup();" ng-disabled="groupForm.$invalid || isUnchanged(graphgroup)" data-i18n="_save_"></button>
               <button type="button" class="btn-sm btn-default" ng-click="close('#modalGroup')" data-i18n="_cancel_"></button>
           </div>
       </form>

@@ -55,11 +55,11 @@
 	                        <ul class="nav navbar-nav navbar-right">
                             <li>
                             <div ng-if="isUserAuthenticated()">
-                                        <span class="strong">{{'_logged-in-as_' | i18n}}<strong>{{currentAccount.username}}</strong></span> <button class="btn-sm btn-success" ng-click="logout()" data-i18n="_logout_"></button>
+                                        <span class="strong">{{'_logged-in-as_' | i18n}}<strong>{{currentAccount.username}}</strong></span> <button class="btn-sm btn-primary" ng-click="logout()" data-i18n="_logout_"></button>
                             </div>
                             <div ng-if="!isUserAuthenticated()">
                                         <!-- ng-disabled="loginForm.$invalid" -->
-                                        <button type="button" class="btn-sm btn-success navbar-left" data-toggle="modal" data-target="#modalLogin" ng-click="openModal()" data-i18n="_login_"></button>
+                                        <button type="button" class="btn-sm btn-primary navbar-left" data-toggle="modal" data-target="#modalLogin" ng-click="openModal()" data-i18n="_login_"></button>
                                         <button type="button" class="btn-xs btn-link navbar-left" data-toggle="modal" data-target="#modalSignUp" ng-click="new();" data-i18n="_register_"></button>
                                     	<button type="button" class="btn-xs btn-link navbar-left" data-toggle="modal" data-target="#modalRestorePassword" ng-show="currentAccount.username==null" data-i18n="_forgot-password_"></button>
                             </div>
@@ -100,7 +100,7 @@
              </div>
              
              <div class="modal-footer">
-                <button type="submit" class="btn-sm btn-success" ng-click="login();" ng-disabled="loginForm.$invalid" data-i18n="_sign-in_"></button>
+                <button type="submit" class="btn-sm btn-primary" ng-click="login();" ng-disabled="loginForm.$invalid" data-i18n="_sign-in_"></button>
                 <button type="button" class="btn-sm btn-default" ng-click="close('#modalLogin')" data-i18n="_cancel_"></button>
             </div>
     </form>
@@ -138,7 +138,7 @@
                 </div>
              </div>             
              <div class="modal-footer">
-                <button type="submit" class="btn-sm btn-success" ng-click="createAccount();" ng-disabled="signUpForm.$invalid" data-i18n="_register_"></button>
+                <button type="submit" class="btn-sm btn-primary" ng-click="createAccount();" ng-disabled="signUpForm.$invalid" data-i18n="_register_"></button>
                 <button type="button" class="btn-sm btn-default" ng-click="close('#modalSignUp')" data-i18n="_cancel_"></button>
             </div>
         </form>
@@ -166,7 +166,7 @@
                   </div>
               </div>
               <div class="modal-footer">
-                  <button type="submit" class="btn-sm btn-success" ng-click="restorePassword();" ng-disabled="restorePasswordForm.$invalid" data-i18n="_request-password_"></button>
+                  <button type="submit" class="btn-sm btn-primary" ng-click="restorePassword();" ng-disabled="restorePasswordForm.$invalid" data-i18n="_request-password_"></button>
                   <button type="button" class="btn-sm btn-default" ng-click="close('#modalRestorePassword')" data-i18n="_cancel_"></button>
               </div>
           </form>
