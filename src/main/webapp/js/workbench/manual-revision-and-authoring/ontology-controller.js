@@ -5,7 +5,7 @@
 * Ontologies Controller
 *
 ***************************************************************************************************/
-var OntologyCtrl = function($scope, $http, flash, ServerErrorResponse, AccountService, OntologyService, ConfigurationService, localize) {
+var OntologyCtrl = function($scope, $http, flash, ServerErrorResponse, AccountService, OntologyService, ConfigurationService, localize, DocumentErrorResponse) {
     var miniDixServices = ConfigurationService.getComponentServices(":MiniDix");
 	var miniDixServiceUrl = miniDixServices[0].serviceUrl;
 
