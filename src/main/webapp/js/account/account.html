@@ -28,7 +28,7 @@
       </tr>
     </table>
 
-    <button type="button" class="btn-sm btn-success" data-toggle="modal" data-target="#modalChangePassword" ng-if="currentAccount.username" data-i18n="_change-password_"></button>
+    <button type="button" class="btn-sm btn-primary" data-toggle="modal" data-target="#modalChangePassword" ng-if="currentAccount.username" data-i18n="_change-password_"></button>
   </div>
   <div class="modal fade" id="modalChangePassword">
     <div class="modal-dialog">
@@ -59,7 +59,7 @@
             </div>
           </div>
           <div class="modal-footer">
-            <button type="submit" class="btn-sm btn-success" ng-click="changePassword();" ng-disabled="changePasswordForm.$invalid" data-i18n="_change_"></button>
+            <button type="submit" class="btn-sm btn-primary" ng-click="changePassword();" ng-disabled="changePasswordForm.$invalid" data-i18n="_change_"></button>
             <button type="button" class="btn-sm btn-default" ng-click="close('#modalLogin')" data-i18n="_cancel_"></button>
           </div>
         </form>
