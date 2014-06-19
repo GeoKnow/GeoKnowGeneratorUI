@@ -125,6 +125,23 @@
 
 
     {
+        "key":"_upload-files_",
+        "value":"Upload new Files",
+        "description":"page and stack menu item title"
+    },
+    {
+        "key":"_thesaurus-management_",
+        "value":"Thesaurus Management",
+        "description":"page and stack/settings menu item title"
+    },
+    {
+        "key":"_edit-uploads_",
+        "value":"Edit Uploads",
+        "description":"page and stack menu item title"
+    },
+
+
+    {
         "key":"_user-pref_",
         "value":"User Preferences",
         "description":"Account menu item, page title"
@@ -168,6 +185,15 @@
         "value":"Users",
         "description":"page and settings menu item title"
     },
+
+
+    {
+        "key":"_faceted-search_",
+        "value":"Faceted Search",
+        "description":"modal dialog title"
+    },
+
+
     {
         "key":"_namespaces-title_",
         "value":"Namespaces Management",
@@ -1581,5 +1607,222 @@
         "key":"_virtuoso-sparql-endpoint_",
         "value":"Virtuoso SPARQLEndpoint",
         "description":"Virtuoso"
+    },
+
+
+    {
+        "key":"_acc-project-number_",
+        "value":"ACC Project Number",
+        "description":"upload document, edit document form field"
+    },
+    {
+        "key":"_acc-project-name_",
+        "value":"ACC Project Name",
+        "description":"upload document, edit document form field"
+    },
+    {
+        "key":"_acc-doc-number_",
+        "value":"ACC Document Number",
+        "description":"upload document, edit document form field"
+    },
+    {
+        "key":"_acc-doc-iteration_",
+        "value":"ACC Document Iteration",
+        "description":"upload document, edit document form field"
+    },
+    {
+        "key":"_date-doc-received_",
+        "value":"Date Document Received",
+        "description":"upload document, edit document form field"
+    },
+    {
+        "key":"_owner-name_",
+        "value":"Owner Name",
+        "description":"upload document, edit document form field"
+    },
+    {
+        "key":"_short-description_",
+        "value":"Short Description",
+        "description":"upload document, edit document form field"
+    },
+    {
+        "key":"_owner-doc-number_",
+        "value":"Document Number by Owner",
+        "description":"upload document, edit document form field"
+    },
+    {
+        "key":"_owner-doc-name_",
+        "value":"Document Name by Owner",
+        "description":"upload document, edit document form field"
+    },
+    {
+        "key":"_owner-doc-revision_",
+        "value":"Document Revision by Owner",
+        "description":"upload document, edit document form field"
+    },
+    {
+        "key":"_owner-doc-revision-date_",
+        "value":"Document Revision Date by Owner",
+        "description":"upload document, edit document form field"
+    },
+    {
+        "key":"_additional-notes_",
+        "value":"Additional Notes",
+        "description":"upload document, edit document form field"
+    },
+    {
+        "key":"_doc-applicable_",
+        "value":"Document Applicable",
+        "description":"upload document, edit document form field"
+    },
+    {
+        "key":"_doc-uploader_",
+        "value":"Uploader",
+        "description":"edit document form field"
+    },
+    {
+        "key":"_doc-uploaded_",
+        "value":"Uploaded",
+        "description":"edit document form field, documents table field"
+    },
+    {
+        "key":"_acc-doc_",
+        "value":"ACC Document",
+        "description":"documents table field"
+    },
+    {
+        "key":"_doc-projects_",
+        "value":"Projects",
+        "description":"documents table field"
+    },
+    {
+        "key":"_edit-doc_",
+        "value":"Edit Document",
+        "description":"edit document dialog title"
+    },
+    {
+        "key":"_project-number_",
+        "value":"Project Number",
+        "description":"document search field"
+    },
+    {
+        "key":"_all-fields_",
+        "value":"All",
+        "description":"document search field"
+    },
+
+
+    {
+        "key":"_new-project-number_",
+        "value":"New project number",
+        "description":"upload document, edit document form placeholder"
+    },
+    {
+        "key":"_new-project-name_",
+        "value":"New project name",
+        "description":"upload document, edit document form placeholder"
+    },
+    {
+        "key":"_new-owner-name_",
+        "value":"New owner name, e.g., SIEMENS",
+        "description":"upload document, edit document form placeholder"
+    },
+    {
+        "key":"_fill-doc-number_",
+        "value":"Fill the number, e.g., D100",
+        "description":"upload document form placeholder"
+    },
+    {
+        "key":"_fill-doc-iteration_",
+        "value":"Fill the iteration, e.g., IT1",
+        "description":"upload document form placeholder"
+    },
+    {
+        "key":"_fill-short-description_",
+        "value":"Fill a short description",
+        "description":"upload document form placeholder"
+    },
+    {
+        "key":"_fill-owner-doc-number_",
+        "value":"Fill the number, e.g., 10080-1-SS-CI-010",
+        "description":"upload document form placeholder"
+    },
+    {
+        "key":"_fill-owner-doc-name_",
+        "value":"Fill the name e.g., 10080-1-SS-CI-001_01",
+        "description":"upload document form placeholder"
+    },
+    {
+        "key":"_fill-owner-doc-revision_",
+        "value":"Fill the name e.g., Rev.1",
+        "description":"upload document form placeholder"
+    },
+    {
+        "key":"_fill-additional-notes_",
+        "value":"Some more notes?",
+        "description":"upload document form placeholder"
+    },
+
+
+    {
+        "key":"_uploaded-docs_",
+        "value":"Uploaded Documents",
+        "description":"documents table title"
+    },
+
+
+    {
+        "key":"_upload-doc_",
+        "value":"Upload document",
+        "description":"Upload document button"
+    },
+
+
+    {
+        "key":"_reindex-cur-thesaurus_",
+        "value":"Re-Index with current Thesaurus",
+        "description":"button"
+    },
+    {
+        "key":"_reindex-docs_",
+        "value":"Re-Index documents",
+        "description":"dialog title"
+    },
+    {
+        "key":"_reindex-confirm_",
+        "value":"Re-index all documents with current thesaurus?",
+        "description":"reindex confirmation question"
+    },
+    {
+        "key":"_reindexing_",
+        "value":"Re-indexing...",
+        "description":"reindexing message"
+    },
+
+
+    {
+        "key":"_doc-upload-protected-error_",
+        "value":"The uploaded file is password protected and could not be analyzed",
+        "description":"The uploaded file is password protected and could not be analyzed (documents uploading)"
+    },
+    {
+        "key":"_doc-upload-required-error_",
+        "value":"Not all required information provided",
+        "description":"Not all required information provided (documents uploading)"
+    },
+    {
+        "key":"_doc-upload-analyzing-error_",
+        "value":"Internal problems while analyzing the document. Contact the administrator",
+        "description":"Internal problems while analyzing the document (documents uploading)"
+    },
+    {
+        "key":"_doc-delete-error_",
+        "value":"Error while deleting the document",
+        "description":"Error while deleting the document"
+    },
+    {
+        "key":"_doc-reindex-error_",
+        "value":"Error while re-indexing the document",
+        "description":"Error while re-indexing the document"
     }
 ]

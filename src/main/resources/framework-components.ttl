@@ -160,3 +160,21 @@
 :MiniDixService
       a       lds:AuthoringService ;
       lds:serviceUrl <http://localhost:8080/minidix-web> .
+
+:Solr
+      a       lds:StackComponent ;
+      rdfs:label "Solr"^^xsd:string ;
+      lds:providesService :SolrService ;
+      lds:version "4.8.1"^^xsd:string .
+:SolrService
+      a       lds:ExplorationService ;
+      lds:serviceUrl <http://localhost:8080/solr> .
+
+:SolrUploadProxy
+      a       lds:StackComponent ;
+      rdfs:label "SolrUploadProxy"^^xsd:string ;
+      lds:providesService :SolrUploadProxyService ;
+      lds:version "0.1-SNAPSHOT"^^xsd:string .
+:SolrUploadProxyService
+      a       lds:ExtractionService ;
+      lds:serviceUrl <http://localhost:8080/SolrUploadProxy/proxy>

@@ -46,6 +46,8 @@ angular.module("app.configuration", [])
     var SETTINGS_GRAPH_URI          = DEFAULT_SETTINGS_GRAPH_URI;
     // Create a graph for groups of users
     var GROUPS_GRAPH_URI            = "http://ldiw.ontos.com/resource/groupsGraph";
+    var DOCUMENTS_GRAPH = "http://acc.ontos.com/dataschema/v1/schema";
+    var DOCUMENTS_NS = "http://acc.ontos.com/dataschema/v1/schema#";
     
 
     var namespaces =
@@ -60,7 +62,8 @@ angular.module("app.configuration", [])
         "http://www.w3.org/2000/01/rdf-schema#"            : "rdfs:",
         "http://www.w3.org/ns/sparql-service-description#" : "sd:",
         "http://rdfs.org/ns/void#"                         : "void:",
-        "http://www.w3.org/ns/auth/acl#"                   : "acl:"
+        "http://www.w3.org/ns/auth/acl#"                   : "acl:",
+        "http://acc.ontos.com/dataschema/v1/schema#"       : "acc:"
     };
     namespaces[NS] = ":";
     // a variable to lookup by prefix
@@ -366,6 +369,14 @@ angular.module("app.configuration", [])
         return GROUPS_GRAPH_URI;
     };
 
+    var getDocumentsGraph = function() {
+        return DOCUMENTS_GRAPH;
+    };
+
+    var getDocumentsNS = function() {
+        return DOCUMENTS_NS;
+    };
+
     return {
         getNS               : getNS,
         getGraph            : getGraph,
@@ -381,6 +392,8 @@ angular.module("app.configuration", [])
         // setGraphPermissions : setGraphPermissions,
         parseSparqlResults  : parseSparqlResults,
         getGroupsGraph      : getGroupsGraph,
-        getFrameworkUri     : getFrameworkUri
+        getFrameworkUri     : getFrameworkUri,
+        getDocumentsGraph   : getDocumentsGraph,
+        getDocumentsNS      : getDocumentsNS
     };
 });
