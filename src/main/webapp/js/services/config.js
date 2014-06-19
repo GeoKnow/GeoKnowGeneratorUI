@@ -105,7 +105,7 @@ angular.module("app.configuration", [])
 
     // Replaces the long name space by the prefix
     var ns = function(v){
-        var value = v.value || v;
+        var value = v.value==undefined ? v : v.value;
 
         if (!v.type || v.type == "uri")
         {
