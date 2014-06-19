@@ -205,13 +205,6 @@
 
 
     {
-        "key":"_faceted-search_",
-        "value":"Faceted Search",
-        "description":"modal dialog title"
-    },
-
-
-    {
         "key":"_user-account_",
         "value":"User Account",
         "description":"page title"
@@ -658,6 +651,11 @@
     {
         "key":"_results_",
         "value":"Results",
+        "description":""
+    },
+    {
+        "key":"_ontology_",
+        "value":"Ontology",
         "description":""
     },
 
@@ -1300,6 +1298,11 @@
         "value":"Choose an endpoint",
         "description":"default option in select"
     },
+    {
+        "key":"_module-choose-option_",
+        "value":"Choose a module",
+        "description":"default option in select"
+    },
 
 
     {
@@ -1499,5 +1502,84 @@
         "key":"_triplegeo-start_",
         "value":"Start TripleGeo",
         "description":""
+    },
+
+
+    {
+        "key":"_geolift-config_",
+        "value":"GeoLift Configuration",
+        "description":""
+    },
+    {
+        "key":"_geolift-start_",
+        "value":"Start GeoLift",
+        "description":""
+    },
+
+
+    {
+        "key":"_sparqlify-launch_",
+        "value":"Launch Sparqlify",
+        "description":""
+    },
+
+
+    {
+        "key":"_facete-launch_",
+        "value":"Launch Facete",
+        "description":""
+    },
+
+
+    {
+        "key":"_mappify-launch_",
+        "value":"Launch Mappify",
+        "description":""
+    },
+
+
+    {
+        "key":"_limes-config_",
+        "value":"LIMES Configuration",
+        "description":""
+    },
+    {
+        "key":"_upload-limes-config-file_",
+        "value":"Upload a LIMES Configuration File (XML)",
+        "description":""
+    },
+    {
+        "key":"_limes-start_",
+        "value":"Start LIMES",
+        "description":""
+    },
+    {
+        "key":"_limes-res-review_",
+        "value":"Results for review",
+        "description":"Limes"
+    },
+    {
+        "key":"_limes-accepted-res_",
+        "value":"Accepted Results",
+        "description":"Limes"
+    },
+
+
+    {
+        "key":"_save-res-in-new-graph_",
+        "value":"Save results in new graphs",
+        "description":""
+    },
+
+
+    {
+        "key":"_launch-virtuoso_",
+        "value":"Launch SPARQLEndPoint Services",
+        "description":"launch Virtuoso (title)"
+    },
+    {
+        "key":"_virtuoso-sparql-endpoint_",
+        "value":"Virtuoso SPARQLEndpoint",
+        "description":"Virtuoso"
     }
 ]

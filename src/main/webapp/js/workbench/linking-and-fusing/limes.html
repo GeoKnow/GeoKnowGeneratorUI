@@ -23,21 +23,21 @@
 	</button>
 	<div class="row">
 		<div class="col-xs-12">
-		<h5 class="green bold">LIMES Configuration</h5>
+		<h5 class="green bold" data-i18n="_limes-config_"></h5>
 		</div>
 	</div>
 	<br>
 	<div ng-show="configOptions">
 	<div class="row" ng-controller="ImportFormCtrl">
-			<label class="col-xs-2 control-label">Upload a LIMES Configuration File (XML)</label>
+			<label class="col-xs-2 control-label" data-i18n="_upload-limes-config-file_"></label>
 		    	<div class="col-xs-8">
 					    <input id="lefile" class="form-control input-sm" type="file" ng-file-select="loadLimesXML($files)" 
 					    		multiple name="fileName" accept=".xml" style="display:none">
-					  	<div class="error" ng-show="uploadedError()">Invalid:
+					  	<div class="error" ng-show="uploadedError()">{{'_invalid-field-message_' | i18n}}:
 					  	<span>{{uploadMessage}}</span></div>
 						<div class="input-append">
 						<input id="dummyInput" class="input-sm pull-left col-xs-9" type="text" onclick="$('input[id=lefile]').click();">
-						<a class="btn btn-sm btn-success btn-large pull-left col-xs-3" onclick="$('input[id=lefile]').click();">Browse</a>
+						<a class="btn btn-sm btn-success btn-large pull-left col-xs-3" onclick="$('input[id=lefile]').click();" data-i18n="_browse_"></a>
 						</div>
 			    </div>
     </div>
@@ -47,7 +47,7 @@
 						$('#dummyInput').val($(this).val());
 						});
 					  </script>
-					  <div class="error" ng-show="uploadedError()">Invalid:
+					  <div class="error" ng-show="uploadedError()">{{'_invalid-field-message_' | i18n}}:
 	          	      <span>{{uploadMessage}}</span>
 		  		      </div>
 	  </div>
@@ -80,7 +80,7 @@
 	<div id="limesOptions" ng-model="limes.Options" ng-show="enterConfig">
 	<div class="row">
 		<div class="col-xs-12">
-		<h5 class="green bold">LIMES Configuration</h5>
+		<h5 class="green bold" data-i18n="_limes-config_"></h5>
 		</div>
 	</div>
 	<br>
@@ -349,7 +349,7 @@
 	<div class="row">
 		<div class="col-xs-2"></div>
 		<div class="col-xs-2">
-		  <a class="btn btn-sm btn-success btn-block" id="startLimes" ng-show="startLimes" ng-click="LaunchLimes()">Start LIMES</a>
+		  <a class="btn btn-sm btn-success btn-block" id="startLimes" ng-show="startLimes" ng-click="LaunchLimes()" data-i18n="_limes-start_"></a>
 		</div>
 	</div>
 </form>

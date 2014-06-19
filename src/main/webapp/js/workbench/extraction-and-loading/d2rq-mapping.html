@@ -31,7 +31,7 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="col-lg-2 control-label" data-i18n="_database_"></label>
+                    <label class="col-lg-2 control-label" data-i18n="_db_"></label>
                     <div class="col-lg-10">
                         <select id="database" class="form-control" ng-model="mgroup.database" ng-change="updateConnection()" ng-options="db as db.label for db in databases | orderBy:'label'" required></select>
                         <div class="error" ng-show="mappingGroupForm.database.$dirty && mappingGroupForm.database.$invalid">{{'_invalid-field-message_' | i18n}}:

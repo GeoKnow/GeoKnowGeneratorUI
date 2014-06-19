@@ -18,7 +18,7 @@
 	<div ng-show="configOptions">
 	<div class="row">
 		<div class="col-xs-8">
-		<h5 class="green bold">GeoLift Configuration</h5>
+		<h5 class="green bold" data-i18n="_geolift-config_"></h5>
 		</div>
 	</div>
 	<br>
@@ -165,7 +165,7 @@
 		</div>
 		<div class="pull-left" style="width:20%">
 		<select id="module{{param.idx}}" class="form-control input-sm" ng-init="modOption = modOptions[0]" 
-		ng-model="modOption"  ng-options="o.label for o in modOptions" 
+		ng-model="modOption"  ng-options="o as localize(o.label) for o in modOptions"
 		ng-change="setParams(modOption, $index)" geolift-module>
 		</select>
 		</div>
@@ -189,7 +189,7 @@
 	<div class="col-xs-2"></div>
 	<div class="row col-xs-10" ng-show="startButton">
 		<div class="col-xs-2">
-		  <a class="btn btn-sm btn-success btn-block" ng-click="LaunchGeoLift()">Start GeoLift</a>
+		  <a class="btn btn-sm btn-success btn-block" ng-click="LaunchGeoLift()" data-i18n="_geolift-start_"></a>
 		</div>
 	</div>
 	</div>

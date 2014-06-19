@@ -115,4 +115,8 @@ var OntologyCtrl = function($scope, $http, flash, ServerErrorResponse, AccountSe
         else
             $scope.ontology.file = $files[0];
     };
+
+    $scope.isLoggedIn = function() {
+        return AccountService.isLogged();
+    };
 };

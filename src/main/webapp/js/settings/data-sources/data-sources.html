@@ -20,7 +20,7 @@
     <div class="modal-body">
       <form name="endpointForm" class="form-horizontal" role="form" novalidate>
         <div class="form-group">
-          <label for="uri" class="col-lg-2 control-label" data-i18n="_identifier_"></label>
+          <label class="col-lg-2 control-label" data-i18n="_identifier_"></label>
           <div class="col-lg-10">
             <input type="text" class="form-control" name="identifier" id="identifier" data-i18n-attr="_identifier_|placeholder" ng-model="endpoint.uri" ng-disabled="!isNew()" required regex-validate="identifier" unique-identifier>
             <div class="error" ng-show="endpointForm.identifier.$dirty && endpointForm.identifier.$invalid">{{'_invalid-field-message_' | i18n}}:
@@ -59,7 +59,7 @@
       </form>
     </div>
     <div class="modal-footer">
-      <button type="submit" class="btn-sm btn-success" ng-click="save()" ng-disabled="endpointForm.$invalid || isUnchanged(endpoint)">Save</button>
+      <button type="submit" class="btn-sm btn-success" ng-click="save()" ng-disabled="endpointForm.$invalid || isUnchanged(endpoint)" data-i18n="_save_"></button>
       <button type="button" class="btn-sm btn-default" ng-click="close('#modalEndpoint')" data-i18n="_cancel_"></button>
     </div>
   </div>

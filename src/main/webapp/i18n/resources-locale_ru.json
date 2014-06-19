@@ -13,52 +13,52 @@
     },
     {
         "key":"_geolift-description_",
-        "value":"Framework to Enrich Geographic Content in the Semantic Web",
+        "value":"Инструмент для расширения географических данных в Semantic Web",
         "description":"description shown on GeoLift page"
     },
     {
         "key":"_geolift-instructions_",
-        "value":"To get started choose whether to process a file or endpoint, you can then choose an example or specify your own parameters.",
+        "value":"Для начала работы выберите источник данных: файл или эндпоинт. Затем выберите пример конфигурации или опредилить свои собственные параметры.",
         "description":"instructions (how to start) shown on GeoLift page"
     },
 
     {
         "key":"_sparqlify-description_",
-        "value":"Sparqlify is a scalable SPARQL-SQL rewriter. To get started select a data set from the drop down menu.",
+        "value":"Sparqlify - это масштабируемый инструмент для преобразования SPARQL в SQL. Для начала работы выберите набор данных.",
         "description":"description shown on Sparqlify page"
     },
 
     {
         "key":"_triplegeo-description_",
-        "value":"Utility for Converting Geospatial Data into Triples",
+        "value":"Инструмент для преобразования географических данных в триплы",
         "description":"description shown on TripleGeo page"
     },
     {
         "key":"_triplegeo-instructions_",
-        "value":"To get started choose whether to process a file or database, you can then choose an example or specify your own parameters.",
+        "value":"Для начала работы выберите источник данных: файл или эндпоинт. Затем выберите пример конфигурации или опредилить свои собственные параметры.",
         "description":"instructions (how to start) shown on TripleGeo page"
     },
 
     {
         "key":"_limes-description_",
-        "value":"Link Discovery Framework for Metric Spaces",
+        "value":"Инструмент для определения связей.",
         "description":"description shown on Limes page"
     },
     {
         "key":"_limes-instructions_",
-        "value":"To get started either upload a configuration file, choose an example, or fill in the options form.",
+        "value":"Для начала работы загрузите конфигурационный файл, выберите пример или заполните форму.",
         "description":"instructions (how to start) shown on Limes page"
     },
 
     {
         "key":"_facete-description_",
-        "value":"A tool for exploring (geographical) Linked Data datasets on the Web. To get started select a data set from the drop down menu.",
+        "value":"Инструмент для поиска (географических) наборов связанных данных в Интернете. Для начала работы выберите набор данных.",
         "description":"description shown on Facete page"
     },
 
     {
         "key":"_mappify-description_",
-        "value":"A tool for exploring (geographical) Linked Data datasets on the Web. To get started select a data set from the drop down menu.",
+        "value":"Инструмент для поиска (географических) наборов связанных данных в Интернете. Для начала работы выберите набор данных.",
         "description":"description shown on Mappify page"
     },
 
@@ -201,13 +201,6 @@
         "key":"_ns-parameters_",
         "value":"Параметры пространства имен",
         "description":""
-    },
-
-
-    {
-        "key":"_faceted-search_",
-        "value":"Фасетный поиск",
-        "description":"modal dialog title"
     },
 
 
@@ -562,7 +555,7 @@
     },
     {
         "key":"_variable_",
-        "value":"Variable",
+        "value":"Переменная",
         "description":"Limes configuration"
     },
     {
@@ -572,17 +565,17 @@
     },
     {
         "key":"_restriction_",
-        "value":"Restriction",
+        "value":"Ограничение",
         "description":"Limes configuration"
     },
     {
         "key":"_source_",
-        "value":"Source",
+        "value":"Источник",
         "description":"TripleGeo configuration"
     },
     {
         "key":"_target_",
-        "value":"Target",
+        "value":"Цель",
         "description":"TripleGeo configuration"
     },
     {
@@ -658,6 +651,11 @@
     {
         "key":"_results_",
         "value":"Результаты",
+        "description":""
+    },
+    {
+        "key":"_ontology_",
+        "value":"Онтология",
         "description":""
     },
 
@@ -1300,6 +1298,11 @@
         "value":"Выберите эндпоинт",
         "description":"default option in select"
     },
+    {
+        "key":"_module-choose-option_",
+        "value":"Выберите модуль",
+        "description":"default option in select"
+    },
 
 
     {
@@ -1499,5 +1502,84 @@
         "key":"_triplegeo-start_",
         "value":"Запустить TripleGeo",
         "description":""
+    },
+
+
+    {
+        "key":"_geolift-config_",
+        "value":"Конфигурация GeoLift",
+        "description":""
+    },
+    {
+        "key":"_geolift-start_",
+        "value":"Запустить GeoLift",
+        "description":""
+    },
+
+
+    {
+        "key":"_sparqlify-launch_",
+        "value":"Запустить Sparqlify",
+        "description":""
+    },
+
+
+    {
+        "key":"_facete-launch_",
+        "value":"Запустить Facete",
+        "description":""
+    },
+
+
+    {
+        "key":"_mappify-launch_",
+        "value":"Запустить Mappify",
+        "description":""
+    },
+
+
+    {
+        "key":"_limes-config_",
+        "value":"Конйигурация LIMES",
+        "description":""
+    },
+    {
+        "key":"_upload-limes-config-file_",
+        "value":"Загрузить кофигурационный файл для LIMES (XML)",
+        "description":""
+    },
+    {
+        "key":"_limes-start_",
+        "value":"Запустить LIMES",
+        "description":""
+    },
+    {
+        "key":"_limes-res-review_",
+        "value":"Результаты для проверки",
+        "description":"Limes"
+    },
+    {
+        "key":"_limes-accepted-res_",
+        "value":"Принятые результаты",
+        "description":"Limes"
+    },
+
+
+    {
+        "key":"_save-res-in-new-graph_",
+        "value":"Сохранить результаты в новых графах",
+        "description":""
+    },
+
+
+    {
+        "key":"_launch-virtuoso_",
+        "value":"Запустить SPARQL эндпоинт",
+        "description":"launch Virtuoso (title)"
+    },
+    {
+        "key":"_virtuoso-sparql-endpoint_",
+        "value":"Virtuoso SPARQL эндпоинт",
+        "description":"Virtuoso"
     }
 ]

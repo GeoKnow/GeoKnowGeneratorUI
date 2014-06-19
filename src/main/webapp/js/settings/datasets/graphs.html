@@ -125,7 +125,7 @@
       <td>{{namedgraph.graph.description}}</td>
       <td>{{namedgraph.graph.created}}</td>
       <td>{{namedgraph.graph.modified}}</td>
-      <td>{{accessModes[namedgraph.publicAccess]}}</td>
+      <td data-i18n="{{accessModes[namedgraph.publicAccess]}}"></td>
       <td>
           <ul class="list-unstyled">
               <li ng-repeat="user in namedgraph.usersRead">{{user}}</li>
@@ -211,7 +211,7 @@
             <td>{{namedgraph.graph.created}}</td>
             <td>{{namedgraph.graph.modified}}</td>
             <td>{{namedgraph.owner}}</td>
-            <td>{{accessModes[namedgraph.publicAccess]}}</td>
+            <td data-i18n="{{accessModes[namedgraph.publicAccess]}}"></td>
             <td>
                 <ul class="list-unstyled">
                     <li ng-repeat="user in namedgraph.usersRead">{{user}}</li>

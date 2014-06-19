@@ -6,7 +6,7 @@
 *
 ***************************************************************************************************/
 
-var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErrorResponse, $window, AccountService, GraphService){
+var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErrorResponse, $window, AccountService, GraphService, localize){
 	
 	var services = ConfigurationService.getComponentServices(":GeoLift");
 	var serviceUrl = services[0].serviceUrl;
@@ -33,7 +33,7 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErr
 	var isCompletePath = 0;
 	
 	$scope.modOptions = [
-	                      { label: "Choose a module"},
+	                      { label: "_module-choose-option_"},
 	                      { label: "nlp"},
 	 			          { label: "dereferencing"}
 	                     ],
@@ -698,4 +698,8 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErr
 	    flash.error = data;
 	  });
 	};
+
+    $scope.localize = function(str) {
+        return localize.getLocalizedString(str);
+    };
 };

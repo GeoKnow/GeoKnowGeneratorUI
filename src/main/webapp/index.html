@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>Ontos Linked Data Suite</title>
+    <title data-i18n="_home-title_"></title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <meta name="description" content=""/>
     <meta name="author" content=""/>
@@ -156,10 +156,10 @@
               </div>
               <div class="modal-body">
                   <div class="form-group">
-                      <label for="username" class="col-lg-2 control-label" data-i18n="_username-email_"></label>
-                      <div class="col-lg-10">
+                      <label for="username" class="col-lg-4 control-label" data-i18n="_username-email_"></label>
+                      <div class="col-lg-8">
                           <input type="text" id="username" name="username" class="form-control" data-i18n-attr="_username-email_|placeholder" ng-model="restorePassword.username" required/>
-                          <div class="error" ng-show="restorePasswordForm.username.$dirty && restorePasswordForm.username.$invalid">Invalid:
+                          <div class="error" ng-show="restorePasswordForm.username.$dirty && restorePasswordForm.username.$invalid">{{'_invalid-field-message_' | i18n}}:
                               <span ng-show="restorePasswordForm.username.$error.required" data-i18n="_username-email-missed-message_"></span>
                           </div>
                       </div>

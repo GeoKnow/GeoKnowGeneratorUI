@@ -14,7 +14,7 @@
 
         <div class="modal-body">
           <div class="form-group">
-            <label for="name" class="col-lg-2 control-label" data-i18n="_prefix_"></label>
+            <label for="prefix" class="col-lg-2 control-label" data-i18n="_prefix_"></label>
             <div class="col-lg-10">
               <input type="text" class="form-control" id="prefix" name="prefix" placeholder="Prefix" ng-model="namedgraph.prefix" required />
               <div class="error"  ng-show="namespaceForm.prefix.$dirty && namespaceForm.prefix.$invalid">{{'_invalid-field-message_' | i18n}}:
@@ -23,7 +23,7 @@
             </div>
           </div>
           <div class="form-group">
-            <label for="description" class="col-lg-2 control-label">URI</label>
+            <label for="uri" class="col-lg-2 control-label">URI</label>
             <div class="col-lg-10">
               <input type="text" class="form-control" name="uri" id="uri" placeholder="uri" ng-model="namedgraph.uri" />
               <div class="error"  ng-show="namespaceForm.uri.$dirty && namespaceForm.uri.$invalid">{{'_invalid-field-message_' | i18n}}:

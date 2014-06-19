@@ -4,12 +4,12 @@
 
 
     <dl class="dl-horizontal">
-      <dt>Version:</dt><dd>{{component.version}}</dd>
-      <dt>Homepage:</dt><dd>{{component.homepage}}</dd>
+      <dt>{{'_version_' | i18n}}:</dt><dd>{{component.version}}</dd>
+      <dt>{{'_homepage_' | i18n}}:</dt><dd>{{component.homepage}}</dd>
     </dl>
 
     <form class="form-horizontal InputForm col-xs-11"  role="form" >
-      <a class="btn btn-success btn-large" data-toggle="modal" ng-click="openModal();">Launch</a>
+      <a class="btn btn-success btn-large" data-toggle="modal" ng-click="openModal();" data-i18n="_launch_"></a>
     </form>
   </div>
   <!-- Modal -->

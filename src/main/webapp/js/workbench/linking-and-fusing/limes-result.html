@@ -7,7 +7,7 @@
 	</div>
 
 	<h3 class="green bold">LIMES</h3>
-	<b>Link Discovery Framework for Metric Spaces</b>
+	<b data-i18n="_limes-description_"></b>
 	<br>
 	<br>
 
@@ -22,23 +22,23 @@
 	</div>
 	<div class="row">
 	<div class="col-xs-11" ng-show="showProgress">
-		<b>This might take a while... Please keep this browser window open. You can view and save the results here when execution is complete.</b>
+		<b data-i18n="_wait-results-message_"></b>
 	</div>
 	</div>
 </form>
 	
 <form class="form-horizontal InputForm col-xs-11" role="form" ng-show="reviewForm">
 	<div class="row">
-		<h5 class="green bold">Results</h5>
+		<h5 class="green bold" data-i18n="_results_"></h5>
 	</div>
 	<br>
 	<div class="row">
-	    <label for="ReviewResults">Results for review</label>
+	    <label for="ReviewResults" data-i18n="_limes-res-review_"></label>
 	    <textarea class="form-control boldtext" id="ReviewResults" ng-model="limes.reviewResults"></textarea>
 	</div>
 	<br>
 	<div class="row">
-	    <label for="AcceptedResults">Accepted Results</label>
+	    <label for="AcceptedResults" data-i18n="_limes-accepted-res_"></label>
 	    <textarea class="form-control boldtext" id="AcceptedResults" ng-model="limes.acceptedResults"></textarea>
 	</div>
 	<br>
@@ -60,7 +60,7 @@ TODO: add input text so user can provide the graph name
 
   <div class="row">
 		<div class="pull-left" style="padding-left:0">
-			  <a class="btn btn-sm btn-success" ng-click="save()">Save results in new graphs</a>
+			  <a class="btn btn-sm btn-success" ng-click="save()" data-i18n="_save-res-in-new-graph_"></a>
 		</div>
 	</div>
 </form>

@@ -42,7 +42,7 @@
             <div class="form-group">
               <label for="oldPassword" class="col-lg-2 control-label" data-i18n="_old-password_"></label>
               <div class="col-lg-10">
-                <input type="password" id="oldPassword" name="oldPassword" class="form-control" placeholder="Old password" ng-model="password.oldPassword" required/>
+                <input type="password" id="oldPassword" name="oldPassword" class="form-control" data-i18n-attr="_old-password_|placeholder" ng-model="password.oldPassword" required/>
                 <div class="error" ng-show="changePasswordForm.oldPassword.$dirty && changePasswordForm.oldPassword.$invalid">{{'_invalid-field-message_' | i18n}}:
                   <span ng-show="changePasswordForm.oldPassword.$error.required" data-i18n="_old-password-missed-message_"></span>
                 </div>
@@ -51,7 +51,7 @@
             <div class="form-group">
               <label for="newPassword" class="col-lg-2 control-label" data-i18n="_new-password_"></label>
               <div class="col-lg-10">
-                <input type="password" id="newPassword" name="newPassword" class="form-control" placeholder="New password" ng-model="password.newPassword" required/>
+                <input type="password" id="newPassword" name="newPassword" class="form-control" data-i18n-attr="_new-password_|placeholder" ng-model="password.newPassword" required/>
                 <div class="error" ng-show="changePasswordForm.newPassword.$dirty && changePasswordForm.newPassword.$invalid">{{'_invalid-field-message_' | i18n}}:
                   <span ng-show="changePasswordForm.newPassword.$error.required" data-i18n="_new-password-missed-message_"></span>
                 </div>

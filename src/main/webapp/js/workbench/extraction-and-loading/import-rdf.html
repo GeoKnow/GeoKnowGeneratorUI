@@ -37,7 +37,7 @@
                 </div>
 	  	    </div>
 			<div class="form-group">
-	    	<label for="inputFile" class="col-xs-2 control-label" data-i18n="_file-input_"></label>
+	    	<label class="col-xs-2 control-label" data-i18n="_file-input_"></label>
 	    	<div class="col-xs-10">
 				  <!-- <input type="file" ng-file-select="onFileSelect($files)" > -->
 				  <input type="file" ng-file-select="onFileSelect($files)" multiple name="fileName" accept=".nt, .n3, .ttl, .rdf">
@@ -47,7 +47,7 @@
 	  	</div>
 	  	<div class="form-group">
     		<div class="col-lg-offset-2 col-xs-10">
-      		<button class="btn btn-success" ng-click="import()" ng-disabled="isInvalid()||isImporting()">Import</button>
+      		<button class="btn btn-success" ng-click="import()" ng-disabled="isInvalid()||isImporting()" data-i18n="_import_"></button>
       		<span ng-show="isImporting()" data-i18n="_importing_"></span>
     		</div>
   	</div>
@@ -80,7 +80,7 @@
 	  	</div>
 	  	<div class="form-group">
     		<div class="col-lg-offset-2 col-xs-10">
-      		<button class="btn btn-success" ng-click="import()" ng-disabled="urlForm.$invalid || isUnchanged(importUrl) || isImporting()">Import</button>
+      		<button class="btn btn-success" ng-click="import()" ng-disabled="urlForm.$invalid || isUnchanged(importUrl) || isImporting()" data-i18n="_import_"></button>
       		<span ng-show="isImporting()" data-i18n="_importing_"></span>
     		</div>
   		</div>
