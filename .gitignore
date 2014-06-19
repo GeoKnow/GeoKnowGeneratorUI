@@ -1,14 +1,9 @@
-/target
-.classpath
-.project
-.settings/
-
 #Mac
 .DS_Store
 
 # Eclipse
 .classpath
-.settings/
+.settings
 .project
 
 # Maven
@@ -18,4 +13,4 @@
 # Vaadin cache dir
 /src/main/webapp/VAADIN/gwt-unitCache
 /src/main/webapp/VAADIN/widgetsets
-
+/target

@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>Ontos Linked Data Suite</title>
+    <title data-i18n="_home-title_"></title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <meta name="description" content=""/>
     <meta name="author" content=""/>
@@ -10,13 +10,9 @@
     <!-- Le styles -->
     <link href="css/bootstrap.css" rel="stylesheet"/>
     <link href="css/bootstrap-modal.css" rel="stylesheet"/>
-    <!-- <link href="css/bootstrap-modal-bs3patch.css" rel="stylesheet"/> -->
     <link href="css/app.css" rel="stylesheet"/>
-    <link href="css/chosen.min.css" rel="stylesheet"/>
-    <link href="css/chosen-bootstrap.css" rel="stylesheet"/>
-    <link href="css/jquery-ui-themes-1.10.1/smoothness/jquery-ui.css" rel="stylesheet"/>
     
-    <link rel="icon" type="image/ico" href="img/favicon.ico">
+    <link rel="icon" type="image/png" href="img/favicon.png">
 
     <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
@@ -34,25 +30,36 @@
 
   <body ng-cloak ng-app="app" ng-controller="LoginCtrl">
 
+      <!-- Subscribe to all flash messages. -->
+      <div flash-alert active-class="in alert" class="fade" duration="0">
+        <button type="button" class="close" ng-click="hide()">&times;</button>
+        <span class="alert-message">{{flash.message}}</span>
+      </div>
+      </div>
+      
 	<div class="navbar navbar-static-top">
-			<div>
+	<div class="col-xs-2">
+	</div>
+			<div class="col-xs-9">
 	                <a class="navbar-brand" href="#/"></a>
 	                    <div ng-controller="NavbarCtrl">
 	                    	<ul class="nav navbar-nav navbar-left">
 	                        <li ng-class="getClass('/home')"><a href="#/" data-i18n="_workbench_"><div class="glyphicon glyphicon-cog"></div></a></li>
 	                        <!-- <li ng-class="getClass('/batch')""><a href="#/batch"><div class="glyphicon glyphicon-list"></div> Batch job </a></li> -->
-	                        <li ng-class="getClass('/settings')"><a href="#/settings" data-i18n="_settings_"><div class="glyphicon glyphicon-wrench"></div></a></li>
-	                        <li ng-class="getClass('/account')"><a href="#/account" data-i18n="_account_"><div class="glyphicon glyphicon-user"></div></a></li>
+	                        <li ng-class="getClass('/settings')">
+                            <a href="#/settings" data-i18n="_settings_"><div class="glyphicon glyphicon-wrench"></div></a></li>
+	                        <li ng-if="isUserAuthenticated()" ng-class="getClass('/account')">
+                            <a href="#/account" data-i18n="_account_"><div class="glyphicon glyphicon-user"></div></a></li>
 	                        </ul>
 	                        
 	                        <ul class="nav navbar-nav navbar-right">
                             <li>
-                            <div ng-show="currentAccount.username">
-                                        <span class="strong">{{'_logged-in-as_' | i18n}}<strong>{{currentAccount.username}}</strong></span> <button class="btn-sm btn-primary" ng-click="logout()" data-i18n="_logout_"></button>
+                            <div ng-if="isUserAuthenticated()">
+                                        <span class="strong">{{'_logged-in-as_' | i18n}}<strong>{{currentAccount.username}}</strong></span> <button class="btn-sm btn-success" ng-click="logout()" data-i18n="_logout_"></button>
                             </div>
-                            <div ng-hide="loggedIn">
+                            <div ng-if="!isUserAuthenticated()">
                                         <!-- ng-disabled="loginForm.$invalid" -->
-                                        <button type="button" class="btn-sm btn-primary navbar-left" data-toggle="modal" data-target="#modalLogin" ng-click="openModal()" data-i18n="_login_"></button>
+                                        <button type="button" class="btn-sm btn-success navbar-left" data-toggle="modal" data-target="#modalLogin" ng-click="openModal()" data-i18n="_login_"></button>
                                         <button type="button" class="btn-xs btn-link navbar-left" data-toggle="modal" data-target="#modalSignUp" ng-click="new();" data-i18n="_register_"></button>
                                     	<button type="button" class="btn-xs btn-link navbar-left" data-toggle="modal" data-target="#modalRestorePassword" ng-show="currentAccount.username==null" data-i18n="_forgot-password_"></button>
                             </div>
@@ -93,52 +100,51 @@
              </div>
              
              <div class="modal-footer">
-                <button type="submit" class="btn-sm btn-primary" ng-click="login();" ng-disabled="loginForm.$invalid" data-i18n="_sign-in_"></button>
+                <button type="submit" class="btn-sm btn-success" ng-click="login();" ng-disabled="loginForm.$invalid" data-i18n="_sign-in_"></button>
                 <button type="button" class="btn-sm btn-default" ng-click="close('#modalLogin')" data-i18n="_cancel_"></button>
             </div>
     </form>
     </div>
     </div>
 	</div>
-	
-	<div class="modal fade" id="modalSignUp">
-	<div class="modal-dialog">
+
+    <div class="modal fade" id="modalSignUp">
+    <div class="modal-dialog">
     <div class="modal-content">
-	<form name="signUpForm" class="form-horizontal InputForm" role="form">
-			<div class="modal-header">
+        <form name="signUpForm" class="form-horizontal InputForm" role="form">
+            <div class="modal-header">
                 <button type="button" class="close" ng-click="close('#modalSignUp')" aria-hidden="true">&times;</button>
                 <h5 class="modal-title green bold" data-i18n="_register_"></h5>
             </div>
             <div class="modal-body">
-										<div class="form-group">
-                                            <label for="username" class="col-lg-2 control-label" data-i18n="_username_"></label>
-					                    <div class="col-lg-10">
-					                        <input type="text" id="username" name="username" class="form-control" data-i18n-attr="_username_|placeholder" ng-model="signUp.username" required/>
-					                        <div class="error"  ng-show="signUpForm.username.$dirty && signUpForm.username.$invalid">{{'_invalid-field-message_' | i18n}}:
-					                            <span ng-show="signUpForm.username.$error.required" data-i18n="_username-missed-message_"></span>
-					                        </div>
-					                    </div>
-                                        </div>
-                                        <div class="form-group">
-                                        <label for="email" class="col-lg-2 control-label" data-i18n="_email_"></label>
-					                    <div class="col-lg-10">
-					                        <input type="email" id="email" name="email" class="form-control" data-i18n-attr="_email_|placeholder" ng-model="signUp.email" required/>
-					                        <div class="error" ng-show="signUpForm.email.$dirty && signUpForm.email.$invalid">{{'_invalid-field-message_' | i18n}}:
-					                            <span ng-show="signUpForm.email.$error.required" data-i18n="_email-missed-message_"></span>
-					                            <span ng-show="signUpForm.email.$error.email" data-i18n="_malformed-email-message_"></span>
-					                        </div>
-					                    </div>    
-										</div>
-             </div>
-             
+                <div class="form-group">
+                    <label for="username" class="col-lg-2 control-label" data-i18n="_username_"></label>
+                    <div class="col-lg-10">
+                        <input type="text" id="username" name="username" class="form-control" data-i18n-attr="_username_|placeholder" ng-model="signUp.username" required/>
+                        <div class="error"  ng-show="signUpForm.username.$dirty && signUpForm.username.$invalid">{{'_invalid-field-message_' | i18n}}:
+                            <span ng-show="signUpForm.username.$error.required" data-i18n="_username-missed-message_"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="email" class="col-lg-2 control-label" data-i18n="_email_"></label>
+                    <div class="col-lg-10">
+                        <input type="email" id="email" name="email" class="form-control" data-i18n-attr="_email_|placeholder" ng-model="signUp.email" required/>
+                        <div class="error" ng-show="signUpForm.email.$dirty && signUpForm.email.$invalid">{{'_invalid-field-message_' | i18n}}:
+                            <span ng-show="signUpForm.email.$error.required" data-i18n="_email-missed-message_"></span>
+                            <span ng-show="signUpForm.email.$error.email" data-i18n="_malformed-email-message_"></span>
+                        </div>
+                    </div>    
+                </div>
+             </div>             
              <div class="modal-footer">
-                <button type="submit" class="btn-sm btn-primary" ng-click="createAccount();" ng-disabled="signUpForm.$invalid" data-i18n="_register_"></button>
+                <button type="submit" class="btn-sm btn-success" ng-click="createAccount();" ng-disabled="signUpForm.$invalid" data-i18n="_register_"></button>
                 <button type="button" class="btn-sm btn-default" ng-click="close('#modalSignUp')" data-i18n="_cancel_"></button>
             </div>
-    </form>
+        </form>
     </div>
     </div>
-	</div>
+    </div>
 
       <div class="modal fade" id="modalRestorePassword">
       <div class="modal-dialog">
@@ -150,17 +156,17 @@
               </div>
               <div class="modal-body">
                   <div class="form-group">
-                      <label for="username" class="col-lg-2 control-label" data-i18n="_username-email_"></label>
-                      <div class="col-lg-10">
+                      <label for="username" class="col-lg-4 control-label" data-i18n="_username-email_"></label>
+                      <div class="col-lg-8">
                           <input type="text" id="username" name="username" class="form-control" data-i18n-attr="_username-email_|placeholder" ng-model="restorePassword.username" required/>
-                          <div class="error" ng-show="restorePasswordForm.username.$dirty && restorePasswordForm.username.$invalid">Invalid:
+                          <div class="error" ng-show="restorePasswordForm.username.$dirty && restorePasswordForm.username.$invalid">{{'_invalid-field-message_' | i18n}}:
                               <span ng-show="restorePasswordForm.username.$error.required" data-i18n="_username-email-missed-message_"></span>
                           </div>
                       </div>
                   </div>
               </div>
               <div class="modal-footer">
-                  <button type="submit" class="btn-sm btn-primary" ng-click="restorePassword();" ng-disabled="restorePasswordForm.$invalid" data-i18n="_request-password_"></button>
+                  <button type="submit" class="btn-sm btn-success" ng-click="restorePassword();" ng-disabled="restorePasswordForm.$invalid" data-i18n="_request-password_"></button>
                   <button type="button" class="btn-sm btn-default" ng-click="close('#modalRestorePassword')" data-i18n="_cancel_"></button>
               </div>
           </form>
@@ -169,6 +175,8 @@
       </div>
 
     <div id="contents" app-view-segment="0"></div>
+
+
     
   <!-- THIS IS REPLACED BY THE LINE ABOVE TO USE SEGMENTS <div id="workspace" ng-view></div> -->
 
@@ -189,21 +197,49 @@
     <script src="lib/angularjs/angular-route.js"></script>
     <script src="lib/modal-master/bootstrap-modal.js"></script>
     <script src="lib/modal-master/bootstrap-modalmanager.js"></script>
-    <script src="js/config.js"></script>
     <script src="js/app.js"></script>
-    <script src="js/services.js"></script>
+    <!-- services for the different modules/pages -->
+    <script src="js/services/config.js"></script>
+    <script src="js/services/services.js"></script>
+    <script src="js/services/configuration-service.js"></script>
+    <script src="js/services/graph-service.js"></script>
+    <script src="js/services/account-service.js"></script>
+    <script src="js/services/login-service.js"></script>
+    <script src="js/services/graph-group-service.js"></script>
+    <script src="js/services/ontology-service.js"></script>
+    <script src="js/services/d2rq-service.js"></script>
+    <!-- controllers for the different modules/pages -->
     <script src="js/controllers.js"></script>
-    <script src="js/controllers-settings.js"></script>
+    <script src="js/login-controller.js"></script>
+    <script src="js/workbench/extraction-and-loading/import-rdf-controller.js"></script>
+    <script src="js/workbench/extraction-and-loading/sparqlify-controller.js"></script>
+    <script src="js/workbench/extraction-and-loading/triplegeo-controller.js"></script>
+    <script src="js/workbench/extraction-and-loading/d2rq-controller.js"></script>
+    <script src="js/workbench/extraction-and-loading/d2rq-mapping-controller.js"></script>
+    <script src="js/workbench/extraction-and-loading/d2rq-task-controller.js"></script>
+    <script src="js/workbench/search-querying-and-exploration/facete-controller.js"></script>
+    <script src="js/workbench/search-querying-and-exploration/mappify-controller.js"></script>
+    <script src="js/workbench/search-querying-and-exploration/virtuoso-controller.js"></script>
+    <script src="js/workbench/manual-revision-and-authoring/ontowiki-controller.js"></script>
+    <script src="js/workbench/manual-revision-and-authoring/ontology-controller.js"></script>
+    <script src="js/workbench/classification-and-enrichment/geolift-controller.js"></script>
+    <script src="js/workbench/linking-and-fusing/limes-controller.js"></script>
+    <script src="js/settings/settings-controller.js"></script>
+    <script src="js/settings/datasets/graphs-controller.js"></script>
+    <script src="js/settings/data-sources/endpoint-controller.js"></script>
+    <script src="js/settings/data-sources/database-controller.js"></script>
+    <script src="js/settings/namespaces/namespaces-controller.js"></script>
+    <script src="js/settings/components/components-controller.js"></script>
+    <script src="js/account/account-controller.js"></script>
+
+    <!-- directives -->
     <script src="js/directives.js"></script>
     <script src="lib/osm/OpenLayers.js"></script>
-    <script src="lib/ui-bootstrap/ui-bootstrap-tpls-0.10.0.min.js"></script>
+    <script src="lib/ui-bootstrap/ui-bootstrap-tpls-0.6.0.min.js"></script>
     <script src="lib/angular-route-segment/angular-route-segment.min.js"></script>
     <script src="lib/angular-file-upload-master/angular-file-upload.min.js"></script>
     <script src="lib/angular-file-upload-master/FileAPI.min.js"></script>
     <script src="lib/angular-flash.min.js"></script>
-    <script src="lib/chosen.jquery.min.js"></script>
-    <script src="lib/chosen.js"></script>
-    <script src="lib/date.js"></script>
     <script src="lib/localize.js"></script>
   </body>
 </html>

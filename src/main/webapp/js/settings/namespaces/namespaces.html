@@ -1,0 +1,66 @@
+<h3 class="green bold" data-i18n="_namespaces-title_"></h3>
+
+<div ng-controller="NamespacesCtrl">
+
+  <div ng-controller="ModalWindow">
+    <button type="button" class="btn btn-large btn-primary" ng-click="OpenWindow('modalNamespace'); new()" data-i18n="_add-namespace_"></button>
+
+    <div class="modal fade" id="modalNamespace">
+      <form name="namespaceForm" class="form-horizontal" role="form" novalidate>
+        <div class="modal-header">
+          <button type="button" class="close" ng-click="close('modalNamespace')" aria-hidden="true">&times;</button>
+          <h5 class="modal-title green bold" data-i18n="_namespace_"></h5>
+        </div>
+
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="prefix" class="col-lg-2 control-label" data-i18n="_prefix_"></label>
+            <div class="col-lg-10">
+              <input type="text" class="form-control" id="prefix" name="prefix" placeholder="Prefix" ng-model="namedgraph.prefix" required />
+              <div class="error"  ng-show="namespaceForm.prefix.$dirty && namespaceForm.prefix.$invalid">{{'_invalid-field-message_' | i18n}}:
+                <span ng-show="namespaceForm.prefix.$error.required" data-i18n="_prefix-missed-message_"></span>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="uri" class="col-lg-2 control-label">URI</label>
+            <div class="col-lg-10">
+              <input type="text" class="form-control" name="uri" id="uri" placeholder="uri" ng-model="namedgraph.uri" />
+              <div class="error"  ng-show="namespaceForm.uri.$dirty && namespaceForm.uri.$invalid">{{'_invalid-field-message_' | i18n}}:
+                <span ng-show="namespaceForm.uri.$error.required" data-i18n="_uri-missed-message_"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-sm btn-success" ng-click="close('modalNamespace')" ng-click="save(); close('modalNamespace');"
+          ng-disabled="namespaceForm.$invalid || isUnchanged(namedgraph)" data-i18n="_save_"></button>
+          <button type="button" class="btn-sm btn-default" ng-click="close('modalNamespace')" data-i18n="_cancel_"></button>
+        </div>      
+      </form>
+    </div>
+
+  <table class="table table-striped">
+  <thead>
+    <tr>
+      <th data-i18n="_action_"></th>
+      <th data-i18n="_prefix_"></th>
+      <th data-i18n="_namespace_"></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr ng-repeat="namespace in namespaces">
+      <td>
+        <button type="button" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-trash"></span></button>
+        <button type="button" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-edit"></span></button>
+      </td>
+    	<td>{{namespaces.prefix}}</td>
+      <td>{{namespaces.uri}}</td>
+    </tr>
+  </tbody>
+  </table>
+
+</div>
+</div>
+
+

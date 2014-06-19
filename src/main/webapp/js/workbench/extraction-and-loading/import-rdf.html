@@ -1,0 +1,131 @@
+<h3 class="green bold" data-i18n="_import-rdf_"></h3>
+
+
+<!-- Subscribe to all flash messages. -->
+<div flash-alert active-class="in alert" class="fade" duration="0">
+	<button type="button" class="close" ng-click="hide()">&times;</button>
+  <span class="alert-message">{{flash.message}}</span>
+</div>
+
+<div ng-controller="ImportFormCtrl">
+
+	<form class="form-horizontal InputForm col-xs-11" role="form">
+	<div class="row">
+		<label for="source-type" class="col-xs-2 control-label" data-i18n="_import-from_"></label>
+		<div class="col-xs-10">
+	      <select id="source-type" class="form-control" ng-model="sourceType" 
+	      				ng-options="c as localize(c.label) for c in sourceTypes" ng-change="updateForm()" required>
+	      </select>
+		</div>
+	</div>
+	</form>
+<br/>
+<br/>
+<br/>
+	<!-- Import from file form -->
+	<div ng-show="fileElements" class="animate-show">
+		<form class="form-horizontal InputForm col-xs-11" role="form" name="fileForm" novalidate>
+			<div class="form-group">
+				<label for="graph" class="col-xs-2 control-label" data-i18n="_to-dataset_"></label>
+				<div class="input-group col-xs-10">
+                    <select id="graph" name= "graph" class="form-control" ng-model="importFile.graph" ng-options="c.name as c.graph.label for c in namedGraphs" required></select>
+                    <span class="input-group-btn">
+                        <button type="button" class="btn btn-link reset" ng-click="refreshGraphList()">
+                            <i class="glyphicon glyphicon-refresh" aria-hidden="false"></i>
+                        </button>
+                    </span>
+                </div>
+	  	    </div>
+			<div class="form-group">
+	    	<label class="col-xs-2 control-label" data-i18n="_file-input_"></label>
+	    	<div class="col-xs-10">
+				  <!-- <input type="file" ng-file-select="onFileSelect($files)" > -->
+				  <input type="file" ng-file-select="onFileSelect($files)" multiple name="fileName" accept=".nt, .n3, .ttl, .rdf">
+				  <div class="error" ng-show="uploadedError()">{{'_invalid-field-message_' | i18n}}:<span>{{uploadMessage}}</span></div>
+				  <div ng-show="isUploading()"><span>{{'_uploading_' | i18n}} ...</span></div>
+	  		</div>
+	  	</div>
+	  	<div class="form-group">
+    		<div class="col-lg-offset-2 col-xs-10">
+      		<button class="btn btn-success" ng-click="import()" ng-disabled="isInvalid()||isImporting()" data-i18n="_import_"></button>
+      		<span ng-show="isImporting()" data-i18n="_importing_"></span>
+    		</div>
+  	</div>
+	  </form>
+  </div>
+
+	<!-- Import from URL form  -->
+	<div ng-show="urlElements" class="animate-show">
+		<form class="form-horizontal InputForm col-xs-11" role="form" name="urlForm" novalidate>
+			<div class="form-group">
+				<label for="graph" class="col-xs-2 control-label" data-i18n="_to-dataset_"></label>
+				<div class="input-group col-xs-10">
+                    <select id="graph" class="form-control" ng-model="importUrl.graph" ng-options="c.name as c.graph.label for c in namedGraphs" required></select>
+                    <span class="input-group-btn">
+                        <button type="button" class="btn btn-link reset" ng-click="refreshGraphList()">
+                            <i class="glyphicon glyphicon-refresh" aria-hidden="false"></i>
+                        </button>
+                    </span>
+		        </div>
+	  	    </div>
+			<div class="form-group">
+	    	<label for="inputUrl" class="col-xs-2 control-label" data-i18n="_url-input_"></label>
+		    <div class="col-xs-10">
+			    <input type="text" id="inputUrl" name="inputUrl" class="form-control" ng-model="importUrl.inputUrl" regex-validate="url" required>
+			    <div class="error" ng-show="urlForm.inputUrl.$dirty && urlForm.inputUrl.$invalid">{{'_invalid-field-message_' | i18n}}:
+          	<span ng-show="urlForm.inputUrl.$error.required" data-i18n="_url-missed-message_"></span>
+          	<span ng-show="urlForm.inputUrl.$error.regexValidate" data-i18n="_malformed-url-message_"></span>
+        	</div>
+	  		</div>
+	  	</div>
+	  	<div class="form-group">
+    		<div class="col-lg-offset-2 col-xs-10">
+      		<button class="btn btn-success" ng-click="import()" ng-disabled="urlForm.$invalid || isUnchanged(importUrl) || isImporting()" data-i18n="_import_"></button>
+      		<span ng-show="isImporting()" data-i18n="_importing_"></span>
+    		</div>
+  		</div>
+		</form>
+	</div>
+
+	<!-- Import from URL sparql  -->
+	<div ng-show="queryElements" class="animate-show">
+		<form class="form-horizontal InputForm col-xs-11" role="form" name="sparqlForm" novalidate>
+			<div class="form-group">
+				<label for="graph" class="col-xs-2 control-label" data-i18n="_to-dataset_"></label>
+				<div class="input-group col-xs-10">
+                    <select id="graph" class="form-control" ng-model="importSparql.graph" ng-options="c.name as c.graph.label for c in namedGraphs" required></select>
+                    <span class="input-group-btn">
+                        <button type="button" class="btn btn-link reset" ng-click="refreshGraphList()">
+                            <i class="glyphicon glyphicon-refresh" aria-hidden="false"></i>
+                        </button>
+                    </span>
+		        </div>
+	  	</div>
+			<div class="form-group">
+	    	<label for="endPoint" class="col-xs-2 control-label" data-i18n="_sparql-endpoint_"></label>
+		    <div class="col-xs-10">
+		    	 <select id="endPoint" class="form-control" ng-model="importSparql.endPoint"
+		      				ng-options="c.endpoint as c.label for c in endpoints" required>
+		      </select>
+	  		</div>
+	  	</div>
+			<div class="form-group">
+	    	<label for="sparqlQuery" class="col-xs-2 control-label" data-i18n="_query_"></label>
+		    <div class="col-xs-10">
+		    	<textarea class="form-control" rows="3" id="sparqlQuery" name="sparqlQuery" ng-model="importSparql.sparqlQuery" required>{{scope.importSparql.sparqlQuery}}</textarea>
+		    	<div class="error" ng-show="sparqlForm.sparqlQuery.$dirty && sparqlForm.sparqlQuery.$invalid">{{'_invalid-field-message_' | i18n}}:
+          	<span ng-show="sparqlForm.sparqlQuery.$error.required" data-i18n="_endpoint-missed-message_"></span>
+        	</div>
+	  		</div>
+	  	</div>
+	  	<div class="form-group">
+    		<div class="col-lg-offset-2 col-xs-10">
+      		<button class="btn btn-success" ng-click="import()" ng-disabled="sparqlForm.$invalid || isUnchanged(importSparql) || isImporting()" data-i18n="_import_"></button>
+      		<span ng-show="isImporting()" data-i18n="_importing_"></span>
+    		</div>
+  		</div>	
+	  </form>
+	</div>
+
+
+</div>

@@ -1,0 +1,396 @@
+<div class="contents" ng-controller="TripleGeoCtrl">
+	<!-- Subscribe to all flash messages. -->
+	<div flash-alert active-class="in alert" class="fade" duration="0">
+		<button type="button" class="close" ng-click="hide()">&times;</button>
+	  <span class="alert-message">{{flash.message}}</span>
+	</div>
+
+	<h3 class="green bold">TripleGeo</h3>
+	<b data-i18n="_triplegeo-description_"></b>
+	<br>
+	<br>
+	<p data-i18n="_triplegeo-instructions_"></p>
+	
+<form class="form-inline InputForm col-xs-11" role="form" ng-show="inputForm">
+	<button type="button" class="btn btn-link reset" onclick="document.location.reload()">
+	<i class="glyphicon glyphicon-refresh" aria-hidden="false"></i>
+	</button>
+	<div class="row">
+		<div class="col-xs-12">
+		<h5 class="green bold" data-i18n="_triplegeo-config_"></h5>
+		</div>
+	</div>
+	<br>
+	<div id="TripleGeoOptions" ng-show="configOptions">
+	<div class="row below">
+			<div class="col-xs-2">
+			<label for="Option" data-i18n="_data-source_"></label>
+			</div>
+			<div class="col-xs-8">
+			<select id="Option" class="form-control input-sm" ng-model="Options" 
+				ng-options="option for option in options.datasource" ng-change="choice(Options)">
+			 <option value="" data-i18n="_data-source-type-choose-option_"></option>
+			</select>
+			</div>
+	  </div>
+	
+	<div class="row below" ng-show="options.fileExample">
+			<div class="col-xs-2">
+			<label data-i18n="_file-examples_"></label>
+			</div>
+			<div class="col-xs-8">
+			<select id="Example" class="form-control input-sm" ng-model="fileExample" 
+			ng-options="option for option in options.fileExamples" ng-change="FillForm('fileExample', fileExample); configForm = true;">
+			 <option value="" data-i18n="_example-choose-option_"></option>
+			</select>
+			</div>
+	</div>
+	
+ 	<div class="row below" ng-show="options.dbExample">
+			<div class="col-xs-2">
+			<label data-i18n="_db-examples_"></label>
+			</div>
+			<div class="col-xs-8">
+			<select id="Example" class="form-control input-sm" ng-model="dbExample" 
+			ng-options="option for option in options.dbExamples" ng-change="FillForm('dbExample', 'Wikimapia Extraction'); configForm = true;">
+			 <option value="" data-i18n="_example-choose-option_"></option>
+			</select>
+			</div>
+	</div>
+	
+	<div class="row below" ng-show="options.database">
+			<div class="col-xs-2">
+			<label for="Example" data-i18n="_db_"></label>
+			</div>
+			<div class="col-xs-8">
+			<select id="Database" class="form-control input-sm" ng-model="Database" 
+			ng-options="database.label for database in databases" ng-change="FillForm('database', Database.label); configForm = true;">
+			 <option value="" data-i18n="_database-choose-option_"></option>
+			</select>
+			</div>
+	</div>
+	
+	<div class="row below" ng-controller="ImportFormCtrl" ng-show="options.file">
+			<div class="col-xs-2">
+			<label class="control-label" data-i18n="_upload-files_"></label><i class="glyphicon glyphicon-warning-sign" style="margin-left:5px"
+				data-toggle="tooltip" data-i18n-attr="_triplegeo-files-help-tooltip_|data-original-title"></i>
+				</div>
+		    	<div class="col-xs-8">
+					    <input id="lefile" class="form-control input-sm" type="file" ng-file-select="loadShapeFile($files); onFileSelect($files)" 
+					    		multiple name="fileName" accept=".shp, .shx, .dbf" style="display:none">
+					  	<div class="error" ng-show="uploadedError()">{{'_invalid-field-message_' | i18n}}:
+					  	<span>{{uploadMessage}}</span></div>
+						<div class="input-append">
+						<input id="dummyShapeInput" class="input-sm pull-left col-xs-9" type="text" onclick="$('input[id=lefile]').click();">
+						<a class="btn btn-sm btn-success btn-large pull-left col-xs-3" onclick="$('input[id=lefile]').click();" data-i18n="_browse_"></a>
+						</div>
+			    </div>
+    </div>
+    
+    <div class="row below" ng-controller="ImportFormCtrl" ng-show="options.displayConfigUpload">
+			<label class="col-xs-2 control-label" data-i18n="_upload-config-file_"></label>
+		    	<div class="col-xs-8">
+					    <input id="leotherfile" class="form-control input-sm" type="file" ng-file-select="loadConfigFile($files)" 
+					    		multiple name="fileName" accept=".conf" style="display:none">
+					  	<div class="error" ng-show="uploadedError()">{{'_invalid-field-message_' | i18n}}:
+					  	<span>{{uploadMessage}}</span></div>
+						<div class="input-append">
+						<input id="dummyConfigInput" class="input-sm pull-left col-xs-9" type="text" onclick="$('input[id=leotherfile]').click();">
+						<a class="btn btn-sm btn-success btn-large pull-left col-xs-3" onclick="$('input[id=leotherfile]').click();" data-i18n="_browse_"></a>
+						</div>
+			    </div>
+    </div>
+	
+	<div ng-show="configForm">
+	<br>
+	<br>
+	<div class="row">
+	<div class="col-xs-12">
+		<label data-i18n="_input-output-parameters_"></label>
+	</div>
+	</div>
+	<br>
+	  
+	<div class="row" ng-show="options.inputDisplay">
+	<div class="col-xs-2">
+		<label class="green bold" data-i18n="_data-source_"></label>
+	</div>
+	<div class="col-xs-4">
+		<input class="form-control input-sm" ng-model="tripleGeoConfig.inputDisplay" readonly="readonly"/>
+	</div>
+	</div>
+	<br>
+	
+	<div class="row">
+	<div class="col-xs-2">
+		<label class="green bold" data-i18n="_output-format_"></label>
+	</div>
+	<div class="col-xs-4">
+		<select class="form-control input-sm" id="outputFormat" ng-options="option for option in options.format" 
+	    ng-model="tripleGeoConfig.format"></select>
+	</div>
+	<div class="col-xs-2">
+		<h5 class="green bold" data-i18n="_target-store-type_"></h5>
+	</div>
+	<div class="col-xs-4">
+		<select class="form-control input-sm" id="targetStore" ng-options="option for option in options.targetStore" 
+	    ng-model="tripleGeoConfig.targetStore"></select>
+	</div>
+	</div>
+	<br><br>
+	<div ng-show="options.dataParams">
+	<div class="row">
+	<div class="col-xs-12">
+		<label data-i18n="_data-parameters_"></label><i class="glyphicon glyphicon-question-sign" style="margin-left:5px"
+		data-toggle="tooltip" data-i18n-attr="_triplegeo-data-help-tooltip_|data-original-title"></i>
+	</div>
+	</div>
+	<br>
+	<div class="row">
+	<div class="col-xs-2">
+		<h5 class="green bold" data-i18n="_feature-string_"></h5>
+	</div>
+	<div class="col-xs-4">
+		<input class="form-control input-sm" ng-model="tripleGeoConfig.featureString"/>
+	</div>
+	<div class="col-xs-2">
+		<h5 class="green bold" data-i18n="_attribute_"></h5>
+	</div>
+	<div class="col-xs-4">
+		<input class="form-control input-sm" ng-model="tripleGeoConfig.attribute"/>
+	</div>
+	</div>
+	<br>
+	<div class="row">
+	<div class="col-xs-2">
+		<h5 class="green bold" data-i18n="_ignore_"></h5>
+	</div>
+	<div class="col-xs-4">
+		<input class="form-control input-sm" ng-model="tripleGeoConfig.ignore"/>
+	</div>
+	<div class="col-xs-2">
+		<h5 class="green bold" data-i18n="_type_"></h5>
+	</div>
+	<div class="col-xs-4">
+		<input class="form-control input-sm" ng-model="tripleGeoConfig.type"/>
+	</div>
+	</div>
+	<br>
+	<div class="row">
+	<div class="col-xs-2">
+		<h5 class="green bold" data-i18n="_name_"></h5>
+	</div>
+	<div class="col-xs-4">
+		<input class="form-control input-sm" ng-model="tripleGeoConfig.name"/>
+	</div>
+	<div class="col-xs-2">
+		<h5 class="green bold" data-i18n="_class_"></h5>
+	</div>
+	<div class="col-xs-4">
+		<input class="form-control input-sm" ng-model="tripleGeoConfig.dclass"/>
+	</div>
+	</div>
+	<br><br>
+	</div>
+	<div ng-show="options.dbParams">
+	<div class="row">
+	<div class="col-xs-12">
+		<label data-i18n="_db-parameters_"></label><i class="glyphicon glyphicon-question-sign" style="margin-left:5px"
+		data-toggle="tooltip" data-i18n-attr="_triplegeo-data-help-tooltip_|data-original-title"></i>
+	</div>
+	</div>
+	<br>
+	<div ng-show="dbLogin">
+	<div class="row">
+	<div class="col-xs-2">
+		<h5 class="green bold" data-i18n="_db-parameters_"></h5>
+	</div>
+	<div class="col-xs-4">
+		<select class="form-control input-sm" ng-options="option for option in options.dbtype" 
+	    ng-model="tripleGeoConfig.dbtype" id="dbtype"></select>
+	</div>
+	<div class="col-xs-2">
+		<h5 class="green bold" data-i18n="_db-name_"></h5>
+	</div>
+	<div class="col-xs-4">
+		<input class="form-control input-sm" ng-model="tripleGeoConfig.dbName"/>
+	</div>
+	</div>
+	<br>
+	<div class="row">
+	<div class="col-xs-2">
+		<h5 class="green bold" data-i18n="_db-user-name_"></h5>
+	</div>
+	<div class="col-xs-4">
+		<input class="form-control input-sm" ng-model="tripleGeoConfig.dbUserName"/>
+	</div>
+	<div class="col-xs-2">
+		<h5 class="green bold" data-i18n="_db-password_"></h5>
+	</div>
+	<div class="col-xs-4">
+		<input class="form-control input-sm" ng-model="tripleGeoConfig.dbPassword"/>
+	</div>
+	</div>
+	<br>
+	<div class="row">
+	<div class="col-xs-2">
+		<h5 class="green bold" data-i18n="_db-host_"></h5>
+	</div>
+	<div class="col-xs-4">
+		<input class="form-control input-sm" ng-model="tripleGeoConfig.dbHost"/>
+	</div>
+	<div class="col-xs-2">
+		<h5 class="green bold" data-i18n="_db-port_"></h5>
+	</div>
+	<div class="col-xs-4">
+		<input class="form-control input-sm" ng-model="tripleGeoConfig.dbPort"/>
+	</div>
+	</div>
+	<br>
+	</div>
+	<div class="row">
+	<div class="col-xs-2">
+		<h5 class="green bold" data-i18n="_resource-name_"></h5>
+	</div>
+	<div class="col-xs-4">
+		<input class="form-control input-sm" ng-model="tripleGeoConfig.resourceName"/>
+	</div>
+	<div class="col-xs-2">
+		<h5 class="green bold" data-i18n="_table-name_"></h5>
+	</div>
+	<div class="col-xs-4">
+		<input class="form-control input-sm" ng-model="tripleGeoConfig.tableName"/>
+	</div>
+	</div>
+	<br>
+	<div class="row">
+	<div class="col-xs-2">
+		<h5 class="green bold" data-i18n="_condition_"></h5>
+	</div>
+	<div class="col-xs-4">
+		<input class="form-control input-sm" ng-model="tripleGeoConfig.condition"/>
+	</div>
+	<div class="col-xs-2">
+		<h5 class="green bold" data-i18n="_label-column-name_"></h5>
+	</div>
+	<div class="col-xs-4">
+		<input class="form-control input-sm" ng-model="tripleGeoConfig.labelColumnName"/>
+	</div>
+	</div>
+	<br>
+	<div class="row">
+	<div class="col-xs-2">
+		<h5 class="green bold" data-i18n="_name-column-name_"></h5>
+	</div>
+	<div class="col-xs-4">
+		<input class="form-control input-sm" ng-model="tripleGeoConfig.nameColumnName"/>
+	</div>
+	<div class="col-xs-2">
+		<h5 class="green bold" data-i18n="_class-column-name_"></h5>
+	</div>
+	<div class="col-xs-4">
+		<input class="form-control input-sm" ng-model="tripleGeoConfig.classColumnName"/>
+	</div>
+	</div>
+	<br>
+	<div class="row">
+	<div class="col-xs-2">
+		<h5 class="green bold" data-i18n="_geometry-column-name_"></h5>
+	</div>
+	<div class="col-xs-4">
+		<input class="form-control input-sm" ng-model="tripleGeoConfig.geometryColumnName"/>
+	</div>
+	<div class="col-xs-2">
+		<h5 class="green bold" data-i18n="_ignore_"></h5>
+	</div>
+	<div class="col-xs-4">
+		<input class="form-control input-sm" ng-model="tripleGeoConfig.ignore"/>
+	</div>
+	</div>
+	<br><br>
+	</div>
+	<div class="row">
+	<div class="col-xs-12">
+		<label data-i18n="_ns-parameters_"></label><i class="glyphicon glyphicon-question-sign" style="margin-left:5px"
+		data-toggle="tooltip" data-i18n-attr="_triplegeo-ns-help-tooltip_|data-original-title"></i>
+	</div>
+	</div>
+	<br>
+	<div class="row">
+	<div class="col-xs-2">
+		<h5 class="green bold" data-i18n="_ns-prefix_"></h5>
+	</div>
+	<div class="col-xs-4">
+		<input class="form-control input-sm" ng-model="tripleGeoConfig.nsPrefix"/>
+	</div>
+	<div class="col-xs-2">
+		<h5 class="green bold" data-i18n="_namespace_"></h5>
+	</div>
+	<div class="col-xs-4">
+		<input class="form-control input-sm" ng-model="tripleGeoConfig.nsURI"/>
+	</div>
+	</div>
+	<br>
+	<div class="row">
+	<div class="col-xs-2">
+		<h5 class="green bold" data-i18n="_onto-ns-prefix_"></h5>
+	</div>
+	<div class="col-xs-4">
+		<input class="form-control input-sm" ng-model="tripleGeoConfig.ontologyNSPrefix"/>
+	</div>
+	<div class="col-xs-2">
+		<h5 class="green bold" data-i18n="_onto-ns_"></h5>
+	</div>
+	<div class="col-xs-4">
+		<input class="form-control input-sm" ng-model="tripleGeoConfig.ontologyNS"/>
+	</div>
+	</div>
+	<br>
+	<div class="row">
+	<div class="col-xs-12">
+		<label data-i18n="_spatial-ref-parameters_"></label><i class="glyphicon glyphicon-question-sign" style="margin-left:5px"
+		data-toggle="tooltip" data-i18n-attr="_triplegeo-spatial-help-tooltip_|data-original-title"></i>
+	</div>
+	</div>
+	<br>
+	<div class="row">
+	<div class="col-xs-2">
+		<h5 class="green bold" data-i18n="_source_"></h5>
+	</div>
+	<div class="col-xs-4">
+		<input class="form-control input-sm" ng-model="tripleGeoConfig.sourceRS"/>
+	</div>
+	<div class="col-xs-2">
+		<h5 class="green bold" data-i18n="_target_"></h5>
+	</div>
+	<div class="col-xs-4">
+		<input class="form-control input-sm" ng-model="tripleGeoConfig.targetRS"/>
+	</div>
+	</div>
+	<br><br>
+	<div class="row">
+	<div class="col-xs-12">
+		<label data-i18n="_default-lang_"></label><i class="glyphicon glyphicon-question-sign" style="margin-left:5px"
+		data-toggle="tooltip" data-i18n-attr="_triplegeo-other-help-tooltip_|data-original-title"></i>
+	</div>
+	</div>
+	<br>
+	<div class="row">
+	<div class="col-xs-2">
+		<h5 class="green bold" data-i18n="_source_"></h5>
+	</div>
+	<div class="col-xs-4">
+		<input class="form-control input-sm" ng-model="tripleGeoConfig.defaultLang"/>
+	</div>
+	</div>
+	<br>
+	<div class="row">
+		<div class="col-xs-2"></div>
+		<div class="col-xs-2">
+		  <a class="btn btn-sm btn-success btn-block" ng-show="stTripleGeo" ng-click="LaunchTripleGeo()" data-i18n="_triplegeo-start_"></a>
+		</div>
+	</div>
+	</div>
+	</div>
+</form>
+</div>

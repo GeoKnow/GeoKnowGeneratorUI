@@ -1,0 +1,199 @@
+<div class="contents" ng-controller="GeoliftCtrl">
+	<!-- Subscribe to all flash messages. -->
+	<div flash-alert active-class="in alert" class="fade" duration="10000">
+		<button type="button" class="close" ng-click="hide()">&times;</button>
+	  <span class="alert-message">{{flash.message}}</span>
+	</div>
+
+	<h3 class="green bold">GeoLift</h3>
+	<b data-i18n="_geolift-description_"></b>
+	<br>
+	<br>
+	<p data-i18n="_geolift-instructions_"></p>
+	
+<form class="form-inline InputForm col-xs-11" role="form" ng-show="inputForm">
+	<button type="button" class="btn btn-link reset" onclick="document.location.reload()">
+	<i class="glyphicon glyphicon-refresh" aria-hidden="false"></i>
+	</button>
+	<div ng-show="configOptions">
+	<div class="row">
+		<div class="col-xs-8">
+		<h5 class="green bold" data-i18n="_geolift-config_"></h5>
+		</div>
+	</div>
+	<br>
+	
+	<div class="row below">
+			<div class="col-xs-2">
+			<label for="options" data-i18n="_data-source_"></label>
+			</div>
+			<div class="col-xs-10">
+			<select id="options" class="form-control input-sm" ng-model="Options" 
+				ng-options="option for option in options.datasource" ng-change="choice(Options)">
+			 <option value="" data-i18n="_data-source-type-choose-option_"></option>
+			</select>
+			</div>
+	</div>
+	
+	<div class="row below" ng-show="options.fileExamples">
+			<div class="col-xs-2">
+			<label data-i18n="_file-examples_"></label>
+			</div>
+			<div class="col-xs-10">
+			<select id="fileExample" class="form-control input-sm" ng-model="fileExample" 
+			ng-options="example.label for example in fileExamples" ng-change="FillForm(fileExample.label)">
+			<option value="" data-i18n="_example-choose-option_"></option>
+			</select>
+			</div>
+	</div>
+	
+	<div class="row below" ng-show="options.epExamples">
+			<div class="col-xs-2">
+			<label data-i18n="_endpoint-examples_"></label>
+			</div>
+			<div class="col-xs-10">
+			<select id="epExample" class="form-control input-sm" ng-model="epExample" 
+			ng-options="example.label for example in epExamples" ng-change="FillForm(epExample.label)">
+			<option value="" data-i18n="_example-choose-option_"></option>
+			</select>
+			</div>
+	</div>
+	
+	<div class="row below" ng-show="options.URIExamples">
+			<div class="col-xs-2">
+			<label data-i18n="_uri-examples_"></label>
+			</div>
+			<div class="col-xs-10">
+			<select id="URIExample" class="form-control input-sm" ng-model="URIExample" 
+			ng-options="example.label for example in URIExamples" ng-change="FillForm(URIExample.label)">
+			<option value="" data-i18n="_example-choose-option_"></option>
+			</select>
+			</div>
+	</div>
+	
+	<div class="row below" ng-show="options.endpoints">
+			<div class="col-xs-2">
+			<label data-i18n="_endpoints_"></label>
+			</div>
+			<div class="col-xs-10">
+			<select id="endpointSelect" class="form-control input-sm" ng-model="endpointSelect" 
+			ng-options="endpoint.endpoint for endpoint in endpoints" ng-change="FillForm(endpointSelect.label)">
+			<option value="" data-i18n="_endpoint-choose-option_"></option>
+			</select>
+			</div>
+	</div>
+	
+	<div class="row below" ng-controller="ImportFormCtrl" ng-show="options.inputFile">
+			<label class="col-xs-2 control-label" data-i18n="_upload-enrichment-file_"></label>
+		    	<div class="col-xs-10">
+					    <input id="lefile" class="form-control input-sm" type="file" ng-file-select="loadDataFile($files); onFileSelect($files)" 
+					    		multiple name="fileName" accept=".ttl, .n3, .nt, .rdf" style="display:none">
+					  	<div class="error" ng-show="uploadedError()">{{'_invalid-field-message_' | i18n}}:
+					  	<span>{{uploadMessage}}</span></div>
+						<div class="input-append">
+						<input id="dummyGeoLiftInput" class="input-sm pull-left col-xs-9" type="text" onclick="$('input[id=lefile]').click();">
+						<a class="btn btn-sm btn-success btn-large pull-left col-xs-3" onclick="$('input[id=lefile]').click();" data-i18n="_browse_"></a>
+						</div>
+			    </div>
+    </div>
+    
+    <div class="row below" ng-controller="ImportFormCtrl" ng-show="options.configFile">
+			<label class="col-xs-2 control-label" data-i18n="_upload-config-file_"></label>
+		    	<div class="col-xs-10">
+					    <input id="leotherfile" class="form-control input-sm" type="file" ng-file-select="loadConfigFile($files)" 
+					    		multiple name="fileName" accept=".tsv" style="display:none">
+					  	<div class="error" ng-show="uploadedError()">{{'_invalid-field-message_' | i18n}}:
+					  	<span>{{uploadMessage}}</span></div>
+						<div class="input-append">
+						<input id="dummyConfigInput" class="input-sm pull-left col-xs-9" type="text" onclick="$('input[id=leotherfile]').click();">
+						<a class="btn btn-sm btn-success btn-large pull-left col-xs-3" onclick="$('input[id=leotherfile]').click();" data-i18n="_browse_"></a>
+						</div>
+			    </div>
+    </div>
+    
+	
+	<div class="row below" ng-show="inputDisplayRow">
+			<div class="col-xs-2">
+			<label>URI</label>
+			</div>
+			<div class="col-xs-10">
+				<input class="form-control input-sm" id="inputDisplay" ng-model="inputDisplay"/>
+			</div>
+	</div>
+	 
+	<div class="row" ng-show="addParamButton">
+			<div class="col-xs-2">
+		    </div>
+		    <div class="col-xs-2">
+				<a class="btn btn-sm btn-success btn-block" 
+				ng-click="appendInput()"></a>
+	  		</div>
+	</div>
+	<br>
+	<br>
+	<div class="form-inline">
+	<div class="row below" ng-show="params[0].visible">
+	<div class="col-xs-2" style="height:100%">
+		<h5 class="green bold" data-i18n="_add-parameter_"></h5>
+	</div>
+	<div class="col-xs-10">
+	<span>
+		<div class="pull-left" style="width:5%"><label data-i18n="_index_"></label></div>
+		<div class="pull-left" style="width:20%"><label data-i18n="_module_"></label></div>
+		<div class="pull-left" style="width:25%"><label data-i18n="_parameter_"></label></div>
+		<div class="pull-left" style="width:45%"><label data-i18n="_value_"></label></div>
+	</span>
+	</div>
+	<!-- 
+	<div class="col-xs-10">
+	<div ng-repeat="param in params[0].inputs">
+	<span>
+		<div class="pull-left" style="width:5%"><input class="form-control input-sm" value="{{param.index}}"></input></div>
+		<div class="pull-left" style="width:85%"><input class="form-control input-sm" value="{{param.module}}"></input></div>
+		<span class="glyphicon glyphicon-plus plusbutton pull-left" ng-click="appendInputs()" aria-hidden="true"></span>
+		<button type="button" class="close pull-left" ng-click="removeInput($index)" aria-hidden="true">&times;</button>
+	</span>
+	<br><br><br>
+	</div>
+	</div>
+	 -->
+	<div class="col-xs-10 below">
+	<div ng-repeat="param in params[0].inputs">
+	<span>
+		<div class="pull-left" style="width:5%">
+		<input id="indexid{{param.idx}}" class="form-control input-sm" value="{{param.index}}"/>
+		</div>
+		<div class="pull-left" style="width:20%">
+		<select id="module{{param.idx}}" class="form-control input-sm" ng-init="modOption = modOptions[0]" 
+		ng-model="modOption"  ng-options="o as localize(o.label) for o in modOptions"
+		ng-change="setParams(modOption, $index)" geolift-module>
+		</select>
+		</div>
+		<div class="pull-left" style="width:25%">
+		<select id="parameter{{param.idx}}" class="form-control input-sm" ng-model="paramOption"
+		ng-change="setValue(paramOption, $index)" geolift-param>
+		</select>
+		</div>
+		<div class="pull-left" style="width:45%">
+		<select id="paramVal{{param.idx}}" class="form-control input-sm" ng-model="paramVal"
+		ng-change="addParams(paramVal, $index)" geolift-value>
+		</select>
+		</div>
+		<span class="glyphicon glyphicon-minus removebutton pull-left" ng-click="removeInput($index)" aria-hidden="true"></span>
+		<span class="glyphicon glyphicon-plus plusbutton pull-left" ng-click="appendInput()" aria-hidden="true" ng-show="addButton"></span>	
+	</span>
+	<br><br><br>
+	</div>
+	</div>
+	
+	<div class="col-xs-2"></div>
+	<div class="row col-xs-10" ng-show="startButton">
+		<div class="col-xs-2">
+		  <a class="btn btn-sm btn-success btn-block" ng-click="LaunchGeoLift()" data-i18n="_geolift-start_"></a>
+		</div>
+	</div>
+	</div>
+	</div>
+    </div>
+</form>
+</div>

@@ -1,0 +1,155 @@
+# baseURI: http://ldiw.ontos.com/ontology/
+
+@prefix :        <http://ldiw.ontos.com/ontology/> .
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix dcterms:  <http://purl.org/dc/terms/> .
+@prefix sd:      <http://www.w3.org/ns/sparql-service-description#> .
+@prefix void:    <http://rdfs.org/ns/void#> .
+@prefix foaf:    <http://xmlns.com/foaf/0.1/> .
+@prefix gkgres:  <http://ldiw.ontos.com/resource/> .
+
+:     rdf:type owl:Ontology ;
+      owl:versionInfo "Created with TopBraid Composer"^^xsd:string .
+
+     
+:DataSource
+      rdf:type owl:Class ;
+      rdfs:label "Data Source"^^xsd:string ;
+      rdfs:subClassOf owl:Thing .
+
+:Database
+      rdf:type owl:Class ;
+      rdfs:label "Database"^^xsd:string ;
+      rdfs:subClassOf :DataSource .
+
+:SPARQLEndpoint
+      rdf:type owl:Class ;
+      rdfs:label "SPARQL endpoint"^^xsd:string ;
+      rdfs:subClassOf :DataSource .
+
+:DatabaseType
+      rdf:type owl:Class ;
+      rdfs:label "Database types"@en ;
+      rdfs:subClassOf owl:Thing .
+      
+:dbHost
+      rdf:type owl:DatatypeProperty ;
+      rdfs:domain :Database ;
+      rdfs:label "Service URL"^^xsd:string ;
+      rdfs:range xsd:string .
+
+:dbName
+      rdf:type owl:DatatypeProperty ;
+      rdfs:comment "Name of the database to connect"^^xsd:string ;
+      rdfs:domain :Database ;
+      rdfs:label "database"^^xsd:string ;
+      rdfs:range xsd:string .
+
+:dbPassword
+      rdf:type owl:DatatypeProperty ;
+      rdfs:domain :Database ;
+      rdfs:label "password"^^xsd:string ;
+      rdfs:range xsd:string .
+
+:dbPort
+      rdf:type owl:DatatypeProperty ;
+      rdfs:domain :Database ;
+      rdfs:label "Database port number"^^xsd:string .
+
+:dbType
+      rdf:type owl:DatatypeProperty ;
+      rdfs:domain :Database ;
+      rdfs:label "Database Type"^^xsd:string ;
+      rdfs:range :DatabaseType .
+
+:dbUser
+      rdf:type owl:DatatypeProperty ;
+      rdfs:comment "If the component requires user/password authentication method (for instance a database)"^^xsd:string ;
+      rdfs:domain :Database ;
+      rdfs:label "Service user"^^xsd:string ;
+      rdfs:range xsd:string .
+
+:endpoint
+      rdf:type owl:DatatypeProperty ;
+      rdfs:domain :SPARQLEndpoint ;
+      rdfs:label "endpoint"^^xsd:string .
+ 
+ 
+:jdbcDSN
+      rdf:type owl:DatatypeProperty ;
+      rdfs:comment "JDBC data source name." ;
+      rdfs:label "JDBC DSN" .
+
+:jdbcDriver
+      rdf:type owl:DatatypeProperty ;
+      rdfs:label "JDBC driver" .
+
+:odbcDSN
+      rdf:type owl:DatatypeProperty ;
+      rdfs:comment "ODBC DSN" ;
+      rdfs:label "ODBC data source name. Deprecated, use JDBC instead (with ODBC-JDBC bridge if necessary)." .
+
+:IBM_DB2
+      rdf:type :DatabaseType ;
+      rdfs:label "IBM DB2"^^xsd:string .
+
+:MySQL
+      rdf:type :DatabaseType ;
+      rdfs:label "MySQL"^^xsd:string .
+
+:OracleSpatial
+      rdf:type :DatabaseType ;
+      rdfs:label "Oracle Spatial"^^xsd:string .
+
+:PostGIS
+      rdf:type :DatabaseType ;
+      rdfs:label "PostGIS"^^xsd:string .
+
+dcterms:creator
+      rdf:type owl:DatatypeProperty ;
+      rdfs:domain void:Dataset ;
+      rdfs:label "creator"^^xsd:string .
+
+dcterms:description
+      rdf:type owl:DatatypeProperty ;
+      rdfs:domain void:Dataset ;
+      rdfs:label "description"^^xsd:string .
+
+dcterms:source
+      rdf:type owl:DatatypeProperty ;
+      rdfs:domain void:Dataset ;
+      rdfs:label "source"^^xsd:string .
+
+dcterms:title
+      rdf:type owl:DatatypeProperty ;
+      rdfs:comment "The name of the dataset."^^xsd:string ;
+      rdfs:domain void:Dataset ;
+      rdfs:label "Title"^^xsd:string .
+
+void:Dataset
+      rdf:type owl:Class ;
+      rdfs:label "Dataset"^^xsd:string ;
+      rdfs:subClassOf owl:Thing .
+
+void:Linkset
+      rdf:type owl:Class ;
+      rdfs:label "Linkset"^^xsd:string ;
+      rdfs:subClassOf void:Dataset .
+
+sd:NamedGraph
+      rdf:type rdfs:Class ;
+      rdfs:label "Named Graph"^^xsd:string .
+
+sd:Service
+      rdf:type rdfs:Class ;
+      rdfs:label "Service"^^xsd:string .
+
+foaf:homepage
+      rdf:type rdf:Property ;
+      rdfs:domain :SoftwareComponent ;
+      rdfs:label "homepage"^^xsd:string .
+ 
+ 

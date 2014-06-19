@@ -1,0 +1,357 @@
+<div class="contents" ng-controller="LimesCtrl">
+
+<save endpoint="{{defaultEndpoint}}" 
+			uri-base="{{uriBase}}" 
+			import-service-url="{{importServiceUrl}}"
+			dataset="{{}}"></save>
+
+	<!-- Subscribe to all flash messages. -->
+	<div flash-alert active-class="in alert" class="fade" duration="0">
+		<button type="button" class="close" ng-click="hide()">&times;</button>
+  	<span class="alert-message">{{flash.message}}</span>
+	</div>
+
+	<h3 class="green bold">LIMES</h3>
+	<b data-i18n="_limes-description_"></b>
+	<br>
+	<br>
+	<p data-i18n="_limes-instructions_"></p>
+	
+<form class="form-inline InputForm col-xs-11" role="form" ng-show="inputForm">
+	<button type="button" class="btn btn-link reset" onclick="document.location.reload()">
+	<i class="glyphicon glyphicon-refresh" aria-hidden="false"></i>
+	</button>
+	<div class="row">
+		<div class="col-xs-12">
+		<h5 class="green bold" data-i18n="_limes-config_"></h5>
+		</div>
+	</div>
+	<br>
+	<div ng-show="configOptions">
+	<div class="row" ng-controller="ImportFormCtrl">
+			<label class="col-xs-2 control-label" data-i18n="_upload-limes-config-file_"></label>
+		    	<div class="col-xs-8">
+					    <input id="lefile" class="form-control input-sm" type="file" ng-file-select="loadLimesXML($files)" 
+					    		multiple name="fileName" accept=".xml" style="display:none">
+					  	<div class="error" ng-show="uploadedError()">{{'_invalid-field-message_' | i18n}}:
+					  	<span>{{uploadMessage}}</span></div>
+						<div class="input-append">
+						<input id="dummyInput" class="input-sm pull-left col-xs-9" type="text" onclick="$('input[id=lefile]').click();">
+						<a class="btn btn-sm btn-success btn-large pull-left col-xs-3" onclick="$('input[id=lefile]').click();" data-i18n="_browse_"></a>
+						</div>
+			    </div>
+    </div>
+	<div class="row">
+					  <script type="text/javascript">
+						$('input[id=lefile]').change(function() {
+						$('#dummyInput').val($(this).val());
+						});
+					  </script>
+					  <div class="error" ng-show="uploadedError()">{{'_invalid-field-message_' | i18n}}:
+	          	      <span>{{uploadMessage}}</span>
+		  		      </div>
+	  </div>
+	  <br>
+	
+	<div class="row">
+			<div class="col-xs-2">
+			<label for="Example" data-i18n="_examples_"></label>
+			</div>
+			<div class="col-xs-8">
+			<select id="Example" class="form-control input-sm" ng-model="Example" 
+			ng-options="example.name for example in examples" ng-change="FillForm(Example.name)">
+			 <option value="" data-i18n="_example-choose-option_"></option>
+			</select>
+			</div>
+	  </div>
+	  <br>
+
+	<div class="row">
+			<div class="col-xs-2">
+				<label for="showConfig" data-i18n="_options-form_"></label>
+		    </div>
+		    <div class="col-xs-2">
+				<a class="btn btn-sm btn-success btn-block" id="showConfig" ng-model="limes.showConfig" ng-click="enterConfig = !enterConfig" data-i18n="_show-form_"></a>
+	  		</div>
+	</div>
+	<br>
+	<br>
+	</div>
+	<div id="limesOptions" ng-model="limes.Options" ng-show="enterConfig">
+	<div class="row">
+		<div class="col-xs-12">
+		<h5 class="green bold" data-i18n="_limes-config_"></h5>
+		</div>
+	</div>
+	<br>
+	<div class="row">
+	<div class="col-xs-6">
+		<h5 class="green bold" data-i18n="_source-data_"></h5>
+	</div>
+	<div class="col-xs-6">
+		<h5 class="green bold" data-i18n="_target-data_"></h5>
+	</div>
+	</div>
+	<br>
+	<div class="row">
+		<div class="col-xs-2">
+	    <label for="SourceServiceURI" data-i18n="_endpoint-url_"></label>
+	    </div>
+	    <div class="col-xs-4">
+	    <!-- <input class="form-control input-sm" id="SourceServiceURI" ng-model="limes.SourceServiceURI"></input> -->
+	   	 <select id="SourceServiceURI" class="form-control" ng-model="limes.SourceServiceURI" ng-options="c.endpoint as c.label for c in endpoints" required>
+		   </select>
+	   </div>
+	    <div class="col-xs-2">
+	    <label for="TargetServiceURI" data-i18n="_endpoint-url_"></label>
+	    </div>
+	    <div class="col-xs-4">
+	    <!-- <input class="form-control input-sm" id="TargetServiceURI" ng-model="limes.TargetServiceURI"></input> -->
+	    <select id="TargetServiceURI" class="form-control" ng-model="limes.TargetServiceURI" ng-options="c.endpoint as c.label for c in endpoints" required>
+		   </select>
+	    </div>
+	</div>
+	<br>
+	<div class="row">
+		<div class="col-xs-2">
+	    <label for="SourceServiceURI" data-i18n="_graph_"></label>
+	    </div>
+	    <div class="col-xs-4">
+	   	 <select id="SourceGraph" class="form-control" ng-model="limes.SourceGraph" ng-options="namedgraph.name as namedgraph.name for namedgraph in namedGraphs" required>
+		   </select>
+	   </div>
+	    <div class="col-xs-2">
+	    <label for="TargetGraph" data-i18n="_graph_"></label>
+	    </div>
+	    <div class="col-xs-4">
+	    <select id="TargetGraph" class="form-control" ng-model="limes.TargetGraph" ng-options="namedgraph.name as namedgraph.name for namedgraph in namedGraphs" required>
+		   </select>
+	    </div>
+	</div>
+	<br>
+	<!-- 
+	<div class="row">
+		<div class="col-xs-2">
+	    <label for="SourceGraph">Graph</label>
+	    </div>
+	    <div class="col-xs-4">
+	    <input class="form-control input-sm" id="SourceGraph" ng-model="SourceGraph"></input>
+	    </div>
+	    <div class="col-xs-2">
+	    <label for="TargetGraph">Graph</label>
+	    </div>
+	    <div class="col-xs-4">
+	    <input class="form-control input-sm" id="TargetGraph" ng-model="TargetGraph"></input>
+	    </div>
+	</div>
+	<br>
+	 -->
+	<div class="row">
+		<div class="col-xs-2">
+	    <label for="SourceVar" data-i18n="_variable_"></label>
+	    </div>
+	    <div class="col-xs-4">
+	    <input class="form-control input-sm" id="SourceVar" ng-model="limes.SourceVar"/>
+	    </div>
+	    <div class="col-xs-2">
+	    <label for="TargetVar" data-i18n="_variable_"></label>
+	    </div>
+	    <div class="col-xs-4">
+	    <input class="form-control input-sm" id="TargetVar" ng-model="limes.TargetVar"/>
+	    </div>
+	</div>
+	<br>
+	<div class="row">
+		<div class="col-xs-2">
+	    <label for="SourceSize" data-i18n="_pagesize_"></label>
+	    </div>
+	    <div class="col-xs-4">
+	    <input class="form-control input-sm" id="SourceSize" ng-model="limes.SourceSize"/>
+	    </div>
+	    <div class="col-xs-2">
+	    <label for="TargetSize" data-i18n="_pagesize_"></label>
+	    </div>
+	    <div class="col-xs-4">
+	    <input class="form-control input-sm" id="TargetSize" ng-model="limes.TargetSize"/>
+	    </div>
+	</div>
+	<br>
+	<div class="row">
+		<div class="col-xs-2">
+	    <label for="SourceRestr" data-i18n="_restriction_"></label>
+	    </div>
+	    <div class="col-xs-4">
+	    <textarea class="form-control input-sm" id="SourceRestr" ng-model="limes.SourceRestr"></textarea>
+	    </div>
+	    <div class="col-xs-2">
+	    <label for="TargetRestr" data-i18n="_restriction_"></label>
+	    </div>
+	    <div class="col-xs-4">
+	    <textarea class="form-control input-sm" id="TargetRestr" ng-model="limes.TargetRestr"></textarea>
+	    </div>
+	</div>
+	<br>
+	<div class="row below" ng-repeat="prop in props[0].inputs">
+		<div class="col-xs-2">
+	    <label data-i18n="_property_"></label>
+	    </div>
+		<div class="col-xs-4">
+		<input class="form-control input-sm" id="SourceProp{{prop.idx}}" value="{{prop.source}}"/>
+		</div>
+		<div class="col-xs-2">
+	    <label data-i18n="_property_"></label>
+	    </div>
+		<div class="col-xs-4">
+		<input class="form-control input-sm" id="TargetProp{{prop.idx}}" value="{{prop.target}}"/>
+		</select>
+		</div>
+	</div>
+	<div class="row below">
+		<div class="col-xs-4">
+		</div>
+		<div class="col-xs-4">
+		</div>
+			<div class="col-xs-2">
+			<a class="btn btn-sm btn-success btn-block" ng-click="appendInput()" data-i18n="_add-properties_"></a>
+			</div>
+		    <div class="col-xs-2">
+			<a class="btn btn-sm btn-success btn-block" ng-click="removeInput()" ng-show="deleteProp" data-i18n="_delete_"></a>
+			</div>
+	</div>
+	<!-- 
+	<br>
+	<div class="row">
+		<div class="col-xs-2">
+	    <label for="SourceProp1">Property</label>
+	    </div>
+	    <div class="col-xs-4">
+	    <input class="form-control input-sm" id="SourceProp" ng-model="limes.SourceProp1"></input>
+	    </div>
+	    <div class="col-xs-2">
+	    <label for="TargetProp1">Property</label>
+	    </div>
+	    <div class="col-xs-4">
+	    <input class="form-control input-sm" id="TargetProp" ng-model="limes.TargetProp1"></input>
+	    </div>
+	</div>
+	<br>
+	<div class="row">
+		<div class="col-xs-2">
+	    <label for="SourceProp2">Property</label>
+	    </div>
+	    <div class="col-xs-4">
+	    <input class="form-control input-sm" id="SourceProp" ng-model="limes.SourceProp2"></input>
+	    </div>
+	    <div class="col-xs-2">
+	    <label for="TargetProp2">Property</label>
+	    </div>
+	    <div class="col-xs-4">
+	    <input class="form-control input-sm" id="TargetProp" ng-model="limes.TargetProp2"></input>
+	    </div>
+	</div>
+	
+	<br>
+	<div class="row">
+		<div class="col-xs-2">
+	    <label for="SourceType">Type</label>
+	    </div>
+	    <div class="col-xs-4">
+	    <input class="form-control input-sm" id="SourceType" ng-model="limes.SourceType"></input>
+	    </div>
+	    <div class="col-xs-2">
+	    <label for="TargetType">Type</label>
+	    </div>
+	    <div class="col-xs-4">
+	    <input class="form-control input-sm" id="TargetType" ng-model="limes.TargetType"></input>
+	    </div>
+	</div>
+	-->
+	<br>
+	<div class="row">
+		<div class="col-xs-2">
+	    <label data-i18n="_metric_"></label>
+	    </div>
+	    <div class="col-xs-10">
+	    <input class="form-control input-sm" ng-model="limes.Metric"/>
+	    </div>
+	</div>
+	<br>
+	<div class="row">
+		<div class="col-xs-2">
+	    <label data-i18n="_output-format_"></label>
+	    </div>
+	    <div class="col-xs-10">
+	    <select class="form-control input-sm" ng-model="limes.OutputFormat"
+	    ng-options="option for option in options.output"></select>
+	    </div>
+	</div>
+	<br>
+	<div class="row">
+		<div class="col-xs-2">
+	    <label data-i18n="_execution_"></label>
+	    </div>
+	    <div class="col-xs-10">
+	    <select class="form-control input-sm" ng-model="limes.ExecType"
+	    ng-options="option for option in options.execType"></select>
+	    </div>
+	</div>
+	<br>
+	<div class="row">
+		<div class="col-xs-2">
+	    <label data-i18n="_granularity_"></label>
+	    </div>
+	    <div class="col-xs-10">
+	    <select class="form-control input-sm" ng-model="limes.Granularity"
+	    ng-options="option for option in options.granularity"></select>
+	    </div>
+	</div>
+	<br>
+	<div class="row">
+	<div class="col-xs-6">
+		<h5 class="green bold" data-i18n="_acceptance-settings_"></h5>
+	</div>
+	<div class="col-xs-6">
+		<h5 class="green bold"></h5>
+	</div>
+	</div>
+	<br>
+	<div class="row">
+		<div class="col-xs-2">
+	    <label for="AcceptThresh" data-i18n="_threshold_"></label>
+	    </div>
+	    <div class="col-xs-4">
+	    <input class="form-control input-sm" id="AcceptThresh" ng-model="limes.AcceptThresh"/>
+	    </div>
+	    <div class="col-xs-2">
+	    <label for="ReviewThresh" data-i18n="_threshold_"></label>
+	    </div>
+	    <div class="col-xs-4">
+	    <input class="form-control input-sm" id="ReviewThresh" ng-model="limes.ReviewThresh"/>
+	    </div>
+	</div>
+	<br>
+	<div class="row">
+		<div class="col-xs-2">
+	    <label for="AcceptRelation" data-i18n="_relation_"></label>
+	    </div>
+	    <div class="col-xs-4">
+	    <input class="form-control input-sm" id="AcceptRelation" ng-model="limes.AcceptRelation"/>
+	    </div>
+	    <div class="col-xs-2">
+	    <label for="ReviewRelation" data-i18n="_relation_"></label>
+	    </div>
+	    <div class="col-xs-4">
+	    <input class="form-control input-sm" id="ReviewRelation" ng-model="limes.ReviewRelation"/>
+	    </div>
+	</div>
+	<br>
+	</div>
+	<div class="row">
+		<div class="col-xs-2"></div>
+		<div class="col-xs-2">
+		  <a class="btn btn-sm btn-success btn-block" id="startLimes" ng-show="startLimes" ng-click="LaunchLimes()" data-i18n="_limes-start_"></a>
+		</div>
+	</div>
+</form>
+	
+</div>

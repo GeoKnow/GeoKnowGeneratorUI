@@ -1,0 +1,162 @@
+@prefix :        <http://ldiw.ontos.com/resource/> .
+@prefix d2rq:    <http://www.wiwiss.fu-berlin.de/suhl/bizer/D2RQ/0.1#> .
+@prefix dcmit:   <http://purl.org/dc/dcmitype/> .
+@prefix dcterms:  <http://purl.org/dc/terms/> .
+@prefix lds:     <http://stack.linkeddata.org/ldis-schema/> .
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix schema:  <http://schema.org/> .
+@prefix sd:      <http://www.w3.org/ns/sparql-service-description#> .
+@prefix void:    <http://rdfs.org/ns/void#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix foaf:    <http://xmlns.com/foaf/0.1/> .
+@prefix gkg:     <http://ldiw.ontos.com/ontology/> .
+@prefix acl:     <http://www.w3.org/ns/auth/acl#> .
+
+########### ABOUT THIS FILE #############################################################
+# This file contains the default set-up of components in the framework; 
+# this file is to be loaded initially on the settigns Graph of the default user, 
+# and for each new user.
+# NOTE: avoid using blank nodes may cause problems loading the file:
+#    - https://www.mail-archive.com/virtuoso-users@lists.sourceforge.net/msg05138.html
+# #######################################################################################
+
+:GeoKnowGeneratorService a sd:Service;
+    sd:endpoint <http://localhost:8890/sparql>;
+    sd:supportedLanguage sd:SPARQL11Query ;
+    sd:defaultDataset :default-dataset;
+    .
+
+:default-dataset a sd:Dataset;
+    rdfs:label "GeoKnow Generator";
+    dcterms:description "The GeoKnow Generator Service"^^xsd:string;
+    sd:defaultGraph <http://localhost:8890/DAV>;
+    sd:namedGraph :settingsGraph;
+    .
+<http://localhost:8890/DAV> a sd:Graph, void:Dataset;
+    rdfs:label "Default Graph";
+    dcterms:description "Default graph"^^xsd:string;
+    .
+
+########### COMPONENT DESCRIPTION #######################################################
+# Following triples  describes the configured components in the framework
+# #######################################################################################
+
+:GeoKnowGenerator
+  a       lds:StackComponent ;
+  rdfs:comment "This resource contains all the configuration required by the application"^^xsd:string ;
+  rdfs:label "GeoKnowGeneator"^^xsd:string ;
+  dcterms:hasVersion "2.0"^^xsd:string ;
+  gkg:publicEndpoint :VirtuosoEndpoint ;
+  gkg:authEndpoint :VirtuosoAuthSPARQLEndpoint ;
+  lds:integrates :Virtuoso, :Facete, :Limes, :Sparqlify, :TripleGeo, :GeoLift, :OntoWiki, :Mappify ;
+  foaf:homepage <http://localhost:8080/generator> .
+
+:Virtuoso
+  a       lds:StackComponent ;
+  rdfs:label "Service URL"^^xsd:string ;
+  dcterms:hasVersion "7.0"^^xsd:string ;
+  lds:providesService :VirtuosoConductor, :VirtuosoAutSPARQLEndpoint, :VirtuosoEndpoint;
+  foaf:homepage <http://virtuoso.openlinksw.com/> .
+
+:VirtuosoConductor 
+  a  lds:StorageService  ;
+  lds:serviceUrl <http://localhost:8890/conductor> .
+
+:VirtuosoAuthSPARQLEndpoint
+  a       lds:SecuredSPARQLEndPointService ;
+  lds:serviceUrl <http://localhost:8890/sparql-auth> .
+
+:VirtuosoEndpoint
+  a       lds:SPARQLEndPointService ;
+  lds:serviceUrl <http://localhost:8890/sparql> .
+
+:Sparqlify
+      a       lds:StackComponent ;
+      rdfs:label "Sparqlify"^^xsd:string ;
+      lds:providesService :SparqlifyService ;
+      lds:version "0.1-SNAPSHOT"^^xsd:string ;
+      foaf:homepage <http://aksw.org/Projects/Sparqlify.html> .
+
+:SparqlifyService
+      a       lds:ExplorationService ;
+      lds:serviceUrl <http://144.76.166.111:8080/sparqlify/> .
+
+:Facete
+      a       lds:StackComponent ;
+      rdfs:label "Facete"^^xsd:string ;
+      lds:providesService :FaceteService ;
+      lds:version "0.1-SNAPSHOT"^^xsd:string ;
+      foaf:homepage <http://aksw.org/Projects/Facete.html> .
+:FaceteService 
+      a       lds:ExplorationService ;
+      lds:serviceUrl <http://cstadler.aksw.org/facete2/> .
+
+:Limes
+      a       lds:StackComponent ;
+      rdfs:label "Limes Linking Service"^^xsd:string ;
+      lds:providesService :LimesService;
+      lds:version "0.6.4"^^xsd:string ;
+      foaf:homepage <http://aksw.org/Projects/LIMES.html> .
+:LimesService
+      a       lds:InterlinkingService ;
+      lds:serviceUrl <http://localhost:8080/Limes-Service> .
+
+:TripleGeo
+      a       lds:StackComponent ;
+      rdfs:label "TripleGeo"^^xsd:string ;
+      lds:providesService :TripleGeoService ;
+      lds:version "1.0"^^xsd:string ;
+      foaf:homepage <https://web.imis.athena-innovation.gr/redmine/projects/geoknow_public/wiki/TripleGeo> .
+:TripleGeoService 
+      a       lds:ExtractionService ;
+      lds:serviceUrl <http://localhost:8080/TripleGeo-Service> .
+
+:GeoLift
+      a       lds:StackComponent ;
+      rdfs:label "GeoLift"^^xsd:string ;
+      lds:providesService :GeoLiftService ;
+      lds:version "0.6.4"^^xsd:string ;
+      foaf:homepage <https://github.com/AKSW/GeoLift> .
+:GeoLiftService
+      a       lds:EnrichmentService ;
+      lds:serviceUrl <http://localhost:8080/GeoLift-Service> .
+
+:OntoWiki
+      a       lds:StackComponent ;
+      rdfs:label "OntoWiki"^^xsd:string ;
+      lds:providesService :OntoWikiService ;
+      lds:version "0.9.10-1"^^xsd:string ;
+      foaf:homepage <http://aksw.org/Projects/OntoWiki.html> .
+:OntoWikiService 
+      a       lds:AuthoringService ;
+      lds:serviceUrl <http://144.76.166.111/ontowiki> .
+
+:Mappify
+      a       lds:StackComponent ;
+      rdfs:label "Mappify"^^xsd:string ;
+      lds:providesService :MappifyService ;
+      lds:version "0.9.10-1"^^xsd:string ;
+      foaf:homepage <https://github.com/GeoKnow/Mappify> .
+:MappifyService
+      a       lds:ExplorationService ;
+      lds:serviceUrl <http://cstadler.aksw.org/mappify2/> .
+
+:D2RQ
+      a       lds:StackComponent ;
+      rdfs:label "D2RQ"^^xsd:string ;
+      lds:providesService :D2RQService ;
+      lds:version "0.1-SNAPSHOT"^^xsd:string .
+:D2RQService
+      a       lds:ExtractionService ;
+      lds:serviceUrl <http://localhost:8080/d2rq-mapper-web-service/api> .
+
+:MiniDix
+      a       lds:StackComponent ;
+      rdfs:label "MiniDix"^^xsd:string ;
+      lds:providesService :MiniDixService ;
+      lds:version "0.1-SNAPSHOT"^^xsd:string .
+:MiniDixService
+      a       lds:AuthoringService ;
+      lds:serviceUrl <http://localhost:8080/minidix-web> .
