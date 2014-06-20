@@ -132,4 +132,3 @@
     dcterms:created "2014-04-12"^^xsd:date;
     void:sparqlEndpoint <http://10.0.0.63:8890/sparql> ]
   .
-
