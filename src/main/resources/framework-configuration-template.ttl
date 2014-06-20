@@ -29,7 +29,7 @@
   lds:password "***REMOVED***""^^xsd:string ;         # an admin user for the webapp NOT IMPLEMENTED YET
   lds:user   "***REMOVED***""^^xsd:string ;
   gkg:publicEndpoint :VirtuosoEndpoint ;
-  gkg:authEndpoint :VirtuosoAutSPARQLEndpoint ;
+  gkg:authEndpoint :VirtuosoAuthSPARQLEndpoint ;
   lds:integrates :Virtuoso ;
   foaf:homepage <http://localhost:8080/generator> .
 
@@ -37,7 +37,7 @@
   a       lds:StackComponent ;
   rdfs:label "Service URL"^^xsd:string ;
   dcterms:hasVersion "7.0"^^xsd:string ;
-  lds:providesService :VirtuosoConductor , :VirtuosoAutSPARQLEndpoint, :VirtuosoEndpoint;
+  lds:providesService :VirtuosoConductor , :VirtuosoAuthSPARQLEndpoint, :VirtuosoEndpoint;
   foaf:homepage <http://virtuoso.openlinksw.com/> .
 
 :VirtuosoConductor 
@@ -47,7 +47,7 @@
   lds:connectionString "jdbc:virtuoso://***REMOVED***:1111/"^^xsd:string;
   lds:user   "***REMOVED***""^^xsd:string . 
 
-:VirtuosoAutSPARQLEndpoint
+:VirtuosoAuthSPARQLEndpoint
   a       lds:SecuredSPARQLEndPointService ;
   lds:password "***REMOVED***"^^xsd:string ;
   lds:serviceUrl <http://***REMOVED***:8890/sparql-auth> ;
