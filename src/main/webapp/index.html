@@ -28,7 +28,7 @@
     <link rel="apple-touch-icon-precomposed" sizes="114x114" href="img/ico/apple-touch-icon-114-precomposed.png"/>
     <link rel="apple-touch-icon-precomposed" sizes="72x72" href="img/ico/apple-touch-icon-72-precomposed.png"/>
     <link rel="apple-touch-icon-precomposed" href="img/ico/apple-touch-icon-57-precomposed.png"/>
- -->  
+ -->
   </head>
 
   <body ng-cloak ng-app="app" ng-controller="LoginCtrl">
@@ -39,7 +39,7 @@
         <span class="alert-message">{{flash.message}}</span>
       </div>
       </div>
-      
+
 	<div class="navbar navbar-static-top">
 	<div class="col-xs-2">
 	</div>
@@ -54,7 +54,7 @@
 	                        <li ng-if="isUserAuthenticated()" ng-class="getClass('/account')">
                             <a href="#/account" data-i18n="_account_"><div class="glyphicon glyphicon-user"></div></a></li>
 	                        </ul>
-	                        
+
 	                        <ul class="nav navbar-nav navbar-right">
                             <li>
                             <div ng-if="isUserAuthenticated()">
@@ -85,7 +85,7 @@
                 <h5 class="modal-title green bold" data-i18n="_login_"></h5>
             </div>
             <div class="modal-body">
-            
+
 										<div class="form-group">
                                             <label class="sr-only" for="login" data-i18n="_username-email_"></label>
                                             <input type="text" class="form-control col-xs-3 input-sm" id="login" data-i18n-attr="_username-email_|placeholder" ng-model="login.username" autofillable required>
@@ -101,7 +101,7 @@
                                             <span ng-show="loginForm.password.$error.required" data-i18n="_password-missed-message_"></span>
                                         </div>
              </div>
-             
+
              <div class="modal-footer">
                 <button type="submit" class="btn-sm btn-primary" ng-click="login();" ng-disabled="loginForm.$invalid" data-i18n="_sign-in_"></button>
                 <button type="button" class="btn-sm btn-default" ng-click="close('#modalLogin')" data-i18n="_cancel_"></button>
@@ -137,9 +137,9 @@
                             <span ng-show="signUpForm.email.$error.required" data-i18n="_email-missed-message_"></span>
                             <span ng-show="signUpForm.email.$error.email" data-i18n="_malformed-email-message_"></span>
                         </div>
-                    </div>    
+                    </div>
                 </div>
-             </div>             
+             </div>
              <div class="modal-footer">
                 <button type="submit" class="btn-sm btn-primary" ng-click="createAccount();" ng-disabled="signUpForm.$invalid" data-i18n="_register_"></button>
                 <button type="button" class="btn-sm btn-default" ng-click="close('#modalSignUp')" data-i18n="_cancel_"></button>
@@ -180,20 +180,20 @@
     <div id="contents" app-view-segment="0"></div>
 
 
-    
+
   <!-- THIS IS REPLACED BY THE LINE ABOVE TO USE SEGMENTS <div id="workspace" ng-view></div> -->
 
     <!--  <div id="editor" ace-editor></div>-->
-    <!--  <alert id="error"></alert> -->  
+    <!--  <alert id="error"></alert> -->
 
     <!-- Le javascript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
     <!-- <script src="lib/jquery/jquery-1.7.2.min.js"></script> -->
-    
+
     <script src="lib/jquery/jquery-1.9.1.js"></script>
     <script src="lib/jquery/jquery-ui-1.10.1.custom.min.js"></script>
-     
+
     <script src="lib/bootstrap/bootstrap.js"></script>
     <script src="lib/angularjs/angular.js"></script>
     <script src="lib/angularjs/angular-cookies.js"></script>
@@ -212,6 +212,7 @@
     <script src="js/services/ontology-service.js"></script>
     <script src="js/services/d2rq-service.js"></script>
     <script src="js/services/documents-service.js"></script>
+    <script src="js/services/users-service.js"></script>
     <!-- controllers for the different modules/pages -->
     <script src="js/controllers.js"></script>
     <script src="js/login-controller.js"></script>
@@ -238,6 +239,8 @@
     <script src="js/settings/namespaces/namespaces-controller.js"></script>
     <script src="js/settings/components/components-controller.js"></script>
     <script src="js/account/account-controller.js"></script>
+    <script src="js/admin/users/users-controller.js"></script>
+    <script src="js/admin/roles-controller.js"></script>
 
     <!-- directives -->
     <script src="js/directives.js"></script>

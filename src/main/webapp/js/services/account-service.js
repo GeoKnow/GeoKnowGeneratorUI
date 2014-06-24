@@ -6,7 +6,7 @@ module.factory("AccountService", function ($cookieStore) {
     var username = null;
     var accountURI = null;
     var email = null;
-    var admin = false;
+    var role = null;
 
     var getUsername = function () {
         return username;
@@ -32,11 +32,19 @@ module.factory("AccountService", function ($cookieStore) {
         email = mail;
     };
 
+    var getRole = function() {
+        return role;
+    };
+
+    var setRole = function(r) {
+        role = r;
+    };
+
     var clear = function () {
         setUsername(null);
         setAccountURI(null);
         setEmail(null);
-        setAdmin(false);
+        setRole(null);
     };
 
     var isLogged = function () {
@@ -54,12 +62,9 @@ module.factory("AccountService", function ($cookieStore) {
         };
     };
 
-    var setAdmin = function (adm) {
-        admin = adm;
-    };
-
     var isAdmin = function () {
-        return admin;
+        var adminRoleFragment = "Administrator";
+        return role && role.indexOf(adminRoleFragment) == role.length-adminRoleFragment.length;
     };
 
     return {
@@ -73,6 +78,7 @@ module.factory("AccountService", function ($cookieStore) {
         isLogged: isLogged,
         getAccount: getAccount,
         isAdmin: isAdmin,
-        setAdmin: setAdmin
+        getRole: getRole,
+        setRole: setRole
     };
 });

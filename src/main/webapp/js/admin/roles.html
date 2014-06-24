@@ -1,0 +1,104 @@
+<h3 class="green bold" data-i18n="_roles-management_"></h3>
+
+<div ng-controller="UserRolesCtrl">
+    <button type="button" class="btn btn-primary btn-large" data-toggle="modal" data-target="#modalRole" ng-click="new();" data-i18n="_add-role_"></button>
+
+    <h4>
+        <span class="btn-group">
+            <button type="button" class="btn btn-link reset" ng-click="refreshRoles()">
+                <i class="glyphicon glyphicon-refresh" aria-hidden="true"></i>
+            </button>
+        </span>
+        {{'_roles_' | i18n}}
+    </h4>
+    <div class="table-fixed-outer">
+        <div class="table-fixed-inner">
+            <table class="table table-fixed">
+                <tr>
+                    <td class="col-header"></td>
+                    <th ng-repeat="role in roles">{{role.name}}</th>
+                </tr>
+                <tr ng-repeat="s in services">
+                    <th class="col-header">{{s.uri}}</th>
+                    <td ng-repeat="role in roles">
+                        <input type="checkbox" ng-disabled="roleUnchangeable(role)" ng-checked="serviceAllowed(s, role)" ng-click="toggleService(s, role)"/>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <button type="button" class="btn btn-primary btn-large" ng-click="saveRoles();" ng-disabled="!isRolesChanged() || savingRoles" data-i18n="_save-changes_"></button>
+    <button type="button" class="btn btn-primary btn-large" ng-click="revertRoles();" ng-disabled="!isRolesChanged() || savingRoles" data-i18n="_revert-changes_"></button>
+    <span ng-show="savingRoles" data-i18n="_saving_"></span>
+
+    <br/>
+
+    <h4>
+        <span class="btn-group">
+            <button type="button" class="btn btn-link reset" ng-click="refreshUsers()">
+                <i class="glyphicon glyphicon-refresh" aria-hidden="true"></i>
+            </button>
+        </span>
+        {{'_users_' | i18n}}
+    </h4>
+    <div class="table-fixed-outer">
+        <div class="table-fixed-inner">
+            <table class="table table-fixed">
+                <tr>
+                    <td class="col-header"></td>
+                    <th ng-repeat="role in roles">{{role.name}}</th>
+                </tr>
+                <tr ng-repeat="user in users">
+                    <th class="col-header">{{user.profile.username}}</th>
+                    <td ng-repeat="role in roles">
+                        <input type="checkbox" ng-checked="hasRole(user, role)" ng-click="toggleRole(user, role)"/>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <button type="button" class="btn btn-primary btn-large" ng-click="saveUsers();" ng-disabled="!isUsersChanged() || savingUsers" data-i18n="_save-changes_"></button>
+    <button type="button" class="btn btn-primary btn-large" ng-click="revertUsers();" ng-disabled="!isUsersChanged() || savingUsers" data-i18n="_revert-changes_"></button>
+    <span ng-show="savingUsers" data-i18n="_saving_"></span>
+
+
+    <div class="modal fade" id="modalRole">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form name="roleForm" class="form-horizontal InputForm" role="form" novalidate>
+                    <div class="modal-header">
+                        <button type="button" class="close" ng-click="close('#modalRole')" aria-hidden="true">&times;</button>
+                        <h5 class="modal-title green bold" data-i18n="_new-role-title_"></h5>
+                    </div>
+
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label" data-i18n="_identifier_"></label>
+                            <div class="col-lg-10">
+                                <input type="text" class="form-control" id="id" name="id" ng-model="newRole.id" required regex-validate="identifier"/>
+                                <div class="error" ng-show="roleForm.id.$dirty && roleForm.id.$invalid">{{'_invalid-field-message_' | i18n}}:
+                                    <span ng-show="roleForm.id.$error.required || roleForm.id.$error.regexValidate" data-i18n="_malformed-letters-number-id-message_"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="name" class="col-lg-2 control-label" data-i18n="_name_"></label>
+                            <div class="col-lg-10">
+                                <input type="text" class="form-control" id="name" name="name" ng-model="newRole.name" required />
+                                <div class="error" ng-show="roleForm.name.$dirty && roleForm.name.$invalid">{{'_invalid-field-message_' | i18n}}:
+                                    <span ng-show="roleForm.name.$error.required" data-i18n="_name-missed-message_"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn-sm btn-primary" ng-click="createRole();" ng-disabled="roleForm.$invalid || roleCreating" data-i18n="_add_"></button>
+                        <button type="button" class="btn-sm btn-default" ng-click="close('#modalRole')" ng-disabled="roleCreating" data-i18n="_cancel_"></button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

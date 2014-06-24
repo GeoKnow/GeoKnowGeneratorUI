@@ -31,7 +31,6 @@ public class FrameworkConfiguration {
   private String emailUsername = "";
   private String emailPassword = "";
 
-  private String accountsOntologyNS = "";
   private String resourceNS = "";
   private String frameworkOntologyNS = "";
 
@@ -72,13 +71,12 @@ public class FrameworkConfiguration {
       String datasetsFile = "framework-datasets.ttl";
       String componentsFile = "framework-components.ttl";
       String ontologyFile = "framework-ontology.ttl";
-      String accountsOntologyFile = "framework-accounts-ontology.ttl";
+      String accountsOntologyFile = "framework-ontology.ttl";
 
       // initialize parameters from context
       String frameworkUri = context.getInitParameter("framework-uri");
 
       instance.setFrameworkOntologyNS(context.getInitParameter("framework-ontology-ns"));
-      instance.setAccountsOntologyNamespace(context.getInitParameter("accounts-ns"));
       instance.setResourceNamespace(context.getInitParameter("framework-ns"));
 
       instance.setSmtpHost(context.getInitParameter("smtp-host"));
@@ -288,6 +286,36 @@ public class FrameworkConfiguration {
         os.close();
         frameworkRdfStoreManager.execute(queryString, null);
       }
+
+        //create users from framework configuration
+        query = "PREFIX gkg: <http://ldiw.ontos.com/acc/ontology/> PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> "
+                + " PREFIX foaf: <http://xmlns.com/foaf/0.1/> PREFIX lds: <http://stack.linkeddata.org/ldis-schema/> "
+                + " SELECT ?accountName ?password ?mailto ?role WHERE { ?account rdf:type gkg:Account . ?account foaf:accountName ?accountName . "
+                + " ?account lds:password ?password . ?account foaf:mbox ?mailto . ?account gkg:Role ?role . } ";
+        qexec = QueryExecutionFactory.create(query, configurationModel);
+        results = qexec.execSelect();
+        FrameworkUserManager frameworkUserManager = instance.getFrameworkUserManager();
+        while (results.hasNext()) {
+            QuerySolution soln = results.next();
+            String accountName = soln.get("accountName").asLiteral().getString();
+            String password = soln.get("password").asLiteral().getString();
+            String email = soln.get("mailto").toString().substring("mailto:".length());
+            String role = soln.get("role").toString();
+            if (reset) {
+                try {
+                    frameworkUserManager.dropUser(accountName);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            try {
+                frameworkUserManager.createUser(accountName, password, email);
+                frameworkUserManager.setRole(accountName, role);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        qexec.close();
     }
 
     return instance;
@@ -413,14 +441,6 @@ public class FrameworkConfiguration {
   // public void setAccountsNamespace(String accountsNamespace) {
   // this.accountsNamespace = accountsNamespace;
   // }
-
-  public String getAccountsOntologyNamespace() {
-    return accountsOntologyNS;
-  }
-
-  public void setAccountsOntologyNamespace(String accountsNamespace) {
-    this.accountsOntologyNS = accountsNamespace;
-  }
 
   public String getAccountsGraph() {
     return accountsGraph;

@@ -8,8 +8,9 @@ function SettingsMenuCtrl($scope, AccountService) {
   	{ name: "_datasets_", route:'#/settings/datasets', url:'/settings/datasets', admin: false },
     // { name: "_namespaces-title_", route:'#/settings/namespaces', url:'/settings/namespaces' },
   	{ name: "_components_", route:'#/settings/components', url:'/settings/components', admin: false },
+    { name: "_thesaurus-management_", route:'#/settings/ontology', url:'/settings/ontology', admin: false },
     { name: "_users_", route:'#/settings/users', url:'/settings/users', admin: true },
-    { name: "_thesaurus-management_", route:'#/settings/ontology', url:'/settings/ontology', admin: false }
+    { name: "_roles-management_", route:'#/settings/roles', url:'/settings/roles', admin: true }
   ];
 
   $scope.showAdmin = AccountService.isAdmin();

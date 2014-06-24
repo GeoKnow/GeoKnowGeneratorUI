@@ -23,7 +23,7 @@ module.factory("LoginService", function ($http, $location, $cookieStore, Account
             AccountService.setUsername(response.data.username);
             AccountService.setAccountURI(response.data.accountURI.replace(ConfigurationService.getUriBase(), ':'));
             AccountService.setEmail(response.data.email);
-            AccountService.setAdmin(response.data.admin);
+            AccountService.setRole(response.data.role);
             ConfigurationService.setSettingsGraph(response.data.settingsGraph);
 
             var encodedUser = Base64.encode(username);

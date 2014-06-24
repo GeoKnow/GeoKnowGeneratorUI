@@ -133,3 +133,11 @@
     void:sparqlEndpoint <http://10.0.0.63:8890/sparql> ]
   .
 
+:admin
+  a gkg:Account;
+  foaf:accountName "***REMOVED***"^^xsd:string;
+  lds:password "***REMOVED***"^^xsd:string;
+  foaf:mbox <mailto:***REMOVED***>;
+  gkg:Role gkg:Administrator.
+
+

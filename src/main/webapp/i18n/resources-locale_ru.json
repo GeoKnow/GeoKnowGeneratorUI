@@ -276,6 +276,11 @@
         "value":"Импорт ...",
         "description":"importing in progress message"
     },
+    {
+        "key":"_saving_",
+        "value":"Сохранение ...",
+        "description":"saving in progress message"
+    },
 
 
     {
@@ -682,6 +687,11 @@
         "value":"Онтология",
         "description":""
     },
+    {
+        "key":"_roles_",
+        "value":"Роли",
+        "description":""
+    },
 
 
     {
@@ -707,6 +717,11 @@
     {
         "key":"_save-changes_",
         "value":"Сохранить изменения",
+        "description":""
+    },
+    {
+        "key":"_revert-changes_",
+        "value":"Отменить изменения",
         "description":""
     },
     {
@@ -848,7 +863,7 @@
     },
     {
         "key":"_add-user_",
-        "value":"Добавит нового пользователя",
+        "value":"Добавить нового пользователя",
         "description":"button on users management page"
     },
     {
@@ -875,6 +890,18 @@
         "key":"_user-writable-graphs_",
         "value":"Графы, доступные для записи",
         "description":"field in user manager"
+    },
+
+
+    {
+        "key":"_roles-management_",
+        "value":"Управление ролями",
+        "description":"roles management page title"
+    },
+    {
+        "key":"_add-role_",
+        "value":"Добавить новую роль",
+        "description":"button on roles page"
     },
     
     
@@ -920,12 +947,17 @@
     },
     {
         "key":"_new-user-title_",
-        "value":"Новы йпользователь",
+        "value":"Новый пользователь",
         "description":"dialog title"
     },
     {
         "key":"_edit-user-title_",
         "value":"Редактировать пользователя",
+        "description":"dialog title"
+    },
+    {
+        "key":"_new-role-title_",
+        "value":"Новая роль",
         "description":"dialog title"
     },
 

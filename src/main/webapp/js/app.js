@@ -11,6 +11,7 @@ var app = angular.module('app', ['ngRoute',
                                  'app.ontology-service',
                                  'app.d2rq-service',
                                  'app.documents-service',
+                                 'app.users-service',
                                  'app.directives', 
                                  'app.configuration',
                                  'ui.bootstrap',
@@ -43,6 +44,7 @@ app.config(function($routeSegmentProvider, $routeProvider)
         .when('/settings/namespaces', 'settings.namespaces')
         .when('/settings/components', 'settings.components')
         .when('/settings/users', 'settings.users')
+        .when('/settings/roles', 'settings.roles')
         .when('/settings/ontology', 'settings.ontology')
         .when('/home/extraction-and-loading/import-rdf', 'default.import-rdf')
         .when('/home/extraction-and-loading/sparqlify', 'default.sparqlify')
@@ -197,7 +199,21 @@ app.config(function($routeSegmentProvider, $routeProvider)
                 .segment('components', {
                     templateUrl: 'js/settings/components/components.html'})
                 .segment('users', {
-                    templateUrl: 'js/admin/users.html'})
+                    templateUrl: 'js/admin/users/users.html'})
+                .segment('roles', {
+                    templateUrl: 'js/admin/roles.html',
+                    resolve: {
+                            users: function(UsersService) {
+                                return UsersService.readUsers();
+                            },
+                            roles: function(UsersService) {
+                                return UsersService.readRoles();
+                            },
+                            settings: function (Config) {
+                                return Config.read();
+                            }
+                        }
+                    })
                 .segment('ontology', {
                     templateUrl: 'js/workbench/manual-revision-and-authoring/ontology.html',
                     resolve: {

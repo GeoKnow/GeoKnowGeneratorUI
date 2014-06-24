@@ -278,6 +278,11 @@
         "value":"Importing ...",
         "description":"importing in progress message"
     },
+    {
+        "key":"_saving_",
+        "value":"Saving ...",
+        "description":"saving in progress message"
+    },
 
 
     {
@@ -684,6 +689,11 @@
         "value":"Ontology",
         "description":""
     },
+    {
+        "key":"_roles_",
+        "value":"Roles",
+        "description":""
+    },
 
 
     {
@@ -709,6 +719,11 @@
     {
         "key":"_save-changes_",
         "value":"Save changes",
+        "description":""
+    },
+    {
+        "key":"_revert-changes_",
+        "value":"Revert changes",
         "description":""
     },
     {
@@ -878,6 +893,18 @@
         "value":"Writable graphs",
         "description":"field in user manager"
     },
+
+
+    {
+        "key":"_roles-management_",
+        "value":"Roles Management",
+        "description":"roles management page title"
+    },
+    {
+        "key":"_add-role_",
+        "value":"Add new role",
+        "description":"button on roles page"
+    },
     
     
     {
@@ -928,6 +955,11 @@
     {
         "key":"_edit-user-title_",
         "value":"Edit User",
+        "description":"dialog title"
+    },
+    {
+        "key":"_new-role-title_",
+        "value":"New Role",
         "description":"dialog title"
     },
 

@@ -278,17 +278,19 @@ module.factory('ConfigurationService', function (Config) {
             var results = [];
             for (var resource in elements) {
                 var element = elements[resource];
+                var res = resource;
 
                 // TODO: get a new version of config.js to provide also blanc nodes as URIS
                 // if element is an string is an URI, otherwise is a nested node (blanc)
                 if (typeof element == "string") {
+                    res = element;
                     element = settings[element];
                 }
 
                 if (typeof serviceType != "undefined" && element["rdf:type"].indexOf(serviceType) === -1)
                     continue; // not of the required type
 
-                results.push(this.elementToJson(resource, element));
+                results.push(this.elementToJson(res, element));
             }
             return results;
         },
@@ -302,6 +304,18 @@ module.factory('ConfigurationService', function (Config) {
             }
             return results;
         },
+
+        getAllServices: function() {
+            var results = [];
+            var components = this.getAllComponents();
+            for (var ind in components) {
+                var services = this.getComponentServices(components[ind].uri);
+                for (var sind in services) {
+                    results.push(services[sind]);
+                }
+            }
+            return results;
+        }
 
     };
     return SettingsService;
