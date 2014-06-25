@@ -33,6 +33,10 @@ module.factory('ConfigurationService', function (Config) {
             return Config.getNS();
         },
 
+        getFrameworkOntologyNS: function() {
+            return Config.getFrameworkOntologyNS();
+        },
+
         getSettingsGraph: function () {
             return Config.getGraph();
         },

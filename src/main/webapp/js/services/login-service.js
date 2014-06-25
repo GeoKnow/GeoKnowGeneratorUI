@@ -23,7 +23,16 @@ module.factory("LoginService", function ($http, $location, $cookieStore, Account
             AccountService.setUsername(response.data.username);
             AccountService.setAccountURI(response.data.accountURI.replace(ConfigurationService.getUriBase(), ':'));
             AccountService.setEmail(response.data.email);
-            AccountService.setRole(response.data.role);
+            var roleServices = [];
+            for (var ind in response.data.role.services) {
+                roleServices.push(response.data.role.services[ind].replace(ConfigurationService.getFrameworkOntologyNS(), "gkg:"));
+            }
+            var role = {
+                uri: response.data.role.uri.replace(ConfigurationService.getFrameworkOntologyNS(), "gkg:"),
+                name: response.data.role.name,
+                services: roleServices
+            };
+            AccountService.setRole(role);
             ConfigurationService.setSettingsGraph(response.data.settingsGraph);
 
             var encodedUser = Base64.encode(username);

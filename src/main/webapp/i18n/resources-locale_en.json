@@ -694,6 +694,11 @@
         "value":"Roles",
         "description":""
     },
+    {
+        "key":"_role_",
+        "value":"Role",
+        "description":""
+    },
 
 
     {
@@ -1139,6 +1144,11 @@
         "key":"_endpoint-missed-message_",
         "value":"Specify endpoint",
         "description":"shown in forms below required endpoint field when the value is not specified"
+    },
+    {
+        "key":"_role-missed-message_",
+        "value":"Specify role",
+        "description":"shown in forms below required role field when the value is not specified"
     },
 
 

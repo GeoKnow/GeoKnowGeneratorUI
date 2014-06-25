@@ -135,13 +135,14 @@ public class UserManagerServlet extends HttpServlet {
 
       // send email with login and password
 
+      EmailSender emailSender = null;
       try {
-        EmailSender emailSender = FrameworkConfiguration.getInstance(getServletContext(), false)
+        emailSender = FrameworkConfiguration.getInstance(getServletContext(), false)
             .getDefaultEmailSender();
         emailSender.send(email, "GeoKnow registration", "Your login: " + username + ", password: "
             + password);
       } catch (MessagingException e) {
-        throw new ServletException(e);
+        throw new ServletException("Failed to send email to " + email + " using " + emailSender, e);
       } catch (Exception e) {
         throw new ServletException(e);
       }

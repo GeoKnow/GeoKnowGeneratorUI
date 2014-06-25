@@ -15,7 +15,11 @@ module.factory("UsersService", function($http, Config, AccountService) {
             users = response.data;
             var ns = Config.getFrameworkOntologyNS();
             for (var ind in users) {
-                users[ind].profile.role = users[ind].profile.role.replace(ns, "gkg:");
+                users[ind].profile.accountURI = users[ind].profile.accountURI.replace(Config.getNS(), ":");
+                users[ind].profile.role.uri = users[ind].profile.role.uri.replace(ns, "gkg:");
+                for (var sind in users[ind].profile.role.services) {
+                    users[ind].profile.role.services[sind] = users[ind].profile.role.services[sind].replace(Config.getNS(), ":");
+                }
             }
             return users;
         });
@@ -64,15 +68,20 @@ module.factory("UsersService", function($http, Config, AccountService) {
     var getAllRoles = function() {
         var results = [];
         for (var resource in roles) {
-            var r = roles[resource];
-            var res = {
-                uri: resource,
-                name: r["foaf:name"][0],
-                services: r["gkg:isAllowedToUseService"] ? r["gkg:isAllowedToUseService"] : []
-            };
+            var res = getRole(resource);
             results.push(res);
         }
         return results;
+    };
+
+    var getRole = function(uri) {
+        var r = roles[uri];
+        var result = {
+            uri: uri,
+            name: r["foaf:name"][0],
+            services: r["gkg:isAllowedToUseService"] ? r["gkg:isAllowedToUseService"] : []
+        };
+        return result;
     };
 
     var reloadRoles = function() {
@@ -114,6 +123,21 @@ module.factory("UsersService", function($http, Config, AccountService) {
         return $http.post("RdfStoreProxy", $.param(requestData));
     };
 
+    var createUser = function(user) {
+	    var parameters = {
+	        mode: "create",
+	        user: JSON.stringify(user),
+	        curuser: AccountService.getUsername()
+        };
+        return $http({
+            url: "UserManagerServlet",
+            method: "POST",
+            dataType: "json",
+            params: parameters,
+            contentType: "application/json; charset=utf-8"
+            });
+    };
+
     return {
         readUsers           : readUsers,
         getAllUsers         : getAllUsers,
@@ -121,8 +145,10 @@ module.factory("UsersService", function($http, Config, AccountService) {
         setUserRole         : setUserRole,
         readRoles           : readRoles,
         getAllRoles         : getAllRoles,
+        getRole             : getRole,
         reloadRoles         : reloadRoles,
         createRole          : createRole,
-        updateRoleServices  : updateRoleServices
+        updateRoleServices  : updateRoleServices,
+        createUser          : createUser
     };
 });

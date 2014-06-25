@@ -64,7 +64,7 @@ module.factory("AccountService", function ($cookieStore) {
 
     var isAdmin = function () {
         var adminRoleFragment = "Administrator";
-        return role && role.indexOf(adminRoleFragment) == role.length-adminRoleFragment.length;
+        return role && role.uri.indexOf(adminRoleFragment) == role.uri.length-adminRoleFragment.length;
     };
 
     return {

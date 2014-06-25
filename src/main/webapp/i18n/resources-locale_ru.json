@@ -692,6 +692,11 @@
         "value":"Роли",
         "description":""
     },
+    {
+        "key":"_role_",
+        "value":"Роль",
+        "description":""
+    },
 
 
     {
@@ -1137,6 +1142,11 @@
         "key":"_endpoint-missed-message_",
         "value":"Укажите эндпоинт",
         "description":"shown in forms below required endpoint field when the value is not specified"
+    },
+    {
+        "key":"_role-missed-message_",
+        "value":"Укажите роль",
+        "description":"shown in forms below required role field when the value is not specified"
     },
 
 

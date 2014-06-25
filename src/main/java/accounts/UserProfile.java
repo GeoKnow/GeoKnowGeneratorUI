@@ -5,7 +5,7 @@ public class UserProfile {
     private String settingsGraph;
     private String accountURI;
     private String email;
-    private String role;
+    private UserRole role;
 
     public String getUsername() {
         return username;
@@ -39,11 +39,11 @@ public class UserProfile {
         this.email = email;
     }
 
-    public String getRole() {
+    public UserRole getRole() {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(UserRole role) {
         this.role = role;
     }
 

@@ -396,7 +396,9 @@ public class FrameworkUserManager implements UserManager {
         String mbox = bindingNode.path("o").path("value").getTextValue();
         userProfile.setEmail(mbox.substring("mailto:".length()));
       } else if (predicate.equals("http://ldiw.ontos.com/acc/ontology/role")) {
-        userProfile.setRole(bindingNode.path("o").path("value").getTextValue());
+          String roleURI = bindingNode.path("o").path("value").getTextValue();
+          UserRole role = getRole(roleURI);
+          userProfile.setRole(role);
       }
     }
     return userProfile;
@@ -744,5 +746,27 @@ public class FrameworkUserManager implements UserManager {
                 + " INSERT {?account gkg:role <" + role + ">} "
                 + " WHERE {?account foaf:accountName \"" + userId + "\" . optional {?account gkg:role ?o .} }";
         rdfStoreManager.execute(query, jsonResponseFormat);
+    }
+
+    private UserRole getRole(String roleURI) throws Exception {
+        UserRole role = new UserRole();
+        role.setUri(roleURI);
+        Collection<String> roleServices = new ArrayList<>();
+        String query = getPrefixes() + "\n" + "SELECT ?s ?p ?o FROM <" + frameworkConfig.getAccountsGraph() + "> "
+                        + "WHERE {?s ?p ?o . filter(?s=<" + roleURI + ">)}";
+        String result = rdfStoreManager.execute(query, jsonResponseFormat);
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode rootNode = mapper.readTree(result);
+        Iterator<JsonNode> bindingsIter = rootNode.path("results").path("bindings").getElements();
+        while (bindingsIter.hasNext()) {
+            JsonNode bindingNode = bindingsIter.next();
+            String predicate = bindingNode.path("p").path("value").getTextValue();
+            if (predicate.equals("http://xmlns.com/foaf/0.1/name"))
+                role.setName(bindingNode.path("o").path("value").getTextValue());
+            else if (predicate.equals("http://ldiw.ontos.com/acc/ontology/isAllowedToUseService"))
+                roleServices.add(bindingNode.path("o").path("value").getTextValue());
+        }
+        role.setServices(roleServices);
+        return role;
     }
 }

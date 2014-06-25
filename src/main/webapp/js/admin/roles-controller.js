@@ -1,12 +1,15 @@
 'use strict';
 
-function UserRolesCtrl($scope, UsersService, ConfigurationService, $q) {
+function UserRolesCtrl($scope, UsersService, ConfigurationService, $q, ServerErrorResponse, flash) {
     $scope.services = ConfigurationService.getAllServices();
     $scope.users = UsersService.getAllUsers();
     $scope.roles = UsersService.getAllRoles();
 
     $scope.roleCreating = false;
     $scope.newRole = {id:"", name:""};
+
+    $scope.userCreating = false;
+    $scope.newUser = {profile: { username:"", email:"", role:""}};
 
     $scope.changedRoles = [];
     $scope.changedUsers = [];
@@ -17,12 +20,14 @@ function UserRolesCtrl($scope, UsersService, ConfigurationService, $q) {
     $scope.refreshUsers = function() {
         UsersService.reloadUsers().then(function(result) {
             $scope.users = result;
+            $scope.changedUsers = [];
         });
     };
 
     $scope.refreshRoles = function() {
         UsersService.reloadRoles().then(function(result) {
             $scope.roles = result;
+            $scope.changedRoles = [];
         });
     };
 
@@ -38,7 +43,6 @@ function UserRolesCtrl($scope, UsersService, ConfigurationService, $q) {
             role.services.push(service.uri);
         }
         if ($scope.changedRoles.indexOf(role.uri)==-1) $scope.changedRoles.push(role.uri);
-        console.log(role);
     };
 
     $scope.serviceAllowed = function(service, role) {
@@ -47,14 +51,13 @@ function UserRolesCtrl($scope, UsersService, ConfigurationService, $q) {
     };
 
     $scope.hasRole = function(user, role) {
-        return user.profile.role==role.uri;
+        return user.profile.role.uri==role.uri;
     };
 
     $scope.toggleRole = function(user, role) {
-        if (user.profile.role==role.uri) user.profile.role = "gkg:BasicUser";
-        else user.profile.role = role.uri;
+        if (user.profile.role.uri==role.uri) user.profile.role.uri = "gkg:BasicUser";
+        else user.profile.role.uri = role.uri;
         if ($scope.changedUsers.indexOf(user.profile.accountURI) == -1) $scope.changedUsers.push(user.profile.accountURI);
-        console.log(user);
     };
 
     $scope.createRole = function() {
@@ -66,12 +69,16 @@ function UserRolesCtrl($scope, UsersService, ConfigurationService, $q) {
         }, function(response) {
             $scope.roleCreating = false;
             $scope.close("#modalRole");
+            flash.error = ServerErrorResponse.getMessage(response.status);
         });
     };
 
     $scope.new = function() {
         $scope.roleCreating = false;
         $scope.newRole = {id:"", name:""};
+
+        $scope.userCreating = false;
+        $scope.newUser = {profile: { username:"", email:"", role:""}};
     };
 
     $scope.saveRoles = function() {
@@ -84,8 +91,10 @@ function UserRolesCtrl($scope, UsersService, ConfigurationService, $q) {
         }
         $q.all(promises).then(function(data) {
             $scope.savingRoles = false;
-            $scope.changedRoles = [];
             $scope.refreshRoles();
+        }, function(response) {
+            $scope.savingRoles = false;
+            flash.error = ServerErrorResponse.getMessage(response.status);
         });
     };
 
@@ -98,14 +107,16 @@ function UserRolesCtrl($scope, UsersService, ConfigurationService, $q) {
         $scope.savingUsers = true;
         var promises = [];
         for (var ind in $scope.users) {
-            if ($scope.changedUsers.indexOf($scope.users[ind]) > -1) {
-                promises.push(UsersService.setUserRole($scope.users[ind].profile.accountURI, $scope.users[ind].profile.role));
+            if ($scope.changedUsers.indexOf($scope.users[ind].profile.accountURI) > -1) {
+                promises.push(UsersService.setUserRole($scope.users[ind].profile.accountURI, $scope.users[ind].profile.role.uri));
             }
         }
         $q.all(promises).then(function(data) {
             $scope.savingUsers = false;
-            $scope.changedUsers = [];
             $scope.refreshUsers();
+        }, function(response) {
+            $scope.savingUsers = false;
+            flash.error = ServerErrorResponse.getMessage(response.status);
         });
     };
 
@@ -122,14 +133,23 @@ function UserRolesCtrl($scope, UsersService, ConfigurationService, $q) {
         return $scope.changedRoles.length > 0;
     };
 
+    $scope.createUser = function() {
+        $scope.userCreating = true;
+        UsersService.createUser($scope.newUser).then(function(response) {
+            $scope.refreshUsers();
+            $scope.userCreating = false;
+            $scope.close("#modalUser");
+        }, function(response) {
+            $scope.userCreating = false;
+            $scope.close("#modalUser");
+            flash.error = ServerErrorResponse.getMessage(response.status);
+        });
+    };
+
     $scope.close = function(modalID) {
         $(modalID).modal('hide');
         $('body').removeClass('modal-open');
         $('.modal-backdrop').slideUp();
         $('.modal-scrollable').slideUp();
     };
-
-    console.log($scope.services);
-    console.log($scope.roles);
-    console.log($scope.users);
 }
