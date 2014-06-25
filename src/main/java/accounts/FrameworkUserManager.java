@@ -652,7 +652,7 @@ public class FrameworkUserManager implements UserManager {
         .getTextValue() : null;
   }
 
-  private boolean checkUserExists(String username, String email) throws Exception {
+  public boolean checkUserExists(String username, String email) throws Exception {
     String query = getPrefixes() + "\n" + "ASK {" + " { GRAPH <"
         + frameworkConfig.getAccountsGraph() + "> {?account foaf:accountName \"" + username
         + "\"} } " + " UNION " + " { GRAPH <" + frameworkConfig.getAccountsGraph()

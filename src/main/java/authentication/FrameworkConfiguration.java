@@ -301,18 +301,20 @@ public class FrameworkConfiguration {
             String password = soln.get("password").asLiteral().getString();
             String email = soln.get("mailto").toString().substring("mailto:".length());
             String role = soln.get("role").toString();
-            if (reset) {
+            if (reset && frameworkUserManager.checkUserExists(accountName, email)) {
                 try {
                     frameworkUserManager.dropUser(accountName);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
-            try {
-                frameworkUserManager.createUser(accountName, password, email);
-                frameworkUserManager.setRole(accountName, role);
-            } catch (Exception e) {
-                e.printStackTrace();
+            if (!frameworkUserManager.checkUserExists(accountName, email)) {
+                try {
+                    frameworkUserManager.createUser(accountName, password, email);
+                    frameworkUserManager.setRole(accountName, role);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }
         qexec.close();

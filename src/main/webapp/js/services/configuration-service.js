@@ -319,6 +319,12 @@ module.factory('ConfigurationService', function (Config) {
                 }
             }
             return results;
+        },
+
+        getService: function (uri) {
+            var service = Config.getSettings()[uri];
+            var results = this.elementToJson(uri, service);
+            return results;
         }
 
     };

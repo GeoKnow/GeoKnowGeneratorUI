@@ -1,8 +1,8 @@
 'use strict';
 
 var UploadDocCtrl = function($scope, $http, flash, ServerErrorResponse, ConfigurationService, DocumentsService, AccountService, localize, DocumentErrorResponse) {
-    var services = ConfigurationService.getComponentServices(":SolrUploadProxy");
-	var solrUploadServiceUrl = services[0].serviceUrl;
+    var service = ConfigurationService.getService(":DocumentUploadService");
+	var serviceUrl = service.serviceUrl;
 
     $scope.projects = DocumentsService.getAllProjects();
 
@@ -25,7 +25,7 @@ var UploadDocCtrl = function($scope, $http, flash, ServerErrorResponse, Configur
         for (var i = 0; i < $scope.fileList.length; i++) {
             var f = $scope.fileList[i];
             $http.uploadFile({
-                    url: solrUploadServiceUrl + "/upload/files",
+                    url: serviceUrl,
                     file: f,
                     data: $scope.document
                 }).then(function(response) {

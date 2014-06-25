@@ -26,6 +26,10 @@
         <td>{{'_email_' | i18n}}:</td>
         <td>{{currentAccount.email}}</td>
       </tr>
+        <tr>
+            <td>{{'_role_' | i18n}}:</td>
+            <td>{{currentAccount.role.name}}</td>
+        </tr>
     </table>
 
     <button type="button" class="btn-sm btn-primary" data-toggle="modal" data-target="#modalChangePassword" ng-if="currentAccount.username" data-i18n="_change-password_"></button>

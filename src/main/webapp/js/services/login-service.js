@@ -25,7 +25,7 @@ module.factory("LoginService", function ($http, $location, $cookieStore, Account
             AccountService.setEmail(response.data.email);
             var roleServices = [];
             for (var ind in response.data.role.services) {
-                roleServices.push(response.data.role.services[ind].replace(ConfigurationService.getFrameworkOntologyNS(), "gkg:"));
+                roleServices.push(response.data.role.services[ind].replace(ConfigurationService.getUriBase(), ":"));
             }
             var role = {
                 uri: response.data.role.uri.replace(ConfigurationService.getFrameworkOntologyNS(), "gkg:"),

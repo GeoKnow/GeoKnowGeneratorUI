@@ -5,15 +5,12 @@
 * Ontologies Controller
 *
 ***************************************************************************************************/
-var OntologyCtrl = function($scope, $http, flash, ServerErrorResponse, AccountService, OntologyService, ConfigurationService, localize, DocumentErrorResponse) {
+var OntologyCtrl = function($scope, $http, flash, ServerErrorResponse, AccountService, OntologyService, ConfigurationService, localize) {
     var miniDixServices = ConfigurationService.getComponentServices(":MiniDix");
 	var miniDixServiceUrl = miniDixServices[0].serviceUrl;
 
 	var d2rqServices = ConfigurationService.getComponentServices(":D2RQ");
 	var d2rqServiceUrl = d2rqServices[0].serviceUrl;
-
-	var solrServices = ConfigurationService.getComponentServices(":SolrUploadProxy");
-	var solrUploadServiceUrl = solrServices[0].serviceUrl;
 
     $scope.ontologies = OntologyService.getAllOntologies();
 
@@ -128,29 +125,5 @@ var OntologyCtrl = function($scope, $http, flash, ServerErrorResponse, AccountSe
         $('body').removeClass('modal-open');
         $('.modal-backdrop').slideUp();
         $('.modal-scrollable').slideUp();
-    };
-
-    $scope.beforeReindex = function() {
-        $scope.reindexing = false;
-    };
-
-    $scope.reindex = function() {
-        console.log("reindex with current thesaurus");
-        $scope.reindexing = true;
-        $http.post(solrUploadServiceUrl+"/update/reindexWithNewThesaurus")
-            .then(function(response) {
-                $scope.close('#reindexDocuments');
-                console.log("reindex completed");
-                console.log(response.data);
-                flash.success = "Reindex finished";
-                $scope.reindexing = false;
-            }, function(response) {
-                $scope.close('#reindexDocuments');
-                console.log("reindex failed");
-                console.log(response);
-                if (response.status==500) flash.error = ServerErrorResponse.getMessage(response.status) + ": " + DocumentErrorResponse.getMessage(parseInt(response.data));
-                else flash.error = ServerErrorResponse.getMessage(response.status);
-                $scope.reindexing = false;
-            });
     };
 };

@@ -124,6 +124,7 @@ module.factory("UsersService", function($http, Config, AccountService) {
     };
 
     var createUser = function(user) {
+        user.profile.role = user.profile.role.replace("gkg:", Config.getFrameworkOntologyNS());
 	    var parameters = {
 	        mode: "create",
 	        user: JSON.stringify(user),

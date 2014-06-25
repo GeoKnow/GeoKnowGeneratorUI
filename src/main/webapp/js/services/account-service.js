@@ -58,13 +58,13 @@ module.factory("AccountService", function ($cookieStore) {
             username: username,
             email: email,
             user: user,
-            pass: pass
+            pass: pass,
+            role: role
         };
     };
 
     var isAdmin = function () {
-        var adminRoleFragment = "Administrator";
-        return role && role.uri.indexOf(adminRoleFragment) == role.uri.length-adminRoleFragment.length;
+        return role && role.uri == "gkg:Administrator";
     };
 
     return {

@@ -186,9 +186,9 @@ var UploadedDocsCtrl = function($scope, $http, flash, filterFilter, orderByFilte
             $scope.close('#modalDocument');
             flash.success = localize.getLocalizedString("_changes-saved-message_");
             //reindex document
-            var services = ConfigurationService.getComponentServices(":SolrUploadProxy");
-            var solrUploadServiceUrl = services[0].serviceUrl;
-            $http.post(solrUploadServiceUrl+"/update/reindexDocument?uuid="+$scope.document.uuid)
+            var services = ConfigurationService.getComponentServices(":DocumentComponent", "lds:AuthoringService");
+            var serviceUrl = services[0].serviceUrl;
+            $http.post(serviceUrl+"/update/reindexDocument?uuid="+$scope.document.uuid)
                 .then(function(response) {
                     console.log("Document " + $scope.document.uuid + " reindex completed");
                     console.log(response.data);

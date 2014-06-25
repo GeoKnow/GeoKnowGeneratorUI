@@ -8,7 +8,7 @@ function AccountMenuCtrl($scope) {
     { name: "_user-pref_",   route:'#/account/preferences', url:'/account/preferences' }];
 }
 
-function StackMenuCtrl($scope, ConfigurationService, localize) {
+function StackMenuCtrl($scope, ConfigurationService, localize, AccountService) {
     var services = ConfigurationService.getComponentServices(":Solr");
 	var solrServiceUrl = services[0].serviceUrl;
 
@@ -27,7 +27,8 @@ function StackMenuCtrl($scope, ConfigurationService, localize) {
 //	        {name: 'Sparqlify Extraction', route:'#/home/extraction-and-loading/sparqlify', url:'/home/extraction-and-loading/sparqlify' },
 //	        {name: 'TripleGeo Extraction', route:'#/home/extraction-and-loading/triplegeo', url:'/home/extraction-and-loading/triplegeo' },
 //	        {name: 'D2RQ Extraction', route:'#/home/extraction-and-loading/d2rq', url:'/home/extraction-and-loading/d2rq' },
-            {name: '_upload-files_', route:'#/home/extraction-and-loading/upload-file', url:'/home/extraction-and-loading/upload-file' }]
+            {name: '_upload-files_', route:'#/home/extraction-and-loading/upload-file', url:'/home/extraction-and-loading/upload-file', requiredServices:[":DocumentUploadService"] },
+            {name: '_reindex-docs_', route:'#/home/extraction-and-loading/reindex', url:'/home/extraction-and-loading/reindex', requiredServices:[":ReindexService"] }]
 	    },
 	    {
 		      title: "_search-querying-exploration_",
@@ -36,7 +37,7 @@ function StackMenuCtrl($scope, ConfigurationService, localize) {
 //		       {name: 'Virtuoso', route:'#/home/search-querying-and-exploration/virtuoso', url:'/home/search-querying-and-exploration/virtuoso' },
 //		       {name: 'Facete', route:'#/home/search-querying-and-exploration/facete', url:'/home/search-querying-and-exploration/facete' },
 //		       {name: 'Mappify', route:'#/home/search-querying-and-exploration/mappify', url:'/home/search-querying-and-exploration/mappify' },
-		       {name: '_search_', route:null, url:solrServiceUrl+'/collection1/custom', modaltitle:'_faceted-search_' }]
+		       {name: '_search_', route:null, url:solrServiceUrl+'/collection1/custom', modaltitle:'_faceted-search_', requiredServices:[":SolrService"] }]
 		    },
 	    {
 	      title: "_man-revision-authoring_",
@@ -44,8 +45,8 @@ function StackMenuCtrl($scope, ConfigurationService, localize) {
 	      items: [
 //	       {name: 'OntoWiki', route:'#/home/manual-revision-and-authoring/ontowiki', url:'/home/manual-revision-and-authoring/ontowiki' },
 //	       {name: "_ontologies_", route:'#/home/manual-revision-and-authoring/ontology', url:'/home/manual-revision-and-authoring/ontology' },
-	       {name: "_thesaurus-management_", route:null, url:miniDixServiceUrl + "/?ontology=" + ontology + "&newConceptsOntology=" + ontology + "&writableOntologies=" + ontology, modaltitle:'MiniDix' },
-	       {name: "_edit-uploads_", route:'#/home/manual-revision-and-authoring/edit-uploads', url:'/home/manual-revision-and-authoring/edit-uploads' }]
+	       {name: "_thesaurus-management_", route:null, url:miniDixServiceUrl + "/?ontology=" + ontology + "&newConceptsOntology=" + ontology + "&writableOntologies=" + ontology, modaltitle:'MiniDix', requiredServices:[":MiniDixService"] },
+	       {name: "_edit-uploads_", route:'#/home/manual-revision-and-authoring/edit-uploads', url:'/home/manual-revision-and-authoring/edit-uploads', requiredServices:[":DocumentService"] }]
 	    },
 	    /*
 	    {
@@ -80,6 +81,27 @@ function StackMenuCtrl($scope, ConfigurationService, localize) {
 
       $scope.setModalTitle = function(title) {
         $scope.modaltitle = title;
+      };
+
+      $scope.showItem = function(item) {
+        if (!AccountService.isLogged()) return true; //todo unauthorized user
+        if (AccountService.isAdmin()) return true; //show all items to admin
+        var allowedServices = AccountService.getRole().services;
+        for (var ind in item.requiredServices) {
+            if (allowedServices.indexOf(item.requiredServices[ind]) == -1) //hide item if one of required services is not allowed for current user
+                return false;
+        }
+        return true;
+      };
+
+      $scope.showGroup = function(group) {
+        if (!AccountService.isLogged()) return true; //todo unauthorized user
+        if (AccountService.isAdmin()) return true;
+        //hide group if all items are hidden
+        for (var ind in group.items) {
+            if ($scope.showItem(group.items[ind])) return true;
+        }
+        return false;
       };
 
 	}

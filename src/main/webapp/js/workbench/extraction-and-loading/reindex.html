@@ -1,0 +1,24 @@
+<div ng-controller="ReindexCtrl">
+    <h3 class="green bold" data-i18n="_reindex-docs_"></h3>
+
+    <button type="button" class="btn btn-primary btn-large" data-toggle="modal" data-target="#reindexDocuments" ng-click="beforeReindex()" ng-disabled="!isLoggedIn()" data-i18n="_reindex-cur-thesaurus_"></button>
+
+    <div class="modal fade" id="reindexDocuments">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" ng-click="close('#reindexDocuments')" aria-hidden="true">&times;</button>
+                    <h5 class="modal-title green bold" data-i18n="_reindex-docs_"></h5>
+                </div>
+                <div class="modal-body">
+                    <p data-i18n="_reindex-confirm_"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn-sm btn-primary" ng-click="reindex();" ng-disabled="reindexing" data-i18n="_yes_"></button>
+                    <button type="button" class="btn-sm btn-default" ng-click="close('#reindexDocuments')" ng-disabled="reindexing" data-i18n="_no_"></button>
+                    <span ng-show="reindexing" data-i18n="_reindexing_"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

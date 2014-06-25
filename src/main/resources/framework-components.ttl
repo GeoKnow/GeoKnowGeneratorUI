@@ -170,11 +170,28 @@
       a       lds:ExplorationService ;
       lds:serviceUrl <http://localhost:8080/solr> .
 
-:SolrUploadProxy
+:DocumentComponent
       a       lds:StackComponent ;
-      rdfs:label "SolrUploadProxy"^^xsd:string ;
-      lds:providesService :SolrUploadProxyService ;
+      rdfs:label "Documents Manager"^^xsd:string ;
+      lds:providesService :DocumentUploadService ;
+      lds:providesService :DocumentService ;
+      lds:providesService :ReindexService ;
       lds:version "0.1-SNAPSHOT"^^xsd:string .
-:SolrUploadProxyService
+:DocumentUploadService
       a       lds:ExtractionService ;
-      lds:serviceUrl <http://localhost:8080/SolrUploadProxy/proxy>
+      lds:serviceUrl <http://localhost:8080/SolrUploadProxy/proxy/upload/files> .
+:DocumentService
+      a       lds:AuthoringService ;
+      lds:serviceUrl <http://localhost:8080/SolrUploadProxy/proxy> .
+:ReindexService
+      a       lds:ExtractionService ;
+      lds:serviceUrl <http://localhost:8080/SolrUploadProxy/proxy/update/reindexWithNewThesaurus> .
+
+:UserManager
+      a       lds:StackComponent ;
+      rdfs:label "Users Manager"^^xsd:string ;
+      lds:providesService :UserManagerService ;
+      lds:version "0.1-SNAPSHOT"^^xsd:string .
+:UserManagerService
+      a       lds:ComponentService ;
+      lds:serviceUrl <http://localhost:8080/generator/UserManagerServlet> .

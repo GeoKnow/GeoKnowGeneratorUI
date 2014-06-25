@@ -76,9 +76,11 @@ function UserRolesCtrl($scope, UsersService, ConfigurationService, $q, ServerErr
     $scope.new = function() {
         $scope.roleCreating = false;
         $scope.newRole = {id:"", name:""};
+        $scope.roleForm.$setPristine();
 
         $scope.userCreating = false;
         $scope.newUser = {profile: { username:"", email:"", role:""}};
+        $scope.userForm.$setPristine();
     };
 
     $scope.saveRoles = function() {
@@ -135,7 +137,8 @@ function UserRolesCtrl($scope, UsersService, ConfigurationService, $q, ServerErr
 
     $scope.createUser = function() {
         $scope.userCreating = true;
-        UsersService.createUser($scope.newUser).then(function(response) {
+        var user = angular.copy($scope.newUser);
+        UsersService.createUser(user).then(function(response) {
             $scope.refreshUsers();
             $scope.userCreating = false;
             $scope.close("#modalUser");

@@ -54,6 +54,7 @@ app.config(function($routeSegmentProvider, $routeProvider)
         .when('/home/extraction-and-loading/d2rq/mapping', 'default.d2rq.mapping')
         .when('/home/extraction-and-loading/d2rq/task', 'default.d2rq.task')
         .when('/home/extraction-and-loading/upload-file', 'default.upload-file')
+        .when('/home/extraction-and-loading/reindex', 'default.reindex')
         .when('/home/search-querying-and-exploration/virtuoso', 'default.virtuoso')
         .when('/home/search-querying-and-exploration/geospatial', 'default.geospatial')
      /*   .when('/home/search-querying-and-exploration/googlemap', 'default.googlemap') */
@@ -146,6 +147,8 @@ app.config(function($routeSegmentProvider, $routeProvider)
                             }
                         }
                     })
+                .segment('reindex', {
+                    templateUrl: 'js/workbench/extraction-and-loading/reindex.html' })
                 .segment('geospatial', {
                     templateUrl: 'js/workbench/search-querying-and-exploration/geospatial.html'})
      /*           .segment('googlemap', {
