@@ -1,6 +1,6 @@
 'use strict';
 
-function AccountCtrl($scope, flash, AccountService, LoginService, ServerErrorResponse) {
+function AccountCtrl($scope, $http, $cookieStore, flash, AccountService, LoginService, ServerErrorResponse, Base64) {
     $scope.currentAccount = angular.copy(AccountService.getAccount());
 
     $scope.changePassword = function() {
@@ -11,6 +11,13 @@ function AccountCtrl($scope, flash, AccountService, LoginService, ServerErrorRes
               	$('.modal-backdrop').slideUp();
               	$('.modal-scrollable').slideUp();
                 flash.success = response.data.message;
+                //Reset cookie
+                var encodedUser = Base64.encode(AccountService.getUsername());
+                var encodedPass = Base64.encode($scope.password.newPassword);
+                $http.defaults.headers.common.Authorization = 'User ' + encodedUser + ' Pass ' + encodedPass;
+                $cookieStore.put('User', encodedUser);
+                $cookieStore.put('Pass', encodedPass);
+                
             }, function(response) {
                 $('#modalChangePassword').modal('hide');
                 $('body').removeClass('modal-open');
