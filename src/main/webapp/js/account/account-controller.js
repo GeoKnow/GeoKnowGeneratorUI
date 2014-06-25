@@ -1,6 +1,6 @@
 'use strict';
 
-function AccountCtrl($scope, flash, AccountService, LoginService, ServerErrorResponse) {
+function AccountCtrl($scope, $http, $cookieStore, flash, AccountService, LoginService, ServerErrorResponse, Base64) {
     $scope.currentAccount = angular.copy(AccountService.getAccount());
 
     $scope.changePassword = function() {
