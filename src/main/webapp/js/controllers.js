@@ -28,7 +28,7 @@ function StackMenuCtrl($scope, ConfigurationService, localize, AccountService) {
 //	        {name: 'TripleGeo Extraction', route:'#/home/extraction-and-loading/triplegeo', url:'/home/extraction-and-loading/triplegeo' },
 //	        {name: 'D2RQ Extraction', route:'#/home/extraction-and-loading/d2rq', url:'/home/extraction-and-loading/d2rq' },
             {name: '_upload-files_', route:'#/home/extraction-and-loading/upload-file', url:'/home/extraction-and-loading/upload-file', requiredServices:[":DocumentUploadService"] },
-            {name: '_reindex-docs_', route:'#/home/extraction-and-loading/reindex', url:'/home/extraction-and-loading/reindex', requiredServices:[":ReindexService"] }]
+            {name: '_reindex-docs_', route:null, url:null, modalId:'#reindexDocuments', requiredServices:[":ReindexService"] }]
 	    },
 	    {
 		      title: "_search-querying-exploration_",
