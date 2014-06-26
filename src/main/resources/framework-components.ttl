@@ -57,7 +57,7 @@
   a       lds:StackComponent ;
   rdfs:label "Service URL"^^xsd:string ;
   dcterms:hasVersion "7.0"^^xsd:string ;
-  lds:providesService :VirtuosoConductor, :VirtuosoAutSPARQLEndpoint, :VirtuosoEndpoint;
+  lds:providesService :VirtuosoConductor, :VirtuosoAuthSPARQLEndpoint, :VirtuosoEndpoint;
   foaf:homepage <http://virtuoso.openlinksw.com/> .
 
 :VirtuosoConductor 
