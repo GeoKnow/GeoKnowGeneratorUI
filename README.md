@@ -16,7 +16,9 @@ These option will not install any integrated component from the stack and you re
 
 1. Make a copy of the `src/main/resources/framework-configuration-template.ttl` to `src/main/resources/framework-configuration.ttl` and provide the ***REMOVED*** data.
 
-1. Make a copy of the `src/main/webapp/WEB-INF/web-template.xml` to `src/main/webapp/WEB-INF/web.xml` and provide the ***REMOVED*** data.
+2. Have a clean triple store and make sure to have a user create in the lds:StorageService, the lds:SecuredSPARQLEndPointService user will be automatically created
+
+3. Make a copy of the `src/main/webapp/WEB-INF/web-template.xml` to `src/main/webapp/WEB-INF/web.xml` and provide the ***REMOVED*** data.
 
 
 Note that the endpoint has to support [UPDATE](http://www.w3.org/TR/2013/REC-sparql11-update-20130321/) service and [Graph Store HTTP Protocol](http://www.w3.org/TR/2013/REC-sparql11-http-rdf-update-20130321/) 
