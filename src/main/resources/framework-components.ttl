@@ -50,7 +50,7 @@
   dcterms:hasVersion "2.0"^^xsd:string ;
   gkg:publicEndpoint :VirtuosoEndpoint ;
   gkg:authEndpoint :VirtuosoAuthSPARQLEndpoint ;
-  lds:integrates :Virtuoso, :Facete, :Limes, :Sparqlify, :TripleGeo, :GeoLift, :OntoWiki, :Mappify ;
+  lds:integrates :Facete, :Limes, :Sparqlify, :TripleGeo, :GeoLift, :OntoWiki, :Mappify ;
   foaf:homepage <http://localhost:8080/generator> .
 
 :Virtuoso
@@ -81,7 +81,7 @@
 
 :SparqlifyService
       a       lds:ExplorationService ;
-      lds:serviceUrl <http://144.76.166.111:8080/sparqlify/> .
+      lds:serviceUrl <http://localhost:8080/sparqlify/> .
 
 :Facete
       a       lds:StackComponent ;
@@ -131,7 +131,7 @@
       foaf:homepage <http://aksw.org/Projects/OntoWiki.html> .
 :OntoWikiService 
       a       lds:AuthoringService ;
-      lds:serviceUrl <http://144.76.166.111/ontowiki> .
+      lds:serviceUrl <http://localhost/ontowiki> .
 
 :Mappify
       a       lds:StackComponent ;

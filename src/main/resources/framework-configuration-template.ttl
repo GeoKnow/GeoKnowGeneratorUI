@@ -26,7 +26,7 @@
   rdfs:comment "This resource contains all the configuration required by the application"^^xsd:string ;
   rdfs:label "GeoKnowGeneator"^^xsd:string ;
   dcterms:hasVersion "2.0"^^xsd:string ;
-  lds:password "***REMOVED***""^^xsd:string ;         # an admin user for the webapp
+  lds:password "***REMOVED***""^^xsd:string ;         # an admin user for the webapp NOT IMPLEMENTED YET
   lds:user   "***REMOVED***""^^xsd:string ;
   gkg:publicEndpoint :VirtuosoEndpoint ;
   gkg:authEndpoint :VirtuosoAuthSPARQLEndpoint ;
@@ -132,4 +132,3 @@
     dcterms:created "2014-04-12"^^xsd:date;
     void:sparqlEndpoint <http://10.0.0.63:8890/sparql> ]
   .
-

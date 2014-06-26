@@ -48,6 +48,7 @@ public class FrameworkConfiguration {
   private String settingsGraph = "";
   private String initialSettingsGraph = "";
   private String groupsGraph = "";
+  private String frameworkUri;
 
   private static FrameworkConfiguration instance;
 
@@ -75,7 +76,7 @@ public class FrameworkConfiguration {
       String accountsOntologyFile = "framework-accounts-ontology.ttl";
 
       // initialize parameters from context
-      String frameworkUri = context.getInitParameter("framework-uri");
+      instance.frameworkUri = context.getInitParameter("framework-uri");
 
       instance.setFrameworkOntologyNS(context.getInitParameter("framework-ontology-ns"));
       instance.setAccountsOntologyNamespace(context.getInitParameter("accounts-ns"));
@@ -96,11 +97,10 @@ public class FrameworkConfiguration {
       } catch (RiotException e) {
         throw new IOException("Malformed " + configurationFile + " file");
       }
-      // get and set the properties framework configuration (endpoints and
-      // credentials)
+      // get the endpoint URL to use for the framework
       String query = "PREFIX lds: <http://stack.linkeddata.org/ldis-schema/> "
-          + " SELECT ?endpoint WHERE {" + " <" + frameworkUri + ">  lds:integrates ?component ."
-          + " ?component lds:providesService ?service ."
+          + " SELECT ?endpoint WHERE {" + " <" + instance.getFrameworkUri()
+          + ">  lds:integrates ?component ." + " ?component lds:providesService ?service ."
           + " ?service a lds:SPARQLEndPointService ." + " ?service lds:serviceUrl ?endpoint  }";
 
       QueryExecution qexec = QueryExecutionFactory.create(query, configurationModel);
@@ -113,8 +113,9 @@ public class FrameworkConfiguration {
       }
       qexec.close();
 
+      // get the endpoint for authenticated users, and user and password of the system framework
       query = "PREFIX lds: <http://stack.linkeddata.org/ldis-schema/>"
-          + " SELECT ?endpoint ?user ?password WHERE {" + " <" + frameworkUri
+          + " SELECT ?endpoint ?user ?password WHERE {" + " <" + instance.getFrameworkUri()
           + ">  lds:integrates ?component ." + " ?component lds:providesService ?service ."
           + " ?service a lds:SecuredSPARQLEndPointService ."
           + " ?service lds:serviceUrl ?endpoint ." + " ?service lds:user ?user ."
@@ -134,7 +135,7 @@ public class FrameworkConfiguration {
 
       // get and set the database configuration (Virtuoso)
       query = "PREFIX lds: <http://stack.linkeddata.org/ldis-schema/>"
-          + " SELECT ?connectionString ?user ?password WHERE {" + " <" + frameworkUri
+          + " SELECT ?connectionString ?user ?password WHERE {" + " <" + instance.getFrameworkUri()
           + ">  lds:integrates ?component ." + " ?component lds:providesService ?service ."
           + " ?service a lds:StorageService ."
           + " ?service lds:connectionString ?connectionString ." + " ?service lds:user ?user ."
@@ -151,12 +152,11 @@ public class FrameworkConfiguration {
       }
       qexec.close();
 
-      // get and set the named graphs
+      // get and set the system named graphs
       query = "PREFIX  sd:    <http://www.w3.org/ns/sparql-service-description#> "
           + "PREFIX  rdfs:  <http://www.w3.org/2000/01/rdf-schema#> " + "SELECT ?name ?label  "
           + "WHERE "
           + "{ ?s sd:namedGraph  ?o .  ?o sd:name ?name . ?o sd:graph ?g . ?g rdfs:label ?label } ";
-
       qexec = QueryExecutionFactory.create(query, configurationModel);
       results = qexec.execSelect();
       if (!results.hasNext())
@@ -193,7 +193,10 @@ public class FrameworkConfiguration {
         userManager.createUser(instance.getAuthSparqlUser(), instance.getAuthSparqlPassword());
         userManager.setDefaultRdfPermissions(instance.getAuthSparqlUser(), 3);
         userManager.grantRole(instance.getAuthSparqlUser(), "SPARQL_UPDATE");
+        userManager.grantLOLook(instance.getAuthSparqlUser());
+        // TODO: check if we still need to grant these to SPARQL user
         userManager.grantRole("SPARQL", "SPARQL_UPDATE");
+        userManager.grantLOLook("SPARQL");
 
         System.out.println("[INFO] System User was created ");
       } catch (Exception e) {
@@ -226,13 +229,13 @@ public class FrameworkConfiguration {
         System.out.println("[INFO] Default Graphs creation/configuration ");
 
         // Read configuration files
-        Model datrasetModel = ModelFactory.createDefaultModel();
+        Model datasetModel = ModelFactory.createDefaultModel();
         Model componentsModel = ModelFactory.createDefaultModel();
         Model ontologyModel = ModelFactory.createDefaultModel();
         Model ontologyAccountsModel = ModelFactory.createDefaultModel();
 
         try {
-          datrasetModel.read(datasetsFile);
+          datasetModel.read(datasetsFile);
           componentsModel.read(componentsFile);
           ontologyModel.read(ontologyFile);
           ontologyAccountsModel.read(accountsOntologyFile);
@@ -258,10 +261,32 @@ public class FrameworkConfiguration {
         userManager.setRdfGraphPermissions(instance.getAuthSparqlUser(), instance
             .getInitialSettingsGraph(), 3);
 
+        // join the settings files
         Model settingsModel = ModelFactory.createDefaultModel();
-        settingsModel.add(datrasetModel);
+        settingsModel.add(datasetModel);
         settingsModel.add(componentsModel);
         settingsModel.add(ontologyModel);
+
+        // add to settings virtuoso component without users/passwords
+        queryString = "PREFIX foaf:<http://xmlns.com/foaf/0.1/> "
+            + "PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#> "
+            + "PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#> "
+            + "PREFIX lds:<http://stack.linkeddata.org/ldis-schema/>" + " CONSTRUCT   { <"
+            + instance.getFrameworkUri() + "> ?p ?o . " + "<" + instance.getFrameworkUri()
+            + "> lds:integrates ?component ."
+            + "?component rdfs:label ?label . ?component rdf:type ?type . "
+            + "?component lds:providesService ?service . ?service rdf:type ?servicetype ."
+            + "?service lds:serviceUrl ?serviceUrl .} " + " WHERE  { <"
+            + instance.getFrameworkUri() + "> ?p ?o ." + "<" + instance.getFrameworkUri()
+            + "> lds:integrates ?component ."
+            + "?component rdfs:label ?label . ?component rdf:type ?type . "
+            + "?component lds:providesService ?service . ?service rdf:type ?servicetype ."
+            + "?service lds:serviceUrl ?serviceUrl .}";
+        qexec = QueryExecutionFactory.create(queryString, configurationModel);
+        Model triples = qexec.execConstruct();
+        settingsModel.add(triples);
+        qexec.close();
+
         // write the initial settings model (default settings for new
         // users)
         ByteArrayOutputStream os = new ByteArrayOutputStream();
@@ -485,4 +510,13 @@ public class FrameworkConfiguration {
   public void setFrameworkOntologyNS(String frameworkOntologyNS) {
     this.frameworkOntologyNS = frameworkOntologyNS;
   }
+
+  public String getFrameworkUri() {
+    return frameworkUri;
+  }
+
+  public void setFrameworkUri(String frameworkUri) {
+    this.frameworkUri = frameworkUri;
+  }
+
 }
