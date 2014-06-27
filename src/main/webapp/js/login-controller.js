@@ -4,6 +4,8 @@
 function LoginCtrl($scope, flash, AccountService, LoginService, ServerErrorResponse, Base64) {
     $scope.currentAccount = angular.copy(AccountService.getAccount());
     $scope.loggedIn = false;
+    $scope.signUp = {username:null, email:null};
+    $scope.restorePassword = {username:null};
 
     if($scope.currentAccount.user){
     	LoginService.login($scope.currentAccount.user, $scope.currentAccount.pass)
@@ -88,7 +90,20 @@ function LoginCtrl($scope, flash, AccountService, LoginService, ServerErrorRespo
             });
     };
 
-    $scope.new = function(){
+    $scope.clearLoginForm = function() {
+        $scope.loginForm.$setPristine();
+        $scope.login.username = null;
+        $scope.login.password = null;
+    };
+
+    $scope.clearSignUpForm = function() {
         $scope.signUpForm.$setPristine();
-  	};
+        $scope.signUp.username = null;
+        $scope.signUp.email = null;
+    };
+
+    $scope.clearRestorePasswordForm = function() {
+        $scope.restorePasswordForm.$setPristine();
+        $scope.restorePassword.username = null;
+    };
 }

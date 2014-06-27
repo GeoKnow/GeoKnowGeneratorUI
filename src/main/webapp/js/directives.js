@@ -80,6 +80,31 @@ app.directive('autofillable', function ($timeout) {
     }
 });
 
+//directive to set focus in modal dialogs
+app.directive('modalFocus', function ($timeout) {
+    return {
+        restrict: 'A',
+        link: function (scope, element, attrs) {
+            var focusElementId = attrs.modalFocus;
+            scope.$watch(function() {
+                return $('#'+element[0].id).is(':visible');
+            }, function(value) {
+                if (value) {
+                    $timeout(function () {
+                        $(focusElementId).focus();
+                    }, 400);
+                }
+            });
+
+            scope.$watch(attrs.focusInput, function() {
+                $timeout(function () {
+                    element[0].focus();
+                })
+            });
+        }
+    };
+});
+
 /****************************************************************************************************
 *
 * GEOLIFT Directives

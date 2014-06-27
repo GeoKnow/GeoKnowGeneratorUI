@@ -62,9 +62,9 @@
                             </div>
                             <div ng-if="!isUserAuthenticated()">
                                         <!-- ng-disabled="loginForm.$invalid" -->
-                                        <button type="button" class="btn-sm btn-primary navbar-left" data-toggle="modal" data-target="#modalLogin" ng-click="openModal()" data-i18n="_login_"></button>
-                                        <button type="button" class="btn-xs btn-link navbar-left" data-toggle="modal" data-target="#modalSignUp" ng-click="new();" data-i18n="_register_"></button>
-                                    	<button type="button" class="btn-xs btn-link navbar-left" data-toggle="modal" data-target="#modalRestorePassword" ng-show="currentAccount.username==null" data-i18n="_forgot-password_"></button>
+                                        <button type="button" class="btn-sm btn-primary navbar-left" data-toggle="modal" data-target="#modalLogin" ng-click="clearLoginForm()" data-i18n="_login_"></button>
+                                        <button type="button" class="btn-xs btn-link navbar-left" data-toggle="modal" data-target="#modalSignUp" ng-click="clearSignUpForm()" data-i18n="_register_"></button>
+                                    	<button type="button" class="btn-xs btn-link navbar-left" data-toggle="modal" data-target="#modalRestorePassword" ng-click="clearRestorePasswordForm()" data-i18n="_forgot-password_"></button>
                             </div>
                             </li>
                             <li>
@@ -76,7 +76,7 @@
 	        </div>
 	</div>
 
-	<div class="modal fade" id="modalLogin">
+	<div class="modal fade" id="modalLogin" modal-focus="#login">
 	<div class="modal-dialog">
     <div class="modal-content">
 	<form name="loginForm" class="form-horizontal InputForm" role="form" ng-show="currentAccount.username==null">
@@ -111,7 +111,7 @@
     </div>
 	</div>
 
-    <div class="modal fade" id="modalSignUp">
+    <div class="modal fade" id="modalSignUp" modal-focus="#username">
     <div class="modal-dialog">
     <div class="modal-content">
         <form name="signUpForm" class="form-horizontal InputForm" role="form">
@@ -149,7 +149,7 @@
     </div>
     </div>
 
-      <div class="modal fade" id="modalRestorePassword">
+      <div class="modal fade" id="modalRestorePassword" modal-focus="#uname">
       <div class="modal-dialog">
     	<div class="modal-content">
           <form name="restorePasswordForm" class="form-horizontal InputForm" role="form">
@@ -159,9 +159,9 @@
               </div>
               <div class="modal-body">
                   <div class="form-group">
-                      <label for="username" class="col-lg-4 control-label" data-i18n="_username-email_"></label>
+                      <label for="uname" class="col-lg-4 control-label" data-i18n="_username-email_"></label>
                       <div class="col-lg-8">
-                          <input type="text" id="username" name="username" class="form-control" data-i18n-attr="_username-email_|placeholder" ng-model="restorePassword.username" required/>
+                          <input type="text" id="uname" name="uname" class="form-control" data-i18n-attr="_username-email_|placeholder" ng-model="restorePassword.username" required/>
                           <div class="error" ng-show="restorePasswordForm.username.$dirty && restorePasswordForm.username.$invalid">{{'_invalid-field-message_' | i18n}}:
                               <span ng-show="restorePasswordForm.username.$error.required" data-i18n="_username-email-missed-message_"></span>
                           </div>
