@@ -1,6 +1,6 @@
 'use strict';
 
-function UserRolesCtrl($scope, UsersService, ConfigurationService, $q, ServerErrorResponse, flash) {
+function UserRolesCtrl($scope, UsersService, ConfigurationService, $q, ServerErrorResponse, flash, localize) {
     $scope.services = ConfigurationService.getAllServices();
     $scope.users = UsersService.getAllUsers();
     $scope.roles = UsersService.getAllRoles();
@@ -66,6 +66,7 @@ function UserRolesCtrl($scope, UsersService, ConfigurationService, $q, ServerErr
             $scope.refreshRoles();
             $scope.roleCreating = false;
             $scope.close("#modalRole");
+            flash.success = localize.getLocalizedString("_created_");
         }, function(response) {
             $scope.roleCreating = false;
             $scope.close("#modalRole");
@@ -94,6 +95,7 @@ function UserRolesCtrl($scope, UsersService, ConfigurationService, $q, ServerErr
         $q.all(promises).then(function(data) {
             $scope.savingRoles = false;
             $scope.refreshRoles();
+            flash.success = localize.getLocalizedString("_changes-saved-message_");
         }, function(response) {
             $scope.savingRoles = false;
             flash.error = ServerErrorResponse.getMessage(response.status);
@@ -116,6 +118,7 @@ function UserRolesCtrl($scope, UsersService, ConfigurationService, $q, ServerErr
         $q.all(promises).then(function(data) {
             $scope.savingUsers = false;
             $scope.refreshUsers();
+            flash.success = localize.getLocalizedString("_changes-saved-message_");
         }, function(response) {
             $scope.savingUsers = false;
             flash.error = ServerErrorResponse.getMessage(response.status);
@@ -142,6 +145,7 @@ function UserRolesCtrl($scope, UsersService, ConfigurationService, $q, ServerErr
             $scope.refreshUsers();
             $scope.userCreating = false;
             $scope.close("#modalUser");
+            flash.success = localize.getLocalizedString("_created_");
         }, function(response) {
             $scope.userCreating = false;
             $scope.close("#modalUser");
