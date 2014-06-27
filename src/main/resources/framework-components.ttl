@@ -150,6 +150,7 @@
       lds:version "0.1-SNAPSHOT"^^xsd:string .
 :D2RQService
       a       lds:ExtractionService ;
+      dcterms:description "Provides ontology create/upload/delete functionality"^^xsd:string ;
       lds:serviceUrl <http://localhost:8080/d2rq-mapper-web-service/api> .
 
 :MiniDix
@@ -159,6 +160,7 @@
       lds:version "0.1-SNAPSHOT"^^xsd:string .
 :MiniDixService
       a       lds:AuthoringService ;
+      dcterms:description "Provides thesaurus edit functionality"^^xsd:string ;
       lds:serviceUrl <http://localhost:8080/minidix-web> .
 
 :Solr
@@ -168,6 +170,7 @@
       lds:version "4.8.1"^^xsd:string .
 :SolrService
       a       lds:ExplorationService ;
+      dcterms:description "Provides Solr Search."^^xsd:string ;
       lds:serviceUrl <http://localhost:8080/solr> .
 
 :DocumentComponent
@@ -179,12 +182,15 @@
       lds:version "0.1-SNAPSHOT"^^xsd:string .
 :DocumentUploadService
       a       lds:ExtractionService ;
+      dcterms:description "Provides document upload functionality"^^xsd:string ;
       lds:serviceUrl <http://localhost:8080/SolrUploadProxy/proxy/upload/files> .
 :DocumentService
       a       lds:AuthoringService ;
+      dcterms:description "Provides documents view/edit functionality."^^xsd:string ;
       lds:serviceUrl <http://localhost:8080/SolrUploadProxy/proxy> .
 :ReindexService
       a       lds:ExtractionService ;
+      dcterms:description "Reindex all documents with current thesaurus."^^xsd:string ;
       lds:serviceUrl <http://localhost:8080/SolrUploadProxy/proxy/update/reindexWithNewThesaurus> .
 
 :UserManager
@@ -194,4 +200,5 @@
       lds:version "0.1-SNAPSHOT"^^xsd:string .
 :UserManagerService
       a       lds:ComponentService ;
+      dcterms:description "Provides create/update functionality for accounts and roles."^^xsd:string ;
       lds:serviceUrl <http://localhost:8080/generator/UserManagerServlet> .
