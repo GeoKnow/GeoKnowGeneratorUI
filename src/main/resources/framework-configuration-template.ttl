@@ -26,8 +26,6 @@
   rdfs:comment "This resource contains all the configuration required by the application"^^xsd:string ;
   rdfs:label "GeoKnowGeneator"^^xsd:string ;
   dcterms:hasVersion "2.0"^^xsd:string ;
-  lds:password "***REMOVED***"^^xsd:string ;         # an admin user for the webapp
-  lds:user   "***REMOVED***"^^xsd:string ;
   gkg:publicEndpoint :VirtuosoEndpoint ;
   gkg:authEndpoint :VirtuosoAutSPARQLEndpoint ;
   lds:integrates :Virtuoso ;
