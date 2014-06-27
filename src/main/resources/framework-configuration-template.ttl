@@ -26,8 +26,8 @@
   rdfs:comment "This resource contains all the configuration required by the application"^^xsd:string ;
   rdfs:label "GeoKnowGeneator"^^xsd:string ;
   dcterms:hasVersion "2.0"^^xsd:string ;
-  lds:password "***REMOVED***""^^xsd:string ;         # an admin user for the webapp
-  lds:user   "***REMOVED***""^^xsd:string ;
+  lds:password "***REMOVED***"^^xsd:string ;         # an admin user for the webapp
+  lds:user   "***REMOVED***"^^xsd:string ;
   gkg:publicEndpoint :VirtuosoEndpoint ;
   gkg:authEndpoint :VirtuosoAutSPARQLEndpoint ;
   lds:integrates :Virtuoso ;
@@ -42,10 +42,10 @@
 
 :VirtuosoConductor 
   a  lds:StorageService ;
-  lds:password "***REMOVED***""^^xsd:string ;
+  lds:password "***REMOVED***"^^xsd:string ;
   lds:serviceUrl <http://***REMOVED***:8890/conductor> ;
   lds:connectionString "jdbc:virtuoso://***REMOVED***:1111/"^^xsd:string;
-  lds:user   "***REMOVED***""^^xsd:string . 
+  lds:user   "***REMOVED***"^^xsd:string .
 
 :VirtuosoAutSPARQLEndpoint
   a       lds:SecuredSPARQLEndPointService ;
