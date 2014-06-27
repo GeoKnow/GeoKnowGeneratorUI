@@ -53,18 +53,15 @@ public class FrameworkUserManager implements UserManager {
     RandomStringGenerator randomStringGenerator = new RandomStringGenerator();
     String rdfStoreUser = name;
     String rdfStorePassword = randomStringGenerator.generateSimple(8);
-    boolean error;
+    //change rdf store user name if already exists
     int counter = 0;
-    do { // retry on error
-      try {
-        rdfStoreUserManager.createUser(rdfStoreUser, rdfStorePassword);
-        error = false;
-      } catch (Exception e) {
-        error = true;
+    while (rdfStoreUserManager.checkUserExists(rdfStoreUser, null)) {
+        if (counter >= 10)
+            throw new Exception("Failed to create Virtuoso user: already exists");
         rdfStoreUser = name + randomStringGenerator.generateSimple(5);
-      }
-      counter++;
-    } while (error && counter < 10);
+        counter++;
+    }
+    rdfStoreUserManager.createUser(rdfStoreUser, rdfStorePassword);
     // grant SPARQL_UPDATE role to created Virtuoso user
     // TODO: users with only read access?
     rdfStoreUserManager.grantRole(rdfStoreUser, "SPARQL_UPDATE");

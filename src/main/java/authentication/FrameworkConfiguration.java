@@ -186,20 +186,14 @@ public class FrameworkConfiguration {
         // TODO: we may need to delete all users before to clean the store?
       }
 
-      try {
-
-        userManager.createUser(instance.getAuthSparqlUser(), instance.getAuthSparqlPassword());
-        userManager.setDefaultRdfPermissions(instance.getAuthSparqlUser(), 3);
-        userManager.grantRole(instance.getAuthSparqlUser(), "SPARQL_UPDATE");
-        userManager.grantRole("SPARQL", "SPARQL_UPDATE");
-
-        System.out.println("[INFO] System User was created ");
-      } catch (Exception e) {
-        if ("virtuoso.jdbc4.VirtuosoException".equals(e.getClass().getCanonicalName()))
-          // TODO: replace with a logging implementation
-          System.out.println("Seems that the user is already there");
-        else
-          throw e;
+      //create user if doesn't exists
+      boolean authSparqlUserExist = userManager.checkUserExists(instance.getAuthSparqlUser(), null);
+      if (!authSparqlUserExist) {
+          userManager.createUser(instance.getAuthSparqlUser(), instance.getAuthSparqlPassword());
+          userManager.setDefaultRdfPermissions(instance.getAuthSparqlUser(), 3);
+          userManager.grantRole(instance.getAuthSparqlUser(), "SPARQL_UPDATE");
+          userManager.grantRole("SPARQL", "SPARQL_UPDATE");
+          System.out.println("[INFO] System User was created ");
       }
 
       SecureRdfStoreManagerImpl frameworkRdfStoreManager = new SecureRdfStoreManagerImpl(instance
