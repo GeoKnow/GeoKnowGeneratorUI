@@ -66,8 +66,8 @@ public class RdfStoreProxy extends HttpServlet {
     String mode = req.getParameter("mode");
     String query = req.getParameter("query");
 
-    System.out.println("mode " + mode);
-    System.out.println("username " + username);
+//    System.out.println("mode " + mode);
+//    System.out.println("username " + username);
 
     try {
       RdfStoreManager rdfStoreManager;
