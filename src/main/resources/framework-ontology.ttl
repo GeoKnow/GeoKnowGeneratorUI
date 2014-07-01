@@ -70,6 +70,20 @@
       rdfs:label "is allowed to use service"^^xsd:string ;
       rdfs:range lds:ComponentService .
 
+:isNotLoggedIn
+      rdf:type owl:DatatypeProperty ;
+      rdfs:domain :Role ;
+      rdfs:comment "Role is used as default for not logged in user" ;
+      rdfs:label "isNotLoggedIn"@en ;
+      rdfs:range xsd:boolean .
+
+:isDefault
+      rdf:type owl:DatatypeProperty ;
+      rdfs:domain :Role ;
+      rdfs:comment "Role is used as default for newly registered user" ;
+      rdfs:label "isDefault"@en ;
+      rdfs:range xsd:boolean .
+
 :Administrator
       rdf:type :Role ;
       rdfs:label "Administrator"^^xsd:string ;

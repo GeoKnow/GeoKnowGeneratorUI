@@ -17,6 +17,29 @@ function UserRolesCtrl($scope, UsersService, ConfigurationService, $q, ServerErr
     $scope.savingRoles = false;
     $scope.savingUsers = false;
 
+    $scope.defaultRole = null;
+    $scope.notLoggedInRole = null;
+
+    var getBasicUserRole = function() {
+        for (var ind in $scope.roles) {
+            if ($scope.roles[ind].uri=="gkg:BasicUser") return $scope.roles[ind];
+        }
+        return null;
+    };
+
+    var initDefaultRoles = function() {
+        $scope.defaultRole = null;
+        $scope.notLoggedInRole = null;
+        for (var ind in $scope.roles) {
+            if ($scope.roles[ind].isDefault) $scope.defaultRole = $scope.roles[ind];
+            else if ($scope.roles[ind].isNotLoggedIn) $scope.notLoggedInRole = $scope.roles[ind];
+        }
+        if ($scope.defaultRole==null) $scope.defaultRole = getBasicUserRole();
+        if ($scope.notLoggedInRole==null) $scope.notLoggedInRole = getBasicUserRole();
+    };
+
+    initDefaultRoles();
+
     $scope.refreshUsers = function() {
         UsersService.reloadUsers().then(function(result) {
             $scope.users = result;
@@ -28,6 +51,7 @@ function UserRolesCtrl($scope, UsersService, ConfigurationService, $q, ServerErr
         UsersService.reloadRoles().then(function(result) {
             $scope.roles = result;
             $scope.changedRoles = [];
+            initDefaultRoles();
         });
     };
 
@@ -105,6 +129,22 @@ function UserRolesCtrl($scope, UsersService, ConfigurationService, $q, ServerErr
     $scope.revertRoles = function() {
         $scope.refreshRoles();
         $scope.changedRoles = [];
+    };
+
+    $scope.setDefaultRole = function() {
+        UsersService.setDefaultRole($scope.defaultRole.uri).then(function(response) {
+            $scope.refreshRoles();
+        }, function(response) {
+            $scope.refreshRoles();
+        });
+    };
+
+    $scope.setNotLoggedInRole = function() {
+        UsersService.setNotLoggedInRole($scope.notLoggedInRole.uri).then(function(response) {
+            $scope.refreshRoles();
+        }, function(response) {
+            $scope.refreshRoles();
+        });
     };
 
     $scope.saveUsers = function() {

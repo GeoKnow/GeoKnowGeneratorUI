@@ -86,9 +86,10 @@ function StackMenuCtrl($scope, ConfigurationService, localize, AccountService) {
       };
 
       $scope.showItem = function(item) {
-        if (!AccountService.isLogged()) return true; //todo unauthorized user
         if (AccountService.isAdmin()) return true; //show all items to admin
-        var allowedServices = AccountService.getRole().services;
+        var role = AccountService.getRole();
+        if (role==null) return false; //hide all
+        var allowedServices = role.services;
         for (var ind in item.requiredServices) {
             if (allowedServices.indexOf(item.requiredServices[ind]) == -1) //hide item if one of required services is not allowed for current user
                 return false;
@@ -97,7 +98,6 @@ function StackMenuCtrl($scope, ConfigurationService, localize, AccountService) {
       };
 
       $scope.showGroup = function(group) {
-        if (!AccountService.isLogged()) return true; //todo unauthorized user
         if (AccountService.isAdmin()) return true;
         //hide group if all items are hidden
         for (var ind in group.items) {

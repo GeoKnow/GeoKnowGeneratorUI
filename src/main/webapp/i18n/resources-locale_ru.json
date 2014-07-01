@@ -913,6 +913,16 @@
         "value":"Добавить новую роль",
         "description":"button on roles page"
     },
+    {
+        "key":"_default-role_",
+        "value":"Роль по умолчанию",
+        "description":"default role select label"
+    },
+    {
+        "key":"_not-logged-in-role_",
+        "value":"Роль неавторизованного пользователя",
+        "description":"not logged in user role select label"
+    },
     
     
     {

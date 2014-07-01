@@ -1,6 +1,26 @@
 <h3 class="green bold" data-i18n="_roles-management_"></h3>
 
 <div ng-controller="UserRolesCtrl">
+    <div class="row">
+        <div class="col-lg-4">
+            <label class="col-lg-4" data-i18n="_default-role_"></label>
+            <div class="col-lg-8">
+                <select class="form-control" ng-model="defaultRole" ng-options="role as role.name for role in roles | orderBy:'name'" ng-change="setDefaultRole()"></select>
+            </div>
+        </div>
+    </div>
+    <br/>
+    <div class="row">
+        <div class="col-lg-4">
+            <label class="col-lg-4" data-i18n="_not-logged-in-role_"></label>
+            <div class="col-lg-8">
+                <select class="form-control" ng-model="notLoggedInRole" ng-options="role as role.name for role in roles | orderBy:'name'" ng-change="setNotLoggedInRole()"></select>
+            </div>
+        </div>
+    </div>
+
+    <br/>
+
     <button type="button" class="btn btn-primary btn-large" data-toggle="modal" data-target="#modalRole" ng-click="new();" data-i18n="_add-role_"></button>
 
     <h4>
@@ -32,6 +52,7 @@
     <button type="button" class="btn btn-primary btn-large" ng-click="revertRoles();" ng-disabled="!isRolesChanged() || savingRoles" data-i18n="_revert-changes_"></button>
     <span ng-show="savingRoles" data-i18n="_saving_"></span>
 
+    <br/>
     <br/>
     <br/>
     <br/>

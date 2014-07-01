@@ -79,7 +79,9 @@ module.factory("UsersService", function($http, Config, AccountService) {
         var result = {
             uri: uri,
             name: r["foaf:name"][0],
-            services: r["gkg:isAllowedToUseService"] ? r["gkg:isAllowedToUseService"] : []
+            services: r["gkg:isAllowedToUseService"] ? r["gkg:isAllowedToUseService"] : [],
+            isDefault: r["gkg:isDefault"] ? (r["gkg:isDefault"][0]=="true" || r["gkg:isDefault"][0]=="1" ? true : false) : false,
+            isNotLoggedIn: r["gkg:isNotLoggedIn"] ? (r["gkg:isNotLoggedIn"][0]=="true" || r["gkg:isNotLoggedIn"][0]=="1" ? true : false) : false
         };
         return result;
     };
@@ -103,6 +105,44 @@ module.factory("UsersService", function($http, Config, AccountService) {
             mode: "settings"
         };
         return $http.post("RdfStoreProxy", $.param(requestData));
+    };
+
+    var setDefaultRole = function(roleURI) {
+        var requestData = {
+            format: "application/sparql-results+json",
+            query: "prefix gkg: <" + Config.getFrameworkOntologyNS() + "> "
+                    + "prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> "
+                    + " WITH <" + Config.getAccountsGraph() + "> "
+                    + " DELETE { ?role gkg:isDefault ?o .} "
+                    + " INSERT {" + roleURI + " gkg:isDefault true .} "
+                    + " WHERE { optional {?role gkg:isDefault ?o .} } ",
+            mode: "settings"
+        };
+        return $http.post("RdfStoreProxy", $.param(requestData));
+    };
+
+    var setNotLoggedInRole = function(roleURI) {
+        var requestData = {
+            format: "application/sparql-results+json",
+            query: "prefix gkg: <" + Config.getFrameworkOntologyNS() + "> "
+                    + "prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> "
+                    + " WITH <" + Config.getAccountsGraph() + "> "
+                    + " DELETE { ?role gkg:isNotLoggedIn ?o .} "
+                    + " INSERT {" + roleURI + " gkg:isNotLoggedIn true .} "
+                    + " WHERE { optional {?role gkg:isNotLoggedIn ?o .} } ",
+            mode: "settings"
+        };
+        return $http.post("RdfStoreProxy", $.param(requestData));
+    };
+
+    var readNotLoggedInRole = function() {
+        return readRoles().then(function(response) {
+            var allRoles = getAllRoles();
+            for (var ind in allRoles) {
+                if (allRoles[ind].isNotLoggedIn) return allRoles[ind];
+            }
+            return getRole("gkg:BasicUser");
+        });
     };
 
     var updateRoleServices = function(roleURI, services) {
@@ -149,6 +189,9 @@ module.factory("UsersService", function($http, Config, AccountService) {
         getRole             : getRole,
         reloadRoles         : reloadRoles,
         createRole          : createRole,
+        setDefaultRole      : setDefaultRole,
+        setNotLoggedInRole  : setNotLoggedInRole,
+        readNotLoggedInRole : readNotLoggedInRole,
         updateRoleServices  : updateRoleServices,
         createUser          : createUser
     };

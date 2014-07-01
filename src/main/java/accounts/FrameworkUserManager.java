@@ -91,6 +91,8 @@ public class FrameworkUserManager implements UserManager {
       rdfStoreUserManager.dropUser(rdfStoreUser);
       throw e;
     }
+    //get default role uri
+    String role = getDefaultRoleURI();
     // write user account to accounts graph
     query = getPrefixes() + "\n" + "INSERT DATA { GRAPH <" + frameworkConfig.getAccountsGraph()
         + "> {\n" + " :" + name + " rdf:type gkg:Account .\n" + " :" + name + " foaf:accountName \""
@@ -100,7 +102,7 @@ public class FrameworkUserManager implements UserManager {
         + "\" .\n" + " :" + name + " gkg:settingsGraph \"" + userSettingsGraphURI
         + "\"^^xsd:anyURI .\n" + " :" + name + " foaf:mbox <mailto:" + email + "> .\n" + " :"
         + name + " dcterms:created \"" + ISO8601Utils.format(new Date()) + "\"^^xsd:date .\n"
-        + " :" + name + " gkg:role gkg:BasicUser .\n"
+        + " :" + name + " gkg:role <" + role + "> .\n"
         + "} }";
 
     try {
@@ -764,6 +766,23 @@ public class FrameworkUserManager implements UserManager {
                 roleServices.add(bindingNode.path("o").path("value").getTextValue());
         }
         role.setServices(roleServices);
+        return role;
+    }
+
+    private String getDefaultRoleURI() throws Exception {
+        String query = getPrefixes() + "\n" + "SELECT DISTINCT ?role FROM <" + frameworkConfig.getAccountsGraph() + "> "
+                + "WHERE { ?role gkg:isDefault true . }";
+        String result = rdfStoreManager.execute(query, jsonResponseFormat);
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode rootNode = mapper.readTree(result);
+        Iterator<JsonNode> bindingsIter = rootNode.path("results").path("bindings").getElements();
+        String role;
+        if (!bindingsIter.hasNext()) {
+            role = frameworkConfig.getFrameworkOntologyNS() + "BasicUser";
+        } else {
+            JsonNode binding = bindingsIter.next();
+            role = binding.path("role").path("value").getTextValue();
+        }
         return role;
     }
 }
