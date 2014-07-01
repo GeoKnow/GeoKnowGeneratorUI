@@ -57,10 +57,10 @@
 
 	                        <ul class="nav navbar-nav navbar-right">
                             <li>
-                            <div ng-if="isUserAuthenticated()">
+                            <div ng-if="isUserAuthenticated() && $root.isSystemSetUp">
                                         <span class="strong">{{'_logged-in-as_' | i18n}}<strong>{{currentAccount.username}}</strong></span> <button class="btn-sm btn-primary" ng-click="logout()" data-i18n="_logout_"></button>
                             </div>
-                            <div ng-if="!isUserAuthenticated()">
+                            <div ng-if="!isUserAuthenticated() && $root.isSystemSetUp">
                                         <!-- ng-disabled="loginForm.$invalid" -->
                                         <button type="button" class="btn-sm btn-primary navbar-left" data-toggle="modal" data-target="#modalLogin" ng-click="clearLoginForm()" data-i18n="_login_"></button>
                                         <button type="button" class="btn-xs btn-link navbar-left" data-toggle="modal" data-target="#modalSignUp" ng-click="clearSignUpForm()" data-i18n="_register_"></button>

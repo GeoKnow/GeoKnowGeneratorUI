@@ -61,6 +61,11 @@
         "value":"A tool for exploring (geographical) Linked Data datasets on the Web. To get started select a data set from the drop down menu.",
         "description":"description shown on Mappify page"
     },
+    {
+        "key":"_system-setup-page-content_",
+        "value":"System is not set up. Call setup servlet first: http://localhost:8080/generator/InitialSetup.",
+        "description":"content of system-setup page"
+    },
 
 
     {

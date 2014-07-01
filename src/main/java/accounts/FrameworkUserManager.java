@@ -676,7 +676,7 @@ public class FrameworkUserManager implements UserManager {
     return settingsGraphList;
   }
 
-  private Collection<String> getAllUsernames() throws Exception {
+  public Collection<String> getAllUsernames() throws Exception {
     String query = getPrefixes() + "\n" + "SELECT DISTINCT ?username FROM <"
         + frameworkConfig.getAccountsGraph() + "> "
         + " WHERE {?account rdf:type gkg:Account . ?account foaf:accountName ?username}";

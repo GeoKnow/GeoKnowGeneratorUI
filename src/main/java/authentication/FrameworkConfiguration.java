@@ -1,6 +1,5 @@
 package authentication;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import javax.servlet.ServletContext;
@@ -53,25 +52,16 @@ public class FrameworkConfiguration {
   /**
    * 
    * @param context
-   * @param reset
    * @return
    * @throws Exception
    */
-  // TODO: replace System.out.println with a logging implementation
-  public static synchronized FrameworkConfiguration getInstance(ServletContext context,
-      boolean reset) throws Exception {
+  public static synchronized FrameworkConfiguration getInstance(ServletContext context, boolean ignoreIsSetUp) throws Exception {
 
     if (instance == null) {
-
-      System.out.println("[INFO] System Initialization ");
 
       instance = new FrameworkConfiguration();
 
       String configurationFile = "framework-configuration.ttl";
-      String datasetsFile = "framework-datasets.ttl";
-      String componentsFile = "framework-components.ttl";
-      String ontologyFile = "framework-ontology.ttl";
-      String accountsOntologyFile = "framework-ontology.ttl";
 
       // initialize parameters from context
       String frameworkUri = context.getInitParameter("framework-uri");
@@ -172,146 +162,6 @@ public class FrameworkConfiguration {
           instance.setGroupsGraph(soln.get("name").toString());
       }
       qexec.close();
-
-      // creates the system user exist for the application in virtuoso
-      VirtuosoUserManager userManager = instance.getVirtuosoUserManager();
-
-      // if the flag to reinstall is true
-      if (reset) {
-        try {
-          userManager.dropUser(instance.getAuthSparqlUser());
-        } catch (Exception e) {
-          // catches the error in case the user do not exist
-        }
-        // TODO: we may need to delete all users before to clean the store?
-      }
-
-      //create user if doesn't exists
-      boolean authSparqlUserExist = userManager.checkUserExists(instance.getAuthSparqlUser(), null);
-      if (!authSparqlUserExist) {
-          userManager.createUser(instance.getAuthSparqlUser(), instance.getAuthSparqlPassword());
-          userManager.setDefaultRdfPermissions(instance.getAuthSparqlUser(), 3);
-          userManager.grantRole(instance.getAuthSparqlUser(), "SPARQL_UPDATE");
-          userManager.grantRole("SPARQL", "SPARQL_UPDATE");
-          System.out.println("[INFO] System User was created ");
-      }
-
-      SecureRdfStoreManagerImpl frameworkRdfStoreManager = new SecureRdfStoreManagerImpl(instance
-          .getAuthSparqlEndpoint(), instance.getAuthSparqlUser(), instance.getAuthSparqlPassword());
-      // delete all graphs if reinstall is requested
-      if (reset) {
-        try {
-          frameworkRdfStoreManager.dropGraph(instance.getSettingsGraph());
-          frameworkRdfStoreManager.dropGraph(instance.getAccountsGraph());
-          frameworkRdfStoreManager.dropGraph(instance.getGroupsGraph());
-          frameworkRdfStoreManager.dropGraph(instance.getInitialSettingsGraph());
-        } catch (Exception e) {
-        }
-      }
-
-      // check if settingsGraph exist do not overwrite
-      String queryString = " ASK { GRAPH <" + instance.getSettingsGraph() + "> {?s a ?o} }";
-      String response = frameworkRdfStoreManager.execute(queryString, "text/plain");
-      if (response.toLowerCase().indexOf("true") < 0) {
-
-        // TODO: replace with a logging implementation
-        System.out.println("[INFO] Default Graphs creation/configuration ");
-
-        // Read configuration files
-        Model datrasetModel = ModelFactory.createDefaultModel();
-        Model componentsModel = ModelFactory.createDefaultModel();
-        Model ontologyModel = ModelFactory.createDefaultModel();
-        Model ontologyAccountsModel = ModelFactory.createDefaultModel();
-
-        try {
-          datrasetModel.read(datasetsFile);
-          componentsModel.read(componentsFile);
-          ontologyModel.read(ontologyFile);
-          ontologyAccountsModel.read(accountsOntologyFile);
-        } catch (RiotException e) {
-          throw new IOException("Malformed configuration files");
-        }
-
-        // create required named graphs and load the configuration files
-        // using framework default user
-        frameworkRdfStoreManager.createGraph(instance.getSettingsGraph());
-        frameworkRdfStoreManager.createGraph(instance.getAccountsGraph());
-        frameworkRdfStoreManager.createGraph(instance.getGroupsGraph());
-        frameworkRdfStoreManager.createGraph(instance.getInitialSettingsGraph());
-
-        // Make graphs accessible to framework user only
-        userManager.setDefaultRdfPermissions("nobody", 0);
-        userManager.setRdfGraphPermissions(instance.getAuthSparqlUser(), instance
-            .getSettingsGraph(), 3);
-        userManager.setRdfGraphPermissions(instance.getAuthSparqlUser(), instance
-            .getAccountsGraph(), 3);
-        userManager.setRdfGraphPermissions(instance.getAuthSparqlUser(), instance.getGroupsGraph(),
-            3);
-        userManager.setRdfGraphPermissions(instance.getAuthSparqlUser(), instance
-            .getInitialSettingsGraph(), 3);
-
-        Model settingsModel = ModelFactory.createDefaultModel();
-        settingsModel.add(datrasetModel);
-        settingsModel.add(componentsModel);
-        settingsModel.add(ontologyModel);
-        // write the initial settings model (default settings for new
-        // users)
-        ByteArrayOutputStream os = new ByteArrayOutputStream();
-        settingsModel.write(os, "N-TRIPLES");
-        queryString = "INSERT DATA { GRAPH <" + instance.getInitialSettingsGraph() + "> { "
-            + os.toString() + " } }";
-        os.close();
-        frameworkRdfStoreManager.execute(queryString, null);
-
-        // write the system settings model (include system graphs data)
-        // settingsModel.add(graphsModel);
-        os = new ByteArrayOutputStream();
-        settingsModel.write(os, "N-TRIPLES");
-        queryString = "INSERT DATA { GRAPH <" + instance.getSettingsGraph() + "> { "
-            + os.toString() + " } }";
-        os.close();
-        frameworkRdfStoreManager.execute(queryString, null);
-
-        // create and add accounts ontology to the accounts graph
-        os = new ByteArrayOutputStream();
-        ontologyAccountsModel.write(os, "N-TRIPLES");
-        queryString = "INSERT DATA { GRAPH <" + instance.getAccountsGraph() + "> { "
-            + os.toString() + " } }";
-        os.close();
-        frameworkRdfStoreManager.execute(queryString, null);
-      }
-
-        //create users from framework configuration
-        query = "PREFIX gkg: <http://ldiw.ontos.com/acc/ontology/> PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> "
-                + " PREFIX foaf: <http://xmlns.com/foaf/0.1/> PREFIX lds: <http://stack.linkeddata.org/ldis-schema/> "
-                + " SELECT ?accountName ?password ?mailto ?role WHERE { ?account rdf:type gkg:Account . ?account foaf:accountName ?accountName . "
-                + " ?account lds:password ?password . ?account foaf:mbox ?mailto . ?account gkg:Role ?role . } ";
-        qexec = QueryExecutionFactory.create(query, configurationModel);
-        results = qexec.execSelect();
-        FrameworkUserManager frameworkUserManager = instance.getFrameworkUserManager();
-        while (results.hasNext()) {
-            QuerySolution soln = results.next();
-            String accountName = soln.get("accountName").asLiteral().getString();
-            String password = soln.get("password").asLiteral().getString();
-            String email = soln.get("mailto").toString().substring("mailto:".length());
-            String role = soln.get("role").toString();
-            if (reset && frameworkUserManager.checkUserExists(accountName, email)) {
-                try {
-                    frameworkUserManager.dropUser(accountName);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-            if (!frameworkUserManager.checkUserExists(accountName, email)) {
-                try {
-                    frameworkUserManager.createUser(accountName, password, email);
-                    frameworkUserManager.setRole(accountName, role);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        qexec.close();
     }
 
     return instance;

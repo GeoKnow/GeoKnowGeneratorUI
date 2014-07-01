@@ -1,13 +1,13 @@
 'use strict';
 
 
-function LoginCtrl($scope, flash, AccountService, LoginService, ServerErrorResponse, Base64) {
+function LoginCtrl($scope, flash, AccountService, LoginService, ServerErrorResponse, Base64, $rootScope) {
     $scope.currentAccount = angular.copy(AccountService.getAccount());
     $scope.loggedIn = false;
     $scope.signUp = {username:null, email:null};
     $scope.restorePassword = {username:null};
 
-    if($scope.currentAccount.user){
+    if($scope.currentAccount.user && $rootScope.isSystemSetUp){
     	LoginService.login($scope.currentAccount.user, $scope.currentAccount.pass)
         .then(function(data) {
             $scope.currentAccount = angular.copy(AccountService.getAccount());

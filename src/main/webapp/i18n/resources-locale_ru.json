@@ -61,6 +61,11 @@
         "value":"Инструмент для поиска (географических) наборов связанных данных в Интернете. Для начала работы выберите набор данных.",
         "description":"description shown on Mappify page"
     },
+    {
+        "key":"_system-setup-page-content_",
+        "value":"Система не инициализирована. Для инициализации используйте сервлет http://localhost:8080/generator/InitialSetup",
+        "description":"content of system-setup page"
+    },
 
 
     {

@@ -37,6 +37,7 @@ app.config(function($routeSegmentProvider, $routeProvider)
 
         .when('/home', 'default')
         .when('/account','account')
+        .when('/system-setup', 'system-setup')
         // .when('/account/preferences', 'account.preferences')
         .when('/settings', 'settings')
         .when('/settings/data-sources', 'settings.data-sources')
@@ -236,6 +237,9 @@ app.config(function($routeSegmentProvider, $routeProvider)
                 .segment('preferences', {
                     templateUrl: 'js/account/preferences/preferences.html' })
             .up()
+        .segment('system-setup', {
+            templateUrl: 'system-setup.html'
+        })
 
         .segment('about', {
             templateUrl:'about.html' })
@@ -264,5 +268,20 @@ app.config(function($routeSegmentProvider, $routeProvider)
     localizeProvider.languages = ['en', 'ru'];
     localizeProvider.defaultLanguage = 'en';
     localizeProvider.ext = 'json';
+})
+.run(function($rootScope, $location, $http) {
+    //redirect to system-setup page if system is not set up
+    $rootScope.$on("$routeChangeStart", function(event, next, current) {
+        if ($rootScope.isSystemSetUp==undefined) {
+            $http.get("InitialSetup?check=true").then(function(response) {
+                $rootScope.isSystemSetUp = response.data.setup=="true";
+                if (!$rootScope.isSystemSetUp) {
+                    $location.path('/system-setup');
+                }
+            });
+        } else if (!$rootScope.isSystemSetUp) {
+            $location.path('/system-setup');
+        }
+    });
 });
 
