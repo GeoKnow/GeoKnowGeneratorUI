@@ -10,7 +10,7 @@ function AccountMenuCtrl($scope) {
 
 function StackMenuCtrl($scope, ConfigurationService, localize, AccountService) {
     var services = ConfigurationService.getComponentServices(":Solr");
-	var solrServiceUrl = services[0].serviceUrl;
+	var searchServiceUrl = services[0].serviceUrl;
 
 	var miniDixServices = ConfigurationService.getComponentServices(":MiniDix");
     var miniDixServiceUrl = miniDixServices[0].serviceUrl;
@@ -37,7 +37,7 @@ function StackMenuCtrl($scope, ConfigurationService, localize, AccountService) {
 //		       {name: 'Virtuoso', route:'#/home/search-querying-and-exploration/virtuoso', url:'/home/search-querying-and-exploration/virtuoso' },
 //		       {name: 'Facete', route:'#/home/search-querying-and-exploration/facete', url:'/home/search-querying-and-exploration/facete' },
 //		       {name: 'Mappify', route:'#/home/search-querying-and-exploration/mappify', url:'/home/search-querying-and-exploration/mappify' },
-		       {name: '_search_', route:null, url:solrServiceUrl+'/collection1/custom', modaltitle:'_faceted-search_', requiredServices:[":SolrService"] }]
+		       {name: '_search_', route:null, url:searchServiceUrl, modaltitle:'_faceted-search_', requiredServices:[":SearchService"] }]
 		    },
 	    {
 	      title: "_man-revision-authoring_",
@@ -70,6 +70,8 @@ function StackMenuCtrl($scope, ConfigurationService, localize, AccountService) {
 	    //add locale for MiniDix
 	    if (url.indexOf(miniDixServiceUrl)==0)
 	        $scope.url += ("&locale=" + localize.language);
+	    else if (url.indexOf(searchServiceUrl)==0)
+	        $scope.url += ("?lang=" + localize.language);
 	  };
 
 	  $scope.close = function(modalID) {

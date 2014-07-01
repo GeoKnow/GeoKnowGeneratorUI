@@ -166,12 +166,12 @@
 :Solr
       a       lds:StackComponent ;
       rdfs:label "Solr"^^xsd:string ;
-      lds:providesService :SolrService ;
+      lds:providesService :SearchService ;
       lds:version "4.8.1"^^xsd:string .
-:SolrService
+:SearchService
       a       lds:ExplorationService ;
       dcterms:description "Provides Solr Search."^^xsd:string ;
-      lds:serviceUrl <http://localhost:8080/solr> .
+      lds:serviceUrl <http://localhost:8080/solr-search-ui> .
 
 :DocumentComponent
       a       lds:StackComponent ;
