@@ -1884,6 +1884,13 @@
         "key":"_doc-reindex-error_",
         "value":"Ошибка при переиндексации документа",
         "description":"Error while re-indexing the document"
+    },
+
+
+    {
+        "key":"_user-already-exists-error_",
+        "value":"Пользователь уже существует",
+        "description":"Error while registering new user: user already exists"
     }
 
 ]

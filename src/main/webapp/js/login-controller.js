@@ -1,7 +1,7 @@
 'use strict';
 
 
-function LoginCtrl($scope, flash, AccountService, LoginService, ServerErrorResponse, Base64, UsersService) {
+function LoginCtrl($scope, flash, AccountService, LoginService, ServerErrorResponse, Base64, UsersService, AuthenticationErrorResponse) {
     $scope.currentAccount = angular.copy(AccountService.getAccount());
     $scope.loggedIn = false;
     $scope.signUp = {username:null, email:null};
@@ -82,7 +82,11 @@ function LoginCtrl($scope, flash, AccountService, LoginService, ServerErrorRespo
                 $scope.isRegistering = false;
             }, function(response) {
             	$scope.close('#modalSignUp');
-                flash.error = ServerErrorResponse.getMessage(response.status);
+            	if (response.status==500 && response.data) {
+                    flash.error = ServerErrorResponse.getMessage(response.status) + ": " + AuthenticationErrorResponse.getMessage(parseInt(response.data.code));
+                } else {
+                    flash.error = ServerErrorResponse.getMessage(response.status);
+                }
                 $scope.isRegistering = false;
             });
     };
