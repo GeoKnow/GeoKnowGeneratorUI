@@ -39,7 +39,7 @@
                     <th ng-repeat="role in roles">{{role.name}}</th>
                 </tr>
                 <tr ng-repeat="s in services">
-                    <th class="col-header">{{s.uri}}</th>
+                    <th class="col-header" tooltip="{{s.description}}">{{s.uri}}</th>
                     <td ng-repeat="role in roles">
                         <input type="checkbox" ng-disabled="roleUnchangeable(role)" ng-checked="serviceAllowed(s, role)" ng-click="toggleService(s, role)"/>
                     </td>
