@@ -141,8 +141,9 @@
                 </div>
              </div>
              <div class="modal-footer">
-                <button type="submit" class="btn-sm btn-primary" ng-click="createAccount();" ng-disabled="signUpForm.$invalid" data-i18n="_register_"></button>
-                <button type="button" class="btn-sm btn-default" ng-click="close('#modalSignUp')" data-i18n="_cancel_"></button>
+                <button type="submit" class="btn-sm btn-primary" ng-click="createAccount();" ng-disabled="signUpForm.$invalid || isRegistering" data-i18n="_register_"></button>
+                <button type="button" class="btn-sm btn-default" ng-click="close('#modalSignUp')" ng-disabled="isRegistering" data-i18n="_cancel_"></button>
+                <span ng-show="isRegistering" data-i18n="_registering_"></span>
             </div>
         </form>
     </div>

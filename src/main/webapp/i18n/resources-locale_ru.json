@@ -286,6 +286,11 @@
         "value":"Сохранение ...",
         "description":"saving in progress message"
     },
+    {
+        "key":"_registering_",
+        "value":"Идет регистрация ...",
+        "description":"registering in progress message"
+    },
 
 
     {

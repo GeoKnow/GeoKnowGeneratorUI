@@ -6,6 +6,7 @@ function LoginCtrl($scope, flash, AccountService, LoginService, ServerErrorRespo
     $scope.loggedIn = false;
     $scope.signUp = {username:null, email:null};
     $scope.restorePassword = {username:null};
+    $scope.isRegistering = false;
 
     if($scope.currentAccount.user){
     	LoginService.login($scope.currentAccount.user, $scope.currentAccount.pass)
@@ -73,13 +74,16 @@ function LoginCtrl($scope, flash, AccountService, LoginService, ServerErrorRespo
     };
 
     $scope.createAccount = function() {
+        $scope.isRegistering = true;
         LoginService.createAccount($scope.signUp.username, $scope.signUp.email)
             .then(function(response) {
             	$scope.close('#modalSignUp');
                 flash.success = response.data.message;
+                $scope.isRegistering = false;
             }, function(response) {
             	$scope.close('#modalSignUp');
                 flash.error = ServerErrorResponse.getMessage(response.status);
+                $scope.isRegistering = false;
             });
     };
 
@@ -104,6 +108,7 @@ function LoginCtrl($scope, flash, AccountService, LoginService, ServerErrorRespo
         $scope.signUpForm.$setPristine();
         $scope.signUp.username = null;
         $scope.signUp.email = null;
+        $scope.isRegistering = false;
     };
 
     $scope.clearRestorePasswordForm = function() {

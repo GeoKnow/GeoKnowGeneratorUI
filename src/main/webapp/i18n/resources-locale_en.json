@@ -288,6 +288,11 @@
         "value":"Saving ...",
         "description":"saving in progress message"
     },
+    {
+        "key":"_registering_",
+        "value":"Registering ...",
+        "description":"registering in progress message"
+    },
 
 
     {
