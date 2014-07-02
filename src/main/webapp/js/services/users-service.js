@@ -21,6 +21,8 @@ module.factory("UsersService", function($http, Config, AccountService) {
         };
         return $http.post("RdfStoreProxy", $.param(requestData)).then(function(response) {
             var parsedResult = Config.parseSparqlResults(response.data);
+            userNames = [];
+            emails = [];
             for (var ind in parsedResult) {
                 userNames.push(parsedResult[ind]["foaf:accountName"][0]);
                 emails.push(parsedResult[ind]["foaf:mbox"][0].replace("mailto:",""));
@@ -44,6 +46,8 @@ module.factory("UsersService", function($http, Config, AccountService) {
         };
         return $http.post("UserManagerServlet", $.param(requestData)).then(function(response) {
             users = response.data;
+            userNames = [];
+            emails = [];
             var ns = Config.getFrameworkOntologyNS();
             for (var ind in users) {
                 users[ind].profile.accountURI = users[ind].profile.accountURI.replace(Config.getNS(), ":");
@@ -51,6 +55,8 @@ module.factory("UsersService", function($http, Config, AccountService) {
                 for (var sind in users[ind].profile.role.services) {
                     users[ind].profile.role.services[sind] = users[ind].profile.role.services[sind].replace(Config.getNS(), ":");
                 }
+                userNames.push(users[ind].profile.username);
+                emails.push(users[ind].profile.email.replace("mailto:",""));
             }
             return users;
         });

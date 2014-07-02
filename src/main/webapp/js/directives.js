@@ -223,8 +223,8 @@ app.directive('uniqueUserName', ['$compile', 'UsersService', function($compile, 
          restrict: 'A',
          require: 'ngModel',
          link: function(scope, elem, attr, ngModel) {
-           var list = UsersService.getUserNames();
            ngModel.$parsers.unshift(function (value) {
+             var list = UsersService.getUserNames();
              ngModel.$setValidity('uniqueUserName', list.indexOf(value) === -1);
              return value;
            });
@@ -237,8 +237,8 @@ app.directive('uniqueEmail', ['$compile', 'UsersService', function($compile, Use
          restrict: 'A',
          require: 'ngModel',
          link: function(scope, elem, attr, ngModel) {
-           var list = UsersService.getEmails();
            ngModel.$parsers.unshift(function (value) {
+             var list = UsersService.getEmails();
              ngModel.$setValidity('uniqueEmail', list.indexOf(value) === -1);
              return value;
            });
