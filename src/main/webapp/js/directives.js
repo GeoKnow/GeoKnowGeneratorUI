@@ -217,3 +217,31 @@ app.directive('uniqueIdentifier', ['$compile', 'ConfigurationService', function(
         }
     };
  }]);
+
+app.directive('uniqueUserName', ['$compile', 'UsersService', function($compile, UsersService){
+     return {
+         restrict: 'A',
+         require: 'ngModel',
+         link: function(scope, elem, attr, ngModel) {
+           var list = UsersService.getUserNames();
+           ngModel.$parsers.unshift(function (value) {
+             ngModel.$setValidity('uniqueUserName', list.indexOf(value) === -1);
+             return value;
+           });
+         }
+     };
+ }]);
+
+app.directive('uniqueEmail', ['$compile', 'UsersService', function($compile, UsersService){
+     return {
+         restrict: 'A',
+         require: 'ngModel',
+         link: function(scope, elem, attr, ngModel) {
+           var list = UsersService.getEmails();
+           ngModel.$parsers.unshift(function (value) {
+             ngModel.$setValidity('uniqueEmail', list.indexOf(value) === -1);
+             return value;
+           });
+         }
+     };
+ }]);

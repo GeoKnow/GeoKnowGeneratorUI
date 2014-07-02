@@ -99,6 +99,9 @@ app.config(function($routeSegmentProvider, $routeProvider)
             resolve: {
                       settings: function (Config) {
                         return Config.read();
+                      },
+                      userInfo : function(UsersService) {
+                        return UsersService.readUserNamesEmails();
                       }
                 }
             })
@@ -190,6 +193,9 @@ app.config(function($routeSegmentProvider, $routeProvider)
             resolve: {
               settings: function (Config) {
                 return Config.read();
+              },
+              userInfo : function(UsersService) {
+                return UsersService.readUserNamesEmails();
               }
             }
 		})

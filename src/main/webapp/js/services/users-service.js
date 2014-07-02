@@ -6,6 +6,37 @@ module.factory("UsersService", function($http, Config, AccountService) {
     var users = [];
     var roles = {};
 
+    var userNames = [];
+    var emails = [];
+
+    var readUserNamesEmails = function() {
+        var requestData = {
+            format: "application/sparql-results+json",
+            query: "prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> "
+                    + " prefix gkg: <" + Config.getFrameworkOntologyNS() + "> "
+                    + " SELECT ?s ?p ?o FROM <" + Config.getAccountsGraph() + "> "
+                    + " WHERE {?s ?p ?o . ?s rdf:type gkg:Account . filter(?p=foaf:accountName || ?p=foaf:mbox) } "
+                    + " ORDER BY ?s ?p ?o",
+            mode: "settings"
+        };
+        return $http.post("RdfStoreProxy", $.param(requestData)).then(function(response) {
+            var parsedResult = Config.parseSparqlResults(response.data);
+            for (var ind in parsedResult) {
+                userNames.push(parsedResult[ind]["foaf:accountName"][0]);
+                emails.push(parsedResult[ind]["foaf:mbox"][0].replace("mailto:",""));
+            }
+            return parsedResult;
+        });
+    };
+
+    var getUserNames = function() {
+        return userNames;
+    };
+
+    var getEmails = function() {
+        return emails;
+    };
+
     var readUsers = function() {
         var requestData = {
             mode: "getProfiles",
@@ -189,6 +220,9 @@ module.factory("UsersService", function($http, Config, AccountService) {
 	};
 
     return {
+        readUserNamesEmails : readUserNamesEmails,
+        getUserNames        : getUserNames,
+        getEmails           : getEmails,
         readUsers           : readUsers,
         getAllUsers         : getAllUsers,
         reloadUsers         : reloadUsers,

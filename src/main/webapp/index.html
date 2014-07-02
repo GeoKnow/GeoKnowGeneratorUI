@@ -123,19 +123,21 @@
                 <div class="form-group">
                     <label for="username" class="col-lg-2 control-label" data-i18n="_username_"></label>
                     <div class="col-lg-10">
-                        <input type="text" id="username" name="username" class="form-control" data-i18n-attr="_username_|placeholder" ng-model="signUp.username" required/>
+                        <input type="text" id="username" name="username" class="form-control" data-i18n-attr="_username_|placeholder" ng-model="signUp.username" required unique-user-name/>
                         <div class="error"  ng-show="signUpForm.username.$dirty && signUpForm.username.$invalid">{{'_invalid-field-message_' | i18n}}:
                             <span ng-show="signUpForm.username.$error.required" data-i18n="_username-missed-message_"></span>
+                            <span ng-show="signUpForm.username.$error.uniqueUserName" data-i18n="_user-already-exists-error_"></span>
                         </div>
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="email" class="col-lg-2 control-label" data-i18n="_email_"></label>
                     <div class="col-lg-10">
-                        <input type="email" id="email" name="email" class="form-control" data-i18n-attr="_email_|placeholder" ng-model="signUp.email" required/>
+                        <input type="email" id="email" name="email" class="form-control" data-i18n-attr="_email_|placeholder" ng-model="signUp.email" required unique-email/>
                         <div class="error" ng-show="signUpForm.email.$dirty && signUpForm.email.$invalid">{{'_invalid-field-message_' | i18n}}:
                             <span ng-show="signUpForm.email.$error.required" data-i18n="_email-missed-message_"></span>
                             <span ng-show="signUpForm.email.$error.email" data-i18n="_malformed-email-message_"></span>
+                            <span ng-show="signUpForm.email.$error.uniqueEmail" data-i18n="_user-already-exists-error_"></span>
                         </div>
                     </div>
                 </div>
