@@ -1,6 +1,6 @@
 'use strict';
 
-var UploadedDocsCtrl = function($scope, $http, flash, filterFilter, orderByFilter, DocumentsService, ServerErrorResponse, ConfigurationService, localize, DocumentErrorResponse) {
+var UploadedDocsCtrl = function($scope, $http, flash, filterFilter, orderByFilter, DocumentsService, ServerErrorResponse, ConfigurationService, localize, DocumentErrorResponse, $window) {
     $scope.filterFields = [
         {value: "all", label: "_all-fields_"},
         {value: "docId", label: "_acc-doc_"},
@@ -185,6 +185,7 @@ var UploadedDocsCtrl = function($scope, $http, flash, filterFilter, orderByFilte
             $scope.refreshDocuments();
             $scope.close('#modalDocument');
             flash.success = localize.getLocalizedString("_changes-saved-message_");
+            $window.scrollTo(0,0);
             //reindex document
             var services = ConfigurationService.getComponentServices(":DocumentComponent", "lds:AuthoringService");
             var serviceUrl = services[0].serviceUrl;
@@ -199,6 +200,7 @@ var UploadedDocsCtrl = function($scope, $http, flash, filterFilter, orderByFilte
         }, function(response) {
             $scope.close('#modalDocument');
             flash.error = ServerErrorResponse.getMessage(response.status);
+            $window.scrollTo(0,0);
         });
     };
 
@@ -209,6 +211,7 @@ var UploadedDocsCtrl = function($scope, $http, flash, filterFilter, orderByFilte
         }, function(response) {
             if (response.status==500) flash.error = ServerErrorResponse.getMessage(response.status) + ": " + DocumentErrorResponse.getMessage(parseInt(response.data));
             else flash.error = ServerErrorResponse.getMessage(response.status);
+            $window.scrollTo(0,0);
         });
     };
 

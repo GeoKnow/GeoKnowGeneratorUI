@@ -1,6 +1,6 @@
 'use strict';
 
-function UserRolesCtrl($scope, UsersService, ConfigurationService, $q, ServerErrorResponse, flash, localize, AccountService) {
+function UserRolesCtrl($scope, UsersService, ConfigurationService, $q, ServerErrorResponse, flash, localize, AccountService, $window) {
     $scope.services = ConfigurationService.getAllServices();
     $scope.users = UsersService.getAllUsers();
     $scope.roles = UsersService.getAllRoles();
@@ -91,10 +91,12 @@ function UserRolesCtrl($scope, UsersService, ConfigurationService, $q, ServerErr
             $scope.roleCreating = false;
             $scope.close("#modalRole");
             flash.success = localize.getLocalizedString("_created_");
+            $window.scrollTo(0,0);
         }, function(response) {
             $scope.roleCreating = false;
             $scope.close("#modalRole");
             flash.error = ServerErrorResponse.getMessage(response.status);
+            $window.scrollTo(0,0);
         });
     };
 
@@ -120,9 +122,11 @@ function UserRolesCtrl($scope, UsersService, ConfigurationService, $q, ServerErr
             $scope.savingRoles = false;
             $scope.refreshRoles();
             flash.success = localize.getLocalizedString("_changes-saved-message_");
+            $window.scrollTo(0,0);
         }, function(response) {
             $scope.savingRoles = false;
             flash.error = ServerErrorResponse.getMessage(response.status);
+            $window.scrollTo(0,0);
         });
     };
 
@@ -159,9 +163,11 @@ function UserRolesCtrl($scope, UsersService, ConfigurationService, $q, ServerErr
             $scope.savingUsers = false;
             $scope.refreshUsers();
             flash.success = localize.getLocalizedString("_changes-saved-message_");
+            $window.scrollTo(0,0);
         }, function(response) {
             $scope.savingUsers = false;
             flash.error = ServerErrorResponse.getMessage(response.status);
+            $window.scrollTo(0,0);
         });
     };
 
@@ -186,10 +192,12 @@ function UserRolesCtrl($scope, UsersService, ConfigurationService, $q, ServerErr
             $scope.userCreating = false;
             $scope.close("#modalUser");
             flash.success = localize.getLocalizedString("_created_");
+            $window.scrollTo(0,0);
         }, function(response) {
             $scope.userCreating = false;
             $scope.close("#modalUser");
             flash.error = ServerErrorResponse.getMessage(response.status);
+            $window.scrollTo(0,0);
         });
     };
 
@@ -198,6 +206,7 @@ function UserRolesCtrl($scope, UsersService, ConfigurationService, $q, ServerErr
             $scope.refreshUsers();
         }, function(response) {
             flash.error = ServerErrorResponse.getMessage(response.status);
+            $window.scrollTo(0,0);
             $scope.refreshUsers();
         })
     };

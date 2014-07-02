@@ -1,6 +1,6 @@
 'use strict';
 
-var UploadDocCtrl = function($scope, $http, flash, ServerErrorResponse, ConfigurationService, DocumentsService, AccountService, localize, DocumentErrorResponse) {
+var UploadDocCtrl = function($scope, $http, flash, ServerErrorResponse, ConfigurationService, DocumentsService, AccountService, localize, DocumentErrorResponse, $window) {
     var service = ConfigurationService.getService(":DocumentUploadService");
 	var serviceUrl = service.serviceUrl;
 
@@ -30,11 +30,13 @@ var UploadDocCtrl = function($scope, $http, flash, ServerErrorResponse, Configur
                     data: $scope.document
                 }).then(function(response) {
                     $scope.uploading = false;
-                    flash.success = localize.getLocalizedString("_uploading-finished-message_");;
+                    flash.success = localize.getLocalizedString("_uploading-finished-message_");
+                    $window.scrollTo(0,0);
                 }, function(response) {
                     $scope.uploading = false;
                     if (response.status == 500) flash.error = ServerErrorResponse.getMessage(response.status) + ": " + DocumentErrorResponse.getMessage(parseInt(response.data));
                     else flash.error = ServerErrorResponse.getMessage(response.status);
+                    $window.scrollTo(0,0);
                 });
         }
     };
