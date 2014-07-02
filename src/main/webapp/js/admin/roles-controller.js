@@ -1,6 +1,6 @@
 'use strict';
 
-function UserRolesCtrl($scope, UsersService, ConfigurationService, $q, ServerErrorResponse, flash, localize) {
+function UserRolesCtrl($scope, UsersService, ConfigurationService, $q, ServerErrorResponse, flash, localize, AccountService) {
     $scope.services = ConfigurationService.getAllServices();
     $scope.users = UsersService.getAllUsers();
     $scope.roles = UsersService.getAllRoles();
@@ -191,6 +191,19 @@ function UserRolesCtrl($scope, UsersService, ConfigurationService, $q, ServerErr
             $scope.close("#modalUser");
             flash.error = ServerErrorResponse.getMessage(response.status);
         });
+    };
+
+    $scope.deleteUser = function(user) {
+        UsersService.deleteUser(user.profile.username).then(function(response) {
+            $scope.refreshUsers();
+        }, function(response) {
+            flash.error = ServerErrorResponse.getMessage(response.status);
+            $scope.refreshUsers();
+        })
+    };
+
+    $scope.isCurrentUser = function(user) {
+        return user.profile.username == AccountService.getUsername();
     };
 
     $scope.close = function(modalID) {

@@ -1224,6 +1224,11 @@
         "value":"Вы уверены, что хотите удалить документ",
         "description":"text in delete document confirmation dialog"
     },
+    {
+        "key":"_delete-user-confirm-message_",
+        "value":"Вы уверены, что хотите удалить пользователя",
+        "description":"text in delete user confirmation dialog"
+    },
 
 
     {

@@ -179,6 +179,15 @@ module.factory("UsersService", function($http, Config, AccountService) {
             });
     };
 
+	var deleteUser = function(username) {
+	    var requestData = {
+	        mode: "delete",
+	        username: username,
+	        curuser: AccountService.getUsername()
+        };
+        return $http.post("UserManagerServlet", $.param(requestData));
+	};
+
     return {
         readUsers           : readUsers,
         getAllUsers         : getAllUsers,
@@ -193,6 +202,7 @@ module.factory("UsersService", function($http, Config, AccountService) {
         setNotLoggedInRole  : setNotLoggedInRole,
         readNotLoggedInRole : readNotLoggedInRole,
         updateRoleServices  : updateRoleServices,
-        createUser          : createUser
+        createUser          : createUser,
+        deleteUser          : deleteUser
     };
 });

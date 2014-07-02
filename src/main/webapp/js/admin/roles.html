@@ -75,7 +75,12 @@
                     <th ng-repeat="role in roles">{{role.name}}</th>
                 </tr>
                 <tr ng-repeat="user in users">
-                    <th class="col-header">{{user.profile.username}}</th>
+                    <th class="col-header">
+                        <button type="button" class="btn btn-default btn-xs" ng-show="!isCurrentUser(user)" ng-confirm-click="deleteUser(user)" ng-confirm-message="{{'_delete-user-confirm-message_' | i18n}} {{user.profile.username}}?">
+                            <span class="glyphicon glyphicon-trash"></span>
+                        </button>
+                        {{user.profile.username}}
+                    </th>
                     <td ng-repeat="role in roles">
                         <input type="checkbox" ng-checked="hasRole(user, role)" ng-click="toggleRole(user, role)"/>
                     </td>
