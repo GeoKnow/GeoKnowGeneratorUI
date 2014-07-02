@@ -83,7 +83,7 @@ function LoginCtrl($scope, flash, AccountService, LoginService, ServerErrorRespo
             }, function(response) {
             	$scope.close('#modalSignUp');
             	if (response.status==500 && response.data) {
-                    flash.error = ServerErrorResponse.getMessage(response.status) + ": " + AuthenticationErrorResponse.getMessage(parseInt(response.data.code));
+                    flash.error = AuthenticationErrorResponse.getMessage(parseInt(response.data.code));
                 } else {
                     flash.error = ServerErrorResponse.getMessage(response.status);
                 }
