@@ -43,4 +43,13 @@ public class SSLEmailSender implements EmailSender {
 
         Transport.send(message);
     }
+
+    @Override
+    public String toString() {
+        return "SSLEmailSender{" +
+                "smtpHost='" + smtpHost + '\'' +
+                ", smtpPort='" + smtpPort + '\'' +
+                ", fromEmail='" + fromEmail + '\'' +
+                '}';
+    }
 }

@@ -80,6 +80,31 @@ app.directive('autofillable', function ($timeout) {
     }
 });
 
+//directive to set focus in modal dialogs
+app.directive('modalFocus', function ($timeout) {
+    return {
+        restrict: 'A',
+        link: function (scope, element, attrs) {
+            var focusElementId = attrs.modalFocus;
+            scope.$watch(function() {
+                return $('#'+element[0].id).is(':visible');
+            }, function(value) {
+                if (value) {
+                    $timeout(function () {
+                        $(focusElementId).focus();
+                    }, 400);
+                }
+            });
+
+            scope.$watch(attrs.focusInput, function() {
+                $timeout(function () {
+                    element[0].focus();
+                })
+            });
+        }
+    };
+});
+
 /****************************************************************************************************
 *
 * GEOLIFT Directives
@@ -191,4 +216,32 @@ app.directive('uniqueIdentifier', ['$compile', 'ConfigurationService', function(
           });
         }
     };
+ }]);
+
+app.directive('uniqueUserName', ['$compile', 'UsersService', function($compile, UsersService){
+     return {
+         restrict: 'A',
+         require: 'ngModel',
+         link: function(scope, elem, attr, ngModel) {
+           ngModel.$parsers.unshift(function (value) {
+             var list = UsersService.getUserNames();
+             ngModel.$setValidity('uniqueUserName', list.indexOf(value) === -1);
+             return value;
+           });
+         }
+     };
+ }]);
+
+app.directive('uniqueEmail', ['$compile', 'UsersService', function($compile, UsersService){
+     return {
+         restrict: 'A',
+         require: 'ngModel',
+         link: function(scope, elem, attr, ngModel) {
+           ngModel.$parsers.unshift(function (value) {
+             var list = UsersService.getEmails();
+             ngModel.$setValidity('uniqueEmail', list.indexOf(value) === -1);
+             return value;
+           });
+         }
+     };
  }]);

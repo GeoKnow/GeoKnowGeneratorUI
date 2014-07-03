@@ -61,6 +61,11 @@
         "value":"A tool for exploring (geographical) Linked Data datasets on the Web. To get started select a data set from the drop down menu.",
         "description":"description shown on Mappify page"
     },
+    {
+        "key":"_system-setup-page-content_",
+        "value":"System is not set up. Call setup servlet first: http://localhost:8080/generator/InitialSetup.",
+        "description":"content of system-setup page"
+    },
 
 
     {
@@ -277,6 +282,16 @@
         "key":"_importing_",
         "value":"Importing ...",
         "description":"importing in progress message"
+    },
+    {
+        "key":"_saving_",
+        "value":"Saving ...",
+        "description":"saving in progress message"
+    },
+    {
+        "key":"_registering_",
+        "value":"Registering ...",
+        "description":"registering in progress message"
     },
 
 
@@ -684,6 +699,16 @@
         "value":"Ontology",
         "description":""
     },
+    {
+        "key":"_roles_",
+        "value":"Roles",
+        "description":""
+    },
+    {
+        "key":"_role_",
+        "value":"Role",
+        "description":""
+    },
 
 
     {
@@ -709,6 +734,11 @@
     {
         "key":"_save-changes_",
         "value":"Save changes",
+        "description":""
+    },
+    {
+        "key":"_revert-changes_",
+        "value":"Revert changes",
         "description":""
     },
     {
@@ -878,6 +908,28 @@
         "value":"Writable graphs",
         "description":"field in user manager"
     },
+
+
+    {
+        "key":"_roles-management_",
+        "value":"Roles Management",
+        "description":"roles management page title"
+    },
+    {
+        "key":"_add-role_",
+        "value":"Add new role",
+        "description":"button on roles page"
+    },
+    {
+        "key":"_default-role_",
+        "value":"Default role",
+        "description":"default role select label"
+    },
+    {
+        "key":"_not-logged-in-role_",
+        "value":"Not logged in user role",
+        "description":"not logged in user role select label"
+    },
     
     
     {
@@ -928,6 +980,11 @@
     {
         "key":"_edit-user-title_",
         "value":"Edit User",
+        "description":"dialog title"
+    },
+    {
+        "key":"_new-role-title_",
+        "value":"New Role",
         "description":"dialog title"
     },
 
@@ -1108,6 +1165,11 @@
         "value":"Specify endpoint",
         "description":"shown in forms below required endpoint field when the value is not specified"
     },
+    {
+        "key":"_role-missed-message_",
+        "value":"Specify role",
+        "description":"shown in forms below required role field when the value is not specified"
+    },
 
 
     {
@@ -1163,6 +1225,11 @@
         "key":"_delete-doc-confirm-message_",
         "value":"Are you sure you want to delete document",
         "description":"text in delete document confirmation dialog"
+    },
+    {
+        "key":"_delete-user-confirm-message_",
+        "value":"Are you sure you want to delete user",
+        "description":"text in delete user confirmation dialog"
     },
 
 
@@ -1824,5 +1891,12 @@
         "key":"_doc-reindex-error_",
         "value":"Error while re-indexing the document",
         "description":"Error while re-indexing the document"
+    },
+
+
+    {
+        "key":"_user-already-exists-error_",
+        "value":"User already exists",
+        "description":"Error while registering new user: user already exists"
     }
 ]

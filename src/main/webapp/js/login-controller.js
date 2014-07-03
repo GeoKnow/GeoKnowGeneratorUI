@@ -1,9 +1,12 @@
 'use strict';
 
 
-function LoginCtrl($scope, flash, AccountService, LoginService, ServerErrorResponse, Base64) {
+function LoginCtrl($scope, flash, AccountService, LoginService, ServerErrorResponse, Base64, UsersService, AuthenticationErrorResponse) {
     $scope.currentAccount = angular.copy(AccountService.getAccount());
     $scope.loggedIn = false;
+    $scope.signUp = {username:null, email:null};
+    $scope.restorePassword = {username:null};
+    $scope.isRegistering = false;
 
     if($scope.currentAccount.user){
     	LoginService.login($scope.currentAccount.user, $scope.currentAccount.pass)
@@ -17,6 +20,10 @@ function LoginCtrl($scope, flash, AccountService, LoginService, ServerErrorRespo
             flash.error = ServerErrorResponse.getMessage(response.status);
             $scope.login.username = null;
             $scope.login.password = null;
+        });
+    } else { //set role for not logged in user
+        UsersService.readNotLoggedInRole().then(function(response) {
+            AccountService.setRole(response);
         });
     }
 
@@ -67,13 +74,20 @@ function LoginCtrl($scope, flash, AccountService, LoginService, ServerErrorRespo
     };
 
     $scope.createAccount = function() {
+        $scope.isRegistering = true;
         LoginService.createAccount($scope.signUp.username, $scope.signUp.email)
             .then(function(response) {
             	$scope.close('#modalSignUp');
                 flash.success = response.data.message;
+                $scope.isRegistering = false;
             }, function(response) {
             	$scope.close('#modalSignUp');
-                flash.error = ServerErrorResponse.getMessage(response.status);
+            	if (response.status==500 && response.data) {
+                    flash.error = AuthenticationErrorResponse.getMessage(parseInt(response.data.code));
+                } else {
+                    flash.error = ServerErrorResponse.getMessage(response.status);
+                }
+                $scope.isRegistering = false;
             });
     };
 
@@ -88,7 +102,21 @@ function LoginCtrl($scope, flash, AccountService, LoginService, ServerErrorRespo
             });
     };
 
-    $scope.new = function(){
+    $scope.clearLoginForm = function() {
+        $scope.loginForm.$setPristine();
+        $scope.login.username = null;
+        $scope.login.password = null;
+    };
+
+    $scope.clearSignUpForm = function() {
         $scope.signUpForm.$setPristine();
-  	};
+        $scope.signUp.username = null;
+        $scope.signUp.email = null;
+        $scope.isRegistering = false;
+    };
+
+    $scope.clearRestorePasswordForm = function() {
+        $scope.restorePasswordForm.$setPristine();
+        $scope.restorePassword.username = null;
+    };
 }

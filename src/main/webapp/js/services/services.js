@@ -199,3 +199,18 @@ module.factory('DocumentErrorResponse', function(localize) {
     return DocumentErrorResponseService;
 });
 
+module.factory('AuthenticationErrorResponse', function(localize) {
+    return {
+        getMessage: function(code) {
+            var errorText = '';
+            switch (code) {
+                case 1:
+                    errorText = localize.getLocalizedString("_user-already-exists-error_");
+                    break;
+                default:
+                    errorText = code;
+            };
+            return errorText;
+        }
+    };
+});

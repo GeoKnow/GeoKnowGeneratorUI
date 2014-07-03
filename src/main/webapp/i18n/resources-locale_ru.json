@@ -61,6 +61,11 @@
         "value":"Инструмент для поиска (географических) наборов связанных данных в Интернете. Для начала работы выберите набор данных.",
         "description":"description shown on Mappify page"
     },
+    {
+        "key":"_system-setup-page-content_",
+        "value":"Система не инициализирована. Для инициализации используйте сервлет http://localhost:8080/generator/InitialSetup",
+        "description":"content of system-setup page"
+    },
 
 
     {
@@ -275,6 +280,16 @@
         "key":"_importing_",
         "value":"Импорт ...",
         "description":"importing in progress message"
+    },
+    {
+        "key":"_saving_",
+        "value":"Сохранение ...",
+        "description":"saving in progress message"
+    },
+    {
+        "key":"_registering_",
+        "value":"Идет регистрация ...",
+        "description":"registering in progress message"
     },
 
 
@@ -682,6 +697,16 @@
         "value":"Онтология",
         "description":""
     },
+    {
+        "key":"_roles_",
+        "value":"Роли",
+        "description":""
+    },
+    {
+        "key":"_role_",
+        "value":"Роль",
+        "description":""
+    },
 
 
     {
@@ -707,6 +732,11 @@
     {
         "key":"_save-changes_",
         "value":"Сохранить изменения",
+        "description":""
+    },
+    {
+        "key":"_revert-changes_",
+        "value":"Отменить изменения",
         "description":""
     },
     {
@@ -848,7 +878,7 @@
     },
     {
         "key":"_add-user_",
-        "value":"Добавит нового пользователя",
+        "value":"Добавить нового пользователя",
         "description":"button on users management page"
     },
     {
@@ -875,6 +905,28 @@
         "key":"_user-writable-graphs_",
         "value":"Графы, доступные для записи",
         "description":"field in user manager"
+    },
+
+
+    {
+        "key":"_roles-management_",
+        "value":"Управление ролями",
+        "description":"roles management page title"
+    },
+    {
+        "key":"_add-role_",
+        "value":"Добавить новую роль",
+        "description":"button on roles page"
+    },
+    {
+        "key":"_default-role_",
+        "value":"Роль по умолчанию",
+        "description":"default role select label"
+    },
+    {
+        "key":"_not-logged-in-role_",
+        "value":"Роль неавторизованного пользователя",
+        "description":"not logged in user role select label"
     },
     
     
@@ -920,12 +972,17 @@
     },
     {
         "key":"_new-user-title_",
-        "value":"Новы йпользователь",
+        "value":"Новый пользователь",
         "description":"dialog title"
     },
     {
         "key":"_edit-user-title_",
         "value":"Редактировать пользователя",
+        "description":"dialog title"
+    },
+    {
+        "key":"_new-role-title_",
+        "value":"Новая роль",
         "description":"dialog title"
     },
 
@@ -1106,6 +1163,11 @@
         "value":"Укажите эндпоинт",
         "description":"shown in forms below required endpoint field when the value is not specified"
     },
+    {
+        "key":"_role-missed-message_",
+        "value":"Укажите роль",
+        "description":"shown in forms below required role field when the value is not specified"
+    },
 
 
     {
@@ -1161,6 +1223,11 @@
         "key":"_delete-doc-confirm-message_",
         "value":"Вы уверены, что хотите удалить документ",
         "description":"text in delete document confirmation dialog"
+    },
+    {
+        "key":"_delete-user-confirm-message_",
+        "value":"Вы уверены, что хотите удалить пользователя",
+        "description":"text in delete user confirmation dialog"
     },
 
 
@@ -1822,6 +1889,13 @@
         "key":"_doc-reindex-error_",
         "value":"Ошибка при переиндексации документа",
         "description":"Error while re-indexing the document"
+    },
+
+
+    {
+        "key":"_user-already-exists-error_",
+        "value":"Пользователь уже существует",
+        "description":"Error while registering new user: user already exists"
     }
 
 ]

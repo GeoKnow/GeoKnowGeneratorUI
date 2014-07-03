@@ -42,4 +42,13 @@ public class TLSEmailSender implements EmailSender {
 
         Transport.send(message);
     }
+
+    @Override
+    public String toString() {
+        return "TLSEmailSender{" +
+                "smtpHost='" + smtpHost + '\'' +
+                ", smtpPort='" + smtpPort + '\'' +
+                ", fromEmail='" + fromEmail + '\'' +
+                '}';
+    }
 }

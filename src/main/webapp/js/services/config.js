@@ -48,6 +48,8 @@ angular.module("app.configuration", [])
     var GROUPS_GRAPH_URI            = "http://ldiw.ontos.com/acc/resource/groupsGraph";
     var DOCUMENTS_GRAPH = "http://acc.ontos.com/dataschema/v1/schema";
     var DOCUMENTS_NS = "http://acc.ontos.com/dataschema/v1/schema#";
+    var FRAMEWORK_ONTOLOGY_NS = "http://ldiw.ontos.com/acc/ontology/";
+    var ACCOUNTS_GRAPH = "http://ldiw.ontos.com/acc/resource/accountsGraph";
     
 
     var namespaces =
@@ -95,7 +97,7 @@ angular.module("app.configuration", [])
             }
         })
         .error(function(data, status){
-            var message = ServerErrorResponse.getMessage(status) + "at " + AUTH_ENDPOINT ;
+            var message = ServerErrorResponse.getMessage(status) + " at " + AUTH_ENDPOINT ;
             flash.error = message;
             deferred.reject(message);
         });
@@ -377,6 +379,14 @@ angular.module("app.configuration", [])
         return DOCUMENTS_NS;
     };
 
+    var getFrameworkOntologyNS = function() {
+        return FRAMEWORK_ONTOLOGY_NS;
+    };
+
+    var getAccountsGraph = function() {
+        return ACCOUNTS_GRAPH;
+    };
+
     return {
         getNS               : getNS,
         getGraph            : getGraph,
@@ -394,6 +404,8 @@ angular.module("app.configuration", [])
         getGroupsGraph      : getGroupsGraph,
         getFrameworkUri     : getFrameworkUri,
         getDocumentsGraph   : getDocumentsGraph,
-        getDocumentsNS      : getDocumentsNS
+        getDocumentsNS      : getDocumentsNS,
+        getFrameworkOntologyNS: getFrameworkOntologyNS,
+        getAccountsGraph    : getAccountsGraph
     };
 });

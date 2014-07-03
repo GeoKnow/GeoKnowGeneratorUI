@@ -2,11 +2,11 @@
 
 var SearchCtrl = function($scope, ConfigurationService) {
     var services = ConfigurationService.getComponentServices(":Solr");
-	var solrServiceUrl = services[0].serviceUrl;
+	var searchServiceUrl = services[0].serviceUrl;
 
     $scope.url = "";
 	$scope.setUrl = function(){
-	    $scope.url= solrServiceUrl + "/collection1/custom";
+	    $scope.url= searchServiceUrl;
 	};
 
     $scope.close = function(modalID) {

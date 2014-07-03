@@ -60,6 +60,7 @@
       lds:version "0.1-SNAPSHOT"^^xsd:string .
 :D2RQService
       a       lds:ExtractionService ;
+      dcterms:description "Provides ontology create/upload/delete functionality"^^xsd:string ;
       lds:serviceUrl <http://localhost:8080/d2rq-mapper-web-service/api> .
 
 :MiniDix
@@ -69,22 +70,45 @@
       lds:version "0.1-SNAPSHOT"^^xsd:string .
 :MiniDixService
       a       lds:AuthoringService ;
+      dcterms:description "Provides thesaurus edit functionality"^^xsd:string ;
       lds:serviceUrl <http://localhost:8080/minidix-web> .
 
 :Solr
       a       lds:StackComponent ;
       rdfs:label "Solr"^^xsd:string ;
-      lds:providesService :SolrService ;
+      lds:providesService :SearchService ;
       lds:version "4.8.1"^^xsd:string .
-:SolrService
+:SearchService
       a       lds:ExplorationService ;
-      lds:serviceUrl <http://localhost:8983/solr> .
+      dcterms:description "Provides Solr Search."^^xsd:string ;
+      lds:serviceUrl <http://localhost:8080/solr-search-ui> .
 
-:SolrUploadProxy
+:DocumentComponent
       a       lds:StackComponent ;
-      rdfs:label "SolrUploadProxy"^^xsd:string ;
-      lds:providesService :SolrUploadProxyService ;
+      rdfs:label "Documents Manager"^^xsd:string ;
+      lds:providesService :DocumentUploadService ;
+      lds:providesService :DocumentService ;
+      lds:providesService :ReindexService ;
       lds:version "0.1-SNAPSHOT"^^xsd:string .
-:SolrUploadProxyService
+:DocumentUploadService
       a       lds:ExtractionService ;
-      lds:serviceUrl <http://localhost:8080/SolrUploadProxy/proxy>
+      dcterms:description "Provides document upload functionality"^^xsd:string ;
+      lds:serviceUrl <http://localhost:8080/SolrUploadProxy/proxy/upload/files> .
+:DocumentService
+      a       lds:AuthoringService ;
+      dcterms:description "Provides documents view/edit functionality."^^xsd:string ;
+      lds:serviceUrl <http://localhost:8080/SolrUploadProxy/proxy> .
+:ReindexService
+      a       lds:ExtractionService ;
+      dcterms:description "Reindex all documents with current thesaurus."^^xsd:string ;
+      lds:serviceUrl <http://localhost:8080/SolrUploadProxy/proxy/update/reindexWithNewThesaurus> .
+
+:UserManager
+      a       lds:StackComponent ;
+      rdfs:label "Users Manager"^^xsd:string ;
+      lds:providesService :UserManagerService ;
+      lds:version "0.1-SNAPSHOT"^^xsd:string .
+:UserManagerService
+      a       lds:ComponentService ;
+      dcterms:description "Provides create/update functionality for accounts and roles."^^xsd:string ;
+      lds:serviceUrl <http://localhost:8080/generator/UserManagerServlet> .

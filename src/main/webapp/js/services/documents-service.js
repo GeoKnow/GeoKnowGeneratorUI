@@ -107,10 +107,10 @@ module.factory("DocumentsService", function($http, $q, Config, Helpers, Configur
     };
 
     var deleteDocument = function(id) {
-        var services = ConfigurationService.getComponentServices(":SolrUploadProxy");
-    	var solrUploadServiceUrl = services[0].serviceUrl;
+        var services = ConfigurationService.getComponentServices(":DocumentComponent", "lds:AuthoringService");
+    	var serviceUrl = services[0].serviceUrl;
 
-        return $http.post(solrUploadServiceUrl+"/update/deleteDocument?uuid="+id);
+        return $http.post(serviceUrl+"/update/deleteDocument?uuid="+id);
 
 //        var query = "prefix acc: <" + Config.getDocumentsNS() + "> WITH <" + GRAPH + "> DELETE {?s ?p ?o} WHERE {?s acc:uuid \"" + id + "\" . ?s ?p ?o .}";
 //        var requestData = {

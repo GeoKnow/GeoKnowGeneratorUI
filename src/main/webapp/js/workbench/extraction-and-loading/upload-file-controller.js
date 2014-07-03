@@ -1,8 +1,8 @@
 'use strict';
 
-var UploadDocCtrl = function($scope, $http, flash, ServerErrorResponse, ConfigurationService, DocumentsService, AccountService, localize, DocumentErrorResponse) {
-    var services = ConfigurationService.getComponentServices(":SolrUploadProxy");
-	var solrUploadServiceUrl = services[0].serviceUrl;
+var UploadDocCtrl = function($scope, $http, flash, ServerErrorResponse, ConfigurationService, DocumentsService, AccountService, localize, DocumentErrorResponse, $window) {
+    var service = ConfigurationService.getService(":DocumentUploadService");
+	var serviceUrl = service.serviceUrl;
 
     $scope.projects = DocumentsService.getAllProjects();
 
@@ -25,16 +25,18 @@ var UploadDocCtrl = function($scope, $http, flash, ServerErrorResponse, Configur
         for (var i = 0; i < $scope.fileList.length; i++) {
             var f = $scope.fileList[i];
             $http.uploadFile({
-                    url: solrUploadServiceUrl + "/upload/files",
+                    url: serviceUrl,
                     file: f,
                     data: $scope.document
                 }).then(function(response) {
                     $scope.uploading = false;
-                    flash.success = localize.getLocalizedString("_uploading-finished-message_");;
+                    flash.success = localize.getLocalizedString("_uploading-finished-message_");
+                    $window.scrollTo(0,0);
                 }, function(response) {
                     $scope.uploading = false;
                     if (response.status == 500) flash.error = ServerErrorResponse.getMessage(response.status) + ": " + DocumentErrorResponse.getMessage(parseInt(response.data));
                     else flash.error = ServerErrorResponse.getMessage(response.status);
+                    $window.scrollTo(0,0);
                 });
         }
     };

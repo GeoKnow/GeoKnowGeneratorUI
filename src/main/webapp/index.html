@@ -28,18 +28,18 @@
     <link rel="apple-touch-icon-precomposed" sizes="114x114" href="img/ico/apple-touch-icon-114-precomposed.png"/>
     <link rel="apple-touch-icon-precomposed" sizes="72x72" href="img/ico/apple-touch-icon-72-precomposed.png"/>
     <link rel="apple-touch-icon-precomposed" href="img/ico/apple-touch-icon-57-precomposed.png"/>
- -->  
+ -->
   </head>
 
   <body ng-cloak ng-app="app" ng-controller="LoginCtrl">
 
       <!-- Subscribe to all flash messages. -->
-      <div flash-alert active-class="in alert" class="fade" duration="0">
+      <div flash-alert active-class="in alert" class="fade" duration="10000">
         <button type="button" class="close" ng-click="hide()">&times;</button>
         <span class="alert-message">{{flash.message}}</span>
       </div>
       </div>
-      
+
 	<div class="navbar navbar-static-top">
 	<div class="col-xs-2">
 	</div>
@@ -54,17 +54,17 @@
 	                        <li ng-if="isUserAuthenticated()" ng-class="getClass('/account')">
                             <a href="#/account" data-i18n="_account_"><div class="glyphicon glyphicon-user"></div></a></li>
 	                        </ul>
-	                        
+
 	                        <ul class="nav navbar-nav navbar-right">
                             <li>
-                            <div ng-if="isUserAuthenticated()">
+                            <div ng-if="isUserAuthenticated() && $root.isSystemSetUp">
                                         <span class="strong">{{'_logged-in-as_' | i18n}}<strong>{{currentAccount.username}}</strong></span> <button class="btn-sm btn-primary" ng-click="logout()" data-i18n="_logout_"></button>
                             </div>
-                            <div ng-if="!isUserAuthenticated()">
+                            <div ng-if="!isUserAuthenticated() && $root.isSystemSetUp">
                                         <!-- ng-disabled="loginForm.$invalid" -->
-                                        <button type="button" class="btn-sm btn-primary navbar-left" data-toggle="modal" data-target="#modalLogin" ng-click="openModal()" data-i18n="_login_"></button>
-                                        <button type="button" class="btn-xs btn-link navbar-left" data-toggle="modal" data-target="#modalSignUp" ng-click="new();" data-i18n="_register_"></button>
-                                    	<button type="button" class="btn-xs btn-link navbar-left" data-toggle="modal" data-target="#modalRestorePassword" ng-show="currentAccount.username==null" data-i18n="_forgot-password_"></button>
+                                        <button type="button" class="btn-sm btn-primary navbar-left" data-toggle="modal" data-target="#modalLogin" ng-click="clearLoginForm()" data-i18n="_login_"></button>
+                                        <button type="button" class="btn-xs btn-link navbar-left" data-toggle="modal" data-target="#modalSignUp" ng-click="clearSignUpForm()" data-i18n="_register_"></button>
+                                    	<button type="button" class="btn-xs btn-link navbar-left" data-toggle="modal" data-target="#modalRestorePassword" ng-click="clearRestorePasswordForm()" data-i18n="_forgot-password_"></button>
                             </div>
                             </li>
                             <li>
@@ -76,7 +76,7 @@
 	        </div>
 	</div>
 
-	<div class="modal fade" id="modalLogin">
+	<div class="modal fade" id="modalLogin" modal-focus="#login">
 	<div class="modal-dialog">
     <div class="modal-content">
 	<form name="loginForm" class="form-horizontal InputForm" role="form" ng-show="currentAccount.username==null">
@@ -85,7 +85,7 @@
                 <h5 class="modal-title green bold" data-i18n="_login_"></h5>
             </div>
             <div class="modal-body">
-            
+
 										<div class="form-group">
                                             <label class="sr-only" for="login" data-i18n="_username-email_"></label>
                                             <input type="text" class="form-control col-xs-3 input-sm" id="login" data-i18n-attr="_username-email_|placeholder" ng-model="login.username" autofillable required>
@@ -101,7 +101,7 @@
                                             <span ng-show="loginForm.password.$error.required" data-i18n="_password-missed-message_"></span>
                                         </div>
              </div>
-             
+
              <div class="modal-footer">
                 <button type="submit" class="btn-sm btn-primary" ng-click="login();" ng-disabled="loginForm.$invalid" data-i18n="_sign-in_"></button>
                 <button type="button" class="btn-sm btn-default" ng-click="close('#modalLogin')" data-i18n="_cancel_"></button>
@@ -111,7 +111,7 @@
     </div>
 	</div>
 
-    <div class="modal fade" id="modalSignUp">
+    <div class="modal fade" id="modalSignUp" modal-focus="#username">
     <div class="modal-dialog">
     <div class="modal-content">
         <form name="signUpForm" class="form-horizontal InputForm" role="form">
@@ -123,33 +123,36 @@
                 <div class="form-group">
                     <label for="username" class="col-lg-2 control-label" data-i18n="_username_"></label>
                     <div class="col-lg-10">
-                        <input type="text" id="username" name="username" class="form-control" data-i18n-attr="_username_|placeholder" ng-model="signUp.username" required/>
+                        <input type="text" id="username" name="username" class="form-control" data-i18n-attr="_username_|placeholder" ng-model="signUp.username" required unique-user-name/>
                         <div class="error"  ng-show="signUpForm.username.$dirty && signUpForm.username.$invalid">{{'_invalid-field-message_' | i18n}}:
                             <span ng-show="signUpForm.username.$error.required" data-i18n="_username-missed-message_"></span>
+                            <span ng-show="signUpForm.username.$error.uniqueUserName" data-i18n="_user-already-exists-error_"></span>
                         </div>
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="email" class="col-lg-2 control-label" data-i18n="_email_"></label>
                     <div class="col-lg-10">
-                        <input type="email" id="email" name="email" class="form-control" data-i18n-attr="_email_|placeholder" ng-model="signUp.email" required/>
+                        <input type="email" id="email" name="email" class="form-control" data-i18n-attr="_email_|placeholder" ng-model="signUp.email" required unique-email/>
                         <div class="error" ng-show="signUpForm.email.$dirty && signUpForm.email.$invalid">{{'_invalid-field-message_' | i18n}}:
                             <span ng-show="signUpForm.email.$error.required" data-i18n="_email-missed-message_"></span>
                             <span ng-show="signUpForm.email.$error.email" data-i18n="_malformed-email-message_"></span>
+                            <span ng-show="signUpForm.email.$error.uniqueEmail" data-i18n="_user-already-exists-error_"></span>
                         </div>
-                    </div>    
+                    </div>
                 </div>
-             </div>             
+             </div>
              <div class="modal-footer">
-                <button type="submit" class="btn-sm btn-primary" ng-click="createAccount();" ng-disabled="signUpForm.$invalid" data-i18n="_register_"></button>
-                <button type="button" class="btn-sm btn-default" ng-click="close('#modalSignUp')" data-i18n="_cancel_"></button>
+                <button type="submit" class="btn-sm btn-primary" ng-click="createAccount();" ng-disabled="signUpForm.$invalid || isRegistering" data-i18n="_register_"></button>
+                <button type="button" class="btn-sm btn-default" ng-click="close('#modalSignUp')" ng-disabled="isRegistering" data-i18n="_cancel_"></button>
+                <span ng-show="isRegistering" data-i18n="_registering_"></span>
             </div>
         </form>
     </div>
     </div>
     </div>
 
-      <div class="modal fade" id="modalRestorePassword">
+      <div class="modal fade" id="modalRestorePassword" modal-focus="#uname">
       <div class="modal-dialog">
     	<div class="modal-content">
           <form name="restorePasswordForm" class="form-horizontal InputForm" role="form">
@@ -159,9 +162,9 @@
               </div>
               <div class="modal-body">
                   <div class="form-group">
-                      <label for="username" class="col-lg-4 control-label" data-i18n="_username-email_"></label>
+                      <label for="uname" class="col-lg-4 control-label" data-i18n="_username-email_"></label>
                       <div class="col-lg-8">
-                          <input type="text" id="username" name="username" class="form-control" data-i18n-attr="_username-email_|placeholder" ng-model="restorePassword.username" required/>
+                          <input type="text" id="uname" name="uname" class="form-control" data-i18n-attr="_username-email_|placeholder" ng-model="restorePassword.username" required/>
                           <div class="error" ng-show="restorePasswordForm.username.$dirty && restorePasswordForm.username.$invalid">{{'_invalid-field-message_' | i18n}}:
                               <span ng-show="restorePasswordForm.username.$error.required" data-i18n="_username-email-missed-message_"></span>
                           </div>
@@ -180,20 +183,20 @@
     <div id="contents" app-view-segment="0"></div>
 
 
-    
+
   <!-- THIS IS REPLACED BY THE LINE ABOVE TO USE SEGMENTS <div id="workspace" ng-view></div> -->
 
     <!--  <div id="editor" ace-editor></div>-->
-    <!--  <alert id="error"></alert> -->  
+    <!--  <alert id="error"></alert> -->
 
     <!-- Le javascript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
     <!-- <script src="lib/jquery/jquery-1.7.2.min.js"></script> -->
-    
+
     <script src="lib/jquery/jquery-1.9.1.js"></script>
     <script src="lib/jquery/jquery-ui-1.10.1.custom.min.js"></script>
-     
+
     <script src="lib/bootstrap/bootstrap.js"></script>
     <script src="lib/angularjs/angular.js"></script>
     <script src="lib/angularjs/angular-cookies.js"></script>
@@ -212,6 +215,7 @@
     <script src="js/services/ontology-service.js"></script>
     <script src="js/services/d2rq-service.js"></script>
     <script src="js/services/documents-service.js"></script>
+    <script src="js/services/users-service.js"></script>
     <!-- controllers for the different modules/pages -->
     <script src="js/controllers.js"></script>
     <script src="js/login-controller.js"></script>
@@ -222,6 +226,7 @@
     <script src="js/workbench/extraction-and-loading/d2rq-mapping-controller.js"></script>
     <script src="js/workbench/extraction-and-loading/d2rq-task-controller.js"></script>
     <script src="js/workbench/extraction-and-loading/upload-file-controller.js"></script>
+    <script src="js/workbench/extraction-and-loading/reindex-controller.js"></script>
     <script src="js/workbench/search-querying-and-exploration/facete-controller.js"></script>
     <script src="js/workbench/search-querying-and-exploration/mappify-controller.js"></script>
     <script src="js/workbench/search-querying-and-exploration/virtuoso-controller.js"></script>
@@ -238,6 +243,8 @@
     <script src="js/settings/namespaces/namespaces-controller.js"></script>
     <script src="js/settings/components/components-controller.js"></script>
     <script src="js/account/account-controller.js"></script>
+    <script src="js/admin/users/users-controller.js"></script>
+    <script src="js/admin/roles-controller.js"></script>
 
     <!-- directives -->
     <script src="js/directives.js"></script>
