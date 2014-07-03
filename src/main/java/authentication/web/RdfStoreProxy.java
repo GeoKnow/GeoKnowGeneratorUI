@@ -38,7 +38,7 @@ public class RdfStoreProxy extends HttpServlet {
     FrameworkConfiguration frameworkConf;
     try {
       // TODO: parameterize from client the to reset configuration
-      frameworkConf = FrameworkConfiguration.getInstance(getServletContext(), false);
+      frameworkConf = FrameworkConfiguration.getInstance(getServletContext());
       frameworkUserManager = frameworkConf.getFrameworkUserManager();
       frameworkRdfStoreManager = new SecureRdfStoreManagerImpl(frameworkConf
           .getAuthSparqlEndpoint(), frameworkConf.getAuthSparqlUser(), frameworkConf
@@ -83,7 +83,7 @@ public class RdfStoreProxy extends HttpServlet {
       } else {
         System.out.println("new RdfStoreManagerImpl");
         rdfStoreManager = new RdfStoreManagerImpl(FrameworkConfiguration.getInstance(
-            getServletContext(), false).getPublicSparqlEndpoint());
+            getServletContext()).getPublicSparqlEndpoint());
       }
       String result = rdfStoreManager.execute(query, responseFormat);
       resp.setContentType(responseFormat);

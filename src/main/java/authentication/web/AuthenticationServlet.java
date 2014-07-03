@@ -44,7 +44,7 @@ public class AuthenticationServlet extends HttpServlet {
   public void init(ServletConfig config) throws ServletException {
     super.init(config);
     try {
-      frameworkUserManager = FrameworkConfiguration.getInstance(getServletContext(), false)
+      frameworkUserManager = FrameworkConfiguration.getInstance(getServletContext())
           .getFrameworkUserManager();
     } catch (FileNotFoundException e) {
       throw new ServletException(e);
@@ -147,7 +147,7 @@ public class AuthenticationServlet extends HttpServlet {
       try {
         frameworkUserManager.createUser(username, password, email);
 
-        EmailSender emailSender = FrameworkConfiguration.getInstance(getServletContext(), false)
+        EmailSender emailSender = FrameworkConfiguration.getInstance(getServletContext())
             .getDefaultEmailSender();
 
         emailSender.send(email, "GeoKnow registration", "Your login: " + username + ", password: "
@@ -205,7 +205,7 @@ public class AuthenticationServlet extends HttpServlet {
         frameworkUserManager.setPassword(username, password);
 
         // send new password to user
-        EmailSender emailSender = FrameworkConfiguration.getInstance(getServletContext(), false)
+        EmailSender emailSender = FrameworkConfiguration.getInstance(getServletContext())
             .getDefaultEmailSender();
         emailSender.send(userProfile.getEmail(), "GeoKnow restore password", "Your login: "
             + username + ", password: " + password);

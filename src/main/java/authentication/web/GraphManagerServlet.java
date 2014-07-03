@@ -41,7 +41,7 @@ public class GraphManagerServlet extends HttpServlet {
     super.init(config);
 
     try {
-      frameworkConfig = FrameworkConfiguration.getInstance(getServletContext(), false);
+      frameworkConfig = FrameworkConfiguration.getInstance(getServletContext());
       frameworkUserManager = frameworkConfig.getFrameworkUserManager();
       virtuosoUserManager = frameworkConfig.getVirtuosoUserManager();
       virtuosoGraphGroupManager = new VirtuosoGraphGroupManager(frameworkConfig

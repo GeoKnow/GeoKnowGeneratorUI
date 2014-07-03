@@ -48,7 +48,7 @@ public class InitialSetupServlet extends HttpServlet {
         ServletContext context = getServletContext();
         FrameworkConfiguration frameworkConfiguration = null;
         try {
-            frameworkConfiguration = FrameworkConfiguration.getInstance(context, true);
+            frameworkConfiguration = FrameworkConfiguration.getInstance(context);
         } catch (Exception e) {
             throw new ServletException("Failed to get framework configuration", e);
         }

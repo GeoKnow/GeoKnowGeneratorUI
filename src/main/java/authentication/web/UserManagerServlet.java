@@ -34,7 +34,7 @@ public class UserManagerServlet extends HttpServlet {
   public void init(ServletConfig config) throws ServletException {
     super.init(config);
     try {
-      frameworkUserManager = FrameworkConfiguration.getInstance(getServletContext(), false)
+      frameworkUserManager = FrameworkConfiguration.getInstance(getServletContext())
           .getFrameworkUserManager();
     } catch (FileNotFoundException e) {
       throw new ServletException(e);
@@ -137,7 +137,7 @@ public class UserManagerServlet extends HttpServlet {
 
       EmailSender emailSender = null;
       try {
-        emailSender = FrameworkConfiguration.getInstance(getServletContext(), false)
+        emailSender = FrameworkConfiguration.getInstance(getServletContext())
             .getDefaultEmailSender();
         emailSender.send(email, "GeoKnow registration", "Your login: " + username + ", password: "
             + password);

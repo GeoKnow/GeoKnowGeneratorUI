@@ -55,7 +55,7 @@ public class FrameworkConfiguration {
    * @return
    * @throws Exception
    */
-  public static synchronized FrameworkConfiguration getInstance(ServletContext context, boolean ignoreIsSetUp) throws Exception {
+  public static synchronized FrameworkConfiguration getInstance(ServletContext context) throws Exception {
 
     if (instance == null) {
 
