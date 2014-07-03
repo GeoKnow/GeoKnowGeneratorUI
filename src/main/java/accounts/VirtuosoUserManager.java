@@ -81,7 +81,7 @@ public class VirtuosoUserManager implements UserManager {
    * @throws SQLException
    */
   public void grantLOLook(String user) throws ClassNotFoundException, SQLException {
-    executeUpdate(getConnection(), "GRANT EXECUTE ON DB.DBA.L_O_LOOK TO '" + user + "'");
+    executeUpdate(getConnection(), "GRANT EXECUTE ON DB.DBA.L_O_LOOK TO \"" + user + "\"");
   }
 
     @Override

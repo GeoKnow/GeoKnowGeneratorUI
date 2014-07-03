@@ -100,8 +100,10 @@ public class RDFStoreSetupManager {
         userManager.createUser(config.getAuthSparqlUser(), config.getAuthSparqlPassword());
         userManager.setDefaultRdfPermissions(config.getAuthSparqlUser(), 3);
         userManager.grantRole(config.getAuthSparqlUser(), "SPARQL_UPDATE");
+        userManager.grantLOLook(config.getAuthSparqlUser());
         try {
             userManager.grantRole("SPARQL", "SPARQL_UPDATE");
+            userManager.grantLOLook("SPARQL");
         } catch (Exception e) {
             //role is already granted
             e.printStackTrace();
@@ -134,6 +136,26 @@ public class RDFStoreSetupManager {
         settingsModel.add(componentsModel);
         settingsModel.add(ontologyModel);
 
+        // add to settings virtuoso component without users/passwords
+        queryString = "PREFIX foaf:<http://xmlns.com/foaf/0.1/> "
+                + "PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#> "
+                + "PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#> "
+                + "PREFIX lds:<http://stack.linkeddata.org/ldis-schema/>" + " CONSTRUCT   { <"
+                + config.getFrameworkUri() + "> ?p ?o . " + "<" + config.getFrameworkUri()
+                + "> lds:integrates ?component ."
+                + "?component rdfs:label ?label . ?component rdf:type ?type . "
+                + "?component lds:providesService ?service . ?service rdf:type ?servicetype ."
+                + "?service lds:serviceUrl ?serviceUrl .} " + " WHERE  { <"
+                + config.getFrameworkUri() + "> ?p ?o ." + "<" + config.getFrameworkUri()
+                + "> lds:integrates ?component ."
+                + "?component rdfs:label ?label . ?component rdf:type ?type . "
+                + "?component lds:providesService ?service . ?service rdf:type ?servicetype ."
+                + "?service lds:serviceUrl ?serviceUrl .}";
+        QueryExecution qexec = QueryExecutionFactory.create(queryString, configurationModel);
+        Model triples = qexec.execConstruct();
+        settingsModel.add(triples);
+        qexec.close();
+
         // write the initial settings model (default settings for new users)
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         settingsModel.write(os, "N-TRIPLES");
@@ -161,7 +183,7 @@ public class RDFStoreSetupManager {
                 + " PREFIX foaf: <http://xmlns.com/foaf/0.1/> PREFIX lds: <http://stack.linkeddata.org/ldis-schema/> "
                 + " SELECT ?accountName ?password ?mailto ?role WHERE { ?account rdf:type gkg:Account . ?account foaf:accountName ?accountName . "
                 + " ?account lds:password ?password . ?account foaf:mbox ?mailto . ?account gkg:Role ?role . } ";
-        QueryExecution qexec = QueryExecutionFactory.create(query, configurationModel);
+        qexec = QueryExecutionFactory.create(query, configurationModel);
         ResultSet results = qexec.execSelect();
         while (results.hasNext()) {
             QuerySolution soln = results.next();
