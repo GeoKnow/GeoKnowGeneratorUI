@@ -133,11 +133,11 @@ var D2RQMappingCtrl = function($scope, $http, $q, flash, ServerErrorResponse, Ac
                 headers: {"Content-Type":"application/json; charset=utf-8"}
             }).then(function(response) {
                 $scope.refreshMappingGroups().then(function(response) {
-                    $('#modalMappingGroup').modal('hide');
+                    close('#modalMappingGroup');
                     adding = false;
                 });
             }, function(response) {
-                $('#modalMappingGroup').modal('hide');
+                close('#modalMappingGroup');
                 flash.error = ServerErrorResponse.getMessage(response.status);
             });
         });
@@ -694,11 +694,11 @@ var D2RQMappingCtrl = function($scope, $http, $q, flash, ServerErrorResponse, Ac
                     headers: {"Content-Type":"application/json; charset=utf-8"}
                 }).then(function(response) {
                     $scope.refreshMappingGroups().then(function(response) {
-                        $('#modalMapping').modal('hide');
+                        close('#modalMapping');
                         adding = false;
                     });
                 }, function(response) {
-                    $('#modalMapping').modal('hide');
+                    close('#modalMapping');
                     flash.error = ServerErrorResponse.getMessage(response.status);
                 });
             });
@@ -711,11 +711,11 @@ var D2RQMappingCtrl = function($scope, $http, $q, flash, ServerErrorResponse, Ac
                 headers: {"Content-Type":"application/json; charset=utf-8"}
             }).then(function(response) {
                 $scope.refreshMappingGroups().then(function(response) {
-                    $('#modalMapping').modal('hide');
+                    close('#modalMapping');
                     adding = false;
                 });
             }, function(response) {
-                $('#modalMapping').modal('hide');
+                close('#modalMapping');
                 flash.error = ServerErrorResponse.getMessage(response.status);
             });
         }

@@ -41,7 +41,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="submit" class="btn-sm btn-primary" ng-click="add();" ng-disabled="taskForm.$invalid || isAdding()" data-i18n="_add_"></button>
-                    <button type="button" class="btn-sm btn-default" data-dismiss="modal" data-i18n="_cancel_"></button>
+                    <button type="button" class="btn-sm btn-default" ng-click="close('#modalTask')" data-i18n="_cancel_"></button>
                 </div>
             </div>
         </form>

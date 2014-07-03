@@ -41,7 +41,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="submit" class="btn-sm btn-primary" ng-click="addMappingGroup();" ng-disabled="mappingGroupForm.$invalid || isAdding()" data-i18n="_add_"></button>
-                    <button type="button" class="btn-sm btn-default" data-dismiss="modal" data-i18n="_cancel_"></button>
+                    <button type="button" class="btn-sm btn-default" ng-click="close('#modalMappingGroup')" data-i18n="_cancel_"></button>
                 </div>
             </div>
         </form>
@@ -224,7 +224,7 @@
 
                 <div class="modal-footer">
                     <button type="submit" class="btn-sm btn-primary" ng-click="save();" ng-disabled="mappingForm.$invalid || isAdding()" data-i18n="_save_"></button>
-                    <button type="button" class="btn-sm btn-default" data-dismiss="modal" data-i18n="_cancel_"></button>
+                    <button type="button" class="btn-sm btn-default" ng-click="close('#modalMapping')" data-i18n="_cancel_"></button>
                 </div>
             </div>
         </form>
