@@ -19,7 +19,7 @@ function DatabaseCtrl($scope, ConfigurationService){
 		// default values
 		$scope.databaseForm.$setPristine();
 		newDatabase=true;
-		$scope.modaltitle = "_new-db-title_";
+		$scope.modaltitle = "New Database";
 		$scope.database = angular.copy(emptyDatabase);
 	};
 
@@ -27,7 +27,7 @@ function DatabaseCtrl($scope, ConfigurationService){
 		$scope.database = angular.copy(ConfigurationService.getDatabase(uri));
 		$scope.database.uri = $scope.database.uri.replace(':','');
 		newDatabase=false;
-		$scope.modaltitle = "_edit-db-title_";
+		$scope.modaltitle = "Edit Database";
 	};
 
 	$scope.delete = function(uri){

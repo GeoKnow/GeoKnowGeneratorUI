@@ -168,7 +168,7 @@ app.directive("geoliftValue", function ($compile) {
 
 app.directive("downloadResult", function ($compile) {
 	  return {
-		template: '<a class="btn btn-sm btn-primary" target="_self" href="/GeoLift-Downloads/result.ttl" download="result.ttl">Download</a>',
+		template: '<a class="btn btn-sm btn-success" target="_self" href="/GeoLift-Downloads/result.ttl" download="result.ttl">Download</a>',
 		restrict: 'E'
 	    };
 	});

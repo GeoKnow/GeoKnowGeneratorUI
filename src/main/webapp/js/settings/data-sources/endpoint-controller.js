@@ -17,7 +17,7 @@ function EndpointCtrl($scope, ConfigurationService,  AccountService){
 	$scope.new = function(){
 		// default values
 		newEndpoint=true;
-		$scope.modaltitle = "_new-endpoint-title_";
+		$scope.modaltitle = "New Endpoint";
 		$scope.endpoint = angular.copy(emptyEndpoint);
 		$scope.endpointForm.$setPristine();
 	};
@@ -26,7 +26,7 @@ function EndpointCtrl($scope, ConfigurationService,  AccountService){
 		$scope.endpoint = angular.copy(ConfigurationService.getEndpoint(uri));
 		$scope.endpoint.uri = $scope.endpoint.uri.replace(':',''); //for the validation to be accepted
 		newEndpoint=false;
-		$scope.modaltitle = "_edit-endpoint-title_";
+		$scope.modaltitle = "Edit Endopoint";
 	};
 
 	$scope.delete = function(uri){

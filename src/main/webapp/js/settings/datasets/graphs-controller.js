@@ -1,7 +1,7 @@
 'use strict';
 
 
-function GraphCtrl($scope, $http, flash, ConfigurationService, Helpers, AccountService, GraphService, GraphGroupService, localize) {
+function GraphCtrl($scope, $http, flash, ConfigurationService, Helpers, AccountService, GraphService, GraphGroupService) {
     
     $scope.accessModes = GraphService.getAccessModes();
 
@@ -69,7 +69,7 @@ function GraphCtrl($scope, $http, flash, ConfigurationService, Helpers, AccountS
         // default values
         newGraph = true;
         $scope.graphForm.$setPristine();
-        $scope.modaltitle = "_new-ngraph-title_";
+        $scope.modaltitle = "New Named Graph";
 
         var s_now = Helpers.getCurrentDate();
         var defaultEndpoint = ConfigurationService.getSPARQLEndpoint();
@@ -89,7 +89,7 @@ function GraphCtrl($scope, $http, flash, ConfigurationService, Helpers, AccountS
         $scope.namedgraph.name = $scope.namedgraph.name.replace(':', '');
         $scope.namedgraph.owner = AccountService.getAccountURI();
         newGraph = false;
-        $scope.modaltitle = "_edit-ngraph-title_";
+        $scope.modaltitle = "Edit Named Graph";
         $scope.refreshUsersList();
     };
 
@@ -97,7 +97,7 @@ function GraphCtrl($scope, $http, flash, ConfigurationService, Helpers, AccountS
         $scope.namedgraph = angular.copy(GraphService.getNamedGraph(graphName));
         $scope.namedgraph.name = $scope.namedgraph.name.replace(':', '');
         newGraph = false;
-        $scope.modaltitle = "_edit-ngraph-title_";
+        $scope.modaltitle = "Edit Named Graph";
         $scope.refreshUsersList();
     };
 
@@ -206,7 +206,7 @@ function GraphCtrl($scope, $http, flash, ConfigurationService, Helpers, AccountS
     $scope.newGroup = function () {
         newGroup = true;
         $scope.groupForm.$setPristine();
-        $scope.modaltitle = "_new-graph-group-title_";
+        $scope.modaltitle = "New Graph Group";
         var s_now = Helpers.getCurrentDate();
         $scope.graphgroup = angular.copy(emptyGroup);
         $scope.graphgroup.created = s_now;
@@ -218,7 +218,7 @@ function GraphCtrl($scope, $http, flash, ConfigurationService, Helpers, AccountS
         $scope.graphgroup = angular.copy(GraphGroupService.getGraphGroup(groupName));
         $scope.graphgroup.name = $scope.graphgroup.name.replace(':', '');
         newGroup = false;
-        $scope.modaltitle = "_edit-graph-group-title_";
+        $scope.modaltitle = "Edit Graph Group";
         $scope.refreshAllGraphs();
     };
 
@@ -263,10 +263,6 @@ function GraphCtrl($scope, $http, flash, ConfigurationService, Helpers, AccountS
         $('body').removeClass('modal-open');
       	$('.modal-backdrop').slideUp();
       	$('.modal-scrollable').slideUp();
-    };
-
-    $scope.localize = function(str) {
-        return localize.getLocalizedString(str);
     };
 
     //watch

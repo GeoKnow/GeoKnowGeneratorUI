@@ -1,6 +1,6 @@
 'use strict';
 
-function UserRolesCtrl($scope, UsersService, ConfigurationService, $q, ServerErrorResponse, flash, localize, AccountService, $window) {
+function UserRolesCtrl($scope, UsersService, ConfigurationService, $q, ServerErrorResponse, flash, AccountService, $window) {
     $scope.services = ConfigurationService.getAllServices();
     $scope.users = UsersService.getAllUsers();
     $scope.roles = UsersService.getAllRoles();
@@ -90,7 +90,7 @@ function UserRolesCtrl($scope, UsersService, ConfigurationService, $q, ServerErr
             $scope.refreshRoles();
             $scope.roleCreating = false;
             $scope.close("#modalRole");
-            flash.success = localize.getLocalizedString("_created_");
+            flash.success = "Created";
             $window.scrollTo(0,0);
         }, function(response) {
             $scope.roleCreating = false;
@@ -121,7 +121,7 @@ function UserRolesCtrl($scope, UsersService, ConfigurationService, $q, ServerErr
         $q.all(promises).then(function(data) {
             $scope.savingRoles = false;
             $scope.refreshRoles();
-            flash.success = localize.getLocalizedString("_changes-saved-message_");
+            flash.success = "All changes were successfully saved";
             $window.scrollTo(0,0);
         }, function(response) {
             $scope.savingRoles = false;
@@ -162,7 +162,7 @@ function UserRolesCtrl($scope, UsersService, ConfigurationService, $q, ServerErr
         $q.all(promises).then(function(data) {
             $scope.savingUsers = false;
             $scope.refreshUsers();
-            flash.success = localize.getLocalizedString("_changes-saved-message_");
+            flash.success = "All changes were successfully saved";
             $window.scrollTo(0,0);
         }, function(response) {
             $scope.savingUsers = false;
@@ -191,7 +191,7 @@ function UserRolesCtrl($scope, UsersService, ConfigurationService, $q, ServerErr
             $scope.refreshUsers();
             $scope.userCreating = false;
             $scope.close("#modalUser");
-            flash.success = localize.getLocalizedString("_created_");
+            flash.success = "Created";
             $window.scrollTo(0,0);
         }, function(response) {
             $scope.userCreating = false;

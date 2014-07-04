@@ -37,17 +37,17 @@ angular.module("app.configuration", [])
     var AUTH_ENDPOINT;
     var PUBLIC_ENDPOINT;
     
-    var FRAMEWORK_URI  = "http://ldiw.ontos.com/resource/GeoKnowGenerator";
+    var FRAMEWORK_URI  = "http://generator.geoknow.eu/resource/GeoKnowGenerator";
     // if new resorces are created they will use this name space, and it can be changed
-    var NS                          = "http://ldiw.ontos.com/resource/";
+    var NS                          = "http://generator.geoknow.eu/resource/";
     // this is the graph where settings are stored, it doesnt change, and independent on the Namespace
-    var DEFAULT_SETTINGS_GRAPH_URI  = "http://ldiw.ontos.com/resource/settingsGraph";
+    var DEFAULT_SETTINGS_GRAPH_URI  = "http://generator.geoknow.eu/resource/settingsGraph";
     // SETTINGS_GRAPH_URI is initalized with DEFAULT_SETTINGS_GRAPH_URI, but can be changed with setGraph, 
     var SETTINGS_GRAPH_URI          = DEFAULT_SETTINGS_GRAPH_URI;
     // Create a graph for groups of users
-    var GROUPS_GRAPH_URI            = "http://ldiw.ontos.com/resource/groupsGraph";
-    var FRAMEWORK_ONTOLOGY_NS = "http://ldiw.ontos.com/ontology/";
-    var ACCOUNTS_GRAPH = "http://ldiw.ontos.com/resource/accountsGraph";
+    var GROUPS_GRAPH_URI            = "http://generator.geoknow.eu/resource/groupsGraph";
+    var FRAMEWORK_ONTOLOGY_NS = "http://generator.geoknow.eu/ontology/";
+    var ACCOUNTS_GRAPH = "http://generator.geoknow.eu/resource/accountsGraph";
     
 
     var namespaces =
@@ -57,7 +57,7 @@ angular.module("app.configuration", [])
         "http://purl.org/dc/terms/"                        : "dcterms:",
         "http://xmlns.com/foaf/0.1/"                       : "foaf:",
         "http://stack.linkeddata.org/ldis-schema/"   	   : "lds:",
-        "http://ldiw.ontos.com/ontology/"                  : "gkg:",
+        "http://generator.geoknow.eu/ontology/"            : "gkg:",
         "http://www.w3.org/1999/02/22-rdf-syntax-ns#"      : "rdf:",
         "http://www.w3.org/2000/01/rdf-schema#"            : "rdfs:",
         "http://www.w3.org/ns/sparql-service-description#" : "sd:",

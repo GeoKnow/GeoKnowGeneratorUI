@@ -33,23 +33,23 @@
   <context-param> 
     <description>Framework URI is used to get the configuration data from the framework-configuration.ttl file</description> 
     <param-name>framework-uri</param-name> 
-    <param-value>http://ldiw.ontos.com/resource/GeoKnowGenerator</param-value>
+    <param-value>http://generator.geoknow.eu/resource/GeoKnowGenerator</param-value>
   </context-param> 
   <!-- Namespaces -->
   <context-param> 
     <description>Framework Ontology Namespace</description> 
     <param-name>framework-ontology-ns</param-name> 
-    <param-value>http://ldiw.ontos.com/ontology/</param-value>
+    <param-value>http://generator.geoknow.eu/ontology/</param-value>
   </context-param>
   <context-param> 
     <description>User Accounts Namespace</description> 
     <param-name>accounts-ns</param-name> 
-    <param-value>http://ldiw.ontos.com/accounts/ontology/</param-value>
+    <param-value>http://generator.geoknow.eu/accounts/ontology/</param-value>
   </context-param>
   <context-param> 
     <description>Framework Default Namespace</description> 
     <param-name>framework-ns</param-name> 
-    <param-value>http://ldiw.ontos.com/resource/</param-value>
+    <param-value>http://generator.geoknow.eu/resource/</param-value>
   </context-param>
   
   
@@ -153,15 +153,6 @@
   <servlet-mapping>
       <servlet-name>UserManagerServlet</servlet-name>
       <url-pattern>/UserManagerServlet</url-pattern>
-  </servlet-mapping>
-
-  <servlet>
-      <servlet-name>ExecuteD2RQTaskServlet</servlet-name>
-      <servlet-class>ExecuteD2RQTaskServlet</servlet-class>
-  </servlet>
-  <servlet-mapping>
-      <servlet-name>ExecuteD2RQTaskServlet</servlet-name>
-      <url-pattern>/ExecuteD2RQTaskServlet</url-pattern>
   </servlet-mapping>
 
   <servlet>

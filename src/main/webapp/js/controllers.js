@@ -5,7 +5,7 @@ function AccountMenuCtrl($scope) {
   $scope.oneAtATime = true;
   // these data can be replaced later with the configuration
   $scope.items = [
-    { name: "_user-pref_",   route:'#/account/preferences', url:'/account/preferences' }];
+    { name: "User Preferences",   route:'#/account/preferences', url:'/account/preferences' }];
 }
 
 function StackMenuCtrl($scope, AccountService) {
@@ -13,16 +13,15 @@ function StackMenuCtrl($scope, AccountService) {
 	  // these data can be replaced later with the configuration
 	  $scope.groups = [
 	    {
-	      title: "_extraction-loading_",
+	      title: "Extraction and Loading",
 	      id:"extraction-loading",
 	      items: [
-	        {name: '_import-rdf_', route:'#/home/extraction-and-loading/import-rdf',  url:'/home/extraction-and-loading/import-rdf', requiredServices:[] },
+	        {name: 'Import RDF data', route:'#/home/extraction-and-loading/import-rdf',  url:'/home/extraction-and-loading/import-rdf', requiredServices:[] },
 	        {name: 'Sparqlify Extraction', route:'#/home/extraction-and-loading/sparqlify', url:'/home/extraction-and-loading/sparqlify', requiredServices:[] },
-	        {name: 'TripleGeo Extraction', route:'#/home/extraction-and-loading/triplegeo', url:'/home/extraction-and-loading/triplegeo', requiredServices:[] },
-	        {name: 'D2RQ Extraction', route:'#/home/extraction-and-loading/d2rq', url:'/home/extraction-and-loading/d2rq', requiredServices:[] }]
+	        {name: 'TripleGeo Extraction', route:'#/home/extraction-and-loading/triplegeo', url:'/home/extraction-and-loading/triplegeo', requiredServices:[] }]
 	    },
 	    {
-		      title: "_search-querying-exploration_",
+		      title: "Search Querying and Exploration",
 		      id:"search-querying-and-exploration",
 		      items: [
 		       {name: 'Virtuoso', route:'#/home/search-querying-and-exploration/virtuoso', url:'/home/search-querying-and-exploration/virtuoso', requiredServices:[] },
@@ -30,20 +29,19 @@ function StackMenuCtrl($scope, AccountService) {
 		       {name: 'Mappify', route:'#/home/search-querying-and-exploration/mappify', url:'/home/search-querying-and-exploration/mappify', requiredServices:[] }]
 		    },
 	    {
-	      title: "_man-revision-authoring_",
+	      title: "Manual revision and Authoring",
 	      id:"manual-revision-and-authoring",
 	      items: [
-	       {name: 'OntoWiki', route:'#/home/manual-revision-and-authoring/ontowiki', url:'/home/manual-revision-and-authoring/ontowiki', requiredServices:[] },
-	       {name: "_ontologies_", route:'#/home/manual-revision-and-authoring/ontology', url:'/home/manual-revision-and-authoring/ontology', requiredServices:[] }]
+	       {name: 'OntoWiki', route:'#/home/manual-revision-and-authoring/ontowiki', url:'/home/manual-revision-and-authoring/ontowiki', requiredServices:[] }]
 	    },
 	    {
-		    title: "_linking-fusing_",
+		    title: "Linking and Fusing",
 		    id:"linking-and-fusing",
 		    items: [
 		     {name: 'LIMES', route:'#/home/linking-and-fusing/limes', url:'/home/linking-and-fusing/limes', requiredServices:[] }]
 		  },
 		{
-			 title: "_classification-enrichment_",
+			 title: "Classification and Enrichment",
 			 id:"classification-and-enrichment",
 			 items: [
 			   {name: 'GeoLift', route:'#/home/classification-and-enrichment/geolift', url:'/home/classification-and-enrichment/geolift', requiredServices:[] }]
@@ -73,7 +71,7 @@ function StackMenuCtrl($scope, AccountService) {
 
 	}
 
-app.controller('NavbarCtrl', function($scope, $location, localize) {
+app.controller('NavbarCtrl', function($scope, $location) {
 		//if($location.path === "/"){
 		//	$location.path('/home')
 		//}
@@ -84,12 +82,6 @@ app.controller('NavbarCtrl', function($scope, $location, localize) {
 			      return "";
 			    }
 			};
-
-        $scope.languages = localize.getLanguages();
-        $scope.currentLanguage = localize.language;
-        $scope.setLanguage = function() {
-            localize.setLanguage($scope.currentLanguage);
-        };
 	});
 
 app.controller('SidebarCtrl', function($scope, $location) {

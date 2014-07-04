@@ -31,7 +31,7 @@ module.factory('Helpers', function(){
 
 });
 
-module.factory('ServerErrorResponse', function(localize) {
+module.factory('ServerErrorResponse', function() {
 
   var ServerErrorResponseService = {
 
@@ -40,22 +40,22 @@ module.factory('ServerErrorResponse', function(localize) {
     var statusText = '';
       switch (status) {
       case 400:
-        statusText = localize.getLocalizedString('_bad-request_');
+        statusText = 'Bad Request';
         break;
       case 401:
-        statusText = localize.getLocalizedString('_unauthorized_');
+        statusText = 'Unauthorized';
         break;
       case 403:
-        statusText = localize.getLocalizedString('_forbidden_');
+        statusText = 'Forbidden';
         break;
       case 404:
-        statusText = localize.getLocalizedString('_not-found_');
+        statusText = 'Not Found ';
         break;
       case 500:
-        statusText = localize.getLocalizedString('_internal-server-error_');
+        statusText = 'Internal Server Error';
         break;
       default:
-        statusText = localize.getLocalizedString('_error-occurred_')+':'+status;
+        statusText = 'An error occurred:'+status;
       };
       return statusText;
     }
@@ -150,13 +150,13 @@ return {
 });
 
 
-module.factory('AuthenticationErrorResponse', function(localize) {
+module.factory('AuthenticationErrorResponse', function() {
     return {
         getMessage: function(code) {
             var errorText = '';
             switch (code) {
                 case 1:
-                    errorText = localize.getLocalizedString("_user-already-exists-error_");
+                    errorText = 'User already exists';
                     break;
                 default:
                     errorText = code;

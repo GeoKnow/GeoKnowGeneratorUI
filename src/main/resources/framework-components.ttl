@@ -1,4 +1,4 @@
-@prefix :        <http://ldiw.ontos.com/resource/> .
+@prefix :        <http://generator.geoknow.eu/resource/> .
 @prefix d2rq:    <http://www.wiwiss.fu-berlin.de/suhl/bizer/D2RQ/0.1#> .
 @prefix dcmit:   <http://purl.org/dc/dcmitype/> .
 @prefix dcterms:  <http://purl.org/dc/terms/> .
@@ -11,7 +11,7 @@
 @prefix void:    <http://rdfs.org/ns/void#> .
 @prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
 @prefix foaf:    <http://xmlns.com/foaf/0.1/> .
-@prefix gkg:     <http://ldiw.ontos.com/ontology/> .
+@prefix gkg:     <http://generator.geoknow.eu/ontology/> .
 @prefix acl:     <http://www.w3.org/ns/auth/acl#> .
 
 ########### ABOUT THIS FILE #############################################################
@@ -52,25 +52,6 @@
   gkg:authEndpoint :VirtuosoAuthSPARQLEndpoint ;
   lds:integrates :Facete, :Limes, :Sparqlify, :TripleGeo, :GeoLift, :OntoWiki, :Mappify ;
   foaf:homepage <http://localhost:8080/generator> .
-
-:Virtuoso
-  a       lds:StackComponent ;
-  rdfs:label "Service URL"^^xsd:string ;
-  dcterms:hasVersion "7.0"^^xsd:string ;
-  lds:providesService :VirtuosoConductor, :VirtuosoAuthSPARQLEndpoint, :VirtuosoEndpoint;
-  foaf:homepage <http://virtuoso.openlinksw.com/> .
-
-:VirtuosoConductor
-  a  lds:StorageService  ;
-  lds:serviceUrl <http://localhost:8890/conductor> .
-
-:VirtuosoAuthSPARQLEndpoint
-  a       lds:SecuredSPARQLEndPointService ;
-  lds:serviceUrl <http://localhost:8890/sparql-auth> .
-
-:VirtuosoEndpoint
-  a       lds:SPARQLEndPointService ;
-  lds:serviceUrl <http://localhost:8890/sparql> .
 
 :Sparqlify
       a       lds:StackComponent ;
@@ -131,7 +112,7 @@
       foaf:homepage <http://aksw.org/Projects/OntoWiki.html> .
 :OntoWikiService
       a       lds:AuthoringService ;
-      lds:serviceUrl <http://localhost/ontowiki> .
+      lds:serviceUrl <http://192.168.2.18/ontowiki> .
 
 :Mappify
       a       lds:StackComponent ;
@@ -142,26 +123,6 @@
 :MappifyService
       a       lds:ExplorationService ;
       lds:serviceUrl <http://cstadler.aksw.org/mappify2/> .
-
-:D2RQ
-      a       lds:StackComponent ;
-      rdfs:label "D2RQ"^^xsd:string ;
-      lds:providesService :D2RQService ;
-      lds:version "0.1-SNAPSHOT"^^xsd:string .
-:D2RQService
-      a       lds:ExtractionService ;
-      dcterms:description "Provides ontology create/upload/delete functionality"^^xsd:string ;
-      lds:serviceUrl <http://localhost:8080/d2rq-mapper-web-service/api> .
-
-:MiniDix
-      a       lds:StackComponent ;
-      rdfs:label "MiniDix"^^xsd:string ;
-      lds:providesService :MiniDixService ;
-      lds:version "0.1-SNAPSHOT"^^xsd:string .
-:MiniDixService
-      a       lds:AuthoringService ;
-      dcterms:description "Provides ontology edit functionality"^^xsd:string ;
-      lds:serviceUrl <http://localhost:8080/minidix-web> .
 
 :UserManager
       a       lds:StackComponent ;

@@ -14,25 +14,25 @@
   </div>
 
 
-  <h2 data-i18n="_user-account_"></h2>
+  <h2>User Account</h2>
 
   <div class="col-lg-8">
     <table class="table table-bordered" ng-if="currentAccount.username">
       <tr>
-        <td>{{'_username_' | i18n}}:</td>
+        <td>Username:</td>
         <td>{{currentAccount.username}}</td>
       </tr>
       <tr>
-        <td>{{'_email_' | i18n}}:</td>
+        <td>E-mail address:</td>
         <td>{{currentAccount.email}}</td>
       </tr>
         <tr>
-            <td>{{'_role_' | i18n}}:</td>
+            <td>Role:</td>
             <td>{{currentAccount.role.name}}</td>
         </tr>
     </table>
 
-    <button type="button" class="btn-sm btn-primary" data-toggle="modal" data-target="#modalChangePassword" ng-if="currentAccount.username" ng-click="clearChangePasswordForm()" data-i18n="_change-password_"></button>
+    <button type="button" class="btn-sm btn-success" data-toggle="modal" data-target="#modalChangePassword" ng-if="currentAccount.username" ng-click="clearChangePasswordForm()">Change password</button>
   </div>
   <div class="modal fade" id="modalChangePassword" modal-focus="#oldPassword">
     <div class="modal-dialog">
@@ -40,31 +40,31 @@
         <form name="changePasswordForm" class="form-horizontal InputForm" role="form">
           <div class="modal-header">
             <button type="button" class="close" ng-click="close('#modalLogin')" aria-hidden="true">&times;</button>
-            <h5 class="modal-title green bold" data-i18n="_change-password_"></h5>
+            <h5 class="modal-title green bold">Change password</h5>
           </div>
           <div class="modal-body">
             <div class="form-group">
-              <label for="oldPassword" class="col-lg-2 control-label" data-i18n="_old-password_"></label>
+              <label for="oldPassword" class="col-lg-2 control-label">Old password</label>
               <div class="col-lg-10">
-                <input type="password" id="oldPassword" name="oldPassword" class="form-control" data-i18n-attr="_old-password_|placeholder" ng-model="password.oldPassword" required/>
-                <div class="error" ng-show="changePasswordForm.oldPassword.$dirty && changePasswordForm.oldPassword.$invalid">{{'_invalid-field-message_' | i18n}}:
-                  <span ng-show="changePasswordForm.oldPassword.$error.required" data-i18n="_old-password-missed-message_"></span>
+                <input type="password" id="oldPassword" name="oldPassword" class="form-control" placeholder="Old password" ng-model="password.oldPassword" required/>
+                <div class="error" ng-show="changePasswordForm.oldPassword.$dirty && changePasswordForm.oldPassword.$invalid">Invalid:
+                  <span ng-show="changePasswordForm.oldPassword.$error.required">Specify old password</span>
                 </div>
               </div>
             </div>
             <div class="form-group">
-              <label for="newPassword" class="col-lg-2 control-label" data-i18n="_new-password_"></label>
+              <label for="newPassword" class="col-lg-2 control-label">New password</label>
               <div class="col-lg-10">
-                <input type="password" id="newPassword" name="newPassword" class="form-control" data-i18n-attr="_new-password_|placeholder" ng-model="password.newPassword" required/>
-                <div class="error" ng-show="changePasswordForm.newPassword.$dirty && changePasswordForm.newPassword.$invalid">{{'_invalid-field-message_' | i18n}}:
-                  <span ng-show="changePasswordForm.newPassword.$error.required" data-i18n="_new-password-missed-message_"></span>
+                <input type="password" id="newPassword" name="newPassword" class="form-control" placeholder="New password" ng-model="password.newPassword" required/>
+                <div class="error" ng-show="changePasswordForm.newPassword.$dirty && changePasswordForm.newPassword.$invalid">Invalid:
+                  <span ng-show="changePasswordForm.newPassword.$error.required">Specify new password</span>
                 </div>
               </div>
             </div>
           </div>
           <div class="modal-footer">
-            <button type="submit" class="btn-sm btn-primary" ng-click="changePassword();" ng-disabled="changePasswordForm.$invalid" data-i18n="_change_"></button>
-            <button type="button" class="btn-sm btn-default" ng-click="close('#modalLogin')" data-i18n="_cancel_"></button>
+            <button type="submit" class="btn-sm btn-success" ng-click="changePassword();" ng-disabled="changePasswordForm.$invalid">Change</button>
+            <button type="button" class="btn-sm btn-default" ng-click="close('#modalLogin')">Cancel</button>
           </div>
         </form>
       </div>
