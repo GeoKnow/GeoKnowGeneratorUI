@@ -32,6 +32,7 @@
     </table>
     
     <button type="button" class="btn btn-primary btn-large" data-toggle="modal" data-target="#modalOntology" ng-click="new();" ng-disabled="!isLoggedIn()" data-i18n="_add-ontology_"></button>
+    <button type="button" class="btn btn-primary btn-large" ng-confirm-click="clearHistory();" ng-confirm-message="{{'_clear-history-confirm-message_' | i18n}}?" ng-disabled="!isLoggedIn()" data-i18n="_clear-history_"></button>
 
 <div class="modal fade" id="modalOntology">
     <div class="modal-dialog">

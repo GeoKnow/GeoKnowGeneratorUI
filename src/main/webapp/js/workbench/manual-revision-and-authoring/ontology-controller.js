@@ -93,6 +93,23 @@ var OntologyCtrl = function($scope, $http, flash, ServerErrorResponse, AccountSe
         });
     };
 
+    $scope.clearHistory = function() {
+        var ontology = "http://acc.ontos.com/thesaurus/concept/v2/";
+        var data = {uri: ontology, user: AccountService.getUsername()};
+            $http({
+                url: d2rqServiceUrl+ "/ontologies/history/clear",
+                method: "POST",
+                dataType: "json",
+                data: data,
+                headers: {"Content-Type":"application/json; charset=utf-8"}
+            }).then(function(response) {
+                $scope.refreshOntologies();
+            }, function(response) {
+                flash.error = ServerErrorResponse.getMessage(response.status);
+                $scope.refreshOntologies();
+            });
+    };
+
     $scope.new = function(){
         $scope.urlForm.$setPristine();
         $scope.fileForm.$setPristine();

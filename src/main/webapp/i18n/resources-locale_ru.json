@@ -1229,6 +1229,11 @@
         "value":"Вы уверены, что хотите удалить пользователя",
         "description":"text in delete user confirmation dialog"
     },
+    {
+        "key":"_clear-history-confirm-message_",
+        "value":"Вы уверены, что хотите очистить историю",
+        "description":"text in clear ontology history confirmation dialog"
+    },
 
 
     {
@@ -1896,6 +1901,13 @@
         "key":"_user-already-exists-error_",
         "value":"Пользователь уже существует",
         "description":"Error while registering new user: user already exists"
+    },
+
+
+    {
+        "key":"_clear-history_",
+        "value":"Очистить историю",
+        "description":"clear ontology history button"
     }
 
 ]
