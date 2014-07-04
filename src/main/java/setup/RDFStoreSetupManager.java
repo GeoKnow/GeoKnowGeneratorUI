@@ -179,7 +179,7 @@ public class RDFStoreSetupManager {
 
         //create users from framework configuration
         FrameworkUserManager frameworkUserManager = config.getFrameworkUserManager();
-        String query = "PREFIX gkg: <http://ldiw.ontos.com/acc/ontology/> PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> "
+        String query = "PREFIX gkg: <http://ldiw.ontos.com/ontology/> PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> "
                 + " PREFIX foaf: <http://xmlns.com/foaf/0.1/> PREFIX lds: <http://stack.linkeddata.org/ldis-schema/> "
                 + " SELECT ?accountName ?password ?mailto ?role WHERE { ?account rdf:type gkg:Account . ?account foaf:accountName ?accountName . "
                 + " ?account lds:password ?password . ?account foaf:mbox ?mailto . ?account gkg:Role ?role . } ";

@@ -105,12 +105,12 @@ var D2RQTaskCtrl = function($scope, $http, $q, flash, ServerErrorResponse, Accou
                     headers: {"Content-Type":"application/json; charset=utf-8"}
                 }).then(function(response) {
                     $scope.refreshTasks().then(function(response) {
-                        close('#modalTask');
+                        $scope.close('#modalTask');
                         adding = false;
                     });
                 }, function(response) {
                     flash.error = ServerErrorResponse.getMessage(response.status);
-                    close('#modalTask');
+                    $scope.close('#modalTask');
                 });
             });
     };
@@ -146,5 +146,12 @@ var D2RQTaskCtrl = function($scope, $http, $q, flash, ServerErrorResponse, Accou
             flash.error = ServerErrorResponse.getMessage(response.status);
             $scope.refreshTasks();
         });
+    };
+
+    $scope.close = function(modalID) {
+        $(modalID).modal('hide');
+        $('body').removeClass('modal-open');
+        $('.modal-backdrop').slideUp();
+        $('.modal-scrollable').slideUp();
     };
 };

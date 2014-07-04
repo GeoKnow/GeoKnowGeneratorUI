@@ -4,12 +4,11 @@ function SettingsMenuCtrl($scope, AccountService) {
   $scope.oneAtATime = true;
   // these data can be replaced later with the configuration
   $scope.items = [
-//  	{ name: "_data-sources_", route:'#/settings/data-sources', url:'/settings/data-sources', requiredServices:[] },
-//  	{ name: "_datasets_", route:'#/settings/datasets', url:'/settings/datasets', requiredServices:[] },
+  	{ name: "_data-sources_", route:'#/settings/data-sources', url:'/settings/data-sources', requiredServices:[] },
+  	{ name: "_datasets_", route:'#/settings/datasets', url:'/settings/datasets', requiredServices:[] },
     // { name: "_namespaces-title_", route:'#/settings/namespaces', url:'/settings/namespaces' },
   	{ name: "_components_", route:'#/settings/components', url:'/settings/components', requiredServices:[] },
-    { name: "_thesaurus-management_", route:'#/settings/ontology', url:'/settings/ontology', requiredServices:[":D2RQService", ":MiniDixService"] },
-//    { name: "_users_", route:'#/settings/users', url:'/settings/users', requiredServices:[":UserManagerService"] },
+    { name: "_users_", route:'#/settings/users', url:'/settings/users', requiredServices:[":UserManagerService"] },
     { name: "_roles-management_", route:'#/settings/roles', url:'/settings/roles', requiredServices:[":UserManagerService"] }
   ];
 

@@ -8,14 +8,7 @@ function AccountMenuCtrl($scope) {
     { name: "_user-pref_",   route:'#/account/preferences', url:'/account/preferences' }];
 }
 
-function StackMenuCtrl($scope, ConfigurationService, localize, AccountService) {
-    var services = ConfigurationService.getComponentServices(":Solr");
-	var searchServiceUrl = services[0].serviceUrl;
-
-	var miniDixServices = ConfigurationService.getComponentServices(":MiniDix");
-    var miniDixServiceUrl = miniDixServices[0].serviceUrl;
-    var ontology = "http://acc.ontos.com/thesaurus/concept/v2/";
-
+function StackMenuCtrl($scope, AccountService) {
 	  $scope.oneAtATime = true;
 	  // these data can be replaced later with the configuration
 	  $scope.groups = [
@@ -23,67 +16,39 @@ function StackMenuCtrl($scope, ConfigurationService, localize, AccountService) {
 	      title: "_extraction-loading_",
 	      id:"extraction-loading",
 	      items: [
-//	        {name: '_import-rdf_', route:'#/home/extraction-and-loading/import-rdf',  url:'/home/extraction-and-loading/import-rdf' },
-//	        {name: 'Sparqlify Extraction', route:'#/home/extraction-and-loading/sparqlify', url:'/home/extraction-and-loading/sparqlify' },
-//	        {name: 'TripleGeo Extraction', route:'#/home/extraction-and-loading/triplegeo', url:'/home/extraction-and-loading/triplegeo' },
-//	        {name: 'D2RQ Extraction', route:'#/home/extraction-and-loading/d2rq', url:'/home/extraction-and-loading/d2rq' },
-            {name: '_upload-files_', route:'#/home/extraction-and-loading/upload-file', url:'/home/extraction-and-loading/upload-file', requiredServices:[":DocumentUploadService"] },
-            {name: '_reindex-docs_', route:null, url:null, modalId:'#reindexDocuments', requiredServices:[":ReindexService"] }]
+	        {name: '_import-rdf_', route:'#/home/extraction-and-loading/import-rdf',  url:'/home/extraction-and-loading/import-rdf', requiredServices:[] },
+	        {name: 'Sparqlify Extraction', route:'#/home/extraction-and-loading/sparqlify', url:'/home/extraction-and-loading/sparqlify', requiredServices:[] },
+	        {name: 'TripleGeo Extraction', route:'#/home/extraction-and-loading/triplegeo', url:'/home/extraction-and-loading/triplegeo', requiredServices:[] },
+	        {name: 'D2RQ Extraction', route:'#/home/extraction-and-loading/d2rq', url:'/home/extraction-and-loading/d2rq', requiredServices:[] }]
 	    },
 	    {
 		      title: "_search-querying-exploration_",
 		      id:"search-querying-and-exploration",
 		      items: [
-//		       {name: 'Virtuoso', route:'#/home/search-querying-and-exploration/virtuoso', url:'/home/search-querying-and-exploration/virtuoso' },
-//		       {name: 'Facete', route:'#/home/search-querying-and-exploration/facete', url:'/home/search-querying-and-exploration/facete' },
-//		       {name: 'Mappify', route:'#/home/search-querying-and-exploration/mappify', url:'/home/search-querying-and-exploration/mappify' },
-		       {name: '_search_', route:null, url:searchServiceUrl, modaltitle:'_faceted-search_', requiredServices:[":SearchService"] }]
+		       {name: 'Virtuoso', route:'#/home/search-querying-and-exploration/virtuoso', url:'/home/search-querying-and-exploration/virtuoso', requiredServices:[] },
+		       {name: 'Facete', route:'#/home/search-querying-and-exploration/facete', url:'/home/search-querying-and-exploration/facete', requiredServices:[] },
+		       {name: 'Mappify', route:'#/home/search-querying-and-exploration/mappify', url:'/home/search-querying-and-exploration/mappify', requiredServices:[] }]
 		    },
 	    {
 	      title: "_man-revision-authoring_",
 	      id:"manual-revision-and-authoring",
 	      items: [
-//	       {name: 'OntoWiki', route:'#/home/manual-revision-and-authoring/ontowiki', url:'/home/manual-revision-and-authoring/ontowiki' },
-//	       {name: "_ontologies_", route:'#/home/manual-revision-and-authoring/ontology', url:'/home/manual-revision-and-authoring/ontology' },
-	       {name: "_thesaurus-management_", route:null, url:miniDixServiceUrl + "/?ontology=" + ontology + "&newConceptsOntology=" + ontology + "&writableOntologies=" + ontology, modaltitle:'MiniDix', requiredServices:[":MiniDixService"] },
-	       {name: "_edit-uploads_", route:'#/home/manual-revision-and-authoring/edit-uploads', url:'/home/manual-revision-and-authoring/edit-uploads', requiredServices:[":DocumentService"] }]
+	       {name: 'OntoWiki', route:'#/home/manual-revision-and-authoring/ontowiki', url:'/home/manual-revision-and-authoring/ontowiki', requiredServices:[] },
+	       {name: "_ontologies_", route:'#/home/manual-revision-and-authoring/ontology', url:'/home/manual-revision-and-authoring/ontology', requiredServices:[] }]
 	    },
-	    /*
 	    {
 		    title: "_linking-fusing_",
 		    id:"linking-and-fusing",
 		    items: [
-		     {name: 'LIMES', route:'#/home/linking-and-fusing/limes', url:'/home/linking-and-fusing/limes' }]
+		     {name: 'LIMES', route:'#/home/linking-and-fusing/limes', url:'/home/linking-and-fusing/limes', requiredServices:[] }]
 		  },
 		{
 			 title: "_classification-enrichment_",
 			 id:"classification-and-enrichment",
 			 items: [
-			   {name: 'GeoLift', route:'#/home/classification-and-enrichment/geolift', url:'/home/classification-and-enrichment/geolift' }]
+			   {name: 'GeoLift', route:'#/home/classification-and-enrichment/geolift', url:'/home/classification-and-enrichment/geolift', requiredServices:[] }]
 		  }
-		  */
 	  ];
-
-	  $scope.url=null;
-	  $scope.setDirectUrl = function(url) {
-	    $scope.url = url;
-	    //add locale for MiniDix
-	    if (url.indexOf(miniDixServiceUrl)==0)
-	        $scope.url += ("&locale=" + localize.language);
-	    else if (url.indexOf(searchServiceUrl)==0)
-	        $scope.url += ("?lang=" + localize.language);
-	  };
-
-	  $scope.close = function(modalID) {
-	    $(modalID).modal('hide');
-        $('body').removeClass('modal-open');
-      	$('.modal-backdrop').slideUp();
-      	$('.modal-scrollable').slideUp();
-      };
-
-      $scope.setModalTitle = function(title) {
-        $scope.modaltitle = title;
-      };
 
       $scope.showItem = function(item) {
         if (AccountService.isAdmin()) return true; //show all items to admin

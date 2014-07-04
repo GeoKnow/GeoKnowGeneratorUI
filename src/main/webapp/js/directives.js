@@ -8,16 +8,14 @@ app.directive("modalIframe", function ($compile) {
     restrict: 'E',
     link: function (scope, elm, attr) {
         
-        scope.openModal = function(modalId){
+        scope.openModal = function(){
             // $('#modal').modal({
             //     width:'100%',
             //     height : $(window).height() - 165
             // });
             //console.log("URL:" + scope.url);
 
-            if (modalId==null) modalId = 'fullModal';
-
-            $('#'+modalId).css({
+            $('#fullModal').css({
                 width: $(window).width() ,
                 height : $(window).height(),
                 position: 'fixed',
@@ -29,7 +27,7 @@ app.directive("modalIframe", function ($compile) {
                 // }
             });
 
-            $('#'+modalId).find('.modal-body').css({
+            $('#fullModal').find('.modal-body').css({
                 width:'auto',
                 padding:'0px', 
                 height: function(){ 
@@ -37,7 +35,7 @@ app.directive("modalIframe", function ($compile) {
                 }, 
             });
 
-            $('#'+modalId).modal('show');
+            $('#fullModal').modal('show');
         };
     }
   };
@@ -183,8 +181,6 @@ app.directive('regexValidate', function() {
     expressions['uri']            =  /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/;
     expressions['identifier']     =  /^[a-zA-Z0-9_]*$/ ;
     expressions['sparqlEndpoint'] =  /^https?:\/\/.+\/sparql\/?$/; // /^https?:\/\/[^\/]+\/sparql\/?$/
-    expressions['docNumber']        =  /^D([0-9]{3})$/;
-    expressions['docIteration']   =  /^IT([0-9]+)$/;
     return {
         restrict: 'A',
         require: 'ngModel',

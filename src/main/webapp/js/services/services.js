@@ -14,25 +14,6 @@ module.factory('Helpers', function(){
       return s_now;
   };
 
-    var formatDateTimeXsd = function(date) {
-      //"YYYY-MM-DDThh:mm:ss"^^xsd:dateTime;
-      var month = date.getMonth() + 1; // getMonth returns values from 0 to 11
-      var s_date = date.getFullYear() + "-"
-              + (month.toString().length==1 ? "0"+ month : month) + "-"
-              + (date.getDate().toString().length==1 ? "0"+date.getDate() : date.getDate())
-              + "T" + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
-      return s_date;
-    };
-
-    var formatDateXsd = function(date) {
-      //"YYYY-MM-DD"^^xsd:date;
-      var month = date.getMonth() + 1; // getMonth returns values from 0 to 11
-      var s_date = date.getFullYear() + "-"
-              + (month.toString().length==1 ? "0"+ month : month) + "-"
-              + (date.getDate().toString().length==1 ? "0"+date.getDate() : date.getDate());
-      return s_date;
-    };
-
   var invertMap = function (obj) {
     var new_obj = {};
     for (var prop in obj) {
@@ -45,8 +26,6 @@ module.factory('Helpers', function(){
   
   return {
       getCurrentDate :getCurrentDate,
-      formatDateTimeXsd : formatDateTimeXsd,
-      formatDateXsd : formatDateXsd,
       invertMap : invertMap
   };
 
@@ -170,34 +149,6 @@ return {
 	};
 });
 
-module.factory('DocumentErrorResponse', function(localize) {
-    var DocumentErrorResponseService = {
-        getMessage: function(code) {
-            var errorText = '';
-            switch (code) {
-                case 1:
-                    errorText = localize.getLocalizedString("_doc-upload-protected-error_");
-                    break;
-                case 2:
-                    errorText = localize.getLocalizedString("_doc-upload-required-error_");
-                    break;
-                case 3:
-                    errorText = localize.getLocalizedString("_doc-upload-analyzing-error_");
-                    break;
-                case 4:
-                    errorText = localize.getLocalizedString("_doc-delete-error_");
-                    break;
-                case 5:
-                    errorText = localize.getLocalizedString("_doc-reindex-error_");
-                    break;
-                default:
-                    errorText = code;
-            };
-            return errorText;
-        }
-    };
-    return DocumentErrorResponseService;
-});
 
 module.factory('AuthenticationErrorResponse', function(localize) {
     return {

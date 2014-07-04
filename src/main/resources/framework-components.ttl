@@ -1,4 +1,4 @@
-@prefix :        <http://ldiw.ontos.com/acc/resource/> .
+@prefix :        <http://ldiw.ontos.com/resource/> .
 @prefix d2rq:    <http://www.wiwiss.fu-berlin.de/suhl/bizer/D2RQ/0.1#> .
 @prefix dcmit:   <http://purl.org/dc/dcmitype/> .
 @prefix dcterms:  <http://purl.org/dc/terms/> .
@@ -11,7 +11,7 @@
 @prefix void:    <http://rdfs.org/ns/void#> .
 @prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
 @prefix foaf:    <http://xmlns.com/foaf/0.1/> .
-@prefix gkg:     <http://ldiw.ontos.com/acc/ontology/> .
+@prefix gkg:     <http://ldiw.ontos.com/ontology/> .
 @prefix acl:     <http://www.w3.org/ns/auth/acl#> .
 
 ########### ABOUT THIS FILE #############################################################
@@ -53,6 +53,96 @@
   lds:integrates :Facete, :Limes, :Sparqlify, :TripleGeo, :GeoLift, :OntoWiki, :Mappify ;
   foaf:homepage <http://localhost:8080/generator> .
 
+:Virtuoso
+  a       lds:StackComponent ;
+  rdfs:label "Service URL"^^xsd:string ;
+  dcterms:hasVersion "7.0"^^xsd:string ;
+  lds:providesService :VirtuosoConductor, :VirtuosoAuthSPARQLEndpoint, :VirtuosoEndpoint;
+  foaf:homepage <http://virtuoso.openlinksw.com/> .
+
+:VirtuosoConductor
+  a  lds:StorageService  ;
+  lds:serviceUrl <http://localhost:8890/conductor> .
+
+:VirtuosoAuthSPARQLEndpoint
+  a       lds:SecuredSPARQLEndPointService ;
+  lds:serviceUrl <http://localhost:8890/sparql-auth> .
+
+:VirtuosoEndpoint
+  a       lds:SPARQLEndPointService ;
+  lds:serviceUrl <http://localhost:8890/sparql> .
+
+:Sparqlify
+      a       lds:StackComponent ;
+      rdfs:label "Sparqlify"^^xsd:string ;
+      lds:providesService :SparqlifyService ;
+      lds:version "0.1-SNAPSHOT"^^xsd:string ;
+      foaf:homepage <http://aksw.org/Projects/Sparqlify.html> .
+
+:SparqlifyService
+      a       lds:ExplorationService ;
+      lds:serviceUrl <http://localhost:8080/sparqlify/> .
+
+:Facete
+      a       lds:StackComponent ;
+      rdfs:label "Facete"^^xsd:string ;
+      lds:providesService :FaceteService ;
+      lds:version "0.1-SNAPSHOT"^^xsd:string ;
+      foaf:homepage <http://aksw.org/Projects/Facete.html> .
+:FaceteService
+      a       lds:ExplorationService ;
+      lds:serviceUrl <http://cstadler.aksw.org/facete2/> .
+
+:Limes
+      a       lds:StackComponent ;
+      rdfs:label "Limes Linking Service"^^xsd:string ;
+      lds:providesService :LimesService;
+      lds:version "0.6.4"^^xsd:string ;
+      foaf:homepage <http://aksw.org/Projects/LIMES.html> .
+:LimesService
+      a       lds:InterlinkingService ;
+      lds:serviceUrl <http://localhost:8080/Limes-Service> .
+
+:TripleGeo
+      a       lds:StackComponent ;
+      rdfs:label "TripleGeo"^^xsd:string ;
+      lds:providesService :TripleGeoService ;
+      lds:version "1.0"^^xsd:string ;
+      foaf:homepage <https://web.imis.athena-innovation.gr/redmine/projects/geoknow_public/wiki/TripleGeo> .
+:TripleGeoService
+      a       lds:ExtractionService ;
+      lds:serviceUrl <http://localhost:8080/TripleGeo-Service> .
+
+:GeoLift
+      a       lds:StackComponent ;
+      rdfs:label "GeoLift"^^xsd:string ;
+      lds:providesService :GeoLiftService ;
+      lds:version "0.6.4"^^xsd:string ;
+      foaf:homepage <https://github.com/AKSW/GeoLift> .
+:GeoLiftService
+      a       lds:EnrichmentService ;
+      lds:serviceUrl <http://localhost:8080/GeoLift-Service> .
+
+:OntoWiki
+      a       lds:StackComponent ;
+      rdfs:label "OntoWiki"^^xsd:string ;
+      lds:providesService :OntoWikiService ;
+      lds:version "0.9.10-1"^^xsd:string ;
+      foaf:homepage <http://aksw.org/Projects/OntoWiki.html> .
+:OntoWikiService
+      a       lds:AuthoringService ;
+      lds:serviceUrl <http://localhost/ontowiki> .
+
+:Mappify
+      a       lds:StackComponent ;
+      rdfs:label "Mappify"^^xsd:string ;
+      lds:providesService :MappifyService ;
+      lds:version "0.9.10-1"^^xsd:string ;
+      foaf:homepage <https://github.com/GeoKnow/Mappify> .
+:MappifyService
+      a       lds:ExplorationService ;
+      lds:serviceUrl <http://cstadler.aksw.org/mappify2/> .
+
 :D2RQ
       a       lds:StackComponent ;
       rdfs:label "D2RQ"^^xsd:string ;
@@ -70,38 +160,8 @@
       lds:version "0.1-SNAPSHOT"^^xsd:string .
 :MiniDixService
       a       lds:AuthoringService ;
-      dcterms:description "Provides thesaurus edit functionality"^^xsd:string ;
+      dcterms:description "Provides ontology edit functionality"^^xsd:string ;
       lds:serviceUrl <http://localhost:8080/minidix-web> .
-
-:Solr
-      a       lds:StackComponent ;
-      rdfs:label "Solr"^^xsd:string ;
-      lds:providesService :SearchService ;
-      lds:version "4.8.1"^^xsd:string .
-:SearchService
-      a       lds:ExplorationService ;
-      dcterms:description "Provides Solr Search."^^xsd:string ;
-      lds:serviceUrl <http://localhost:8080/solr-search-ui> .
-
-:DocumentComponent
-      a       lds:StackComponent ;
-      rdfs:label "Documents Manager"^^xsd:string ;
-      lds:providesService :DocumentUploadService ;
-      lds:providesService :DocumentService ;
-      lds:providesService :ReindexService ;
-      lds:version "0.1-SNAPSHOT"^^xsd:string .
-:DocumentUploadService
-      a       lds:ExtractionService ;
-      dcterms:description "Provides document upload functionality"^^xsd:string ;
-      lds:serviceUrl <http://localhost:8080/SolrUploadProxy/proxy/upload/files> .
-:DocumentService
-      a       lds:AuthoringService ;
-      dcterms:description "Provides documents view/edit functionality."^^xsd:string ;
-      lds:serviceUrl <http://localhost:8080/SolrUploadProxy/proxy> .
-:ReindexService
-      a       lds:ExtractionService ;
-      dcterms:description "Reindex all documents with current thesaurus."^^xsd:string ;
-      lds:serviceUrl <http://localhost:8080/SolrUploadProxy/proxy/update/reindexWithNewThesaurus> .
 
 :UserManager
       a       lds:StackComponent ;

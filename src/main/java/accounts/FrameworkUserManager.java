@@ -394,7 +394,7 @@ public class FrameworkUserManager implements UserManager {
       else if (predicate.equals("http://xmlns.com/foaf/0.1/mbox")) {
         String mbox = bindingNode.path("o").path("value").getTextValue();
         userProfile.setEmail(mbox.substring("mailto:".length()));
-      } else if (predicate.equals("http://ldiw.ontos.com/acc/ontology/role")) {
+      } else if (predicate.equals(frameworkConfig.getFrameworkOntologyNS() + "role")) {
           String roleURI = bindingNode.path("o").path("value").getTextValue();
           UserRole role = getRole(roleURI);
           userProfile.setRole(role);
@@ -762,7 +762,7 @@ public class FrameworkUserManager implements UserManager {
             String predicate = bindingNode.path("p").path("value").getTextValue();
             if (predicate.equals("http://xmlns.com/foaf/0.1/name"))
                 role.setName(bindingNode.path("o").path("value").getTextValue());
-            else if (predicate.equals("http://ldiw.ontos.com/acc/ontology/isAllowedToUseService"))
+            else if (predicate.equals(frameworkConfig.getFrameworkOntologyNS() + "isAllowedToUseService"))
                 roleServices.add(bindingNode.path("o").path("value").getTextValue());
         }
         role.setServices(roleServices);

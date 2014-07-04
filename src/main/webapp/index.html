@@ -11,9 +11,6 @@
     <link href="css/bootstrap.css" rel="stylesheet"/>
     <link href="css/bootstrap-modal.css" rel="stylesheet"/>
     <link href="css/app.css" rel="stylesheet"/>
-    <link href="css/chosen.min.css" rel="stylesheet"/>
-    <link href="css/chosen-bootstrap.css" rel="stylesheet"/>
-    <link href="css/jquery-ui-themes-1.10.1/smoothness/jquery-ui.css" rel="stylesheet"/>
 
     <link rel="icon" type="image/png" href="img/favicon.png">
 
@@ -37,7 +34,6 @@
       <div flash-alert active-class="in alert" class="fade" duration="10000">
         <button type="button" class="close" ng-click="hide()">&times;</button>
         <span class="alert-message">{{flash.message}}</span>
-      </div>
       </div>
 
 	<div class="navbar navbar-static-top">
@@ -214,7 +210,6 @@
     <script src="js/services/graph-group-service.js"></script>
     <script src="js/services/ontology-service.js"></script>
     <script src="js/services/d2rq-service.js"></script>
-    <script src="js/services/documents-service.js"></script>
     <script src="js/services/users-service.js"></script>
     <!-- controllers for the different modules/pages -->
     <script src="js/controllers.js"></script>
@@ -225,15 +220,11 @@
     <script src="js/workbench/extraction-and-loading/d2rq-controller.js"></script>
     <script src="js/workbench/extraction-and-loading/d2rq-mapping-controller.js"></script>
     <script src="js/workbench/extraction-and-loading/d2rq-task-controller.js"></script>
-    <script src="js/workbench/extraction-and-loading/upload-file-controller.js"></script>
-    <script src="js/workbench/extraction-and-loading/reindex-controller.js"></script>
     <script src="js/workbench/search-querying-and-exploration/facete-controller.js"></script>
     <script src="js/workbench/search-querying-and-exploration/mappify-controller.js"></script>
     <script src="js/workbench/search-querying-and-exploration/virtuoso-controller.js"></script>
-    <script src="js/workbench/search-querying-and-exploration/search-controller.js"></script>
     <script src="js/workbench/manual-revision-and-authoring/ontowiki-controller.js"></script>
     <script src="js/workbench/manual-revision-and-authoring/ontology-controller.js"></script>
-    <script src="js/workbench/manual-revision-and-authoring/edit-uploads-controller.js"></script>
     <script src="js/workbench/classification-and-enrichment/geolift-controller.js"></script>
     <script src="js/workbench/linking-and-fusing/limes-controller.js"></script>
     <script src="js/settings/settings-controller.js"></script>
@@ -249,14 +240,11 @@
     <!-- directives -->
     <script src="js/directives.js"></script>
     <script src="lib/osm/OpenLayers.js"></script>
-    <script src="lib/ui-bootstrap/ui-bootstrap-tpls-0.10.0.min.js"></script>
+    <script src="lib/ui-bootstrap/ui-bootstrap-tpls-0.6.0.min.js"></script>
     <script src="lib/angular-route-segment/angular-route-segment.min.js"></script>
     <script src="lib/angular-file-upload-master/angular-file-upload.min.js"></script>
     <script src="lib/angular-file-upload-master/FileAPI.min.js"></script>
     <script src="lib/angular-flash.min.js"></script>
-    <script src="lib/chosen.jquery.min.js"></script>
-    <script src="lib/chosen.js"></script>
-    <script src="lib/date.js"></script>
     <script src="lib/localize.js"></script>
   </body>
 </html>

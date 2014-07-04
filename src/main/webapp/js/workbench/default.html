@@ -10,28 +10,10 @@
 				  </div>
 				  <div id="{{group.id}}" class="panel-collapse collapse" ng-controller="SidebarCtrl">
 					  <div class="list-item" ng-class="{selected:isSelected('{{item.url}}')}" ng-repeat="item in group.items | filter:showItem">
-							<h6>
-                                <a ng-show="item.route" class="list-group-item" target="{{item.target}}" href="{{item.route}}" data-i18n="{{item.name}}"></a>
-                                <a ng-show="!item.route && item.url" class="list-group-item" data-toggle="modal" href="" ng-click="setDirectUrl('{{item.url}}'); setModalTitle('{{item.modaltitle}}'); openModal('fullModalDirect');" data-i18n="{{item.name}}"></a>
-                                <a ng-show="!item.route && !item.url && item.modalId" class="list-group-item" data-toggle="modal" href="" data-target="{{item.modalId}}" data-i18n="{{item.name}}"></a>
-							</h6>
+							<h6><a class="list-group-item" target="{{item.target}}" href="{{item.route}}" data-i18n="{{item.name}}"></a></h6>
 					  </div>
 				  </div>
 			  	</div>
-
-                <div class="modal" id="fullModalDirect">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" ng-click="close('#fullModalDirect')" aria-hidden="true">&times;</button>
-                            <h5 class="modal-title green bold" data-i18n="{{modaltitle}}"></h5>
-                        </div>
-                        <div class="modal-body">
-                            <modal-iframe></modal-iframe>
-                        </div>
-                    </div>
-                </div>
-
-                <ng-include src="'js/workbench/extraction-and-loading/reindex.html'"></ng-include>
 			</div>
 
 		</div>
