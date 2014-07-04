@@ -37,15 +37,19 @@ angular.module("app.configuration", [])
     var AUTH_ENDPOINT;
     var PUBLIC_ENDPOINT;
     
-    var FRAMEWORK_URI  = "http://ldiw.ontos.com/resource/GeoKnowGenerator";
+    var FRAMEWORK_URI  = "http://ldiw.ontos.com/acc/resource/GeoKnowGenerator";
     // if new resorces are created they will use this name space, and it can be changed
-    var NS                          = "http://ldiw.ontos.com/resource/";
+    var NS                          = "http://ldiw.ontos.com/acc/resource/";
     // this is the graph where settings are stored, it doesnt change, and independent on the Namespace
-    var DEFAULT_SETTINGS_GRAPH_URI  = "http://ldiw.ontos.com/resource/settingsGraph";
+    var DEFAULT_SETTINGS_GRAPH_URI  = "http://ldiw.ontos.com/acc/resource/settingsGraph";
     // SETTINGS_GRAPH_URI is initalized with DEFAULT_SETTINGS_GRAPH_URI, but can be changed with setGraph, 
     var SETTINGS_GRAPH_URI          = DEFAULT_SETTINGS_GRAPH_URI;
     // Create a graph for groups of users
-    var GROUPS_GRAPH_URI            = "http://ldiw.ontos.com/resource/groupsGraph";
+    var GROUPS_GRAPH_URI            = "http://ldiw.ontos.com/acc/resource/groupsGraph";
+    var DOCUMENTS_GRAPH = "http://acc.ontos.com/dataschema/v1/schema";
+    var DOCUMENTS_NS = "http://acc.ontos.com/dataschema/v1/schema#";
+    var FRAMEWORK_ONTOLOGY_NS = "http://ldiw.ontos.com/acc/ontology/";
+    var ACCOUNTS_GRAPH = "http://ldiw.ontos.com/acc/resource/accountsGraph";
     
 
     var namespaces =
@@ -55,12 +59,13 @@ angular.module("app.configuration", [])
         "http://purl.org/dc/terms/"                        : "dcterms:",
         "http://xmlns.com/foaf/0.1/"                       : "foaf:",
         "http://stack.linkeddata.org/ldis-schema/"   	   : "lds:",
-        "http://ldiw.ontos.com/ontology/"                  : "gkg:",
+        "http://ldiw.ontos.com/acc/ontology/"              : "gkg:",
         "http://www.w3.org/1999/02/22-rdf-syntax-ns#"      : "rdf:",
         "http://www.w3.org/2000/01/rdf-schema#"            : "rdfs:",
         "http://www.w3.org/ns/sparql-service-description#" : "sd:",
         "http://rdfs.org/ns/void#"                         : "void:",
-        "http://www.w3.org/ns/auth/acl#"                   : "acl:"
+        "http://www.w3.org/ns/auth/acl#"                   : "acl:",
+        "http://acc.ontos.com/dataschema/v1/schema#"       : "acc:"
     };
     namespaces[NS] = ":";
     // a variable to lookup by prefix
@@ -92,7 +97,7 @@ angular.module("app.configuration", [])
             }
         })
         .error(function(data, status){
-            var message = ServerErrorResponse.getMessage(status) + "at " + AUTH_ENDPOINT ;
+            var message = ServerErrorResponse.getMessage(status) + " at " + AUTH_ENDPOINT ;
             flash.error = message;
             deferred.reject(message);
         });
@@ -102,7 +107,7 @@ angular.module("app.configuration", [])
 
     // Replaces the long name space by the prefix
     var ns = function(v){
-        var value = v.value || v;
+        var value = v.value==undefined ? v : v.value;
 
         if (!v.type || v.type == "uri")
         {
@@ -366,6 +371,22 @@ angular.module("app.configuration", [])
         return GROUPS_GRAPH_URI;
     };
 
+    var getDocumentsGraph = function() {
+        return DOCUMENTS_GRAPH;
+    };
+
+    var getDocumentsNS = function() {
+        return DOCUMENTS_NS;
+    };
+
+    var getFrameworkOntologyNS = function() {
+        return FRAMEWORK_ONTOLOGY_NS;
+    };
+
+    var getAccountsGraph = function() {
+        return ACCOUNTS_GRAPH;
+    };
+
     return {
         getNS               : getNS,
         getGraph            : getGraph,
@@ -381,6 +402,10 @@ angular.module("app.configuration", [])
         // setGraphPermissions : setGraphPermissions,
         parseSparqlResults  : parseSparqlResults,
         getGroupsGraph      : getGroupsGraph,
-        getFrameworkUri     : getFrameworkUri
+        getFrameworkUri     : getFrameworkUri,
+        getDocumentsGraph   : getDocumentsGraph,
+        getDocumentsNS      : getDocumentsNS,
+        getFrameworkOntologyNS: getFrameworkOntologyNS,
+        getAccountsGraph    : getAccountsGraph
     };
 });

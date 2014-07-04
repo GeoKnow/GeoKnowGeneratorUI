@@ -119,4 +119,11 @@ var OntologyCtrl = function($scope, $http, flash, ServerErrorResponse, AccountSe
     $scope.isLoggedIn = function() {
         return AccountService.isLogged();
     };
+
+    $scope.close = function(modalID) {
+        $(modalID).modal('hide');
+        $('body').removeClass('modal-open');
+        $('.modal-backdrop').slideUp();
+        $('.modal-scrollable').slideUp();
+    };
 };

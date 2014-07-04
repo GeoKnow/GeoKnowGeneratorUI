@@ -1,4 +1,4 @@
-@prefix :        <http://ldiw.ontos.com/resource/> .
+@prefix :        <http://ldiw.ontos.com/acc/resource/> .
 @prefix d2rq:    <http://www.wiwiss.fu-berlin.de/suhl/bizer/D2RQ/0.1#> .
 @prefix dcmit:   <http://purl.org/dc/dcmitype/> .
 @prefix dcterms:  <http://purl.org/dc/terms/> .
@@ -11,7 +11,7 @@
 @prefix void:    <http://rdfs.org/ns/void#> .
 @prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
 @prefix foaf:    <http://xmlns.com/foaf/0.1/> .
-@prefix gkg:     <http://ldiw.ontos.com/ontology/> .
+@prefix gkg:     <http://ldiw.ontos.com/acc/ontology/> .
 
 
 ########### ABOUT THIS FILE #############################################################
@@ -26,8 +26,6 @@
   rdfs:comment "This resource contains all the configuration required by the application"^^xsd:string ;
   rdfs:label "GeoKnowGeneator"^^xsd:string ;
   dcterms:hasVersion "2.0"^^xsd:string ;
-  lds:password "***REMOVED***""^^xsd:string ;         # an admin user for the webapp NOT IMPLEMENTED YET
-  lds:user   "***REMOVED***""^^xsd:string ;
   gkg:publicEndpoint :VirtuosoEndpoint ;
   gkg:authEndpoint :VirtuosoAuthSPARQLEndpoint ;
   lds:integrates :Virtuoso ;
@@ -42,10 +40,10 @@
 
 :VirtuosoConductor 
   a  lds:StorageService ;
-  lds:password "***REMOVED***""^^xsd:string ;
+  lds:password "***REMOVED***"^^xsd:string ;
   lds:serviceUrl <http://***REMOVED***:8890/conductor> ;
   lds:connectionString "jdbc:virtuoso://***REMOVED***:1111/"^^xsd:string;
-  lds:user   "***REMOVED***""^^xsd:string . 
+  lds:user   "***REMOVED***"^^xsd:string .
 
 :VirtuosoAuthSPARQLEndpoint
   a       lds:SecuredSPARQLEndPointService ;
@@ -132,3 +130,12 @@
     dcterms:created "2014-04-12"^^xsd:date;
     void:sparqlEndpoint <http://10.0.0.63:8890/sparql> ]
   .
+
+:admin
+  a gkg:Account;
+  foaf:accountName "***REMOVED***"^^xsd:string;
+  lds:password "***REMOVED***"^^xsd:string;
+  foaf:mbox <mailto:***REMOVED***>;
+  gkg:Role gkg:Administrator.
+
+

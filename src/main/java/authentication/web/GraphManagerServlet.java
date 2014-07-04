@@ -41,7 +41,7 @@ public class GraphManagerServlet extends HttpServlet {
     super.init(config);
 
     try {
-      frameworkConfig = FrameworkConfiguration.getInstance(getServletContext(), false);
+      frameworkConfig = FrameworkConfiguration.getInstance(getServletContext());
       frameworkUserManager = frameworkConfig.getFrameworkUserManager();
       virtuosoUserManager = frameworkConfig.getVirtuosoUserManager();
       virtuosoGraphGroupManager = new VirtuosoGraphGroupManager(frameworkConfig
@@ -184,8 +184,7 @@ public class GraphManagerServlet extends HttpServlet {
         result = frameworkUserManager.getAllGraphsSparql();
 
       } else if ("updateForeign".equals(mode)) {
-        UserProfile userProfile = frameworkUserManager.getUserProfile(username);
-        if (!userProfile.isAdmin())
+        if (!frameworkUserManager.isAdmin(username))
           throw new ServletException("Access denied");
 
         String graph = req.getParameter("graph");
@@ -244,8 +243,7 @@ public class GraphManagerServlet extends HttpServlet {
         result = "{\"results\" : \"success\"}";
 
       } else if ("dropForeign".equals(mode)) {
-        UserProfile userProfile = frameworkUserManager.getUserProfile(username);
-        if (!userProfile.isAdmin())
+        if (!frameworkUserManager.isAdmin(username))
           throw new ServletException("Access denied");
         // drop graph
         String graph = req.getParameter("graph");
@@ -258,7 +256,7 @@ public class GraphManagerServlet extends HttpServlet {
             .getAuthSparqlEndpoint(), frameworkConfig.getAuthSparqlUser(), frameworkConfig
             .getAuthSparqlPassword());
         String query = "PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>\n"
-            + "PREFIX gkg: <http://ldiw.ontos.com/ontology/>\n"
+            + "PREFIX gkg: <http://ldiw.ontos.com/acc/ontology/>\n"
             + "WITH <"
             + settingsGraph
             + "> "
@@ -276,7 +274,7 @@ public class GraphManagerServlet extends HttpServlet {
             + graph
             + "> gkg:access ?s . ?s ?p ?o . } "
             + " UNION "
-            + " {?s ?p ?o . FILTER (?s = <http://ldiw.ontos.com/resource/default-dataset> && ?p = sd:namedGraph && ?o = <"
+            + " {?s ?p ?o . FILTER (?s = <http://ldiw.ontos.com/acc/resource/default-dataset> && ?p = sd:namedGraph && ?o = <"
             + graph + ">) } " + "}";
         frameworkRdfStoreManager.execute(query, responseFormat);
         // remove graph from graph groups descriptions

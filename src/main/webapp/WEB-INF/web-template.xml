@@ -33,23 +33,23 @@
   <context-param> 
     <description>Framework URI is used to get the configuration data from the framework-configuration.ttl file</description> 
     <param-name>framework-uri</param-name> 
-    <param-value>http://ldiw.ontos.com/resource/GeoKnowGenerator</param-value>
+    <param-value>http://ldiw.ontos.com/acc/resource/GeoKnowGenerator</param-value>
   </context-param> 
   <!-- Namespaces -->
   <context-param> 
     <description>Framework Ontology Namespace</description> 
     <param-name>framework-ontology-ns</param-name> 
-    <param-value>http://ldiw.ontos.com/ontology/</param-value>
+    <param-value>http://ldiw.ontos.com/acc/ontology/</param-value>
   </context-param>
   <context-param> 
     <description>User Accounts Namespace</description> 
     <param-name>accounts-ns</param-name> 
-    <param-value>http://ldiw.ontos.com/accounts/ontology/</param-value>
+    <param-value>http://ldiw.ontos.com/acc/accounts/ontology/</param-value>
   </context-param>
   <context-param> 
     <description>Framework Default Namespace</description> 
     <param-name>framework-ns</param-name> 
-    <param-value>http://ldiw.ontos.com/resource/</param-value>
+    <param-value>http://ldiw.ontos.com/acc/resource/</param-value>
   </context-param>
   
   
@@ -162,6 +162,15 @@
   <servlet-mapping>
       <servlet-name>ExecuteD2RQTaskServlet</servlet-name>
       <url-pattern>/ExecuteD2RQTaskServlet</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+      <servlet-name>InitialSetup</servlet-name>
+      <servlet-class>setup.InitialSetupServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+      <servlet-name>InitialSetup</servlet-name>
+      <url-pattern>/InitialSetup</url-pattern>
   </servlet-mapping>
 
   <mime-mapping>

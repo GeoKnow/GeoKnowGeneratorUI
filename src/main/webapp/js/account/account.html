@@ -26,11 +26,15 @@
         <td>{{'_email_' | i18n}}:</td>
         <td>{{currentAccount.email}}</td>
       </tr>
+        <tr>
+            <td>{{'_role_' | i18n}}:</td>
+            <td>{{currentAccount.role.name}}</td>
+        </tr>
     </table>
 
-    <button type="button" class="btn-sm btn-primary" data-toggle="modal" data-target="#modalChangePassword" ng-if="currentAccount.username" data-i18n="_change-password_"></button>
+    <button type="button" class="btn-sm btn-primary" data-toggle="modal" data-target="#modalChangePassword" ng-if="currentAccount.username" ng-click="clearChangePasswordForm()" data-i18n="_change-password_"></button>
   </div>
-  <div class="modal fade" id="modalChangePassword">
+  <div class="modal fade" id="modalChangePassword" modal-focus="#oldPassword">
     <div class="modal-dialog">
       <div class="modal-content">
         <form name="changePasswordForm" class="form-horizontal InputForm" role="form">

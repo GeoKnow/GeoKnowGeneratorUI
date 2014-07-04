@@ -10,6 +10,8 @@ var app = angular.module('app', ['ngRoute',
                                  'app.login-service',
                                  'app.ontology-service',
                                  'app.d2rq-service',
+                                 'app.documents-service',
+                                 'app.users-service',
                                  'app.directives', 
                                  'app.configuration',
                                  'ui.bootstrap',
@@ -18,6 +20,8 @@ var app = angular.module('app', ['ngRoute',
                                  'angularFileUpload',
                                  'angular-flash.service', 
                                  'angular-flash.flash-alert-directive',
+                                 'localytics.directives',
+                                 'ui.date',
                                  'localization']);
 
 
@@ -33,6 +37,7 @@ app.config(function($routeSegmentProvider, $routeProvider)
 
         .when('/home', 'default')
         .when('/account','account')
+        .when('/system-setup', 'system-setup')
         // .when('/account/preferences', 'account.preferences')
         .when('/settings', 'settings')
         .when('/settings/data-sources', 'settings.data-sources')
@@ -40,6 +45,8 @@ app.config(function($routeSegmentProvider, $routeProvider)
         .when('/settings/namespaces', 'settings.namespaces')
         .when('/settings/components', 'settings.components')
         .when('/settings/users', 'settings.users')
+        .when('/settings/roles', 'settings.roles')
+        .when('/settings/ontology', 'settings.ontology')
         .when('/home/extraction-and-loading/import-rdf', 'default.import-rdf')
         .when('/home/extraction-and-loading/sparqlify', 'default.sparqlify')
         .when('/home/extraction-and-loading/triplegeo', 'default.triplegeo')
@@ -47,13 +54,16 @@ app.config(function($routeSegmentProvider, $routeProvider)
         .when('/home/extraction-and-loading/d2rq', 'default.d2rq.mapping')
         .when('/home/extraction-and-loading/d2rq/mapping', 'default.d2rq.mapping')
         .when('/home/extraction-and-loading/d2rq/task', 'default.d2rq.task')
+        .when('/home/extraction-and-loading/upload-file', 'default.upload-file')
+        .when('/home/extraction-and-loading/reindex', 'default.reindex')
         .when('/home/search-querying-and-exploration/virtuoso', 'default.virtuoso')
         .when('/home/search-querying-and-exploration/geospatial', 'default.geospatial')
      /*   .when('/home/search-querying-and-exploration/googlemap', 'default.googlemap') */
         .when('/home/search-querying-and-exploration/facete', 'default.facete')
         .when('/home/search-querying-and-exploration/mappify', 'default.mappify')
+        .when('/home/querying-and-exploration/search', 'default.search')
         .when('/home/manual-revision-and-authoring/ontowiki', 'default.ontowiki')
-        .when('/home/manual-revision-and-authoring/ontology', 'default.ontology')
+        .when('/home/manual-revision-and-authoring/edit-uploads', 'default.edit-uploads')
         .when('/home/linking-and-fusing/limes', 'default.limes')
         .when('/home/classification-and-enrichment/geolift', 'default.geolift')
 
@@ -89,6 +99,9 @@ app.config(function($routeSegmentProvider, $routeProvider)
             resolve: {
                       settings: function (Config) {
                         return Config.read();
+                      },
+                      userInfo : function(UsersService) {
+                        return UsersService.readUserNamesEmails();
                       }
                 }
             })
@@ -127,6 +140,19 @@ app.config(function($routeSegmentProvider, $routeProvider)
                                 }
                             })
                     .up()
+                .segment('upload-file', {
+                    templateUrl: 'js/workbench/extraction-and-loading/upload-file.html',
+                    resolve: {
+                            projects: function(DocumentsService) {
+                                return DocumentsService.readProjects();
+                            },
+                            owners: function(DocumentsService) {
+                                return DocumentsService.readOwners();
+                            }
+                        }
+                    })
+                .segment('reindex', {
+                    templateUrl: 'js/workbench/extraction-and-loading/reindex.html' })
                 .segment('geospatial', {
                     templateUrl: 'js/workbench/search-querying-and-exploration/geospatial.html'})
      /*           .segment('googlemap', {
@@ -135,18 +161,23 @@ app.config(function($routeSegmentProvider, $routeProvider)
                     templateUrl: 'js/workbench/search-querying-and-exploration/facete.html'})
                 .segment('mappify', {
                     templateUrl: 'js/workbench/search-querying-and-exploration/mappify.html'})
+                .segment('search', {
+                    templateUrl: 'js/workbench/search-querying-and-exploration/search.html'})
                 .segment('virtuoso', {
                     templateUrl: 'js/workbench/search-querying-and-exploration/virtuoso.html'})
                 .segment('ontowiki', {
                     templateUrl: 'js/workbench/manual-revision-and-authoring/ontowiki.html' })
-                .segment('ontology', {
-                    templateUrl: 'js/workbench/manual-revision-and-authoring/ontology.html',
+                .segment('edit-uploads', {
+                    templateUrl: 'js/workbench/manual-revision-and-authoring/edit-uploads.html',
                     resolve: {
-                            ontologies: function (OntologyService) {
-                                return OntologyService.readOntologies();
+                            documents: function(DocumentsService) {
+                                return DocumentsService.readDocuments();
                             },
-                            settings: function (Config) {
-                                return Config.read();
+                            projects: function(DocumentsService) {
+                                return DocumentsService.readProjects();
+                            },
+                            owners: function(DocumentsService) {
+                                return DocumentsService.readOwners();
                             }
                         }
                     })
@@ -162,6 +193,9 @@ app.config(function($routeSegmentProvider, $routeProvider)
             resolve: {
               settings: function (Config) {
                 return Config.read();
+              },
+              userInfo : function(UsersService) {
+                return UsersService.readUserNamesEmails();
               }
             }
 		})
@@ -175,7 +209,32 @@ app.config(function($routeSegmentProvider, $routeProvider)
                 .segment('components', {
                     templateUrl: 'js/settings/components/components.html'})
                 .segment('users', {
-                    templateUrl: 'js/admin/users.html'})
+                    templateUrl: 'js/admin/users/users.html'})
+                .segment('roles', {
+                    templateUrl: 'js/admin/roles.html',
+                    resolve: {
+                            users: function(UsersService) {
+                                return UsersService.readUsers();
+                            },
+                            roles: function(UsersService) {
+                                return UsersService.readRoles();
+                            },
+                            settings: function (Config) {
+                                return Config.read();
+                            }
+                        }
+                    })
+                .segment('ontology', {
+                    templateUrl: 'js/workbench/manual-revision-and-authoring/ontology.html',
+                    resolve: {
+                            ontologies: function (OntologyService) {
+                                return OntologyService.readOntologies();
+                            },
+                            settings: function (Config) {
+                                return Config.read();
+                            }
+                        }
+                    })
             .up()
            
         .segment('account', {
@@ -184,6 +243,9 @@ app.config(function($routeSegmentProvider, $routeProvider)
                 .segment('preferences', {
                     templateUrl: 'js/account/preferences/preferences.html' })
             .up()
+        .segment('system-setup', {
+            templateUrl: 'system-setup.html'
+        })
 
         .segment('about', {
             templateUrl:'about.html' })
@@ -212,5 +274,20 @@ app.config(function($routeSegmentProvider, $routeProvider)
     localizeProvider.languages = ['en', 'ru'];
     localizeProvider.defaultLanguage = 'en';
     localizeProvider.ext = 'json';
+})
+.run(function($rootScope, $location, $http) {
+    //redirect to system-setup page if system is not set up
+    $rootScope.$on("$routeChangeStart", function(event, next, current) {
+        if ($rootScope.isSystemSetUp==undefined) {
+            $http.get("InitialSetup?check=true").then(function(response) {
+                $rootScope.isSystemSetUp = response.data.setup=="true";
+                if (!$rootScope.isSystemSetUp) {
+                    $location.path('/system-setup');
+                }
+            });
+        } else if (!$rootScope.isSystemSetUp) {
+            $location.path('/system-setup');
+        }
+    });
 });
 

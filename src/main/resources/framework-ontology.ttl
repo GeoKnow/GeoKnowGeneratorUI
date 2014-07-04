@@ -1,6 +1,6 @@
-# baseURI: http://ldiw.ontos.com/ontology/
+# baseURI: http://ldiw.ontos.com/acc/ontology/
 
-@prefix :        <http://ldiw.ontos.com/ontology/> .
+@prefix :        <http://ldiw.ontos.com/acc/ontology/> .
 @prefix owl:     <http://www.w3.org/2002/07/owl#> .
 @prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
@@ -9,12 +9,91 @@
 @prefix sd:      <http://www.w3.org/ns/sparql-service-description#> .
 @prefix void:    <http://rdfs.org/ns/void#> .
 @prefix foaf:    <http://xmlns.com/foaf/0.1/> .
-@prefix gkgres:  <http://ldiw.ontos.com/resource/> .
+@prefix gkgres:  <http://ldiw.ontos.com/acc/resource/> .
+@prefix lds:     <http://stack.linkeddata.org/ldis-schema/> .
 
 :     rdf:type owl:Ontology ;
       owl:versionInfo "Created with TopBraid Composer"^^xsd:string .
 
-     
+:Account
+      rdf:type owl:Class ;
+      rdfs:comment "Account for the workbench"@en ;
+      rdfs:label "Account"^^xsd:string ;
+      rdfs:subClassOf foaf:OnlineAccount .
+
+:rdfStorePassword
+      rdf:type owl:DatatypeProperty ;
+      rdfs:domain :Account ;
+      rdfs:label "RDF Store Password"@en ;
+      rdfs:range xsd:string .
+
+:rdfStoreUsername
+      rdf:type owl:DatatypeProperty ;
+      rdfs:domain :Account ;
+      rdfs:label "RDF store username"@en ;
+      rdfs:range xsd:string .
+
+:role
+      rdf:type owl:ObjectProperty ;
+      rdfs:domain :Account ;
+      rdfs:label "role"@en ;
+      rdfs:range :Role .
+
+:sessionToken
+      rdf:type owl:DatatypeProperty ;
+      rdfs:domain :Account ;
+      rdfs:label "session token"@en ;
+      rdfs:range xsd:string .
+
+:settingsGraph
+      rdf:type owl:DatatypeProperty ;
+      rdfs:domain :Account ;
+      rdfs:label "settings graph"@en ;
+      rdfs:range xsd:anyURI .
+
+:passwordSha1Hash
+      rdf:type owl:DatatypeProperty ;
+      rdfs:domain :Account ;
+      rdfs:comment "Workbench account password hash"@en ;
+      rdfs:label "password sha1 hash"@en ;
+      rdfs:range xsd:string .
+
+:Role
+      rdf:type owl:Class ;
+      rdfs:comment "Class associate with rights to use service which could be assigned to users."@en ;
+      rdfs:label "Role"@en ;
+      rdfs:subClassOf owl:Thing .
+
+:isAllowedToUseService
+      rdf:type owl:ObjectProperty ;
+      rdfs:domain :Role;
+      rdfs:label "is allowed to use service"^^xsd:string ;
+      rdfs:range lds:ComponentService .
+
+:isNotLoggedIn
+      rdf:type owl:DatatypeProperty ;
+      rdfs:domain :Role ;
+      rdfs:comment "Role is used as default for not logged in user" ;
+      rdfs:label "isNotLoggedIn"@en ;
+      rdfs:range xsd:boolean .
+
+:isDefault
+      rdf:type owl:DatatypeProperty ;
+      rdfs:domain :Role ;
+      rdfs:comment "Role is used as default for newly registered user" ;
+      rdfs:label "isDefault"@en ;
+      rdfs:range xsd:boolean .
+
+:Administrator
+      rdf:type :Role ;
+      rdfs:label "Administrator"^^xsd:string ;
+      foaf:name "admin user"^^xsd:string .
+
+:BasicUser
+      rdf:type :Role ;
+      rdfs:label "Basic user"^^xsd:string ;
+      foaf:name "basic user"^^xsd:string .
+
 :DataSource
       rdf:type owl:Class ;
       rdfs:label "Data Source"^^xsd:string ;
@@ -34,7 +113,7 @@
       rdf:type owl:Class ;
       rdfs:label "Database types"@en ;
       rdfs:subClassOf owl:Thing .
-      
+
 :dbHost
       rdf:type owl:DatatypeProperty ;
       rdfs:domain :Database ;
@@ -76,8 +155,8 @@
       rdf:type owl:DatatypeProperty ;
       rdfs:domain :SPARQLEndpoint ;
       rdfs:label "endpoint"^^xsd:string .
- 
- 
+
+
 :jdbcDSN
       rdf:type owl:DatatypeProperty ;
       rdfs:comment "JDBC data source name." ;

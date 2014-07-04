@@ -24,6 +24,15 @@ import accounts.FrameworkUserManager;
 import accounts.UserProfile;
 import authentication.FrameworkConfiguration;
 
+/**
+ * Servlet provides some authentication functions: login, logout, register new user, restore password, change password.
+ *
+ * For some types of errors it sends error code and description in response.
+ * In these cases response has json format: {code : ERROR_CODE, message : ERROR_DESCRIPTION}.
+ *
+ * Error codes:
+ * 1 - user already exists (during user registration, user with the same name or e-mail already exists)
+ */
 public class AuthenticationServlet extends HttpServlet {
   /**
    * 
@@ -35,7 +44,7 @@ public class AuthenticationServlet extends HttpServlet {
   public void init(ServletConfig config) throws ServletException {
     super.init(config);
     try {
-      frameworkUserManager = FrameworkConfiguration.getInstance(getServletContext(), false)
+      frameworkUserManager = FrameworkConfiguration.getInstance(getServletContext())
           .getFrameworkUserManager();
     } catch (FileNotFoundException e) {
       throw new ServletException(e);
@@ -121,12 +130,24 @@ public class AuthenticationServlet extends HttpServlet {
 
       String username = request.getParameter("username");
       String email = request.getParameter("email");
+      //check if user already exists
+      boolean userExists = false;
+      try {
+          userExists = frameworkUserManager.checkUserExists(username, email);
+      } catch (Exception e) {
+          e.printStackTrace();
+      }
+      if (userExists) {
+          response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+          out.print("{\"code\" : \"1\", \"message\" : \"User already exists\"}");
+          return;
+      }
       // create user
       String password = new RandomStringGenerator().generateSimple(8);
       try {
         frameworkUserManager.createUser(username, password, email);
 
-        EmailSender emailSender = FrameworkConfiguration.getInstance(getServletContext(), false)
+        EmailSender emailSender = FrameworkConfiguration.getInstance(getServletContext())
             .getDefaultEmailSender();
 
         emailSender.send(email, "GeoKnow registration", "Your login: " + username + ", password: "
@@ -184,7 +205,7 @@ public class AuthenticationServlet extends HttpServlet {
         frameworkUserManager.setPassword(username, password);
 
         // send new password to user
-        EmailSender emailSender = FrameworkConfiguration.getInstance(getServletContext(), false)
+        EmailSender emailSender = FrameworkConfiguration.getInstance(getServletContext())
             .getDefaultEmailSender();
         emailSender.send(userProfile.getEmail(), "GeoKnow restore password", "Your login: "
             + username + ", password: " + password);

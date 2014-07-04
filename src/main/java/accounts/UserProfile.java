@@ -5,7 +5,7 @@ public class UserProfile {
     private String settingsGraph;
     private String accountURI;
     private String email;
-    private boolean admin;
+    private UserRole role;
 
     public String getUsername() {
         return username;
@@ -39,12 +39,12 @@ public class UserProfile {
         this.email = email;
     }
 
-    public boolean isAdmin() {
-        return admin;
+    public UserRole getRole() {
+        return role;
     }
 
-    public void setAdmin(boolean admin) {
-        this.admin = admin;
+    public void setRole(UserRole role) {
+        this.role = role;
     }
 
     @Override

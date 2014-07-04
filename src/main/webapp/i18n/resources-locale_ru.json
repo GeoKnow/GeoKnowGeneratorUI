@@ -61,6 +61,11 @@
         "value":"Инструмент для поиска (географических) наборов связанных данных в Интернете. Для начала работы выберите набор данных.",
         "description":"description shown on Mappify page"
     },
+    {
+        "key":"_system-setup-page-content_",
+        "value":"Система не инициализирована. Для инициализации используйте сервлет http://localhost:8080/generator/InitialSetup",
+        "description":"content of system-setup page"
+    },
 
 
     {
@@ -125,6 +130,23 @@
 
 
     {
+        "key":"_upload-files_",
+        "value":"Загрузить новые файлы",
+        "description":"page and stack menu item title"
+    },
+    {
+        "key":"_thesaurus-management_",
+        "value":"Управление тезаурусами",
+        "description":"page and stack/settings menu item title"
+    },
+    {
+        "key":"_edit-uploads_",
+        "value":"Редактор загруженных документов",
+        "description":"page and stack menu item title"
+    },
+
+
+    {
         "key":"_user-pref_",
         "value":"Пользовательские настройки",
         "description":"Account menu item, page title"
@@ -172,6 +194,13 @@
         "key":"_namespaces-title_",
         "value":"Пространства имен",
         "description":"page and settings menu item title"
+    },
+
+
+    {
+        "key":"_faceted-search_",
+        "value":"Фасетный поиск",
+        "description":"modal dialog title"
     },
 
 
@@ -251,6 +280,16 @@
         "key":"_importing_",
         "value":"Импорт ...",
         "description":"importing in progress message"
+    },
+    {
+        "key":"_saving_",
+        "value":"Сохранение ...",
+        "description":"saving in progress message"
+    },
+    {
+        "key":"_registering_",
+        "value":"Идет регистрация ...",
+        "description":"registering in progress message"
     },
 
 
@@ -658,6 +697,16 @@
         "value":"Онтология",
         "description":""
     },
+    {
+        "key":"_roles_",
+        "value":"Роли",
+        "description":""
+    },
+    {
+        "key":"_role_",
+        "value":"Роль",
+        "description":""
+    },
 
 
     {
@@ -683,6 +732,11 @@
     {
         "key":"_save-changes_",
         "value":"Сохранить изменения",
+        "description":""
+    },
+    {
+        "key":"_revert-changes_",
+        "value":"Отменить изменения",
         "description":""
     },
     {
@@ -824,7 +878,7 @@
     },
     {
         "key":"_add-user_",
-        "value":"Добавит нового пользователя",
+        "value":"Добавить нового пользователя",
         "description":"button on users management page"
     },
     {
@@ -851,6 +905,28 @@
         "key":"_user-writable-graphs_",
         "value":"Графы, доступные для записи",
         "description":"field in user manager"
+    },
+
+
+    {
+        "key":"_roles-management_",
+        "value":"Управление ролями",
+        "description":"roles management page title"
+    },
+    {
+        "key":"_add-role_",
+        "value":"Добавить новую роль",
+        "description":"button on roles page"
+    },
+    {
+        "key":"_default-role_",
+        "value":"Роль по умолчанию",
+        "description":"default role select label"
+    },
+    {
+        "key":"_not-logged-in-role_",
+        "value":"Роль неавторизованного пользователя",
+        "description":"not logged in user role select label"
     },
     
     
@@ -896,12 +972,17 @@
     },
     {
         "key":"_new-user-title_",
-        "value":"Новы йпользователь",
+        "value":"Новый пользователь",
         "description":"dialog title"
     },
     {
         "key":"_edit-user-title_",
         "value":"Редактировать пользователя",
+        "description":"dialog title"
+    },
+    {
+        "key":"_new-role-title_",
+        "value":"Новая роль",
         "description":"dialog title"
     },
 
@@ -1082,6 +1163,11 @@
         "value":"Укажите эндпоинт",
         "description":"shown in forms below required endpoint field when the value is not specified"
     },
+    {
+        "key":"_role-missed-message_",
+        "value":"Укажите роль",
+        "description":"shown in forms below required role field when the value is not specified"
+    },
 
 
     {
@@ -1137,6 +1223,11 @@
         "key":"_delete-doc-confirm-message_",
         "value":"Вы уверены, что хотите удалить документ",
         "description":"text in delete document confirmation dialog"
+    },
+    {
+        "key":"_delete-user-confirm-message_",
+        "value":"Вы уверены, что хотите удалить пользователя",
+        "description":"text in delete user confirmation dialog"
     },
 
 
@@ -1581,5 +1672,230 @@
         "key":"_virtuoso-sparql-endpoint_",
         "value":"Virtuoso SPARQL эндпоинт",
         "description":"Virtuoso"
+    },
+
+
+    {
+        "key":"_acc-project-number_",
+        "value":"Номер проекта",
+        "description":"upload document, edit document form field"
+    },
+    {
+        "key":"_acc-project-name_",
+        "value":"Имя проекта",
+        "description":"upload document, edit document form field"
+    },
+    {
+        "key":"_acc-doc-number_",
+        "value":"Номер документа",
+        "description":"upload document, edit document form field"
+    },
+    {
+        "key":"_acc-doc-iteration_",
+        "value":"Версия документа",
+        "description":"upload document, edit document form field"
+    },
+    {
+        "key":"_date-doc-received_",
+        "value":"Дата получения документа",
+        "description":"upload document, edit document form field"
+    },
+    {
+        "key":"_owner-name_",
+        "value":"Имя владельца",
+        "description":"upload document, edit document form field"
+    },
+    {
+        "key":"_short-description_",
+        "value":"Краткое описание",
+        "description":"upload document, edit document form field"
+    },
+    {
+        "key":"_owner-doc-number_",
+        "value":"Номер документа, указанный владельцем",
+        "description":"upload document, edit document form field"
+    },
+    {
+        "key":"_owner-doc-name_",
+        "value":"Имя документа, указанное владельцем",
+        "description":"upload document, edit document form field"
+    },
+    {
+        "key":"_owner-doc-revision_",
+        "value":"Ревизия документа",
+        "description":"upload document, edit document form field"
+    },
+    {
+        "key":"_owner-doc-revision-date_",
+        "value":"Дата ревизии документа",
+        "description":"upload document, edit document form field"
+    },
+    {
+        "key":"_additional-notes_",
+        "value":"Дополнительная информация",
+        "description":"upload document, edit document form field"
+    },
+    {
+        "key":"_doc-applicable_",
+        "value":"Document Applicable",
+        "description":"upload document, edit document form field"
+    },
+    {
+        "key":"_doc-uploader_",
+        "value":"Загружен",
+        "description":"edit document form field"
+    },
+    {
+        "key":"_doc-uploaded_",
+        "value":"Дата загрузки",
+        "description":"edit document form field, documents table field"
+    },
+    {
+        "key":"_acc-doc_",
+        "value":"Документ",
+        "description":"documents table field"
+    },
+    {
+        "key":"_doc-projects_",
+        "value":"Проекты",
+        "description":"documents table field"
+    },
+    {
+        "key":"_edit-doc_",
+        "value":"Редактировать документ",
+        "description":"edit document dialog title"
+    },
+    {
+        "key":"_project-number_",
+        "value":"Номер проекта",
+        "description":"document search field"
+    },
+    {
+        "key":"_all-fields_",
+        "value":"Все",
+        "description":"document search field"
+    },
+
+
+    {
+        "key":"_new-project-number_",
+        "value":"Номер нового проекта",
+        "description":"upload document, edit document form placeholder"
+    },
+    {
+        "key":"_new-project-name_",
+        "value":"Имя нового проекта",
+        "description":"upload document, edit document form placeholder"
+    },
+    {
+        "key":"_new-owner-name_",
+        "value":"Имя нового владельца, например, SIEMENS",
+        "description":"upload document, edit document form placeholder"
+    },
+    {
+        "key":"_fill-doc-number_",
+        "value":"Укажите номер, например, D100",
+        "description":"upload document form placeholder"
+    },
+    {
+        "key":"_fill-doc-iteration_",
+        "value":"Укажите версию, например, IT1",
+        "description":"upload document form placeholder"
+    },
+    {
+        "key":"_fill-short-description_",
+        "value":"Добавьте крткое описание",
+        "description":"upload document form placeholder"
+    },
+    {
+        "key":"_fill-owner-doc-number_",
+        "value":"Укажите номер, например, 10080-1-SS-CI-010",
+        "description":"upload document form placeholder"
+    },
+    {
+        "key":"_fill-owner-doc-name_",
+        "value":"Укажите имя, например, 10080-1-SS-CI-001_01",
+        "description":"upload document form placeholder"
+    },
+    {
+        "key":"_fill-owner-doc-revision_",
+        "value":"Укажите версию, например, Rev.1",
+        "description":"upload document form placeholder"
+    },
+    {
+        "key":"_fill-additional-notes_",
+        "value":"Дополнительная информация?",
+        "description":"upload document form placeholder"
+    },
+
+
+    {
+        "key":"_uploaded-docs_",
+        "value":"Загруженные документы",
+        "description":"documents table title"
+    },
+
+
+    {
+        "key":"_upload-doc_",
+        "value":"Загрузить документ",
+        "description":"Upload document button"
+    },
+
+
+    {
+        "key":"_reindex-cur-thesaurus_",
+        "value":"Переиндексировать документы",
+        "description":"button"
+    },
+    {
+        "key":"_reindex-docs_",
+        "value":"Переиндексировать документы",
+        "description":"dialog title"
+    },
+    {
+        "key":"_reindex-confirm_",
+        "value":"Переиндексировать все документы по последней версии тезауруса?",
+        "description":"reindex confirmation question"
+    },
+    {
+        "key":"_reindexing_",
+        "value":"Идет переиндексация...",
+        "description":"reindexing message"
+    },
+
+
+    {
+        "key":"_doc-upload-protected-error_",
+        "value":"Загружаемый файл защищен паролем и не может быть проанализирован",
+        "description":"The uploaded file is password protected and could not be analyzed (documents uploading)"
+    },
+    {
+        "key":"_doc-upload-required-error_",
+        "value":"Не все обязательные поля заполнены",
+        "description":"Not all required information provided (documents uploading)"
+    },
+    {
+        "key":"_doc-upload-analyzing-error_",
+        "value":"Возникли проблемы при анализе документа. Свяжитесь с администратором.",
+        "description":"Internal problems while analyzing the document (documents uploading)"
+    },
+    {
+        "key":"_doc-delete-error_",
+        "value":"Ошибка при удалении документа",
+        "description":"Error while deleting the document"
+    },
+    {
+        "key":"_doc-reindex-error_",
+        "value":"Ошибка при переиндексации документа",
+        "description":"Error while re-indexing the document"
+    },
+
+
+    {
+        "key":"_user-already-exists-error_",
+        "value":"Пользователь уже существует",
+        "description":"Error while registering new user: user already exists"
     }
+
 ]

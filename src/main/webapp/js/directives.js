@@ -8,14 +8,16 @@ app.directive("modalIframe", function ($compile) {
     restrict: 'E',
     link: function (scope, elm, attr) {
         
-        scope.openModal = function(){
+        scope.openModal = function(modalId){
             // $('#modal').modal({
             //     width:'100%',
             //     height : $(window).height() - 165
             // });
             //console.log("URL:" + scope.url);
 
-            $('#fullModal').css({
+            if (modalId==null) modalId = 'fullModal';
+
+            $('#'+modalId).css({
                 width: $(window).width() ,
                 height : $(window).height(),
                 position: 'fixed',
@@ -27,7 +29,7 @@ app.directive("modalIframe", function ($compile) {
                 // }
             });
 
-            $('#fullModal').find('.modal-body').css({
+            $('#'+modalId).find('.modal-body').css({
                 width:'auto',
                 padding:'0px', 
                 height: function(){ 
@@ -35,7 +37,7 @@ app.directive("modalIframe", function ($compile) {
                 }, 
             });
 
-            $('#fullModal').modal('show');
+            $('#'+modalId).modal('show');
         };
     }
   };
@@ -76,6 +78,31 @@ app.directive('autofillable', function ($timeout) {
             scope.check();
         }
     }
+});
+
+//directive to set focus in modal dialogs
+app.directive('modalFocus', function ($timeout) {
+    return {
+        restrict: 'A',
+        link: function (scope, element, attrs) {
+            var focusElementId = attrs.modalFocus;
+            scope.$watch(function() {
+                return $('#'+element[0].id).is(':visible');
+            }, function(value) {
+                if (value) {
+                    $timeout(function () {
+                        $(focusElementId).focus();
+                    }, 400);
+                }
+            });
+
+            scope.$watch(attrs.focusInput, function() {
+                $timeout(function () {
+                    element[0].focus();
+                })
+            });
+        }
+    };
 });
 
 /****************************************************************************************************
@@ -156,6 +183,8 @@ app.directive('regexValidate', function() {
     expressions['uri']            =  /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/;
     expressions['identifier']     =  /^[a-zA-Z0-9_]*$/ ;
     expressions['sparqlEndpoint'] =  /^https?:\/\/.+\/sparql\/?$/; // /^https?:\/\/[^\/]+\/sparql\/?$/
+    expressions['docNumber']        =  /^D([0-9]{3})$/;
+    expressions['docIteration']   =  /^IT([0-9]+)$/;
     return {
         restrict: 'A',
         require: 'ngModel',
@@ -187,4 +216,32 @@ app.directive('uniqueIdentifier', ['$compile', 'ConfigurationService', function(
           });
         }
     };
+ }]);
+
+app.directive('uniqueUserName', ['$compile', 'UsersService', function($compile, UsersService){
+     return {
+         restrict: 'A',
+         require: 'ngModel',
+         link: function(scope, elem, attr, ngModel) {
+           ngModel.$parsers.unshift(function (value) {
+             var list = UsersService.getUserNames();
+             ngModel.$setValidity('uniqueUserName', list.indexOf(value) === -1);
+             return value;
+           });
+         }
+     };
+ }]);
+
+app.directive('uniqueEmail', ['$compile', 'UsersService', function($compile, UsersService){
+     return {
+         restrict: 'A',
+         require: 'ngModel',
+         link: function(scope, elem, attr, ngModel) {
+           ngModel.$parsers.unshift(function (value) {
+             var list = UsersService.getEmails();
+             ngModel.$setValidity('uniqueEmail', list.indexOf(value) === -1);
+             return value;
+           });
+         }
+     };
  }]);
