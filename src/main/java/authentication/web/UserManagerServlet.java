@@ -20,7 +20,6 @@ import util.EmailSender;
 import util.HttpUtils;
 import util.RandomStringGenerator;
 import accounts.FrameworkUserManager;
-import accounts.UserProfile;
 import accounts.UserProfileExtended;
 import authentication.FrameworkConfiguration;
 
@@ -35,7 +34,7 @@ public class UserManagerServlet extends HttpServlet {
   public void init(ServletConfig config) throws ServletException {
     super.init(config);
     try {
-      frameworkUserManager = FrameworkConfiguration.getInstance(getServletContext(), false)
+      frameworkUserManager = FrameworkConfiguration.getInstance(getServletContext())
           .getFrameworkUserManager();
     } catch (FileNotFoundException e) {
       throw new ServletException(e);
@@ -68,13 +67,13 @@ public class UserManagerServlet extends HttpServlet {
       throw new ServletException("Invalid token " + token + " for user " + currentUser);
 
     // check admin rights
-    UserProfile userProfile;
+    boolean isAdmin;
     try {
-      userProfile = frameworkUserManager.getUserProfile(currentUser);
+      isAdmin = frameworkUserManager.isAdmin(currentUser);
     } catch (Exception e) {
       throw new ServletException(e);
     }
-    if (!userProfile.isAdmin())
+    if (!isAdmin)
       throw new ServletException("Access denied");
 
     // actions
@@ -95,13 +94,20 @@ public class UserManagerServlet extends HttpServlet {
       String username = rootNode.path("profile").path("username").getTextValue();
       String email = rootNode.path("profile").path("email").getTextValue();
       Collection<String> readableGraphs = new ArrayList<String>();
-      Iterator<JsonNode> readableGraphsIter = rootNode.path("readableGraphs").getElements();
-      while (readableGraphsIter.hasNext())
-        readableGraphs.add(readableGraphsIter.next().getTextValue());
+      JsonNode readableGraphsNode = rootNode.path("readableGraphs");
+      if (readableGraphsNode!=null) {
+          Iterator<JsonNode> readableGraphsIter = readableGraphsNode.getElements();
+          while (readableGraphsIter.hasNext())
+              readableGraphs.add(readableGraphsIter.next().getTextValue());
+      }
       Collection<String> writableGraphs = new ArrayList<String>();
-      Iterator<JsonNode> writableGraphsIter = rootNode.path("writableGraphs").getElements();
-      while (writableGraphsIter.hasNext())
-        writableGraphs.add(writableGraphsIter.next().getTextValue());
+      JsonNode writableGraphsNode = rootNode.path("writableGraphs");
+      if (writableGraphsNode!=null) {
+          Iterator<JsonNode> writableGraphsIter = writableGraphsNode.getElements();
+          while (writableGraphsIter.hasNext())
+              writableGraphs.add(writableGraphsIter.next().getTextValue());
+      }
+        String role = rootNode.path("profile").path("role")==null ? null : rootNode.path("profile").path("role").getTextValue();
 
       // create user
       String password = new RandomStringGenerator().generateSimple(8);
@@ -110,6 +116,15 @@ public class UserManagerServlet extends HttpServlet {
       } catch (Exception e) {
         throw new ServletException("Failed to create account " + username, e);
       }
+
+        //set role
+        if (role!=null) {
+            try {
+                frameworkUserManager.setRole(username, role);
+            } catch (Exception e) {
+                throw new ServletException("Failed to set role " + role + " for user " + username, e);
+            }
+        }
 
       // graphs access
       try {
@@ -120,13 +135,14 @@ public class UserManagerServlet extends HttpServlet {
 
       // send email with login and password
 
+      EmailSender emailSender = null;
       try {
-        EmailSender emailSender = FrameworkConfiguration.getInstance(getServletContext(), false)
+        emailSender = FrameworkConfiguration.getInstance(getServletContext())
             .getDefaultEmailSender();
         emailSender.send(email, "GeoKnow registration", "Your login: " + username + ", password: "
             + password);
       } catch (MessagingException e) {
-        throw new ServletException(e);
+        throw new ServletException("Failed to send email to " + email + " using " + emailSender, e);
       } catch (Exception e) {
         throw new ServletException(e);
       }

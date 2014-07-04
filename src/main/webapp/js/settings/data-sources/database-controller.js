@@ -19,7 +19,7 @@ function DatabaseCtrl($scope, ConfigurationService){
 		// default values
 		$scope.databaseForm.$setPristine();
 		newDatabase=true;
-		$scope.modaltitle = "New Database";
+		$scope.modaltitle = "_new-db-title_";
 		$scope.database = angular.copy(emptyDatabase);
 	};
 
@@ -27,7 +27,7 @@ function DatabaseCtrl($scope, ConfigurationService){
 		$scope.database = angular.copy(ConfigurationService.getDatabase(uri));
 		$scope.database.uri = $scope.database.uri.replace(':','');
 		newDatabase=false;
-		$scope.modaltitle = "Edit Database";
+		$scope.modaltitle = "_edit-db-title_";
 	};
 
 	$scope.delete = function(uri){
@@ -48,11 +48,18 @@ function DatabaseCtrl($scope, ConfigurationService){
 			success = ConfigurationService.updateDatabase($scope.database);
 		
 		if(success){
-			$('#modalDatabase').modal('hide');
+			$scope.close('#modalDatabase');
 			$scope.refreshTable();
 		}
 		else{
 		// TODO: check if success then close the window or where to put error messages		
 		}
 	};
+
+    $scope.close = function(modalID) {
+    	$(modalID).modal('hide');
+        $('body').removeClass('modal-open');
+      	$('.modal-backdrop').slideUp();
+      	$('.modal-scrollable').slideUp();
+    };
 }

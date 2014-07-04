@@ -3,10 +3,10 @@
 	<div class="col-xs-2">
 		
 		<div class="panel-group" id="accordion" ng-controller="SettingsMenuCtrl">
-		  <div class="panel panel-default" ng-repeat="item in items" ng-show="item.admin ? showAdmin : true">
+		  <div class="panel panel-default" ng-repeat="item in items" ng-show="showItem(item)">
 			  <div class="panel-heading" ng-controller="SidebarCtrl">
 				  <h5 ng-class="{selected:isSelected('{{item.url}}')}" class="panel-title">
-			        <a class="accordion-toggle" href="{{item.route}}">{{item.name}}</a>
+			        <a class="accordion-toggle" href="{{item.route}}" data-i18n="{{item.name}}"></a>
 			      </h5>
 			  </div>
 		  	</div>
@@ -15,18 +15,18 @@
 		
 	<div class="col-xs-10 contents" app-view-segment="1" ng-controller="GeneralSettingsCtrl" >
 	  
-    <h3 class="green bold">Generator Settings</h3>
+    <h3 class="green bold" data-i18n="_settings_"></h3>
 
 	<!-- <table class="table table-bordered" ng-if="currentAccount.username" style="width:60%"> -->
 	<table class="table table-bordered" style="width:60%">
     	<tr>
-        <td>URI Base:</td><td>{{settings.uriBase}}</td>
+        <td>{{'_settings-base-uri_' | i18n}}:</td><td>{{settings.uriBase}}</td>
         </tr>
         <tr>
-        <td>Settings Graph:</td><td>{{settings.settingsGraph}}</td>
+        <td>{{'_settings-graph_' | i18n}}:</td><td>{{settings.settingsGraph}}</td>
         </tr>
         <tr>
-        <td>Generator Endpoint:</td><td>{{settings.endpointService}}</td>
+        <td>{{'_settings-endpoint_' | i18n}}:</td><td>{{settings.endpointService}}</td>
         </tr>
     </table>
 <!--  			<div class="form-group">

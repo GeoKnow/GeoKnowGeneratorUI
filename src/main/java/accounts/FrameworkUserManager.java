@@ -53,18 +53,15 @@ public class FrameworkUserManager implements UserManager {
     RandomStringGenerator randomStringGenerator = new RandomStringGenerator();
     String rdfStoreUser = name;
     String rdfStorePassword = randomStringGenerator.generateSimple(8);
-    boolean error;
+    //change rdf store user name if already exists
     int counter = 0;
-    do { // retry on error
-      try {
-        rdfStoreUserManager.createUser(rdfStoreUser, rdfStorePassword);
-        error = false;
-      } catch (Exception e) {
-        error = true;
+    while (rdfStoreUserManager.checkUserExists(rdfStoreUser, null)) {
+        if (counter >= 10)
+            throw new Exception("Failed to create Virtuoso user: already exists");
         rdfStoreUser = name + randomStringGenerator.generateSimple(5);
-      }
-      counter++;
-    } while (error && counter < 10);
+        counter++;
+    }
+    rdfStoreUserManager.createUser(rdfStoreUser, rdfStorePassword);
     // grant SPARQL_UPDATE role to created Virtuoso user
     // TODO: users with only read access?
     rdfStoreUserManager.grantRole(rdfStoreUser, "SPARQL_UPDATE");
@@ -94,15 +91,18 @@ public class FrameworkUserManager implements UserManager {
       rdfStoreUserManager.dropUser(rdfStoreUser);
       throw e;
     }
+    //get default role uri
+    String role = getDefaultRoleURI();
     // write user account to accounts graph
     query = getPrefixes() + "\n" + "INSERT DATA { GRAPH <" + frameworkConfig.getAccountsGraph()
-        + "> {\n" + " :" + name + " rdf:type ao:Account .\n" + " :" + name + " user:loginName \""
-        + name + "\" .\n" + " :" + name + " user:passwordSha1Hash \""
-        + DigestUtils.sha1Hex(password) + "\" .\n" + " :" + name + " ao:rdfStoreUsername \""
-        + rdfStoreUser + "\" .\n" + " :" + name + " ao:rdfStorePassword \"" + rdfStorePassword
-        + "\" .\n" + " :" + name + " ao:settingsGraph \"" + userSettingsGraphURI
+        + "> {\n" + " :" + name + " rdf:type gkg:Account .\n" + " :" + name + " foaf:accountName \""
+        + name + "\" .\n" + " :" + name + " gkg:passwordSha1Hash \""
+        + DigestUtils.sha1Hex(password) + "\" .\n" + " :" + name + " gkg:rdfStoreUsername \""
+        + rdfStoreUser + "\" .\n" + " :" + name + " gkg:rdfStorePassword \"" + rdfStorePassword
+        + "\" .\n" + " :" + name + " gkg:settingsGraph \"" + userSettingsGraphURI
         + "\"^^xsd:anyURI .\n" + " :" + name + " foaf:mbox <mailto:" + email + "> .\n" + " :"
         + name + " dcterms:created \"" + ISO8601Utils.format(new Date()) + "\"^^xsd:date .\n"
+        + " :" + name + " gkg:role <" + role + "> .\n"
         + "} }";
 
     try {
@@ -129,8 +129,8 @@ public class FrameworkUserManager implements UserManager {
 
     // get account (URI) and rdf store user by framework user name
     String query = getPrefixes() + "\n" + "SELECT ?account, ?rdfStoreUsername FROM <"
-        + frameworkConfig.getAccountsGraph() + "> " + "WHERE {?account user:loginName \"" + name
-        + "\" . ?account ao:rdfStoreUsername ?rdfStoreUsername}";
+        + frameworkConfig.getAccountsGraph() + "> " + "WHERE {?account foaf:accountName \"" + name
+        + "\" . ?account gkg:rdfStoreUsername ?rdfStoreUsername}";
     String result = rdfStoreManager.execute(query, jsonResponseFormat);
     ObjectMapper mapper = new ObjectMapper();
     JsonNode rootNode = mapper.readTree(result);
@@ -293,10 +293,10 @@ public class FrameworkUserManager implements UserManager {
       throw new Exception("Invalid old password");
 
     String query = getPrefixes() + "\n" + "WITH <" + frameworkConfig.getAccountsGraph() + "> "
-        + " DELETE {?account user:passwordSha1Hash ?o} "
-        + " INSERT {?account user:passwordSha1Hash \"" + DigestUtils.sha1Hex(newPassword) + "\"} "
-        + " WHERE {?account user:loginName \"" + username
-        + "\" . ?account user:passwordSha1Hash ?o . }";
+        + " DELETE {?account gkg:passwordSha1Hash ?o} "
+        + " INSERT {?account gkg:passwordSha1Hash \"" + DigestUtils.sha1Hex(newPassword) + "\"} "
+        + " WHERE {?account foaf:accountName \"" + username
+        + "\" . ?account gkg:passwordSha1Hash ?o . }";
     rdfStoreManager.execute(query, jsonResponseFormat);
   }
 
@@ -307,21 +307,21 @@ public class FrameworkUserManager implements UserManager {
       throw new IllegalArgumentException("password cannot be null or empty");
 
     String query = getPrefixes() + "\n" + "WITH <" + frameworkConfig.getAccountsGraph() + "> "
-        + " DELETE {?account user:passwordSha1Hash ?o} "
-        + " INSERT {?account user:passwordSha1Hash \"" + DigestUtils.sha1Hex(password) + "\"} "
-        + " WHERE { " + " {?account user:loginName \"" + usernameOrEmail
-        + "\" . OPTIONAL { ?account user:passwordSha1Hash ?o . } } " + " UNION "
+        + " DELETE {?account gkg:passwordSha1Hash ?o} "
+        + " INSERT {?account gkg:passwordSha1Hash \"" + DigestUtils.sha1Hex(password) + "\"} "
+        + " WHERE { " + " {?account foaf:accountName \"" + usernameOrEmail
+        + "\" . OPTIONAL { ?account gkg:passwordSha1Hash ?o . } } " + " UNION "
         + " { ?account foaf:mbox <mailto:" + usernameOrEmail
-        + "> . OPTIONAL { ?account user:passwordSha1Hash ?o . } } " + " }";
+        + "> . OPTIONAL { ?account gkg:passwordSha1Hash ?o . } } " + " }";
     rdfStoreManager.execute(query, jsonResponseFormat);
   }
 
   public boolean checkPassword(String usernameOrEmail, String password) throws Exception {
     String query = getPrefixes() + "\n" + "SELECT DISTINCT ?passwordHash FROM <"
-        + frameworkConfig.getAccountsGraph() + "> " + "WHERE {" + " {?account user:loginName \""
-        + usernameOrEmail + "\" . ?account user:passwordSha1Hash ?passwordHash . } " + " UNION "
+        + frameworkConfig.getAccountsGraph() + "> " + "WHERE {" + " {?account foaf:accountName \""
+        + usernameOrEmail + "\" . ?account gkg:passwordSha1Hash ?passwordHash . } " + " UNION "
         + " {?account foaf:mbox <mailto:" + usernameOrEmail
-        + "> . ?account user:passwordSha1Hash ?passwordHash . } " + "}";
+        + "> . ?account gkg:passwordSha1Hash ?passwordHash . } " + "}";
     String result = rdfStoreManager.execute(query, jsonResponseFormat);
     ObjectMapper mapper = new ObjectMapper();
     JsonNode rootNode = mapper.readTree(result);
@@ -335,7 +335,7 @@ public class FrameworkUserManager implements UserManager {
 
   public boolean checkToken(String username, String token) throws Exception {
     String query = getPrefixes() + "\n" + "ASK {GRAPH <" + frameworkConfig.getAccountsGraph()
-        + "> " + " {?account user:loginName \"" + username + "\" . ?account ao:sessionToken \""
+        + "> " + " {?account foaf:accountName \"" + username + "\" . ?account gkg:sessionToken \""
         + token + "\" . } " + "}";
     String result = rdfStoreManager.execute(query, jsonResponseFormat);
     ObjectMapper mapper = new ObjectMapper();
@@ -352,8 +352,8 @@ public class FrameworkUserManager implements UserManager {
     // TODO: replace old token if exists? or add new if user may have more than
     // one token?
     String query = getPrefixes() + "\n" + "WITH <" + frameworkConfig.getAccountsGraph() + "> "
-        + " INSERT { ?account ao:sessionToken \"" + token + "\" } " + " WHERE {"
-        + " { ?account user:loginName \"" + usernameOrEmail + "\" } " + " UNION "
+        + " INSERT { ?account gkg:sessionToken \"" + token + "\" } " + " WHERE {"
+        + " { ?account foaf:accountName \"" + usernameOrEmail + "\" } " + " UNION "
         + " { ?account foaf:mbox <mailto:" + usernameOrEmail + "> } " + "}";
     rdfStoreManager.execute(query, jsonResponseFormat);
   }
@@ -363,15 +363,15 @@ public class FrameworkUserManager implements UserManager {
       throw new IllegalArgumentException("username cannot be null or empty");
 
     String query = getPrefixes() + "\n" + "DELETE FROM <" + frameworkConfig.getAccountsGraph()
-        + "> {?account ao:sessionToken ?o} " + "WHERE {?account user:loginName \"" + username
-        + "\" . ?account ao:sessionToken ?o . }";
+        + "> {?account gkg:sessionToken ?o} " + "WHERE {?account foaf:accountName \"" + username
+        + "\" . ?account gkg:sessionToken ?o . }";
     rdfStoreManager.execute(query, jsonResponseFormat);
   }
 
   // userId - username, email or account URI
   public UserProfile getUserProfile(String userId) throws Exception {
     String query = getPrefixes() + "\n" + "SELECT DISTINCT * FROM <"
-        + frameworkConfig.getAccountsGraph() + "> " + "WHERE {" + " {?account user:loginName \""
+        + frameworkConfig.getAccountsGraph() + "> " + "WHERE {" + " {?account foaf:accountName \""
         + userId + "\" . ?account ?p ?o . } " + " UNION " + " {?account foaf:mbox <mailto:"
         + userId + "> . ?account ?p ?o . } " + " UNION "
         + " {?account ?p ?o . FILTER (?account = <" + userId + ">)} " + "}";
@@ -387,27 +387,20 @@ public class FrameworkUserManager implements UserManager {
     while (bindingsIter.hasNext()) {
       JsonNode bindingNode = bindingsIter.next();
       String predicate = bindingNode.path("p").path("value").getTextValue();
-      if (predicate.equals("http://schemas.talis.com/2005/user/schema#loginName"))
+      if (predicate.equals("http://xmlns.com/foaf/0.1/accountName"))
         userProfile.setUsername(bindingNode.path("o").path("value").getTextValue());
       else if (predicate.endsWith("/settingsGraph"))
         userProfile.setSettingsGraph(bindingNode.path("o").path("value").getTextValue());
       else if (predicate.equals("http://xmlns.com/foaf/0.1/mbox")) {
         String mbox = bindingNode.path("o").path("value").getTextValue();
         userProfile.setEmail(mbox.substring("mailto:".length()));
-      } else if (predicate.equals("http://generator.geoknow.eu/accounts/ontology/role")) {
-        String role = bindingNode.path("o").path("value").getTextValue();
-        userProfile.setAdmin(role.equals("http://generator.geoknow.eu/accounts/admin"));
+      } else if (predicate.equals(frameworkConfig.getFrameworkOntologyNS() + "role")) {
+          String roleURI = bindingNode.path("o").path("value").getTextValue();
+          UserRole role = getRole(roleURI);
+          userProfile.setRole(role);
       }
     }
     return userProfile;
-  }
-
-  public void setAdminRole(String username) throws Exception {
-    String query = getPrefixes() + "\n" + "INSERT INTO <" + frameworkConfig.getAccountsGraph()
-        + "> " + " { ?account ao:role :admin } " + " WHERE { ?account user:loginName \"" + username
-        + "\" }";
-    rdfStoreManager.execute(query, jsonResponseFormat);
-    setDefaultRdfPermissions(username, 3);
   }
 
   public UserProfileExtended getUserProfileExtended(String username) throws Exception {
@@ -438,10 +431,10 @@ public class FrameworkUserManager implements UserManager {
         + "> "
         + "WHERE { "
         + (frameworkUsername == null || frameworkUsername.isEmpty() ? ""
-            : "?account user:loginName \"" + frameworkUsername + "\" . ")
-        + "?account ao:sessionToken \"" + token + "\" . "
-        + "?account ao:rdfStoreUsername ?rdfStoreUsername . "
-        + "?account ao:rdfStorePassword ?rdfStorePassword . " + "}";
+            : "?account foaf:accountName \"" + frameworkUsername + "\" . ")
+        + "?account gkg:sessionToken \"" + token + "\" . "
+        + "?account gkg:rdfStoreUsername ?rdfStoreUsername . "
+        + "?account gkg:rdfStorePassword ?rdfStorePassword . " + "}";
     String result = rdfStoreManager.execute(query, jsonResponseFormat);
     ObjectMapper mapper = new ObjectMapper();
     JsonNode rootNode = mapper.readTree(result);
@@ -471,7 +464,7 @@ public class FrameworkUserManager implements UserManager {
         + frameworkConfig.getAccountsGraph()
         + ">\n"
         + fromGraphsStr
-        + " WHERE { ?ng rdf:type sd:NamedGraph . ?ng gkg:access ?ao . ?ao acl:mode acl:Read . ?ao acl:agent ?account . ?account user:loginName \""
+        + " WHERE { ?ng rdf:type sd:NamedGraph . ?ng gkg:access ?ao . ?ao acl:mode acl:Read . ?ao acl:agent ?account . ?account foaf:accountName \""
         + username + "\" . }";
     String result = rdfStoreManager.execute(query, jsonResponseFormat);
     ObjectMapper mapper = new ObjectMapper();
@@ -501,7 +494,7 @@ public class FrameworkUserManager implements UserManager {
         + frameworkConfig.getAccountsGraph()
         + ">\n"
         + fromGraphsStr
-        + " WHERE { ?ng rdf:type sd:NamedGraph . ?ng gkg:access ?ao . ?ao acl:mode acl:Write . ?ao acl:agent ?account . ?account user:loginName \""
+        + " WHERE { ?ng rdf:type sd:NamedGraph . ?ng gkg:access ?ao . ?ao acl:mode acl:Write . ?ao acl:agent ?account . ?account foaf:accountName \""
         + username + "\" . }";
     String result = rdfStoreManager.execute(query, jsonResponseFormat);
     ObjectMapper mapper = new ObjectMapper();
@@ -593,16 +586,16 @@ public class FrameworkUserManager implements UserManager {
         + frameworkConfig.getAccountsGraph()
         + "> "
         + "WHERE {"
-        + " {?account user:loginName \""
+        + " {?account foaf:accountName \""
         + frameworkUserId
-        + "\" . ?account ao:rdfStoreUsername ?rdfStoreUsername . ?account ao:rdfStorePassword ?rdfStorePassword . } "
+        + "\" . ?account gkg:rdfStoreUsername ?rdfStoreUsername . ?account gkg:rdfStorePassword ?rdfStorePassword . } "
         + " UNION "
         + " {?account foaf:mbox <mailto:"
         + frameworkUserId
-        + "> . ?account ao:rdfStoreUsername ?rdfStoreUsername . ?account ao:rdfStorePassword ?rdfStorePassword . } "
-        + " UNION " + " {<" + frameworkUserId + "> rdf:type ao:Account . <" + frameworkUserId
-        + "> ao:rdfStoreUsername ?rdfStoreUsername . <" + frameworkUserId
-        + "> ao:rdfStorePassword ?rdfStorePassword . } " + "}";
+        + "> . ?account gkg:rdfStoreUsername ?rdfStoreUsername . ?account gkg:rdfStorePassword ?rdfStorePassword . } "
+        + " UNION " + " {<" + frameworkUserId + "> rdf:type gkg:Account . <" + frameworkUserId
+        + "> gkg:rdfStoreUsername ?rdfStoreUsername . <" + frameworkUserId
+        + "> gkg:rdfStorePassword ?rdfStorePassword . } " + "}";
     String result = rdfStoreManager.execute(query, jsonResponseFormat);
     ObjectMapper mapper = new ObjectMapper();
     JsonNode rootNode = mapper.readTree(result);
@@ -622,7 +615,7 @@ public class FrameworkUserManager implements UserManager {
     for (String sg : settingsGraphs)
       queryBuilder.append("FROM <").append(sg).append(">\n");
     queryBuilder.append("WHERE { <").append(graph).append("> rdf:type sd:NamedGraph . <").append(
-        graph).append("> acl:owner ?account . ?account ao:settingsGraph ?sg }");
+        graph).append("> acl:owner ?account . ?account gkg:settingsGraph ?sg }");
     String result = rdfStoreManager.execute(queryBuilder.toString(), jsonResponseFormat);
     ObjectMapper mapper = new ObjectMapper();
     JsonNode rootNode = mapper.readTree(result);
@@ -635,11 +628,9 @@ public class FrameworkUserManager implements UserManager {
 
   private String getPrefixes() {
     if (prefixes == null) {
-      prefixes = "PREFIX : <" + frameworkConfig.getResourceNamespace() + ">\n" + "PREFIX ao: <"
-          + frameworkConfig.getAccountsOntologyNamespace() + ">\n" + "PREFIX gkg: <"
+      prefixes = "PREFIX : <" + frameworkConfig.getResourceNamespace() + ">\n" + "PREFIX gkg: <"
           + frameworkConfig.getFrameworkOntologyNS() + ">\n"
           + "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n"
-          + "PREFIX user: <http://schemas.talis.com/2005/user/schema#>\n"
           + "PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>\n"
           + "PREFIX acl: <http://www.w3.org/ns/auth/acl#>\n"
           + "PREFIX foaf: <http://xmlns.com/foaf/0.1/>\n"
@@ -650,8 +641,8 @@ public class FrameworkUserManager implements UserManager {
 
   private String getSettingsGraph(String username) throws Exception {
     String query = getPrefixes() + "\n" + "SELECT ?settingsGraph FROM <"
-        + frameworkConfig.getAccountsGraph() + "> " + "WHERE {?account user:loginName \""
-        + username + "\" . ?account ao:settingsGraph ?settingsGraph .}";
+        + frameworkConfig.getAccountsGraph() + "> " + "WHERE {?account foaf:accountName \""
+        + username + "\" . ?account gkg:settingsGraph ?settingsGraph .}";
     String result = rdfStoreManager.execute(query, jsonResponseFormat);
     ObjectMapper mapper = new ObjectMapper();
     JsonNode rootNode = mapper.readTree(result);
@@ -660,9 +651,9 @@ public class FrameworkUserManager implements UserManager {
         .getTextValue() : null;
   }
 
-  private boolean checkUserExists(String username, String email) throws Exception {
+  public boolean checkUserExists(String username, String email) throws Exception {
     String query = getPrefixes() + "\n" + "ASK {" + " { GRAPH <"
-        + frameworkConfig.getAccountsGraph() + "> {?account user:loginName \"" + username
+        + frameworkConfig.getAccountsGraph() + "> {?account foaf:accountName \"" + username
         + "\"} } " + " UNION " + " { GRAPH <" + frameworkConfig.getAccountsGraph()
         + "> {?account foaf:mbox <mailto:" + email + ">} }" + "}";
     String result = rdfStoreManager.execute(query, jsonResponseFormat);
@@ -675,7 +666,7 @@ public class FrameworkUserManager implements UserManager {
     Collection<String> settingsGraphList = new ArrayList<String>();
     settingsGraphList.add(frameworkConfig.getSettingsGraph());
     String query = getPrefixes() + "\n" + " SELECT DISTINCT ?sg FROM <"
-        + frameworkConfig.getAccountsGraph() + "> " + " WHERE { ?account ao:settingsGraph ?sg }";
+        + frameworkConfig.getAccountsGraph() + "> " + " WHERE { ?account gkg:settingsGraph ?sg }";
     String result = rdfStoreManager.execute(query, jsonResponseFormat);
     ObjectMapper mapper = new ObjectMapper();
     JsonNode rootNode = mapper.readTree(result);
@@ -687,10 +678,10 @@ public class FrameworkUserManager implements UserManager {
     return settingsGraphList;
   }
 
-  private Collection<String> getAllUsernames() throws Exception {
+  public Collection<String> getAllUsernames() throws Exception {
     String query = getPrefixes() + "\n" + "SELECT DISTINCT ?username FROM <"
         + frameworkConfig.getAccountsGraph() + "> "
-        + " WHERE {?account rdf:type ao:Account . ?account user:loginName ?username}";
+        + " WHERE {?account rdf:type gkg:Account . ?account foaf:accountName ?username}";
     String result = rdfStoreManager.execute(query, jsonResponseFormat);
     ObjectMapper mapper = new ObjectMapper();
     JsonNode rootNode = mapper.readTree(result);
@@ -713,7 +704,7 @@ public class FrameworkUserManager implements UserManager {
         + " FROM <"
         + frameworkConfig.getAccountsGraph()
         + "> "
-        + " WHERE { ?ng rdf:type sd:NamedGraph . ?ng acl:owner ?account . ?account user:loginName \""
+        + " WHERE { ?ng rdf:type sd:NamedGraph . ?ng acl:owner ?account . ?account foaf:accountName \""
         + username + "\" . }";
     String result = rdfStoreManager.execute(query, jsonResponseFormat);
     ObjectMapper mapper = new ObjectMapper();
@@ -725,4 +716,73 @@ public class FrameworkUserManager implements UserManager {
     }
     return ownGraphs;
   }
+
+    // userId - username, email or account URI
+    public boolean isAdmin(String userId) throws Exception {
+        String query = getPrefixes() + "\n" + "SELECT DISTINCT ?role FROM <" + frameworkConfig.getAccountsGraph() + "> "
+                + "WHERE {"
+                + " {?account foaf:accountName \"" + userId + "\" . ?account gkg:role ?role . } "
+                + " UNION "
+                + " {?account foaf:mbox <mailto:" + userId + "> . ?account gkg:role ?role . } "
+                + " UNION "
+                + " {?account gkg:role ?role . FILTER (?account = <" + userId + ">)} "
+                + "}";
+        String result = rdfStoreManager.execute(query, jsonResponseFormat);
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode rootNode = mapper.readTree(result);
+        Iterator<JsonNode> bindingsIter = rootNode.path("results").path("bindings").getElements();
+        if (!bindingsIter.hasNext())
+            return false;
+        JsonNode binding = bindingsIter.next();
+        String role = binding.path("role").path("value").getTextValue();
+        return role.equals(frameworkConfig.getFrameworkOntologyNS() + "Administrator");
+    }
+
+    public void setRole(String userId, String role) throws Exception {
+        String query = getPrefixes() + "\n"
+                + " WITH <" + frameworkConfig.getAccountsGraph() + "> "
+                + " DELETE {?account gkg:role ?o} "
+                + " INSERT {?account gkg:role <" + role + ">} "
+                + " WHERE {?account foaf:accountName \"" + userId + "\" . optional {?account gkg:role ?o .} }";
+        rdfStoreManager.execute(query, jsonResponseFormat);
+    }
+
+    private UserRole getRole(String roleURI) throws Exception {
+        UserRole role = new UserRole();
+        role.setUri(roleURI);
+        Collection<String> roleServices = new ArrayList<>();
+        String query = getPrefixes() + "\n" + "SELECT ?s ?p ?o FROM <" + frameworkConfig.getAccountsGraph() + "> "
+                        + "WHERE {?s ?p ?o . filter(?s=<" + roleURI + ">)}";
+        String result = rdfStoreManager.execute(query, jsonResponseFormat);
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode rootNode = mapper.readTree(result);
+        Iterator<JsonNode> bindingsIter = rootNode.path("results").path("bindings").getElements();
+        while (bindingsIter.hasNext()) {
+            JsonNode bindingNode = bindingsIter.next();
+            String predicate = bindingNode.path("p").path("value").getTextValue();
+            if (predicate.equals("http://xmlns.com/foaf/0.1/name"))
+                role.setName(bindingNode.path("o").path("value").getTextValue());
+            else if (predicate.equals(frameworkConfig.getFrameworkOntologyNS() + "isAllowedToUseService"))
+                roleServices.add(bindingNode.path("o").path("value").getTextValue());
+        }
+        role.setServices(roleServices);
+        return role;
+    }
+
+    private String getDefaultRoleURI() throws Exception {
+        String query = getPrefixes() + "\n" + "SELECT DISTINCT ?role FROM <" + frameworkConfig.getAccountsGraph() + "> "
+                + "WHERE { ?role gkg:isDefault true . }";
+        String result = rdfStoreManager.execute(query, jsonResponseFormat);
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode rootNode = mapper.readTree(result);
+        Iterator<JsonNode> bindingsIter = rootNode.path("results").path("bindings").getElements();
+        String role;
+        if (!bindingsIter.hasNext()) {
+            role = frameworkConfig.getFrameworkOntologyNS() + "BasicUser";
+        } else {
+            JsonNode binding = bindingsIter.next();
+            role = binding.path("role").path("value").getTextValue();
+        }
+        return role;
+    }
 }

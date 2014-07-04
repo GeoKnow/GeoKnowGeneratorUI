@@ -1,17 +1,17 @@
 
-<h3 class="green bold">Components Management</h3>
+<h3 class="green bold" data-i18n="_components-management_"></h3>
 
 
-<p>Current workbench configuration has integrated the following components.</p>
+<p data-i18n="_components-page-description_"></p>
 
 <table class="table table-striped" ng-controller="ComponentCtrl">
 <thead>
   <tr>
   	<th>URI</th>
-    <th>Name</th>
-    <th>Homepage</th>
-    <th>Services</th>
-    <th>Version</th>
+    <th data-i18n="_name_"></th>
+    <th data-i18n="_homepage_"></th>
+    <th data-i18n="_services_"></th>
+    <th data-i18n="_version_"></th>
   </tr>
 </thead>
 <tbody>
@@ -23,7 +23,7 @@
       <div ng-controller="ComponentServicesCtrl" ng-init="getServices(component.uri)">
         <ul ng-repeat="service in services">
           <li>{{service.type}}</li>
-          <li>{{service.serviceUrl}}</li>
+          <li tooltip="{{service.description}}">{{service.serviceUrl}}</li>
         </ul>
       </div>
     </td>

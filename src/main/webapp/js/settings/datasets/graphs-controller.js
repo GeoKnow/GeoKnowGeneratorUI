@@ -1,7 +1,7 @@
 'use strict';
 
 
-function GraphCtrl($scope, $http, flash, ConfigurationService, Helpers, AccountService, GraphService, GraphGroupService) {
+function GraphCtrl($scope, $http, flash, ConfigurationService, Helpers, AccountService, GraphService, GraphGroupService, localize) {
     
     $scope.accessModes = GraphService.getAccessModes();
 
@@ -69,7 +69,7 @@ function GraphCtrl($scope, $http, flash, ConfigurationService, Helpers, AccountS
         // default values
         newGraph = true;
         $scope.graphForm.$setPristine();
-        $scope.modaltitle = "New Named Graph";
+        $scope.modaltitle = "_new-ngraph-title_";
 
         var s_now = Helpers.getCurrentDate();
         var defaultEndpoint = ConfigurationService.getSPARQLEndpoint();
@@ -89,7 +89,7 @@ function GraphCtrl($scope, $http, flash, ConfigurationService, Helpers, AccountS
         $scope.namedgraph.name = $scope.namedgraph.name.replace(':', '');
         $scope.namedgraph.owner = AccountService.getAccountURI();
         newGraph = false;
-        $scope.modaltitle = "Edit Named Graph";
+        $scope.modaltitle = "_edit-ngraph-title_";
         $scope.refreshUsersList();
     };
 
@@ -97,7 +97,7 @@ function GraphCtrl($scope, $http, flash, ConfigurationService, Helpers, AccountS
         $scope.namedgraph = angular.copy(GraphService.getNamedGraph(graphName));
         $scope.namedgraph.name = $scope.namedgraph.name.replace(':', '');
         newGraph = false;
-        $scope.modaltitle = "Edit Named Graph";
+        $scope.modaltitle = "_edit-ngraph-title_";
         $scope.refreshUsersList();
     };
 
@@ -119,7 +119,7 @@ function GraphCtrl($scope, $http, flash, ConfigurationService, Helpers, AccountS
         }
 
         if (success) {
-            $('#modalGraph').modal('hide');
+            $scope.close('#modalGraph');
             $scope.refreshTable();
             $scope.refreshAllGraphs();
         } else {
@@ -206,7 +206,7 @@ function GraphCtrl($scope, $http, flash, ConfigurationService, Helpers, AccountS
     $scope.newGroup = function () {
         newGroup = true;
         $scope.groupForm.$setPristine();
-        $scope.modaltitle = "New Graph Group";
+        $scope.modaltitle = "_new-graph-group-title_";
         var s_now = Helpers.getCurrentDate();
         $scope.graphgroup = angular.copy(emptyGroup);
         $scope.graphgroup.created = s_now;
@@ -218,7 +218,7 @@ function GraphCtrl($scope, $http, flash, ConfigurationService, Helpers, AccountS
         $scope.graphgroup = angular.copy(GraphGroupService.getGraphGroup(groupName));
         $scope.graphgroup.name = $scope.graphgroup.name.replace(':', '');
         newGroup = false;
-        $scope.modaltitle = "Edit Graph Group";
+        $scope.modaltitle = "_edit-graph-group-title_";
         $scope.refreshAllGraphs();
     };
 
@@ -226,12 +226,12 @@ function GraphCtrl($scope, $http, flash, ConfigurationService, Helpers, AccountS
         $scope.graphgroup.name = ":" + $scope.graphgroup.name;
         if (newGroup) {
             GraphGroupService.addGraphGroup($scope.graphgroup).then(function (result) {
-                $('#modalGroup').modal('hide');
+                $scope.close('#modalGroup');
                 $scope.refreshGraphGroups();
             });
         } else {
             GraphGroupService.updateGraphGroup($scope.graphgroup).then(function (result) {
-                $('#modalGroup').modal('hide');
+                $scope.close('#modalGroup');
                 $scope.refreshGraphGroups();
             });
         }
@@ -256,6 +256,17 @@ function GraphCtrl($scope, $http, flash, ConfigurationService, Helpers, AccountS
         } else { // is newly selected
             $scope.graphgroup.namedGraphs.push(graphName);
         }
+    };
+
+    $scope.close = function(modalID) {
+    	$(modalID).modal('hide');
+        $('body').removeClass('modal-open');
+      	$('.modal-backdrop').slideUp();
+      	$('.modal-scrollable').slideUp();
+    };
+
+    $scope.localize = function(str) {
+        return localize.getLocalizedString(str);
     };
 
     //watch

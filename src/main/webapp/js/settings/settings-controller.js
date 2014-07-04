@@ -4,18 +4,25 @@ function SettingsMenuCtrl($scope, AccountService) {
   $scope.oneAtATime = true;
   // these data can be replaced later with the configuration
   $scope.items = [
-  	{ name: "Data Sources", route:'#/settings/data-sources', url:'/settings/data-sources', admin: false },
-  	{ name: "Datasets", route:'#/settings/datasets', url:'/settings/datasets', admin: false },
-    // { name: "Namespaces", route:'#/settings/namespaces', url:'/settings/namespaces' },
-  	{ name: "Components", route:'#/settings/components', url:'/settings/components', admin: false },
-    { name: "Users", route:'#/settings/users', url:'/settings/users', admin: true }
+  	{ name: "_data-sources_", route:'#/settings/data-sources', url:'/settings/data-sources', requiredServices:[] },
+  	{ name: "_datasets_", route:'#/settings/datasets', url:'/settings/datasets', requiredServices:[] },
+    // { name: "_namespaces-title_", route:'#/settings/namespaces', url:'/settings/namespaces' },
+  	{ name: "_components_", route:'#/settings/components', url:'/settings/components', requiredServices:[] },
+    { name: "_users_", route:'#/settings/users', url:'/settings/users', requiredServices:[":UserManagerService"] },
+    { name: "_roles-management_", route:'#/settings/roles', url:'/settings/roles', requiredServices:[":UserManagerService"] }
   ];
 
-  $scope.showAdmin = AccountService.isAdmin();
-
-  $scope.$watch( function() { return AccountService.isAdmin(); }, function() {
-    $scope.showAdmin = AccountService.isAdmin();
-  }, true);
+  $scope.showItem = function(item) {
+    if (AccountService.isAdmin()) return true; //show all items to admin
+    var role = AccountService.getRole();
+    if (role==null) return false; //hide all
+    var allowedServices = role.services;
+    for (var ind in item.requiredServices) {
+        if (allowedServices.indexOf(item.requiredServices[ind]) == -1) //hide item if one of required services is not allowed for current user
+            return false;
+    }
+    return true;
+  };
 }
 
 

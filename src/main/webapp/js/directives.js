@@ -41,6 +41,68 @@ app.directive("modalIframe", function ($compile) {
   };
 });
 
+app.directive('ngConfirmClick', [
+  function() {
+    return {
+        restrict: 'A',
+        link: function(scope, element, attrs) {
+            element.bind('click', function() {
+                var message = attrs.ngConfirmMessage;
+                if (message && confirm(message)) {
+                    scope.$apply(attrs.ngConfirmClick);
+                }
+            });
+            scope.$on('$destroy', function() {
+                element.off('click');
+            });
+        }
+    }
+  }
+]);
+
+//directive to fix angularjs autofill issue (update form model on autofill)
+app.directive('autofillable', function ($timeout) {
+    return {
+        restrict: 'A',
+        require: 'ngModel',
+        link: function (scope, elem, attrs, ctrl) {
+            scope.check = function(){
+                var val = elem[0].value;
+                if(ctrl.$viewValue !== val){
+                    ctrl.$setViewValue(val)
+                }
+                $timeout(scope.check, 300);
+            };
+            scope.check();
+        }
+    }
+});
+
+//directive to set focus in modal dialogs
+app.directive('modalFocus', function ($timeout) {
+    return {
+        restrict: 'A',
+        link: function (scope, element, attrs) {
+            var focusElementId = attrs.modalFocus;
+            scope.$watch(function() {
+                return $('#'+element[0].id).is(':visible');
+            }, function(value) {
+                if (value) {
+                    $timeout(function () {
+                        $(focusElementId).focus();
+                    }, 400);
+                }
+            });
+
+            scope.$watch(attrs.focusInput, function() {
+                $timeout(function () {
+                    element[0].focus();
+                })
+            });
+        }
+    };
+});
+
 /****************************************************************************************************
 *
 * GEOLIFT Directives
@@ -106,7 +168,7 @@ app.directive("geoliftValue", function ($compile) {
 
 app.directive("downloadResult", function ($compile) {
 	  return {
-		template: '<a class="btn btn-sm btn-success" target="_self" href="/GeoLift-Downloads/result.ttl" download="result.ttl">Download</a>',
+		template: '<a class="btn btn-sm btn-primary" target="_self" href="/GeoLift-Downloads/result.ttl" download="result.ttl">Download</a>',
 		restrict: 'E'
 	    };
 	});
@@ -150,4 +212,32 @@ app.directive('uniqueIdentifier', ['$compile', 'ConfigurationService', function(
           });
         }
     };
+ }]);
+
+app.directive('uniqueUserName', ['$compile', 'UsersService', function($compile, UsersService){
+     return {
+         restrict: 'A',
+         require: 'ngModel',
+         link: function(scope, elem, attr, ngModel) {
+           ngModel.$parsers.unshift(function (value) {
+             var list = UsersService.getUserNames();
+             ngModel.$setValidity('uniqueUserName', list.indexOf(value) === -1);
+             return value;
+           });
+         }
+     };
+ }]);
+
+app.directive('uniqueEmail', ['$compile', 'UsersService', function($compile, UsersService){
+     return {
+         restrict: 'A',
+         require: 'ngModel',
+         link: function(scope, elem, attr, ngModel) {
+           ngModel.$parsers.unshift(function (value) {
+             var list = UsersService.getEmails();
+             ngModel.$setValidity('uniqueEmail', list.indexOf(value) === -1);
+             return value;
+           });
+         }
+     };
  }]);

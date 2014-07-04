@@ -8,6 +8,9 @@ var app = angular.module('app', ['ngRoute',
                                  'app.account-service',
                                  'app.graph-group-service',
                                  'app.login-service',
+                                 'app.ontology-service',
+                                 'app.d2rq-service',
+                                 'app.users-service',
                                  'app.directives', 
                                  'app.configuration',
                                  'ui.bootstrap',
@@ -15,7 +18,8 @@ var app = angular.module('app', ['ngRoute',
                                  'view-segment', 
                                  'angularFileUpload',
                                  'angular-flash.service', 
-                                 'angular-flash.flash-alert-directive']);
+                                 'angular-flash.flash-alert-directive',
+                                 'localization']);
 
 
 app.config(function($routeSegmentProvider, $routeProvider)
@@ -30,23 +34,29 @@ app.config(function($routeSegmentProvider, $routeProvider)
 
         .when('/home', 'default')
         .when('/account','account')
+        .when('/system-setup', 'system-setup')
         // .when('/account/preferences', 'account.preferences')
         .when('/settings', 'settings')
         .when('/settings/data-sources', 'settings.data-sources')
         .when('/settings/datasets', 'settings.datasets')
         .when('/settings/namespaces', 'settings.namespaces')
         .when('/settings/components', 'settings.components')
-        // .when('/settings/users', 'settings.users')
+        .when('/settings/users', 'settings.users')
+        .when('/settings/roles', 'settings.roles')
         .when('/home/extraction-and-loading/import-rdf', 'default.import-rdf')
         .when('/home/extraction-and-loading/sparqlify', 'default.sparqlify')
         .when('/home/extraction-and-loading/triplegeo', 'default.triplegeo')
         .when('/home/extraction-and-loading/triplegeo-result', 'default.triplegeo-result')
+        .when('/home/extraction-and-loading/d2rq', 'default.d2rq.mapping')
+        .when('/home/extraction-and-loading/d2rq/mapping', 'default.d2rq.mapping')
+        .when('/home/extraction-and-loading/d2rq/task', 'default.d2rq.task')
         .when('/home/search-querying-and-exploration/virtuoso', 'default.virtuoso')
         .when('/home/search-querying-and-exploration/geospatial', 'default.geospatial')
      /*   .when('/home/search-querying-and-exploration/googlemap', 'default.googlemap') */
         .when('/home/search-querying-and-exploration/facete', 'default.facete')
         .when('/home/search-querying-and-exploration/mappify', 'default.mappify')
         .when('/home/manual-revision-and-authoring/ontowiki', 'default.ontowiki')
+        .when('/home/manual-revision-and-authoring/ontology', 'default.ontology')
         .when('/home/linking-and-fusing/limes', 'default.limes')
         .when('/home/classification-and-enrichment/geolift', 'default.geolift')
 
@@ -82,6 +92,9 @@ app.config(function($routeSegmentProvider, $routeProvider)
             resolve: {
                       settings: function (Config) {
                         return Config.read();
+                      },
+                      userInfo : function(UsersService) {
+                        return UsersService.readUserNamesEmails();
                       }
                 }
             })
@@ -94,6 +107,32 @@ app.config(function($routeSegmentProvider, $routeProvider)
                     templateUrl: 'js/workbench/extraction-and-loading/triplegeo.html' })
                 .segment('triplegeo-result', {
                     templateUrl: 'js/workbench/extraction-and-loading/triplegeo-result.html' })
+                .segment('d2rq', {
+                    templateUrl: 'js/workbench/extraction-and-loading/d2rq.html' })
+                    .within()
+                        .segment('mapping', {
+                            templateUrl: 'js/workbench/extraction-and-loading/d2rq-mapping.html',
+                            resolve: {
+                                    mappingGroups: function(D2RQService) {
+                                        return D2RQService.readMappingGroups();
+                                    },
+                                    settings: function (Config) {
+                                        return Config.read();
+                                    }
+                                }
+                            })
+                        .segment('task', {
+                            templateUrl: 'js/workbench/extraction-and-loading/d2rq-task.html',
+                            resolve: {
+                                    tasks: function(D2RQService) {
+                                        return D2RQService.readTasks();
+                                    },
+                                    settings: function (Config) {
+                                        return Config.read();
+                                    }
+                                }
+                            })
+                    .up()
                 .segment('geospatial', {
                     templateUrl: 'js/workbench/search-querying-and-exploration/geospatial.html'})
      /*           .segment('googlemap', {
@@ -106,6 +145,17 @@ app.config(function($routeSegmentProvider, $routeProvider)
                     templateUrl: 'js/workbench/search-querying-and-exploration/virtuoso.html'})
                 .segment('ontowiki', {
                     templateUrl: 'js/workbench/manual-revision-and-authoring/ontowiki.html' })
+                .segment('ontology', {
+                    templateUrl: 'js/workbench/manual-revision-and-authoring/ontology.html',
+                    resolve: {
+                            ontologies: function (OntologyService) {
+                                return OntologyService.readOntologies();
+                            },
+                            settings: function (Config) {
+                                return Config.read();
+                            }
+                        }
+                    })
                 .segment('geolift', {
                     templateUrl: 'js/workbench/classification-and-enrichment/geolift.html' })
                 .segment('limes', {
@@ -118,6 +168,9 @@ app.config(function($routeSegmentProvider, $routeProvider)
             resolve: {
               settings: function (Config) {
                 return Config.read();
+              },
+              userInfo : function(UsersService) {
+                return UsersService.readUserNamesEmails();
               }
             }
 		})
@@ -130,8 +183,22 @@ app.config(function($routeSegmentProvider, $routeProvider)
                     templateUrl: 'js/settings/namespaces/namespaces.html'})
                 .segment('components', {
                     templateUrl: 'js/settings/components/components.html'})
-                // .segment('users', {
-                    // templateUrl: 'js/admin/users.html'})
+                .segment('users', {
+                    templateUrl: 'js/admin/users/users.html'})
+                .segment('roles', {
+                    templateUrl: 'js/admin/roles.html',
+                    resolve: {
+                            users: function(UsersService) {
+                                return UsersService.readUsers();
+                            },
+                            roles: function(UsersService) {
+                                return UsersService.readRoles();
+                            },
+                            settings: function (Config) {
+                                return Config.read();
+                            }
+                        }
+                    })
             .up()
            
         .segment('account', {
@@ -140,6 +207,9 @@ app.config(function($routeSegmentProvider, $routeProvider)
                 .segment('preferences', {
                     templateUrl: 'js/account/preferences/preferences.html' })
             .up()
+        .segment('system-setup', {
+            templateUrl: 'system-setup.html'
+        })
 
         .segment('about', {
             templateUrl:'about.html' })
@@ -163,5 +233,25 @@ app.config(function($routeSegmentProvider, $routeProvider)
 // Error: [$sce:insecurl] Blocked loading resource from url not allowed by $sceDelegate policy.
 .config(function($sceDelegateProvider) {
     $sceDelegateProvider.resourceUrlWhitelist(['.*']);
+})
+.config(function(localizeProvider) {
+    localizeProvider.languages = ['en', 'ru'];
+    localizeProvider.defaultLanguage = 'en';
+    localizeProvider.ext = 'json';
+})
+.run(function($rootScope, $location, $http) {
+    //redirect to system-setup page if system is not set up
+    $rootScope.$on("$routeChangeStart", function(event, next, current) {
+        if ($rootScope.isSystemSetUp==undefined) {
+            $http.get("InitialSetup?check=true").then(function(response) {
+                $rootScope.isSystemSetUp = response.data.setup=="true";
+                if (!$rootScope.isSystemSetUp) {
+                    $location.path('/system-setup');
+                }
+            });
+        } else if (!$rootScope.isSystemSetUp) {
+            $location.path('/system-setup');
+        }
+    });
 });
 

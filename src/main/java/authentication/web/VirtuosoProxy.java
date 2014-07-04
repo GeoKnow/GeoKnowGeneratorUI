@@ -27,7 +27,7 @@ public class VirtuosoProxy extends HttpServlet {
   public void init(ServletConfig config) throws ServletException {
     super.init(config);
     try {
-      frameworkUserManager = FrameworkConfiguration.getInstance(getServletContext(), false)
+      frameworkUserManager = FrameworkConfiguration.getInstance(getServletContext())
           .getFrameworkUserManager();
     } catch (FileNotFoundException e) {
       throw new ServletException(e);
@@ -64,7 +64,7 @@ public class VirtuosoProxy extends HttpServlet {
       ObjectPair<String, String> rdfStoreUser = frameworkUserManager.getRdfStoreUser(username,
           token);
       String result = HttpRequestManager.executePost(FrameworkConfiguration.getInstance(
-          getServletContext(), false).getAuthSparqlEndpoint(), urlParameters.toString(),
+          getServletContext()).getAuthSparqlEndpoint(), urlParameters.toString(),
           rdfStoreUser.getFirst(), rdfStoreUser.getSecond());
       resp.getWriter().print(result);
     } catch (Exception e) {
