@@ -53,25 +53,6 @@
   lds:integrates :Facete, :Limes, :Sparqlify, :TripleGeo, :GeoLift, :OntoWiki, :Mappify ;
   foaf:homepage <http://localhost:8080/generator> .
 
-:Virtuoso
-  a       lds:StackComponent ;
-  rdfs:label "Service URL"^^xsd:string ;
-  dcterms:hasVersion "7.0"^^xsd:string ;
-  lds:providesService :VirtuosoConductor, :VirtuosoAuthSPARQLEndpoint, :VirtuosoEndpoint;
-  foaf:homepage <http://virtuoso.openlinksw.com/> .
-
-:VirtuosoConductor
-  a  lds:StorageService  ;
-  lds:serviceUrl <http://localhost:8890/conductor> .
-
-:VirtuosoAuthSPARQLEndpoint
-  a       lds:SecuredSPARQLEndPointService ;
-  lds:serviceUrl <http://localhost:8890/sparql-auth> .
-
-:VirtuosoEndpoint
-  a       lds:SPARQLEndPointService ;
-  lds:serviceUrl <http://localhost:8890/sparql> .
-
 :Sparqlify
       a       lds:StackComponent ;
       rdfs:label "Sparqlify"^^xsd:string ;
