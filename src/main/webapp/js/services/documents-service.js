@@ -256,7 +256,7 @@ module.factory("DocumentsService", function($http, $q, Config, Helpers, Configur
         var services = ConfigurationService.getComponentServices(":DocumentComponent", "lds:AuthoringService");
     	var serviceUrl = services[0].serviceUrl;
 
-        return $http.post(serviceUrl+"/update/isReindexing").then(function(response) {
+        return $http.get(serviceUrl+"/update/isReindexing").then(function(response) {
             return response.data == "true";
         });
     };
