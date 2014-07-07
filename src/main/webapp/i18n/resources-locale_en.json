@@ -1897,6 +1897,16 @@
         "value":"Error while re-indexing the document",
         "description":"Error while re-indexing the document"
     },
+    {
+        "key":"_doc-reindex-running-error_",
+        "value":"Operation cannot be executed: re-indexing is running",
+        "description":"operation cannot be executed, because re-indexing is running"
+    },
+    {
+        "key":"_doc-reindex-status-error_",
+        "value":"Failed to check re-indexing status",
+        "description":"failed to check re-indexing status error"
+    },
 
 
     {

@@ -190,6 +190,9 @@ module.factory('DocumentErrorResponse', function(localize) {
                 case 5:
                     errorText = localize.getLocalizedString("_doc-reindex-error_");
                     break;
+                case 6:
+                    errorText = localize.getLocalizedString("_doc-reindex-running-error_");
+                    break;
                 default:
                     errorText = code;
             };

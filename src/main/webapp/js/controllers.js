@@ -8,7 +8,7 @@ function AccountMenuCtrl($scope) {
     { name: "_user-pref_",   route:'#/account/preferences', url:'/account/preferences' }];
 }
 
-function StackMenuCtrl($scope, ConfigurationService, localize, AccountService) {
+function StackMenuCtrl($scope, ConfigurationService, localize, AccountService, $window, flash, DocumentsService) {
     var services = ConfigurationService.getComponentServices(":Solr");
 	var searchServiceUrl = services[0].serviceUrl;
 
@@ -70,11 +70,16 @@ function StackMenuCtrl($scope, ConfigurationService, localize, AccountService) {
 	    //add locale for MiniDix
 	    if (url.indexOf(miniDixServiceUrl)==0)
 	        $scope.url += ("&locale=" + localize.language);
-	    else if (url.indexOf(searchServiceUrl)==0)
+	    else if (url.indexOf(searchServiceUrl)==0) {
 	        $scope.url += ("?lang=" + localize.language);
+	        $scope.setCheckReindexPoll();
+	    }
 	  };
 
 	  $scope.close = function(modalID) {
+	    if ($scope.reindexPoll != null) {
+	        $scope.closeCheckReindexPoll();
+	    }
 	    $(modalID).modal('hide');
         $('body').removeClass('modal-open');
       	$('.modal-backdrop').slideUp();
@@ -105,6 +110,33 @@ function StackMenuCtrl($scope, ConfigurationService, localize, AccountService) {
         }
         return false;
       };
+
+      $scope.reindexPoll = null;
+
+      $scope.setCheckReindexPoll = function() {
+        console.log("start checking reindexing");
+        $scope.reindexPoll = $window.setInterval(function() {
+            console.log("check reindexing tick");
+            DocumentsService.isReindexing().then(function(reindexing) {
+                if (reindexing) {
+                    $scope.close("#fullModalDirect");
+                    flash.error = localize.getLocalizedString("_doc-reindex-running-error_");
+                    $scope.closeCheckReindexPoll();
+                }
+            });
+        }, 20000);
+      };
+
+      $scope.closeCheckReindexPoll = function() {
+        $window.clearInterval($scope.reindexPoll);
+        $scope.reindexPoll = null;
+        console.log("check reindexing closed");
+      };
+
+    $scope.$on('$destroy', function() {
+        // Make sure that the interval is destroyed too
+        $scope.closeCheckReindexPoll();
+    });
 
 	}
 

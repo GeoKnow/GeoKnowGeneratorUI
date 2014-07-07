@@ -267,6 +267,8 @@
                     <div class="modal-footer">
                         <button type="submit" class="btn-sm btn-primary" ng-click="save();" ng-disabled="documentForm.$invalid || document.hasProject.length==0 || isUnchanged(document)" data-i18n="_save_"></button>
                         <button type="button" class="btn-sm btn-default" ng-click="close('#modalDocument')" data-i18n="_cancel_"></button>
+                        <span ng-show="reindexStarted" data-i18n="_doc-reindex-running-error_"></span>
+                        <span ng-show="reindexCheckError" data-i18n="_doc-reindex-status-error_"></span>
                     </div>
                 </form>
             </div>

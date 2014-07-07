@@ -1895,6 +1895,16 @@
         "value":"Ошибка при переиндексации документа",
         "description":"Error while re-indexing the document"
     },
+    {
+        "key":"_doc-reindex-running-error_",
+        "value":"Операция не может быть выполнена: переиндексация еще не завершена",
+        "description":"operation cannot be executed, because re-indexing is running"
+    },
+    {
+        "key":"_doc-reindex-status-error_",
+        "value":"Не удалось проверить состояние процесса переиндексации",
+        "description":"failed to check re-indexing status error"
+    },
 
 
     {

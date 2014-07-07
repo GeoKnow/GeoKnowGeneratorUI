@@ -252,6 +252,15 @@ module.factory("DocumentsService", function($http, $q, Config, Helpers, Configur
         return results;
     };
 
+    var isReindexing = function() {
+        var services = ConfigurationService.getComponentServices(":DocumentComponent", "lds:AuthoringService");
+    	var serviceUrl = services[0].serviceUrl;
+
+        return $http.post(serviceUrl+"/update/isReindexing").then(function(response) {
+            return response.data == "true";
+        });
+    };
+
     return {
         getDocumentTypes: getDocumentTypes,
         readDocuments   : readDocuments,
@@ -263,6 +272,7 @@ module.factory("DocumentsService", function($http, $q, Config, Helpers, Configur
         readProjects    : readProjects,
         getAllProjects  : getAllProjects,
         readOwners      : readOwners,
-        getAllOwners    : getAllOwners
+        getAllOwners    : getAllOwners,
+        isReindexing    : isReindexing
     };
 });

@@ -178,29 +178,39 @@ var UploadedDocsCtrl = function($scope, $http, flash, filterFilter, orderByFilte
         $scope.newOwnerName = null;
         $scope.showCreateProject = false;
         $scope.showCreateOwner = false;
+        $scope.reindexStarted = false;
+        $scope.reindexCheckError = false;
     };
 
     $scope.save = function() {
-        DocumentsService.updateDocument($scope.document).then(function(response) {
-            $scope.refreshDocuments();
-            $scope.close('#modalDocument');
-            flash.success = localize.getLocalizedString("_changes-saved-message_");
-            $window.scrollTo(0,0);
-            //reindex document
-            var services = ConfigurationService.getComponentServices(":DocumentComponent", "lds:AuthoringService");
-            var serviceUrl = services[0].serviceUrl;
-            $http.post(serviceUrl+"/update/reindexDocument?uuid="+$scope.document.uuid)
-                .then(function(response) {
-                    console.log("Document " + $scope.document.uuid + " reindex completed");
-                    console.log(response.data);
-                }, function(response) {
-                    console.log("Document " + $scope.document.uuid + " reindex failed");
-                    console.log(response);
-                });
+        DocumentsService.isReindexing().then(function(reindexing) {
+            if (reindexing) {
+                $scope.reindexStarted = true;
+                return;
+            }
+            DocumentsService.updateDocument($scope.document).then(function(response) {
+                $scope.refreshDocuments();
+                $scope.close('#modalDocument');
+                flash.success = localize.getLocalizedString("_changes-saved-message_");
+                $window.scrollTo(0,0);
+                //reindex document
+                var services = ConfigurationService.getComponentServices(":DocumentComponent", "lds:AuthoringService");
+                var serviceUrl = services[0].serviceUrl;
+                $http.post(serviceUrl+"/update/reindexDocument?uuid="+$scope.document.uuid)
+                    .then(function(response) {
+                        console.log("Document " + $scope.document.uuid + " reindex completed");
+                        console.log(response.data);
+                    }, function(response) {
+                        console.log("Document " + $scope.document.uuid + " reindex failed");
+                        console.log(response);
+                    });
+            }, function(response) {
+                $scope.close('#modalDocument');
+                flash.error = ServerErrorResponse.getMessage(response.status);
+                $window.scrollTo(0,0);
+            });
         }, function(response) {
-            $scope.close('#modalDocument');
-            flash.error = ServerErrorResponse.getMessage(response.status);
-            $window.scrollTo(0,0);
+            $scope.reindexCheckError = true;
         });
     };
 
