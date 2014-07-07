@@ -104,6 +104,7 @@ var OntologyCtrl = function($scope, $http, flash, ServerErrorResponse, AccountSe
                 headers: {"Content-Type":"application/json; charset=utf-8"}
             }).then(function(response) {
                 $scope.refreshOntologies();
+                flash.success = localize.getLocalizedString("_clear-history-success-message_");
             }, function(response) {
                 flash.error = ServerErrorResponse.getMessage(response.status);
                 $scope.refreshOntologies();

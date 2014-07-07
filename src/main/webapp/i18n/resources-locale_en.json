@@ -1920,5 +1920,10 @@
         "key":"_clear-history_",
         "value":"Clear history",
         "description":"clear ontology history button"
+    },
+    {
+        "key":"_clear-history-success-message_",
+        "value":"History was cleared successfully",
+        "description":"clear ontology history success message"
     }
 ]

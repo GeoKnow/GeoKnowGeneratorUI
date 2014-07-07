@@ -1918,6 +1918,11 @@
         "key":"_clear-history_",
         "value":"Очистить историю",
         "description":"clear ontology history button"
+    },
+    {
+        "key":"_clear-history-success-message_",
+        "value":"История успешно очищена",
+        "description":"clear ontology history success message"
     }
 
 ]
