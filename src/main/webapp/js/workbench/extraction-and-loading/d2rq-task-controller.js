@@ -65,16 +65,20 @@ var D2RQTaskCtrl = function($scope, $http, $q, flash, ServerErrorResponse, Accou
     };
 
     var findDataset = function(ontology, endpoint, graph) {
+    	console.log($scope.datasets);
         for (var ind in $scope.datasets) {
             var ds = $scope.datasets[ind];
             if (ds.graph==graph && ds.httpEndpoint==endpoint && ds.ontology==ontology)
+            	console.log(ds);
                 return ds;
         }
         return null;
     };
 
     var findOrCreateDataset = function(ontology, endpoint, graph) {
+    	console.log(ontology + " " + endpoint + " " + graph);
         var ds = findDataset(ontology, endpoint, graph);
+        console.log(ds);
         if (ds!=null) {
             var deferred = $q.defer();
             deferred.resolve(ds);
@@ -105,12 +109,12 @@ var D2RQTaskCtrl = function($scope, $http, $q, flash, ServerErrorResponse, Accou
                     headers: {"Content-Type":"application/json; charset=utf-8"}
                 }).then(function(response) {
                     $scope.refreshTasks().then(function(response) {
-                        close('#modalTask');
+                        $scope.close('#modalTask');
                         adding = false;
                     });
                 }, function(response) {
                     flash.error = ServerErrorResponse.getMessage(response.status);
-                    close('#modalTask');
+                    $scope.close('#modalTask');
                 });
             });
     };
@@ -147,4 +151,12 @@ var D2RQTaskCtrl = function($scope, $http, $q, flash, ServerErrorResponse, Accou
             $scope.refreshTasks();
         });
     };
+    
+    $scope.close = function(modalID) {
+    	$(modalID).modal('hide');
+        $('body').removeClass('modal-open');
+      	$('.modal-backdrop').slideUp();
+      	$('.modal-scrollable').slideUp();
+    };
+    
 };

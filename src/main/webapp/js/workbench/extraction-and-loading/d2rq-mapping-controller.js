@@ -133,11 +133,11 @@ var D2RQMappingCtrl = function($scope, $http, $q, flash, ServerErrorResponse, Ac
                 headers: {"Content-Type":"application/json; charset=utf-8"}
             }).then(function(response) {
                 $scope.refreshMappingGroups().then(function(response) {
-                    close('#modalMappingGroup');
+                    $scope.close('#modalMappingGroup');
                     adding = false;
                 });
             }, function(response) {
-                close('#modalMappingGroup');
+                $scope.close('#modalMappingGroup');
                 flash.error = ServerErrorResponse.getMessage(response.status);
             });
         });
@@ -694,11 +694,11 @@ var D2RQMappingCtrl = function($scope, $http, $q, flash, ServerErrorResponse, Ac
                     headers: {"Content-Type":"application/json; charset=utf-8"}
                 }).then(function(response) {
                     $scope.refreshMappingGroups().then(function(response) {
-                        close('#modalMapping');
+                        $scope.close('#modalMapping');
                         adding = false;
                     });
                 }, function(response) {
-                    close('#modalMapping');
+                    $scope.close('#modalMapping');
                     flash.error = ServerErrorResponse.getMessage(response.status);
                 });
             });
@@ -711,11 +711,11 @@ var D2RQMappingCtrl = function($scope, $http, $q, flash, ServerErrorResponse, Ac
                 headers: {"Content-Type":"application/json; charset=utf-8"}
             }).then(function(response) {
                 $scope.refreshMappingGroups().then(function(response) {
-                    close('#modalMapping');
+                    $scope.close('#modalMapping');
                     adding = false;
                 });
             }, function(response) {
-                close('#modalMapping');
+                $scope.close('#modalMapping');
                 flash.error = ServerErrorResponse.getMessage(response.status);
             });
         }
@@ -738,4 +738,12 @@ var D2RQMappingCtrl = function($scope, $http, $q, flash, ServerErrorResponse, Ac
     $scope.localize = function(str) {
         return localize.getLocalizedString(str);
     };
+    
+    $scope.close = function(modalID) {
+    	$(modalID).modal('hide');
+        $('body').removeClass('modal-open');
+      	$('.modal-backdrop').slideUp();
+      	$('.modal-scrollable').slideUp();
+    };
+    
 };

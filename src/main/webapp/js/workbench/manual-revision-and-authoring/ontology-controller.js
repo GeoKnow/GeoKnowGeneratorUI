@@ -57,7 +57,7 @@ var OntologyCtrl = function($scope, $http, flash, ServerErrorResponse, AccountSe
                 headers: {"Content-Type":"application/json; charset=utf-8"}
             }).then(function(response) {
                 $scope.refreshOntologies();
-                close('#modalOntology');
+                $scope.close('#modalOntology');
             }, function(response) {
                 flash.error = ServerErrorResponse.getMessage(response.status);
                 $scope.refreshOntologies();
@@ -69,7 +69,7 @@ var OntologyCtrl = function($scope, $http, flash, ServerErrorResponse, AccountSe
                 data: {user: AccountService.getUsername()} //todo unauthorized user
             }).then(function(response) {
                 $scope.refreshOntologies();
-                close('#modalOntology');
+                $scope.close('#modalOntology');
             }, function(response) {
                 flash.error = ServerErrorResponse.getMessage(response.status);
                 $scope.refreshOntologies();
@@ -119,4 +119,12 @@ var OntologyCtrl = function($scope, $http, flash, ServerErrorResponse, AccountSe
     $scope.isLoggedIn = function() {
         return AccountService.isLogged();
     };
+    
+    $scope.close = function(modalID) {
+    	$(modalID).modal('hide');
+        $('body').removeClass('modal-open');
+      	$('.modal-backdrop').slideUp();
+      	$('.modal-scrollable').slideUp();
+    };
+    
 };
