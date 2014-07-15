@@ -55,9 +55,9 @@ var UploadedDocsCtrl = function($scope, $http, flash, filterFilter, orderByFilte
             if (document.hasProject[ind].number.indexOf($scope.searchText) > -1) return true;
             if (document.hasProject[ind].name.indexOf($scope.searchText) > -1) return true;
         }
-        if (document.ownerDocumentNumber.indexOf($scope.searchText) > -1) return true;
-        if (document.ownerDocumentName.indexOf($scope.searchText) > -1) return true;
-        if (document.ownerDocumentRevision.indexOf($scope.searchText) > -1) return true;
+        if (document.ownerDocumentNumber && document.ownerDocumentNumber.indexOf($scope.searchText) > -1) return true;
+        if (document.ownerDocumentName && document.ownerDocumentName.indexOf($scope.searchText) > -1) return true;
+        if (document.ownerDocumentRevision && document.ownerDocumentRevision.indexOf($scope.searchText) > -1) return true;
         if ($scope.formatDateTime(document.dateUploaded).indexOf($scope.searchText) > -1) return true;
         return false;
     };
@@ -88,7 +88,7 @@ var UploadedDocsCtrl = function($scope, $http, flash, filterFilter, orderByFilte
                 if (filters[ind](document)) return true;
             }
             for (var ind in fields) {
-                if (document[fields[ind]].indexOf($scope.searchText) > -1) return true;
+                if (document[fields[ind]] && document[fields[ind]].indexOf($scope.searchText) > -1) return true;
             }
             return false;
         };
