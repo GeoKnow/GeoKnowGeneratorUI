@@ -325,6 +325,16 @@ module.factory('ConfigurationService', function (Config) {
             var service = Config.getSettings()[uri];
             var results = this.elementToJson(uri, service);
             return results;
+        },
+
+        getRequiredServices: function(url) {
+            var routeRestrictions = Config.select("rdf:type", "gkg:RouteRestriction");
+            for (var ind in routeRestrictions) {
+                if (routeRestrictions[ind]["gkg:partialUrl"] == url) {
+                    return routeRestrictions[ind]["gkg:requiredService"];
+                }
+            }
+            return null;
         }
 
     };

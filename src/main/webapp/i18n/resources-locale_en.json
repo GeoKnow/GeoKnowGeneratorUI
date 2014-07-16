@@ -66,6 +66,11 @@
         "value":"System is not set up. Call setup servlet first: http://localhost:8080/generator/InitialSetup.",
         "description":"content of system-setup page"
     },
+    {
+        "key":"_access-denied-page-content_",
+        "value":"Access denied.",
+        "description":"content of access-denied page"
+    },
 
 
     {

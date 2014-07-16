@@ -230,5 +230,21 @@ foaf:homepage
       rdf:type rdf:Property ;
       rdfs:domain :SoftwareComponent ;
       rdfs:label "homepage"^^xsd:string .
+
+:RouteRestriction
+      rdf:type owl:Class ;
+      rdfs:label "route restriction"^^xsd:string .
+
+:partialUrl
+      rdf:type owl:DatatypeProperty ;
+      rdfs:label "partial url"^^xsd:string ;
+      rdfs:domain :RouteRestriction ;
+      rdfs:range xsd:string .
+
+:requiredService
+      rdf:type owl:ObjectProperty ;
+      rdfs:label "required service"^^xsd:string ;
+      rdfs:domain :RouteRestriction ;
+      rdfs:range lds:ComponentService .
  
  

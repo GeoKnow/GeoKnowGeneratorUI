@@ -112,3 +112,28 @@
       a       lds:ComponentService ;
       dcterms:description "Provides create/update functionality for accounts and roles."^^xsd:string ;
       lds:serviceUrl <http://144.76.166.111:8080/ontos-ldiw-generator/UserManagerServlet> .
+
+########### ROUTES RESTRICTIONS DESCRIPTION #######################################################
+# Following triples describe required services for routes. It is used in conditional routing.
+# #######################################################################################
+
+:UploadFileRouteRestriction
+      a     gkg:RouteRestriction;
+      gkg:partialUrl "/home/extraction-and-loading/upload-file"^^xsd:string;
+      gkg:requiredService :DocumentUploadService .
+
+:EditUploadsRouteRestriction
+      a     gkg:RouteRestriction;
+      gkg:partialUrl "/home/manual-revision-and-authoring/edit-uploads"^^xsd:string;
+      gkg:requiredService :DocumentService .
+
+:OntologyRouteRestriction
+      a     gkg:RouteRestriction;
+      gkg:partialUrl "/settings/ontology"^^xsd:string;
+      gkg:requiredService :D2RQService;
+      gkg:requiredService :MiniDixService .
+
+:RolesRouteRestriction
+      a     gkg:RouteRestriction;
+      gkg:partialUrl "/settings/roles"^^xsd:string;
+      gkg:requiredService :UserManagerService .

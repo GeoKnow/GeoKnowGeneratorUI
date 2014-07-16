@@ -66,6 +66,11 @@
         "value":"Система не инициализирована. Для инициализации используйте сервлет http://localhost:8080/generator/InitialSetup",
         "description":"content of system-setup page"
     },
+    {
+        "key":"_access-denied-page-content_",
+        "value":"Доступ запрещен.",
+        "description":"content of access-denied page"
+    },
 
 
     {

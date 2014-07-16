@@ -31,41 +31,42 @@ app.config(function($routeSegmentProvider, $routeProvider)
     $routeSegmentProvider
         // TODO: these routes may have to be loaded from the configuration
         
-        .when('/popup-limes','popup-limes')
-        .when('/popup-triplegeo','popup-triplegeo')
-        .when('/popup-geolift','popup-geolift')
+//        .when('/popup-limes','popup-limes')
+//        .when('/popup-triplegeo','popup-triplegeo')
+//        .when('/popup-geolift','popup-geolift')
 
         .when('/home', 'default')
         .when('/account','account')
         .when('/system-setup', 'system-setup')
+        .when('/access-denied', 'access-denied')
         // .when('/account/preferences', 'account.preferences')
         .when('/settings', 'settings')
-        .when('/settings/data-sources', 'settings.data-sources')
-        .when('/settings/datasets', 'settings.datasets')
-        .when('/settings/namespaces', 'settings.namespaces')
+//        .when('/settings/data-sources', 'settings.data-sources')
+//        .when('/settings/datasets', 'settings.datasets')
+//        .when('/settings/namespaces', 'settings.namespaces')
         .when('/settings/components', 'settings.components')
-        .when('/settings/users', 'settings.users')
+//        .when('/settings/users', 'settings.users')
         .when('/settings/roles', 'settings.roles')
         .when('/settings/ontology', 'settings.ontology')
-        .when('/home/extraction-and-loading/import-rdf', 'default.import-rdf')
-        .when('/home/extraction-and-loading/sparqlify', 'default.sparqlify')
-        .when('/home/extraction-and-loading/triplegeo', 'default.triplegeo')
-        .when('/home/extraction-and-loading/triplegeo-result', 'default.triplegeo-result')
-        .when('/home/extraction-and-loading/d2rq', 'default.d2rq.mapping')
-        .when('/home/extraction-and-loading/d2rq/mapping', 'default.d2rq.mapping')
-        .when('/home/extraction-and-loading/d2rq/task', 'default.d2rq.task')
+//        .when('/home/extraction-and-loading/import-rdf', 'default.import-rdf')
+//        .when('/home/extraction-and-loading/sparqlify', 'default.sparqlify')
+//        .when('/home/extraction-and-loading/triplegeo', 'default.triplegeo')
+//        .when('/home/extraction-and-loading/triplegeo-result', 'default.triplegeo-result')
+//        .when('/home/extraction-and-loading/d2rq', 'default.d2rq.mapping')
+//        .when('/home/extraction-and-loading/d2rq/mapping', 'default.d2rq.mapping')
+//        .when('/home/extraction-and-loading/d2rq/task', 'default.d2rq.task')
         .when('/home/extraction-and-loading/upload-file', 'default.upload-file')
-        .when('/home/extraction-and-loading/reindex', 'default.reindex')
-        .when('/home/search-querying-and-exploration/virtuoso', 'default.virtuoso')
-        .when('/home/search-querying-and-exploration/geospatial', 'default.geospatial')
+//        .when('/home/extraction-and-loading/reindex', 'default.reindex')
+//        .when('/home/search-querying-and-exploration/virtuoso', 'default.virtuoso')
+//        .when('/home/search-querying-and-exploration/geospatial', 'default.geospatial')
      /*   .when('/home/search-querying-and-exploration/googlemap', 'default.googlemap') */
-        .when('/home/search-querying-and-exploration/facete', 'default.facete')
-        .when('/home/search-querying-and-exploration/mappify', 'default.mappify')
-        .when('/home/querying-and-exploration/search', 'default.search')
-        .when('/home/manual-revision-and-authoring/ontowiki', 'default.ontowiki')
+//        .when('/home/search-querying-and-exploration/facete', 'default.facete')
+//        .when('/home/search-querying-and-exploration/mappify', 'default.mappify')
+//        .when('/home/querying-and-exploration/search', 'default.search')
+//        .when('/home/manual-revision-and-authoring/ontowiki', 'default.ontowiki')
         .when('/home/manual-revision-and-authoring/edit-uploads', 'default.edit-uploads')
-        .when('/home/linking-and-fusing/limes', 'default.limes')
-        .when('/home/classification-and-enrichment/geolift', 'default.geolift')
+//        .when('/home/linking-and-fusing/limes', 'default.limes')
+//        .when('/home/classification-and-enrichment/geolift', 'default.geolift')
 
         .segment('popup-limes', {
             templateUrl: 'js/workbench/linking-and-fusing/limes-result.html',
@@ -246,6 +247,9 @@ app.config(function($routeSegmentProvider, $routeProvider)
         .segment('system-setup', {
             templateUrl: 'system-setup.html'
         })
+        .segment('access-denied', {
+            templateUrl: 'access-denied.html'
+        })
 
         .segment('about', {
             templateUrl:'about.html' })
@@ -275,8 +279,9 @@ app.config(function($routeSegmentProvider, $routeProvider)
     localizeProvider.defaultLanguage = 'en';
     localizeProvider.ext = 'json';
 })
-.run(function($rootScope, $location, $http) {
+.run(function($rootScope, $location, $http, AccountService, ConfigurationService) {
     //redirect to system-setup page if system is not set up
+    //redirect to access-denied page if user has no access to page
     $rootScope.$on("$routeChangeStart", function(event, next, current) {
         if ($rootScope.isSystemSetUp==undefined) {
             $http.get("InitialSetup?check=true").then(function(response) {
@@ -287,6 +292,22 @@ app.config(function($routeSegmentProvider, $routeProvider)
             });
         } else if (!$rootScope.isSystemSetUp) {
             $location.path('/system-setup');
+        } else if (next.$$route) { //check route permissions
+            var requiredServices = ConfigurationService.getRequiredServices(next.$$route.originalPath);
+            if (requiredServices==null) return;
+            if (AccountService.isAdmin()) return;
+            var role = AccountService.getRole();
+            if (role==null) {
+                $location.path("/access-denied");
+            } else {
+                var allowedServices = role.services;
+                for (var ind in requiredServices) {
+                    if (allowedServices.indexOf(requiredServices[ind]==-1)) {
+                        $location.path("/access-denied");
+                        return;
+                    }
+                }
+            }
         }
     });
 });
