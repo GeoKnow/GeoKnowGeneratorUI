@@ -105,6 +105,11 @@
         "value":"New password",
         "description":"change password form field"
     },
+    {
+        "key":"_confirm-password_",
+        "value":"Confirm password",
+        "description":"change password form field"
+    },
 
 
     {
@@ -1106,6 +1111,11 @@
         "description":"shown in change password form below old password field when the value is not specified"
     },
     {
+        "key":"_confirm-password-missed-message_",
+        "value":"Confirm password",
+        "description":"shown in change password form below confirm password field when the value is not specified"
+    },
+    {
         "key":"_description-missed-message_",
         "value":"Give a description",
         "description":"shown in forms below description field when the value is not specified"
@@ -1930,5 +1940,12 @@
         "key":"_clear-history-success-message_",
         "value":"History was cleared successfully",
         "description":"clear ontology history success message"
+    },
+
+
+    {
+        "key":"_confirm-password-invalid-message_",
+        "value":"Invalid password confirmation",
+        "description":"in change password form when new password and confirm password are different"
     }
 ]

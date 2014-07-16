@@ -105,6 +105,11 @@
         "value":"Новый пароль",
         "description":"change password form field"
     },
+    {
+        "key":"_confirm-password_",
+        "value":"Подтверждение пароля",
+        "description":"change password form field"
+    },
 
 
     {
@@ -1104,6 +1109,11 @@
         "description":"shown in change password form below old password field when the value is not specified"
     },
     {
+        "key":"_confirm-password-missed-message_",
+        "value":"Подтвердите новый пароль",
+        "description":"shown in change password form below confirm password field when the value is not specified"
+    },
+    {
         "key":"_description-missed-message_",
         "value":"Добавьте описание",
         "description":"shown in forms below description field when the value is not specified"
@@ -1928,6 +1938,13 @@
         "key":"_clear-history-success-message_",
         "value":"История успешно очищена",
         "description":"clear ontology history success message"
+    },
+
+
+    {
+        "key":"_confirm-password-invalid-message_",
+        "value":"Неверное подтверждение пароля",
+        "description":"in change password form when new password and confirm password are different"
     }
 
 ]

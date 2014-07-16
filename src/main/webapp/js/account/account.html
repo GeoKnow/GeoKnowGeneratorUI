@@ -61,6 +61,16 @@
                 </div>
               </div>
             </div>
+              <div class="form-group">
+                  <label for="confirmPassword" class="col-lg-2 control-label" data-i18n="_confirm-password_"></label>
+                  <div class="col-lg-10">
+                      <input type="password" id="confirmPassword" name="confirmPassword" class="form-control" data-i18n-attr="_confirm-password_|placeholder" ng-model="password.confirmPassword" confirm-field="newPassword" required/>
+                      <div class="error" ng-show="changePasswordForm.confirmPassword.$dirty && changePasswordForm.confirmPassword.$invalid">{{'_invalid-field-message_' | i18n}}:
+                          <span ng-show="changePasswordForm.confirmPassword.$error.required" data-i18n="_confirm-password-missed-message_"></span>
+                          <span ng-show="changePasswordForm.confirmPassword.$error.confirmField && !changePasswordForm.confirmPassword.$error.required" data-i18n="_confirm-password-invalid-message_"></span>
+                      </div>
+                  </div>
+              </div>
           </div>
           <div class="modal-footer">
             <button type="submit" class="btn-sm btn-primary" ng-click="changePassword();" ng-disabled="changePasswordForm.$invalid" data-i18n="_change_"></button>

@@ -3,7 +3,7 @@
 function AccountCtrl($scope, $http, $cookieStore, flash, AccountService, LoginService, ServerErrorResponse, Base64) {
     $scope.currentAccount = angular.copy(AccountService.getAccount());
 
-    $scope.password = {oldPassword: null, newPassword:null};
+    $scope.password = {oldPassword: null, newPassword:null, confirmPassword:null};
 
     $scope.changePassword = function() {
         LoginService.changePassword($scope.password.oldPassword, $scope.password.newPassword)
@@ -34,6 +34,7 @@ function AccountCtrl($scope, $http, $cookieStore, flash, AccountService, LoginSe
 
         $scope.password.newPassword = null;
         $scope.password.oldPassword = null;
+        $scope.password.confirmPassword = null;
     };
 
     $scope.$watch( function() { return AccountService.getAccount(); }, function() {
