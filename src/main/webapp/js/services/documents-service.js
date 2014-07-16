@@ -125,17 +125,19 @@ module.factory("DocumentsService", function($http, $q, Config, Helpers, Configur
         var hasProjectTriples = "";
         var newProjectTriples = "";
         for (var ind in document.hasProject) {
-            hasProjectTriples += " ?s acc:hasProject " + document.hasProject[ind].uri + " . ";
+            var fullProjectUri = document.hasProject[ind].uri.replace("acc:", Config.getDocumentsNS());
+            hasProjectTriples += " ?s acc:hasProject <" + fullProjectUri + "> . ";
             if (document.hasProject[ind].created) {
-                newProjectTriples += document.hasProject[ind].uri + " rdf:type acc:AccProject . "
-                                    + document.hasProject[ind].uri + " acc:number \"" + document.hasProject[ind].number + "\" . "
-                                    + document.hasProject[ind].uri + " acc:name \"" + document.hasProject[ind].name + "\" . ";
+                newProjectTriples += "<" + fullProjectUri + "> rdf:type acc:AccProject . "
+                                    + "<" + fullProjectUri + "> acc:number \"" + document.hasProject[ind].number + "\" . "
+                                    + "<" + fullProjectUri + "> acc:name \"" + document.hasProject[ind].name + "\" . ";
             }
         }
+        var fullOwnerUri = document.owner.uri.replace("acc:", Config.getDocumentsNS());
         var newOwnerTriples = "";
         if (document.owner.created) {
-            newOwnerTriples += document.owner.uri + " rdf:type acc:Owner . "
-                                + document.owner.uri + " acc:name \"" + document.owner.name + "\" . ";
+            newOwnerTriples += "<" + fullOwnerUri + "> rdf:type acc:Owner . "
+                                + "<" + fullOwnerUri + "> acc:name \"" + document.owner.name + "\" . ";
         }
         var query = "prefix acc: <" + Config.getDocumentsNS() + "> "
                     + " prefix xsd: <http://www.w3.org/2001/XMLSchema#> "
@@ -158,7 +160,7 @@ module.factory("DocumentsService", function($http, $q, Config, Helpers, Configur
                             + " ?s acc:accDocumentIteration \"" + document.accDocumentIteration + "\" . "
                             + hasProjectTriples
                             + newProjectTriples
-                            + " ?s dc:creator " + document.owner.uri + " . "
+                            + " ?s dc:creator <" + fullOwnerUri + "> . "
                             + newOwnerTriples
                             + " ?s acc:documentType \"" + document.documentType + "\" . "
                             + (!document.ownerDocumentNumber ? "" : " ?s acc:ownerDocumentNumber \"" + document.ownerDocumentNumber + "\" . ")
