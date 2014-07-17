@@ -1927,6 +1927,11 @@
         "value":"Пользователь уже существует",
         "description":"Error while registering new user: user already exists"
     },
+    {
+        "key":"_incorrect-old-password-error_",
+        "value":"Неверно указан старый пароль",
+        "description":"change password error: incorrect old password"
+    },
 
 
     {

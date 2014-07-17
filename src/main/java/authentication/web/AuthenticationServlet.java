@@ -32,6 +32,7 @@ import authentication.FrameworkConfiguration;
  *
  * Error codes:
  * 1 - user already exists (during user registration, user with the same name or e-mail already exists)
+ * 2 - incorrect old password (change password)
  */
 public class AuthenticationServlet extends HttpServlet {
   /**
@@ -174,10 +175,18 @@ public class AuthenticationServlet extends HttpServlet {
       boolean valid;
       try {
         valid = frameworkUserManager.checkToken(username, token);
-        if (!valid)
-          response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "invalid token " + token
-              + " for user " + username);
-        else {
+        if (!valid) {
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "invalid token " + token
+                    + " for user " + username);
+        } else {
+            //check old password
+            boolean isCorrect = frameworkUserManager.checkPassword(username, oldPassword);
+            if (!isCorrect) {
+                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                out.print("{\"code\" : \"2\", \"message\" : \"Incorrect old password\"}");
+                return;
+            }
+
           // change password
           frameworkUserManager.changePassword(username, oldPassword, newPassword);
 
