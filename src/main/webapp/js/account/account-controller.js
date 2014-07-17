@@ -5,6 +5,8 @@ function AccountCtrl($scope, $http, $cookieStore, flash, AccountService, LoginSe
 
     $scope.password = {oldPassword: null, newPassword:null, confirmPassword:null};
 
+    $('i').tooltip();
+
     $scope.changePassword = function() {
         LoginService.changePassword($scope.password.oldPassword, $scope.password.newPassword)
             .then(function(response) {

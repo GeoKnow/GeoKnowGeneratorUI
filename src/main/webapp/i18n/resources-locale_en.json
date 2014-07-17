@@ -1947,5 +1947,15 @@
         "key":"_confirm-password-invalid-message_",
         "value":"Invalid password confirmation",
         "description":"in change password form when new password and confirm password are different"
+    },
+    {
+        "key":"_basic-password-guideline_",
+        "value":"6 symbols minimum (digits and latin letters): at least 1 digit, 1 lower case latin letter and 1 upper case latin letter",
+        "description":"basic password guideline description"
+    },
+    {
+        "key":"_weak-password-message_",
+        "value":"Password is too weak",
+        "description":"too weak password message"
     }
 ]

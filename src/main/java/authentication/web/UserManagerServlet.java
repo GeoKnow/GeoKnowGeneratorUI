@@ -110,7 +110,7 @@ public class UserManagerServlet extends HttpServlet {
         String role = rootNode.path("profile").path("role")==null ? null : rootNode.path("profile").path("role").getTextValue();
 
       // create user
-      String password = new RandomStringGenerator().generateSimple(8);
+      String password = new RandomStringGenerator().generateBasic(6);
       try {
         frameworkUserManager.createUser(username, password, email);
       } catch (Exception e) {

@@ -143,7 +143,7 @@ public class AuthenticationServlet extends HttpServlet {
           return;
       }
       // create user
-      String password = new RandomStringGenerator().generateSimple(8);
+      String password = new RandomStringGenerator().generateBasic(6);
       try {
         frameworkUserManager.createUser(username, password, email);
 
@@ -180,9 +180,18 @@ public class AuthenticationServlet extends HttpServlet {
         else {
           // change password
           frameworkUserManager.changePassword(username, oldPassword, newPassword);
+
+            // send new password to user
+            UserProfile userProfile = frameworkUserManager.getUserProfile(username);
+            if (userProfile == null) {
+                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "User profile " + username + " not found");
+                return;
+            }
+            EmailSender emailSender = FrameworkConfiguration.getInstance(getServletContext()).getDefaultEmailSender();
+            emailSender.send(userProfile.getEmail(), "GeoKnow change password", "Your password was changed. Your login: " + username + ", new password: " + newPassword);
+
           String responseStr = "{\"message\" : \"Your password was changed\"}";
           response.getWriter().print(responseStr);
-
         }
       } catch (Exception e) {
         e.printStackTrace();
@@ -201,7 +210,7 @@ public class AuthenticationServlet extends HttpServlet {
               + username + " not found");
         }
         // change password
-        String password = new RandomStringGenerator().generateSimple(8);
+        String password = new RandomStringGenerator().generateBasic(6);
         frameworkUserManager.setPassword(username, password);
 
         // send new password to user

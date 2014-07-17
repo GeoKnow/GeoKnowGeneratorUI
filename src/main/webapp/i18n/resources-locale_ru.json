@@ -1945,6 +1945,16 @@
         "key":"_confirm-password-invalid-message_",
         "value":"Неверное подтверждение пароля",
         "description":"in change password form when new password and confirm password are different"
+    },
+    {
+        "key":"_basic-password-guideline_",
+        "value":"Минимум 6 символов (цифры и латинские буквы): хотя бы 1 цифра, маленькая латинская буква и большая латинская буква",
+        "description":"basic password guideline description"
+    },
+    {
+        "key":"_weak-password-message_",
+        "value":"Слишком слабый пароль",
+        "description":"too weak password message"
     }
 
 ]
