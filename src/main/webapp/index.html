@@ -50,7 +50,7 @@
 	                        <li ng-class="getClass('/home')"><a href="#/" data-i18n="_workbench_"><div class="glyphicon glyphicon-cog"></div></a></li>
 	                        <!-- <li ng-class="getClass('/batch')""><a href="#/batch"><div class="glyphicon glyphicon-list"></div> Batch job </a></li> -->
 	                        <li ng-class="getClass('/settings')">
-                            <a href="#/settings" data-i18n="_settings_"><div class="glyphicon glyphicon-wrench"></div></a></li>
+                            <a href="#/settings" data-i18n="_settings_" ng-show="isUserAuthenticated()"><div class="glyphicon glyphicon-wrench"></div></a></li>
 	                        <li ng-if="isUserAuthenticated()" ng-class="getClass('/account')">
                             <a href="#/account" data-i18n="_account_"><div class="glyphicon glyphicon-user"></div></a></li>
 	                        </ul>
