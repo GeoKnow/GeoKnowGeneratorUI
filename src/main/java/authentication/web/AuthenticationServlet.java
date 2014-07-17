@@ -198,7 +198,7 @@ public class AuthenticationServlet extends HttpServlet {
                 return;
             }
             EmailSender emailSender = FrameworkConfiguration.getInstance(getServletContext()).getDefaultEmailSender();
-            emailSender.send(userProfile.getEmail(), "ACC change password", "Your password was changed. Your login: " + username + ", new password: " + newPassword);
+            emailSender.send(userProfile.getEmail(), "ACC change password", "Your password for the Linked Data Information Workbench account "  + username + " was changed.");
 
           String responseStr = "{\"message\" : \"Your password was changed\"}";
           response.getWriter().print(responseStr);
