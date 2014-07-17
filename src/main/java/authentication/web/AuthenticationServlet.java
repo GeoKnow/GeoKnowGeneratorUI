@@ -152,7 +152,7 @@ public class AuthenticationServlet extends HttpServlet {
         EmailSender emailSender = FrameworkConfiguration.getInstance(getServletContext())
             .getDefaultEmailSender();
 
-        emailSender.send(email, "ACC registration", "Your login: " + username + ", password: "
+        emailSender.send(email, "Ontos LDIW for ACC registration", "Your login: " + username + ", password: "
             + password);
         String responseStr = "{\"message\" : \"Your password will be sent to your e-mail address "
             + email + " \"}";
@@ -198,7 +198,7 @@ public class AuthenticationServlet extends HttpServlet {
                 return;
             }
             EmailSender emailSender = FrameworkConfiguration.getInstance(getServletContext()).getDefaultEmailSender();
-            emailSender.send(userProfile.getEmail(), "ACC change password", "Your password for the Linked Data Information Workbench account "  + username + " was changed.");
+            emailSender.send(userProfile.getEmail(), "Ontos LDIW for ACC change password", "Your password for the Linked Data Information Workbench account "  + username + " was changed.");
 
           String responseStr = "{\"message\" : \"Your password was changed\"}";
           response.getWriter().print(responseStr);
@@ -227,7 +227,7 @@ public class AuthenticationServlet extends HttpServlet {
         // send new password to user
         EmailSender emailSender = FrameworkConfiguration.getInstance(getServletContext())
             .getDefaultEmailSender();
-        emailSender.send(userProfile.getEmail(), "ACC restore password", "Your login: "
+        emailSender.send(userProfile.getEmail(), "Ontos LDIW for ACC restore password", "Your login: "
             + username + ", password: " + password);
         String responseStr = "{\"message\" : \"New password will be sent to your e-mail address "
             + userProfile.getEmail() + " \"}";

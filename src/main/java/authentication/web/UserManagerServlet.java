@@ -139,7 +139,7 @@ public class UserManagerServlet extends HttpServlet {
       try {
         emailSender = FrameworkConfiguration.getInstance(getServletContext())
             .getDefaultEmailSender();
-        emailSender.send(email, "ACC registration", "Your login: " + username + ", password: "
+        emailSender.send(email, "Ontos LDIW for ACC registration", "Your login: " + username + ", password: "
             + password);
       } catch (MessagingException e) {
         throw new ServletException("Failed to send email to " + email + " using " + emailSender, e);
