@@ -1932,6 +1932,11 @@
         "value":"Неверно указан старый пароль",
         "description":"change password error: incorrect old password"
     },
+    {
+        "key":"_user-not-exists_",
+        "value":"Пользователь с указанным именем не найден",
+        "description":"if user was not found by name, for example, in restore password dialog"
+    },
 
 
     {

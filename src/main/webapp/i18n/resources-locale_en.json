@@ -1934,6 +1934,11 @@
         "value":"Incorrect old password",
         "description":"change password error: incorrect old password"
     },
+    {
+        "key":"_user-not-exists_",
+        "value":"User doesn't exists",
+        "description":"if user was not found by name, for example, in restore password dialog"
+    },
 
 
     {

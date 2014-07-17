@@ -33,6 +33,7 @@ import authentication.FrameworkConfiguration;
  * Error codes:
  * 1 - user already exists (during user registration, user with the same name or e-mail already exists)
  * 2 - incorrect old password (change password)
+ * 3 - user doesn't exists (in restore password)
  */
 public class AuthenticationServlet extends HttpServlet {
   /**
@@ -215,8 +216,9 @@ public class AuthenticationServlet extends HttpServlet {
       try {
         userProfile = frameworkUserManager.getUserProfile(username);
         if (userProfile == null) {
-          response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "User profile "
-              + username + " not found");
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            out.print("{\"code\" : \"3\", \"message\" : \"User doesn't exists\"}");
+            return;
         }
         // change password
         String password = new RandomStringGenerator().generateBasic(6);
