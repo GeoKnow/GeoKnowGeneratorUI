@@ -2,7 +2,7 @@
 
 var module = angular.module('app.users-service', []);
 
-module.factory("UsersService", function($http, Config, AccountService) {
+module.factory("UsersService", function($http, Config, AccountService, localize) {
     var users = [];
     var roles = {};
 
@@ -205,7 +205,8 @@ module.factory("UsersService", function($http, Config, AccountService) {
 	    var parameters = {
 	        mode: "create",
 	        user: JSON.stringify(user),
-	        curuser: AccountService.getUsername()
+	        curuser: AccountService.getUsername(),
+	        lang: localize.language
         };
         return $http({
             url: "UserManagerServlet",

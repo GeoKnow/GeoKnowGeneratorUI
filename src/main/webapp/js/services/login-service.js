@@ -2,7 +2,7 @@
 
 var module = angular.module('app.login-service', []);
 
-module.factory("LoginService", function ($http, $location, $cookieStore, AccountService, ConfigurationService, Base64, flash, ServerErrorResponse) {
+module.factory("LoginService", function ($http, $location, $cookieStore, AccountService, ConfigurationService, Base64, flash, ServerErrorResponse, localize) {
 
     var login = function (username, password) {
 
@@ -81,7 +81,8 @@ module.factory("LoginService", function ($http, $location, $cookieStore, Account
         var postData = {
             username: username,
             email: email,
-            mode: "create"
+            mode: "create",
+            lang: localize.language
         };
         return $http({
             url: "AuthenticationServlet",
@@ -96,7 +97,8 @@ module.factory("LoginService", function ($http, $location, $cookieStore, Account
             username: AccountService.getUsername(),
             oldPassword: oldPassword,
             newPassword: newPassword,
-            mode: "changePassword"
+            mode: "changePassword",
+            lang: localize.language
         };
         return $http({
             url: "AuthenticationServlet",
@@ -109,7 +111,8 @@ module.factory("LoginService", function ($http, $location, $cookieStore, Account
     var restorePassword = function (username) {
         var postData = {
             username: username,
-            mode: "restorePassword"
+            mode: "restorePassword",
+            lang: localize.language
         };
         return $http({
             url: "AuthenticationServlet",

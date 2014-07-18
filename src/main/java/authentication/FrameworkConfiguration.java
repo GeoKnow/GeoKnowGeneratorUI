@@ -1,6 +1,10 @@
 package authentication;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
 
 import javax.servlet.ServletContext;
 
@@ -8,6 +12,7 @@ import org.apache.jena.riot.RiotException;
 
 import rdf.SecureRdfStoreManagerImpl;
 import util.EmailSender;
+import util.Localizer;
 import util.SSLEmailSender;
 import util.TLSEmailSender;
 import accounts.FrameworkUserManager;
@@ -49,6 +54,8 @@ public class FrameworkConfiguration {
   private String frameworkUri;
 
   private static FrameworkConfiguration instance;
+
+    private HashMap<Locale, Localizer> localizers = new HashMap<Locale, Localizer>();
 
   /**
    * 
@@ -360,4 +367,30 @@ public class FrameworkConfiguration {
     this.frameworkUri = frameworkUri;
   }
 
+    public Localizer getLocalizer(Locale locale) {
+        Localizer localizer = localizers.get(locale);
+        if (localizer==null) {
+            try {
+                final ResourceBundle bundle = ResourceBundle.getBundle("resources/locale/generator", locale);
+                localizer = new Localizer() {
+                    @Override
+                    public String localize(String str) {
+                        try {
+                            return bundle.getString(str);
+                        } catch (Exception e) {
+                            return str;
+                        }
+                    }
+                };
+            } catch (MissingResourceException e) {
+                localizer = new Localizer() {
+                    public String localize(String str) {
+                        return str;
+                    }
+                };
+            }
+            localizers.put(locale, localizer);
+        }
+        return localizer;
+    }
 }
