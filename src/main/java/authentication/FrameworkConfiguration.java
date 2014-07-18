@@ -371,7 +371,7 @@ public class FrameworkConfiguration {
         Localizer localizer = localizers.get(locale);
         if (localizer==null) {
             try {
-                final ResourceBundle bundle = ResourceBundle.getBundle("resources/locale/generator", locale);
+                final ResourceBundle bundle = ResourceBundle.getBundle("locale/generator", locale);
                 localizer = new Localizer() {
                     @Override
                     public String localize(String str) {
