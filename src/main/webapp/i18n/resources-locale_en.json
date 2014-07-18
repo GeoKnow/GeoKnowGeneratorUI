@@ -1967,5 +1967,12 @@
         "key":"_weak-password-message_",
         "value":"Password is too weak",
         "description":"too weak password message"
+    },
+
+
+    {
+        "key":"_thesaurus-manager-warning_",
+        "value":"Do only touch the functionality if you are knowing what you are doing.",
+        "description":"message shown on thesaurus management page (warning - only for advanced users)"
     }
 ]

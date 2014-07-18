@@ -383,3 +383,7 @@ form{
   width:80%;
   margin-left:250px;
 }
+
+.warning-msg {
+    color: red;
+}

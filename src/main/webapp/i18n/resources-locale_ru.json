@@ -1965,6 +1965,13 @@
         "key":"_weak-password-message_",
         "value":"Слишком слабый пароль",
         "description":"too weak password message"
+    },
+
+
+    {
+        "key":"_thesaurus-manager-warning_",
+        "value":"Используйте данные функции только если знаете, что вы делаете.",
+        "description":"message shown on thesaurus management page (warning - only for advanced users)"
     }
 
 ]
