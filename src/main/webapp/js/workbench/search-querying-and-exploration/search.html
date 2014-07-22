@@ -1,6 +1,9 @@
 <div ng-controller="SearchCtrl">
     <h3 class="green bold" data-i18n="_search_"></h3>
-    <button type="button" class="btn btn-primary btn-large" data-toggle="modal" ng-click="setUrl(); openModal();">Open Solr</button>
+
+    <iframe id="searchFrame" frameborder="0" style="width:100%; height:1400px" src="{{url}}"></iframe>
+
+    <!--button type="button" class="btn btn-primary btn-large" data-toggle="modal" ng-click="openModal();">Open Solr</button>
 
     <div class="modal" id="fullModal">
         <div class="modal-content">
@@ -12,5 +15,5 @@
                 <modal-iframe></modal-iframe>
             </div>
         </div>
-    </div>
+    </div-->
 </div>

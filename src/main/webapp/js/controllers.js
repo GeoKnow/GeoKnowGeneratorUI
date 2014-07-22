@@ -8,6 +8,24 @@ function AccountMenuCtrl($scope) {
     { name: "_user-pref_",   route:'#/account/preferences', url:'/account/preferences' }];
 }
 
+function WorkbenchCtrl($scope) {
+    $scope.showStackMenu = true;
+    $scope.toggleButtonName = "_hide-stack-menu_";
+
+    $scope.toggleStackMenu = function() {
+        $scope.showStackMenu = !$scope.showStackMenu;
+        if ($scope.showStackMenu) {
+            $('#segment1').removeClass('col-xs-12');
+            $('#segment1').addClass('col-xs-10');
+            $scope.toggleButtonName = "_hide-stack-menu_";
+        } else {
+            $('#segment1').removeClass('col-xs-10');
+            $('#segment1').addClass('col-xs-12');
+            $scope.toggleButtonName = "_show-stack-menu_";
+        }
+    };
+}
+
 function StackMenuCtrl($scope, ConfigurationService, localize, AccountService, $window, flash, DocumentsService) {
     var services = ConfigurationService.getComponentServices(":Solr");
 	var searchServiceUrl = services[0].serviceUrl;
@@ -37,7 +55,8 @@ function StackMenuCtrl($scope, ConfigurationService, localize, AccountService, $
 //		       {name: 'Virtuoso', route:'#/home/search-querying-and-exploration/virtuoso', url:'/home/search-querying-and-exploration/virtuoso' },
 //		       {name: 'Facete', route:'#/home/search-querying-and-exploration/facete', url:'/home/search-querying-and-exploration/facete' },
 //		       {name: 'Mappify', route:'#/home/search-querying-and-exploration/mappify', url:'/home/search-querying-and-exploration/mappify' },
-		       {name: '_search_', route:null, url:searchServiceUrl, modaltitle:'_faceted-search_', requiredServices:[":SearchService"] }]
+//		       {name: '_search_', route:null, url:searchServiceUrl, modaltitle:'_faceted-search_', requiredServices:[":SearchService"] },
+		       {name: '_search_', route:'#/home/search-querying-and-exploration/search', url:'/home/search-querying-and-exploration/search', requiredServices:[":SearchService"] }]
 		    },
 	    {
 	      title: "_man-revision-authoring_",

@@ -1974,5 +1974,17 @@
         "key":"_thesaurus-manager-warning_",
         "value":"Do only touch the functionality if you are knowing what you are doing.",
         "description":"message shown on thesaurus management page (warning - only for advanced users)"
+    },
+
+
+    {
+        "key":"_show-stack-menu_",
+        "value":"Show Menu",
+        "description":"show stack menu button name"
+    },
+    {
+        "key":"_hide-stack-menu_",
+        "value":"Hide Menu",
+        "description":"hide stack menu button name"
     }
 ]

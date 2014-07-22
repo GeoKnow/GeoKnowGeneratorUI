@@ -1,5 +1,6 @@
-  <div class="contents">
-  	<div class="col-xs-2 sidebar">
+  <div class="contents" ng-controller="WorkbenchCtrl">
+      <button class="btn btn-primary btn-large" ng-click="toggleStackMenu()" data-i18n="{{toggleButtonName}}"></button>
+  	<div class="col-xs-2 sidebar" ng-show="showStackMenu">
 			
 			<div class="panel-group" id="accordion" ng-controller="StackMenuCtrl">
 			  <div class="panel panel-default" ng-repeat="group in groups | filter:showGroup">
@@ -37,7 +38,7 @@
 
 		</div>
 
-	  <div class="col-xs-10 contents" app-view-segment="1">
+	  <div id="segment1" class="col-xs-10 contents" app-view-segment="1">
 	  	<div class="col-xs-8">
  		<h3 class="green bold" data-i18n="_home-title_"></h3>
  		<br>

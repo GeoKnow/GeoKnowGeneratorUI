@@ -1972,6 +1972,18 @@
         "key":"_thesaurus-manager-warning_",
         "value":"Используйте данные функции только если знаете, что вы делаете.",
         "description":"message shown on thesaurus management page (warning - only for advanced users)"
+    },
+
+
+    {
+        "key":"_show-stack-menu_",
+        "value":"Показать меню",
+        "description":"show stack menu button name"
+    },
+    {
+        "key":"_hide-stack-menu_",
+        "value":"Скрыть меню",
+        "description":"hide stack menu button name"
     }
 
 ]

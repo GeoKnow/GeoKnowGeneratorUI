@@ -62,7 +62,7 @@ app.config(function($routeSegmentProvider, $routeProvider)
      /*   .when('/home/search-querying-and-exploration/googlemap', 'default.googlemap') */
 //        .when('/home/search-querying-and-exploration/facete', 'default.facete')
 //        .when('/home/search-querying-and-exploration/mappify', 'default.mappify')
-//        .when('/home/querying-and-exploration/search', 'default.search')
+        .when('/home/search-querying-and-exploration/search', 'default.search')
 //        .when('/home/manual-revision-and-authoring/ontowiki', 'default.ontowiki')
         .when('/home/manual-revision-and-authoring/edit-uploads', 'default.edit-uploads')
 //        .when('/home/linking-and-fusing/limes', 'default.limes')
