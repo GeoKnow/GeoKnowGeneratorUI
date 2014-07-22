@@ -64,6 +64,7 @@ app.config(function($routeSegmentProvider, $routeProvider)
 //        .when('/home/search-querying-and-exploration/mappify', 'default.mappify')
         .when('/home/search-querying-and-exploration/search', 'default.search')
 //        .when('/home/manual-revision-and-authoring/ontowiki', 'default.ontowiki')
+        .when('/home/manual-revision-and-authoring/thesaurus', 'default.thesaurus')
         .when('/home/manual-revision-and-authoring/edit-uploads', 'default.edit-uploads')
 //        .when('/home/linking-and-fusing/limes', 'default.limes')
 //        .when('/home/classification-and-enrichment/geolift', 'default.geolift')
@@ -168,6 +169,8 @@ app.config(function($routeSegmentProvider, $routeProvider)
                     templateUrl: 'js/workbench/search-querying-and-exploration/virtuoso.html'})
                 .segment('ontowiki', {
                     templateUrl: 'js/workbench/manual-revision-and-authoring/ontowiki.html' })
+                .segment('thesaurus', {
+                    templateUrl: 'js/workbench/manual-revision-and-authoring/thesaurus.html' })
                 .segment('edit-uploads', {
                     templateUrl: 'js/workbench/manual-revision-and-authoring/edit-uploads.html',
                     resolve: {

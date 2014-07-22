@@ -223,3 +223,15 @@ module.factory('AuthenticationErrorResponse', function(localize) {
         }
     };
 });
+
+module.factory('StackMenuService', function() {
+    var showStackMenu = true;
+    return {
+        toggleStackMenu: function() {
+            showStackMenu = !showStackMenu;
+        },
+        isShownStackMenu: function() {
+            return showStackMenu;
+        }
+    }
+});

@@ -8,22 +8,21 @@ function AccountMenuCtrl($scope) {
     { name: "_user-pref_",   route:'#/account/preferences', url:'/account/preferences' }];
 }
 
-function WorkbenchCtrl($scope) {
-    $scope.showStackMenu = true;
-    $scope.toggleButtonName = "_hide-stack-menu_";
+function WorkbenchCtrl($scope, StackMenuService) {
+    $scope.showStackMenu = StackMenuService.isShownStackMenu();
 
-    $scope.toggleStackMenu = function() {
-        $scope.showStackMenu = !$scope.showStackMenu;
+    $scope.$watch(function () {
+        return StackMenuService.isShownStackMenu();
+    }, function () {
+        $scope.showStackMenu = StackMenuService.isShownStackMenu();
         if ($scope.showStackMenu) {
             $('#segment1').removeClass('col-xs-12');
             $('#segment1').addClass('col-xs-10');
-            $scope.toggleButtonName = "_hide-stack-menu_";
         } else {
             $('#segment1').removeClass('col-xs-10');
             $('#segment1').addClass('col-xs-12');
-            $scope.toggleButtonName = "_show-stack-menu_";
         }
-    };
+    });
 }
 
 function StackMenuCtrl($scope, ConfigurationService, localize, AccountService, $window, flash, DocumentsService) {
@@ -64,7 +63,8 @@ function StackMenuCtrl($scope, ConfigurationService, localize, AccountService, $
 	      items: [
 //	       {name: 'OntoWiki', route:'#/home/manual-revision-and-authoring/ontowiki', url:'/home/manual-revision-and-authoring/ontowiki' },
 //	       {name: "_ontologies_", route:'#/home/manual-revision-and-authoring/ontology', url:'/home/manual-revision-and-authoring/ontology' },
-	       {name: "_thesaurus-management_", route:null, url:miniDixServiceUrl + "/?ontology=" + ontology + "&newConceptsOntology=" + ontology + "&writableOntologies=" + ontology, modaltitle:'MiniDix', requiredServices:[":MiniDixService"] },
+//	       {name: "_thesaurus-management_", route:null, url:miniDixServiceUrl + "/?ontology=" + ontology + "&newConceptsOntology=" + ontology + "&writableOntologies=" + ontology, modaltitle:'MiniDix', requiredServices:[":MiniDixService"] },
+           {name: "_thesaurus-management_", route:'#/home/manual-revision-and-authoring/thesaurus', url:'/home/manual-revision-and-authoring/thesaurus', requiredServices:[":MiniDixService"] },
 	       {name: "_edit-uploads_", route:'#/home/manual-revision-and-authoring/edit-uploads', url:'/home/manual-revision-and-authoring/edit-uploads', requiredServices:[":DocumentService"] }]
 	    },
 	    /*
