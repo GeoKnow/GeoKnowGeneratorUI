@@ -1,9 +1,6 @@
 package accounts;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 public class VirtuosoUserManager implements UserManager {
   private static final String jdbcDriver = "virtuoso.jdbc4.Driver";
@@ -29,8 +26,10 @@ public class VirtuosoUserManager implements UserManager {
   }
 
   @Override
-  public void createUser(String name, String password) throws ClassNotFoundException, SQLException {
-    executeUpdate(getConnection(), "DB.DBA.USER_CREATE('" + name + "', '" + password + "')");
+  public void createUser(String name, String password) throws Exception {
+    if (checkUserExists(name, null))
+        throw new Exception("User " + name + " already exists");
+    executeUpdate(getConnection(), "DB.DBA.USER_CREATE('" + name + "', '" + password + "')");  //NB! this function doesn't throw exception if user already exists
     // executeUpdate(getConnection(), "USER_SET_OPTION('" + name +
     // "', 'DAV_ENABLE', 1)");
   }
@@ -42,7 +41,7 @@ public class VirtuosoUserManager implements UserManager {
 
   @Override
   public void grantRole(String user, String role) throws ClassNotFoundException, SQLException {
-    executeUpdate(getConnection(), "GRANT " + role + " TO \"" + user + "\"");
+    executeUpdate(getConnection(), "GRANT " + role + " TO \"" + user + "\""); //NB! this function throws exception if the role is already granted
   }
 
   @Override
@@ -82,8 +81,22 @@ public class VirtuosoUserManager implements UserManager {
    * @throws SQLException
    */
   public void grantLOLook(String user) throws ClassNotFoundException, SQLException {
-    executeUpdate(getConnection(), "GRANT EXECUTE ON DB.DBA.L_O_LOOK TO '" + user + "'");
+    executeUpdate(getConnection(), "GRANT EXECUTE ON DB.DBA.L_O_LOOK TO \"" + user + "\"");
   }
+
+    @Override
+    public boolean checkUserExists(String username, String email) throws Exception {
+        //todo is there any simpler way to check if the user exists? some function?
+        String query = "select * from DB.DBA.SYS_USERS where U_NAME='" + username + "'";
+        Connection conn = getConnection();
+        Statement stmt = conn.createStatement();
+        try {
+            ResultSet resultSet = stmt.executeQuery(query);
+            return resultSet.next();
+        } finally {
+            stmt.close();
+        }
+    }
 
   private Connection getConnection() throws ClassNotFoundException, SQLException {
     if (connection == null || connection.isClosed()) {

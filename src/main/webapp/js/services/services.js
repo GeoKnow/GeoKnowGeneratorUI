@@ -149,3 +149,19 @@ return {
 	};
 });
 
+
+module.factory('AuthenticationErrorResponse', function() {
+    return {
+        getMessage: function(code) {
+            var errorText = '';
+            switch (code) {
+                case 1:
+                    errorText = 'User already exists';
+                    break;
+                default:
+                    errorText = code;
+            };
+            return errorText;
+        }
+    };
+});

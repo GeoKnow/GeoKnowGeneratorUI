@@ -48,11 +48,18 @@ function DatabaseCtrl($scope, ConfigurationService){
 			success = ConfigurationService.updateDatabase($scope.database);
 		
 		if(success){
-			$('#modalDatabase').modal('hide');
+			$scope.close('#modalDatabase');
 			$scope.refreshTable();
 		}
 		else{
 		// TODO: check if success then close the window or where to put error messages		
 		}
 	};
+
+    $scope.close = function(modalID) {
+    	$(modalID).modal('hide');
+        $('body').removeClass('modal-open');
+      	$('.modal-backdrop').slideUp();
+      	$('.modal-scrollable').slideUp();
+    };
 }

@@ -119,7 +119,7 @@ function GraphCtrl($scope, $http, flash, ConfigurationService, Helpers, AccountS
         }
 
         if (success) {
-            $('#modalGraph').modal('hide');
+            $scope.close('#modalGraph');
             $scope.refreshTable();
             $scope.refreshAllGraphs();
         } else {
@@ -226,12 +226,12 @@ function GraphCtrl($scope, $http, flash, ConfigurationService, Helpers, AccountS
         $scope.graphgroup.name = ":" + $scope.graphgroup.name;
         if (newGroup) {
             GraphGroupService.addGraphGroup($scope.graphgroup).then(function (result) {
-                $('#modalGroup').modal('hide');
+                $scope.close('#modalGroup');
                 $scope.refreshGraphGroups();
             });
         } else {
             GraphGroupService.updateGraphGroup($scope.graphgroup).then(function (result) {
-                $('#modalGroup').modal('hide');
+                $scope.close('#modalGroup');
                 $scope.refreshGraphGroups();
             });
         }
@@ -256,6 +256,13 @@ function GraphCtrl($scope, $http, flash, ConfigurationService, Helpers, AccountS
         } else { // is newly selected
             $scope.graphgroup.namedGraphs.push(graphName);
         }
+    };
+
+    $scope.close = function(modalID) {
+    	$(modalID).modal('hide');
+        $('body').removeClass('modal-open');
+      	$('.modal-backdrop').slideUp();
+      	$('.modal-scrollable').slideUp();
     };
 
     //watch

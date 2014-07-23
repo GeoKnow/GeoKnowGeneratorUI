@@ -41,7 +41,7 @@ public class GraphManagerServlet extends HttpServlet {
     super.init(config);
 
     try {
-      frameworkConfig = FrameworkConfiguration.getInstance(getServletContext(), false);
+      frameworkConfig = FrameworkConfiguration.getInstance(getServletContext());
       frameworkUserManager = frameworkConfig.getFrameworkUserManager();
       virtuosoUserManager = frameworkConfig.getVirtuosoUserManager();
       virtuosoGraphGroupManager = new VirtuosoGraphGroupManager(frameworkConfig
@@ -184,8 +184,7 @@ public class GraphManagerServlet extends HttpServlet {
         result = frameworkUserManager.getAllGraphsSparql();
 
       } else if ("updateForeign".equals(mode)) {
-        UserProfile userProfile = frameworkUserManager.getUserProfile(username);
-        if (!userProfile.isAdmin())
+        if (!frameworkUserManager.isAdmin(username))
           throw new ServletException("Access denied");
 
         String graph = req.getParameter("graph");
@@ -244,8 +243,7 @@ public class GraphManagerServlet extends HttpServlet {
         result = "{\"results\" : \"success\"}";
 
       } else if ("dropForeign".equals(mode)) {
-        UserProfile userProfile = frameworkUserManager.getUserProfile(username);
-        if (!userProfile.isAdmin())
+        if (!frameworkUserManager.isAdmin(username))
           throw new ServletException("Access denied");
         // drop graph
         String graph = req.getParameter("graph");

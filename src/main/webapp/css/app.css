@@ -286,3 +286,23 @@ body.modal-open {
 	max-height: 500px;
 	overflow-y: scroll;
 }
+
+/* table with fixed first column */
+.table-fixed {
+  table-layout: fixed;
+  width: auto !important;
+}
+.col-header {
+  position:absolute;
+  left:0;
+  width:250px;
+}
+.table-fixed-outer {
+    position:relative
+}
+.table-fixed-inner {
+  overflow-x:scroll;
+  overflow-y:visible;
+  width:80%;
+  margin-left:250px;
+}

@@ -23,7 +23,7 @@
       <div ng-controller="ComponentServicesCtrl" ng-init="getServices(component.uri)">
         <ul ng-repeat="service in services">
           <li>{{service.type}}</li>
-          <li>{{service.serviceUrl}}</li>
+          <li tooltip="{{service.description}}">{{service.serviceUrl}}</li>
         </ul>
       </div>
     </td>

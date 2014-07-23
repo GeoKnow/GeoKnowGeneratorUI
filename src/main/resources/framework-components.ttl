@@ -70,7 +70,7 @@
       lds:providesService :FaceteService ;
       lds:version "0.1-SNAPSHOT"^^xsd:string ;
       foaf:homepage <http://aksw.org/Projects/Facete.html> .
-:FaceteService 
+:FaceteService
       a       lds:ExplorationService ;
       lds:serviceUrl <http://cstadler.aksw.org/facete2/> .
 
@@ -90,7 +90,7 @@
       lds:providesService :TripleGeoService ;
       lds:version "1.0"^^xsd:string ;
       foaf:homepage <https://web.imis.athena-innovation.gr/redmine/projects/geoknow_public/wiki/TripleGeo> .
-:TripleGeoService 
+:TripleGeoService
       a       lds:ExtractionService ;
       lds:serviceUrl <http://localhost:8080/TripleGeo-Service> .
 
@@ -110,7 +110,7 @@
       lds:providesService :OntoWikiService ;
       lds:version "0.9.10-1"^^xsd:string ;
       foaf:homepage <http://aksw.org/Projects/OntoWiki.html> .
-:OntoWikiService 
+:OntoWikiService
       a       lds:AuthoringService ;
       lds:serviceUrl <http://192.168.2.18/ontowiki> .
 
@@ -123,3 +123,13 @@
 :MappifyService
       a       lds:ExplorationService ;
       lds:serviceUrl <http://cstadler.aksw.org/mappify2/> .
+
+:UserManager
+      a       lds:StackComponent ;
+      rdfs:label "Users Manager"^^xsd:string ;
+      lds:providesService :UserManagerService ;
+      lds:version "0.1-SNAPSHOT"^^xsd:string .
+:UserManagerService
+      a       lds:ComponentService ;
+      dcterms:description "Provides create/update functionality for accounts and roles."^^xsd:string ;
+      lds:serviceUrl <http://localhost:8080/generator/UserManagerServlet> .

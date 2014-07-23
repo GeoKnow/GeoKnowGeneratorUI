@@ -146,7 +146,7 @@ public class ImportRDF extends HttpServlet {
     RdfStoreManager rdfStoreManager = null;
     if (username != null && !username.isEmpty() && token != null && !token.isEmpty()) {
       FrameworkUserManager frameworkUserManager = FrameworkConfiguration.getInstance(
-          getServletContext(), false).getFrameworkUserManager();
+          getServletContext()).getFrameworkUserManager();
       if (frameworkUserManager.checkToken(username, token))
         rdfStoreManager = frameworkUserManager.getRdfStoreManager(username);
     }
