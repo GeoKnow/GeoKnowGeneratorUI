@@ -75,7 +75,7 @@
   .
 
 :defaultNamedGraph
-  sd:name <http://10.0.0.63:8890/DAV>;
+  sd:name <http://***REMOVED***/DAV>;
   sd:graph [
     a sd:Graph, void:Dataset;
     rdfs:label "default"^^xsd:string;
@@ -92,7 +92,7 @@
     dcterms:description "GeoKnow Generator settings and configurations"^^xsd:string;
     dcterms:modified "2013-09-12"^^xsd:date;
     dcterms:created "2013-09-12"^^xsd:date;
-    void:sparqlEndpoint <http://10.0.0.63:8890/sparql> ]
+    void:sparqlEndpoint <http://***REMOVED***/sparql> ]
   .
 
 :initialSettingsNamedGraph
@@ -104,7 +104,7 @@
     dcterms:description "Initial configuration of components in the framework"^^xsd:string;
     dcterms:modified "2013-09-12"^^xsd:date;
     dcterms:created "2013-09-12"^^xsd:date;
-    void:sparqlEndpoint <http://10.0.0.63:8890/sparql> ]
+    void:sparqlEndpoint <http://***REMOVED***/sparql> ]
   .
 
 :accountsNamedGraph
@@ -116,7 +116,7 @@
     dcterms:description "A graph to store the users accounts"^^xsd:string;
     dcterms:modified "2014-04-12"^^xsd:date;
     dcterms:created "2014-04-12"^^xsd:date;
-    void:sparqlEndpoint <http://10.0.0.63:8890/sparql> ]
+    void:sparqlEndpoint <http://***REMOVED***/sparql> ]
   .
 
 :groupsNamedGraph
@@ -128,7 +128,7 @@
     dcterms:description "A graph for groups of graphs"^^xsd:string;
     dcterms:modified "2014-04-12"^^xsd:date;
     dcterms:created "2014-04-12"^^xsd:date;
-    void:sparqlEndpoint <http://10.0.0.63:8890/sparql> ]
+    void:sparqlEndpoint <http://***REMOVED***/sparql> ]
   .
 
 :admin
