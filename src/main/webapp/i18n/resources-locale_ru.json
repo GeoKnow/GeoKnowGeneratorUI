@@ -66,6 +66,11 @@
         "value":"Система не инициализирована. Для инициализации используйте сервлет http://localhost:8080/generator/InitialSetup",
         "description":"content of system-setup page"
     },
+    {
+        "key":"_access-denied-page-content_",
+        "value":"Доступ запрещен.",
+        "description":"content of access-denied page"
+    },
 
 
     {
@@ -98,6 +103,11 @@
     {
         "key":"_new-password_",
         "value":"Новый пароль",
+        "description":"change password form field"
+    },
+    {
+        "key":"_confirm-password_",
+        "value":"Подтверждение пароля",
         "description":"change password form field"
     },
 
@@ -1075,6 +1085,11 @@
         "description":"shown in change password form below old password field when the value is not specified"
     },
     {
+        "key":"_confirm-password-missed-message_",
+        "value":"Подтвердите новый пароль",
+        "description":"shown in change password form below confirm password field when the value is not specified"
+    },
+    {
         "key":"_description-missed-message_",
         "value":"Добавьте описание",
         "description":"shown in forms below description field when the value is not specified"
@@ -1204,6 +1219,11 @@
         "key":"_delete-user-confirm-message_",
         "value":"Вы уверены, что хотите удалить пользователя",
         "description":"text in delete user confirmation dialog"
+    },
+    {
+        "key":"_clear-history-confirm-message_",
+        "value":"Вы уверены, что хотите очистить историю",
+        "description":"text in clear ontology history confirmation dialog"
     },
 
 
@@ -1655,5 +1675,63 @@
         "key":"_user-already-exists-error_",
         "value":"Пользователь уже существует",
         "description":"Error while registering new user: user already exists"
+    },
+    {
+        "key":"_incorrect-old-password-error_",
+        "value":"Неверно указан старый пароль",
+        "description":"change password error: incorrect old password"
+    },
+    {
+        "key":"_user-not-exists_",
+        "value":"Пользователь с указанным именем не найден",
+        "description":"if user was not found by name, for example, in restore password dialog"
+    },
+
+
+    {
+        "key":"_clear-history_",
+        "value":"Очистить историю",
+        "description":"clear ontology history button"
+    },
+    {
+        "key":"_clear-history-success-message_",
+        "value":"История успешно очищена",
+        "description":"clear ontology history success message"
+    },
+
+
+    {
+        "key":"_confirm-password-invalid-message_",
+        "value":"Неверное подтверждение пароля",
+        "description":"in change password form when new password and confirm password are different"
+    },
+    {
+        "key":"_basic-password-guideline_",
+        "value":"Минимум 6 символов (цифры и латинские буквы): хотя бы 1 цифра, маленькая латинская буква и большая латинская буква",
+        "description":"basic password guideline description"
+    },
+    {
+        "key":"_weak-password-message_",
+        "value":"Слишком слабый пароль",
+        "description":"too weak password message"
+    },
+
+
+    {
+        "key":"_thesaurus-manager-warning_",
+        "value":"Используйте данные функции только если знаете, что вы делаете.",
+        "description":"message shown on thesaurus management page (warning - only for advanced users)"
+    },
+
+
+    {
+        "key":"_show-stack-menu_",
+        "value":"Показать меню",
+        "description":"show stack menu button name"
+    },
+    {
+        "key":"_hide-stack-menu_",
+        "value":"Скрыть меню",
+        "description":"hide stack menu button name"
     }
 ]

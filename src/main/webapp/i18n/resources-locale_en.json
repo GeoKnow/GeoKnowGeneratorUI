@@ -66,6 +66,11 @@
         "value":"System is not set up. Call setup servlet first: http://localhost:8080/generator/InitialSetup.",
         "description":"content of system-setup page"
     },
+    {
+        "key":"_access-denied-page-content_",
+        "value":"Access denied.",
+        "description":"content of access-denied page"
+    },
 
 
     {
@@ -98,6 +103,11 @@
     {
         "key":"_new-password_",
         "value":"New password",
+        "description":"change password form field"
+    },
+    {
+        "key":"_confirm-password_",
+        "value":"Confirm password",
         "description":"change password form field"
     },
 
@@ -1075,6 +1085,11 @@
         "description":"shown in change password form below old password field when the value is not specified"
     },
     {
+        "key":"_confirm-password-missed-message_",
+        "value":"Confirm password",
+        "description":"shown in change password form below confirm password field when the value is not specified"
+    },
+    {
         "key":"_description-missed-message_",
         "value":"Give a description",
         "description":"shown in forms below description field when the value is not specified"
@@ -1204,6 +1219,11 @@
         "key":"_delete-user-confirm-message_",
         "value":"Are you sure you want to delete user",
         "description":"text in delete user confirmation dialog"
+    },
+    {
+        "key":"_clear-history-confirm-message_",
+        "value":"Are you sure you want to clear history",
+        "description":"text in clear ontology history confirmation dialog"
     },
 
 
@@ -1655,5 +1675,63 @@
         "key":"_user-already-exists-error_",
         "value":"User already exists",
         "description":"Error while registering new user: user already exists"
+    },
+    {
+        "key":"_incorrect-old-password-error_",
+        "value":"Incorrect old password",
+        "description":"change password error: incorrect old password"
+    },
+    {
+        "key":"_user-not-exists_",
+        "value":"User doesn't exists",
+        "description":"if user was not found by name, for example, in restore password dialog"
+    },
+
+
+    {
+        "key":"_clear-history_",
+        "value":"Clear history",
+        "description":"clear ontology history button"
+    },
+    {
+        "key":"_clear-history-success-message_",
+        "value":"History was cleared successfully",
+        "description":"clear ontology history success message"
+    },
+
+
+    {
+        "key":"_confirm-password-invalid-message_",
+        "value":"Invalid password confirmation",
+        "description":"in change password form when new password and confirm password are different"
+    },
+    {
+        "key":"_basic-password-guideline_",
+        "value":"6 symbols minimum (digits and latin letters): at least 1 digit, 1 lower case latin letter and 1 upper case latin letter",
+        "description":"basic password guideline description"
+    },
+    {
+        "key":"_weak-password-message_",
+        "value":"Password is too weak",
+        "description":"too weak password message"
+    },
+
+
+    {
+        "key":"_thesaurus-manager-warning_",
+        "value":"Do only touch the functionality if you are knowing what you are doing.",
+        "description":"message shown on thesaurus management page (warning - only for advanced users)"
+    },
+
+
+    {
+        "key":"_show-stack-menu_",
+        "value":"Show Menu",
+        "description":"show stack menu button name"
+    },
+    {
+        "key":"_hide-stack-menu_",
+        "value":"Hide Menu",
+        "description":"hide stack menu button name"
     }
 ]

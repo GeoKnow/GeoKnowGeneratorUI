@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.Locale;
 
 import javax.mail.MessagingException;
 import javax.servlet.ServletConfig;
@@ -18,6 +19,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 
 import util.EmailSender;
 import util.HttpUtils;
+import util.Localizer;
 import util.RandomStringGenerator;
 import accounts.FrameworkUserManager;
 import accounts.UserProfileExtended;
@@ -110,7 +112,7 @@ public class UserManagerServlet extends HttpServlet {
         String role = rootNode.path("profile").path("role")==null ? null : rootNode.path("profile").path("role").getTextValue();
 
       // create user
-      String password = new RandomStringGenerator().generateSimple(8);
+      String password = new RandomStringGenerator().generateBasic(6);
       try {
         frameworkUserManager.createUser(username, password, email);
       } catch (Exception e) {
@@ -137,10 +139,14 @@ public class UserManagerServlet extends HttpServlet {
 
       EmailSender emailSender = null;
       try {
-        emailSender = FrameworkConfiguration.getInstance(getServletContext())
-            .getDefaultEmailSender();
-        emailSender.send(email, "GeoKnow registration", "Your login: " + username + ", password: "
-            + password);
+        String language = req.getParameter("lang");
+        if (language==null)
+            language = "en";
+        Locale locale = new Locale(language);
+        FrameworkConfiguration frameworkConfiguration = FrameworkConfiguration.getInstance(getServletContext());
+        Localizer localizer = frameworkConfiguration.getLocalizer(locale);
+        emailSender = frameworkConfiguration.getDefaultEmailSender();
+        emailSender.send(email, localizer.localize("email.subject.registration"), localizer.localize("login") + ": " + username + "\n" + localizer.localize("password") + ": " + password);
       } catch (MessagingException e) {
         throw new ServletException("Failed to send email to " + email + " using " + emailSender, e);
       } catch (Exception e) {
