@@ -160,7 +160,7 @@
 
 :OntologyRouteRestriction
       a     gkg:RouteRestriction;
-      gkg:partialUrl "/settings/ontology"^^xsd:string;
+      gkg:partialUrl "/home/manual-revision-and-authoring/ontology"^^xsd:string;
       gkg:requiredService :D2RQService;
       gkg:requiredService :MiniDixService .
 
