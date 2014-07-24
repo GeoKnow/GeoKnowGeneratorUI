@@ -103,6 +103,29 @@ app.directive('modalFocus', function ($timeout) {
     };
 });
 
+app.directive("confirmField", function() {
+    return {
+        require: "ngModel",
+        link: function(scope, elem, attrs, ctrl) {
+            var otherInput = elem.inheritedData("$formController")[attrs.confirmField];
+
+            ctrl.$parsers.unshift(function(value) {
+                if(value === otherInput.$viewValue) {
+                    ctrl.$setValidity("confirmField", true);
+                    return value;
+                }
+                ctrl.$setValidity("confirmField", false);
+            });
+
+            otherInput.$parsers.unshift(function(value) {
+                ctrl.$setValidity("confirmField", value === ctrl.$viewValue);
+                return value;
+            });
+        }
+    };
+});
+
+
 /****************************************************************************************************
 *
 * GEOLIFT Directives
@@ -181,6 +204,7 @@ app.directive('regexValidate', function() {
     expressions['uri']            =  /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/;
     expressions['identifier']     =  /^[a-zA-Z0-9_]*$/ ;
     expressions['sparqlEndpoint'] =  /^https?:\/\/.+\/sparql\/?$/; // /^https?:\/\/[^\/]+\/sparql\/?$/
+    expressions['basicPassword']  = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}$/;
     return {
         restrict: 'A',
         require: 'ngModel',

@@ -133,3 +133,18 @@
       a       lds:ComponentService ;
       dcterms:description "Provides create/update functionality for accounts and roles."^^xsd:string ;
       lds:serviceUrl <http://localhost:8080/generator/UserManagerServlet> .
+      
+########### ROUTES RESTRICTIONS DESCRIPTION #######################################################
+# Following triples describe required services for routes. It is used in conditional routing.
+# #######################################################################################
+
+:OntologyRouteRestriction
+      a     gkg:RouteRestriction;
+      gkg:partialUrl "/home/manual-revision-and-authoring/ontology"^^xsd:string;
+      gkg:requiredService :D2RQService;
+      gkg:requiredService :MiniDixService .
+
+:RolesRouteRestriction
+      a     gkg:RouteRestriction;
+      gkg:partialUrl "/settings/roles"^^xsd:string;
+      gkg:requiredService :UserManagerService .
