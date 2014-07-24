@@ -159,10 +159,10 @@ module.factory('AuthenticationErrorResponse', function() {
                     errorText = 'User already exists';
                     break;
                 case 2:
-                    errorText = localize.getLocalizedString("_incorrect-old-password-error_");
+                    errorText = "Incorrect old password";
                     break;
                 case 3:
-                    errorText = localize.getLocalizedString("_user-not-exists_");
+                    errorText = "User doesn't exist";
                     break;
                 default:
                     errorText = code;

@@ -50,14 +50,5 @@ public class TLSEmailSender implements EmailSender {
 		message.setText(msgText);
 
 		Transport.send(message);
-	}
-
-    @Override
-    public String toString() {
-        return "TLSEmailSender{" +
-                "smtpHost='" + smtpHost + '\'' +
-                ", smtpPort='" + smtpPort + '\'' +
-                ", fromEmail='" + fromEmail + '\'' +
-                '}';
     }
 }
