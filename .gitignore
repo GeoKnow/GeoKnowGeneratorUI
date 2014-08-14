@@ -1,6 +1,7 @@
 #Framework configuration files
 /src/main/webapp/WEB-INF/web.xml
 /src/main/resources/framework-configuration.ttl
+/src/main/resources/framework-components-local.ttl
 
 #Mac
 .DS_Store
@@ -18,3 +19,4 @@
 /src/main/webapp/VAADIN/gwt-unitCache
 /src/main/webapp/VAADIN/widgetsets
 /target
+/bin

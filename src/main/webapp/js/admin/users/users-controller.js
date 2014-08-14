@@ -1,6 +1,6 @@
 'use strict';
 
-function UsersCtrl($scope, $http, flash, Helpers, AccountService) {
+function UsersCtrl($scope, $http, flash, Helpers, AccountService, localize) {
 	var emptyUser = { profile: { accountURI:"", username:"", email:""}
 	                    , ownGraphs: []
 	                    , readableGraphs: []
@@ -87,7 +87,8 @@ function UsersCtrl($scope, $http, flash, Helpers, AccountService) {
 	    var parameters = {
 	        mode: newUser ? "create" : "update",
 	        user: JSON.stringify($scope.user),
-	        curuser: AccountService.getUsername()
+	        curuser: AccountService.getUsername(),
+	        lang: localize.language
         };
         $http({
             url: "UserManagerServlet",

@@ -2,7 +2,7 @@
 
 var module = angular.module('app.login-service', []);
 
-module.factory("LoginService", function ($http, $location, $cookieStore, AccountService, ConfigurationService, Base64, flash, ServerErrorResponse) {
+module.factory("LoginService", function ($http, $location, $cookieStore, AccountService, ConfigurationService, Base64, flash, ServerErrorResponse, localize) {
 
     var login = function (username, password) {
 
@@ -23,7 +23,16 @@ module.factory("LoginService", function ($http, $location, $cookieStore, Account
             AccountService.setUsername(response.data.username);
             AccountService.setAccountURI(response.data.accountURI.replace(ConfigurationService.getUriBase(), ':'));
             AccountService.setEmail(response.data.email);
-            AccountService.setAdmin(response.data.admin);
+            var roleServices = [];
+            for (var ind in response.data.role.services) {
+                roleServices.push(response.data.role.services[ind].replace(ConfigurationService.getUriBase(), ":"));
+            }
+            var role = {
+                uri: response.data.role.uri.replace(ConfigurationService.getFrameworkOntologyNS(), "gkg:"),
+                name: response.data.role.name,
+                services: roleServices
+            };
+            AccountService.setRole(role);
             ConfigurationService.setSettingsGraph(response.data.settingsGraph);
 
             var encodedUser = Base64.encode(username);
@@ -72,7 +81,8 @@ module.factory("LoginService", function ($http, $location, $cookieStore, Account
         var postData = {
             username: username,
             email: email,
-            mode: "create"
+            mode: "create",
+            lang: localize.language
         };
         return $http({
             url: "AuthenticationServlet",
@@ -87,7 +97,8 @@ module.factory("LoginService", function ($http, $location, $cookieStore, Account
             username: AccountService.getUsername(),
             oldPassword: oldPassword,
             newPassword: newPassword,
-            mode: "changePassword"
+            mode: "changePassword",
+            lang: localize.language
         };
         return $http({
             url: "AuthenticationServlet",
@@ -100,7 +111,8 @@ module.factory("LoginService", function ($http, $location, $cookieStore, Account
     var restorePassword = function (username) {
         var postData = {
             username: username,
-            mode: "restorePassword"
+            mode: "restorePassword",
+            lang: localize.language
         };
         return $http({
             url: "AuthenticationServlet",

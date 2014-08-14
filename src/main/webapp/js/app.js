@@ -10,6 +10,7 @@ var app = angular.module('app', ['ngRoute',
                                  'app.login-service',
                                  'app.ontology-service',
                                  'app.d2rq-service',
+                                 'app.users-service',
                                  'app.directives', 
                                  'app.configuration',
                                  'ui.bootstrap',
@@ -33,6 +34,8 @@ app.config(function($routeSegmentProvider, $routeProvider)
 
         .when('/home', 'default')
         .when('/account','account')
+        .when('/system-setup', 'system-setup')
+        .when('/access-denied', 'access-denied')
         // .when('/account/preferences', 'account.preferences')
         .when('/settings', 'settings')
         .when('/settings/data-sources', 'settings.data-sources')
@@ -40,6 +43,7 @@ app.config(function($routeSegmentProvider, $routeProvider)
         .when('/settings/namespaces', 'settings.namespaces')
         .when('/settings/components', 'settings.components')
         .when('/settings/users', 'settings.users')
+        .when('/settings/roles', 'settings.roles')
         .when('/home/extraction-and-loading/import-rdf', 'default.import-rdf')
         .when('/home/extraction-and-loading/sparqlify', 'default.sparqlify')
         .when('/home/extraction-and-loading/triplegeo', 'default.triplegeo')
@@ -89,6 +93,9 @@ app.config(function($routeSegmentProvider, $routeProvider)
             resolve: {
                       settings: function (Config) {
                         return Config.read();
+                      },
+                      userInfo : function(UsersService) {
+                        return UsersService.readUserNamesEmails();
                       }
                 }
             })
@@ -162,6 +169,9 @@ app.config(function($routeSegmentProvider, $routeProvider)
             resolve: {
               settings: function (Config) {
                 return Config.read();
+              },
+              userInfo : function(UsersService) {
+                return UsersService.readUserNamesEmails();
               }
             }
 		})
@@ -175,7 +185,21 @@ app.config(function($routeSegmentProvider, $routeProvider)
                 .segment('components', {
                     templateUrl: 'js/settings/components/components.html'})
                 .segment('users', {
-                    templateUrl: 'js/admin/users.html'})
+                    templateUrl: 'js/admin/users/users.html'})
+                .segment('roles', {
+                    templateUrl: 'js/admin/roles.html',
+                    resolve: {
+                            users: function(UsersService) {
+                                return UsersService.readUsers();
+                            },
+                            roles: function(UsersService) {
+                                return UsersService.readRoles();
+                            },
+                            settings: function (Config) {
+                                return Config.read();
+                            }
+                        }
+                    })
             .up()
            
         .segment('account', {
@@ -184,6 +208,12 @@ app.config(function($routeSegmentProvider, $routeProvider)
                 .segment('preferences', {
                     templateUrl: 'js/account/preferences/preferences.html' })
             .up()
+        .segment('system-setup', {
+            templateUrl: 'system-setup.html'
+        })
+        .segment('access-denied', {
+            templateUrl: 'access-denied.html'
+        })
 
         .segment('about', {
             templateUrl:'about.html' })
@@ -212,5 +242,37 @@ app.config(function($routeSegmentProvider, $routeProvider)
     localizeProvider.languages = ['en', 'ru'];
     localizeProvider.defaultLanguage = 'en';
     localizeProvider.ext = 'json';
+})
+.run(function($rootScope, $location, $http, AccountService, ConfigurationService) {
+    //redirect to system-setup page if system is not set up
+    //redirect to access-denied page if user has no access to page
+    $rootScope.$on("$routeChangeStart", function(event, next, current) {
+        if ($rootScope.isSystemSetUp==undefined) {
+            $http.get("InitialSetup?check=true").then(function(response) {
+                $rootScope.isSystemSetUp = response.data.setup=="true";
+                if (!$rootScope.isSystemSetUp) {
+                    $location.path('/system-setup');
+                }
+            });
+        } else if (!$rootScope.isSystemSetUp) {
+            $location.path('/system-setup');
+        } else if (next.$$route) { //check route permissions
+            var requiredServices = ConfigurationService.getRequiredServices(next.$$route.originalPath);
+            if (requiredServices==null) return;
+            if (AccountService.isAdmin()) return;
+            var role = AccountService.getRole();
+            if (role==null) {
+                $location.path("/access-denied");
+            } else {
+                var allowedServices = role.services;
+                for (var ind in requiredServices) {
+                    if (allowedServices.indexOf(requiredServices[ind]==-1)) {
+                        $location.path("/access-denied");
+                        return;
+                    }
+                }
+            }
+        }
+    });
 });
 

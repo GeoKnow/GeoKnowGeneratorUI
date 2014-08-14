@@ -8,7 +8,7 @@ function AccountMenuCtrl($scope) {
     { name: "_user-pref_",   route:'#/account/preferences', url:'/account/preferences' }];
 }
 
-function StackMenuCtrl($scope) {
+function StackMenuCtrl($scope, AccountService) {
 	  $scope.oneAtATime = true;
 	  // these data can be replaced later with the configuration
 	  $scope.groups = [
@@ -16,39 +16,60 @@ function StackMenuCtrl($scope) {
 	      title: "_extraction-loading_",
 	      id:"extraction-loading",
 	      items: [
-	        {name: '_import-rdf_', route:'#/home/extraction-and-loading/import-rdf',  url:'/home/extraction-and-loading/import-rdf' },
-	        {name: 'Sparqlify Extraction', route:'#/home/extraction-and-loading/sparqlify', url:'/home/extraction-and-loading/sparqlify' },
-	        {name: 'TripleGeo Extraction', route:'#/home/extraction-and-loading/triplegeo', url:'/home/extraction-and-loading/triplegeo' },
-	        {name: 'D2RQ Extraction', route:'#/home/extraction-and-loading/d2rq', url:'/home/extraction-and-loading/d2rq' }]
+	        {name: '_import-rdf_', route:'#/home/extraction-and-loading/import-rdf',  url:'/home/extraction-and-loading/import-rdf', requiredServices:[] },
+	        {name: 'Sparqlify Extraction', route:'#/home/extraction-and-loading/sparqlify', url:'/home/extraction-and-loading/sparqlify', requiredServices:[] },
+	        {name: 'TripleGeo Extraction', route:'#/home/extraction-and-loading/triplegeo', url:'/home/extraction-and-loading/triplegeo', requiredServices:[] },
+	        {name: 'D2RQ Extraction', route:'#/home/extraction-and-loading/d2rq', url:'/home/extraction-and-loading/d2rq', requiredServices:[] }]
 	    },
 	    {
 		      title: "_search-querying-exploration_",
 		      id:"search-querying-and-exploration",
 		      items: [
-		       {name: 'Virtuoso', route:'#/home/search-querying-and-exploration/virtuoso', url:'/home/search-querying-and-exploration/virtuoso' },
-		       {name: 'Facete', route:'#/home/search-querying-and-exploration/facete', url:'/home/search-querying-and-exploration/facete' },
-		       {name: 'Mappify', route:'#/home/search-querying-and-exploration/mappify', url:'/home/search-querying-and-exploration/mappify' }]
+		       {name: 'Virtuoso', route:'#/home/search-querying-and-exploration/virtuoso', url:'/home/search-querying-and-exploration/virtuoso', requiredServices:[] },
+		       {name: 'Facete', route:'#/home/search-querying-and-exploration/facete', url:'/home/search-querying-and-exploration/facete', requiredServices:[] },
+		       {name: 'Mappify', route:'#/home/search-querying-and-exploration/mappify', url:'/home/search-querying-and-exploration/mappify', requiredServices:[] }]
 		    },
 	    {
 	      title: "_man-revision-authoring_",
 	      id:"manual-revision-and-authoring",
 	      items: [
-	       {name: 'OntoWiki', route:'#/home/manual-revision-and-authoring/ontowiki', url:'/home/manual-revision-and-authoring/ontowiki' },
-	       {name: "_ontologies_", route:'#/home/manual-revision-and-authoring/ontology', url:'/home/manual-revision-and-authoring/ontology' }]
+	       {name: 'OntoWiki', route:'#/home/manual-revision-and-authoring/ontowiki', url:'/home/manual-revision-and-authoring/ontowiki', requiredServices:[] },
+	       {name: "_ontologies_", route:'#/home/manual-revision-and-authoring/ontology', url:'/home/manual-revision-and-authoring/ontology', requiredServices:[] }]
 	    },
 	    {
 		    title: "_linking-fusing_",
 		    id:"linking-and-fusing",
 		    items: [
-		     {name: 'LIMES', route:'#/home/linking-and-fusing/limes', url:'/home/linking-and-fusing/limes' }]
+		     {name: 'LIMES', route:'#/home/linking-and-fusing/limes', url:'/home/linking-and-fusing/limes', requiredServices:[] }]
 		  },
 		{
 			 title: "_classification-enrichment_",
 			 id:"classification-and-enrichment",
 			 items: [
-			   {name: 'GeoLift', route:'#/home/classification-and-enrichment/geolift', url:'/home/classification-and-enrichment/geolift' }]
+			   {name: 'GeoLift', route:'#/home/classification-and-enrichment/geolift', url:'/home/classification-and-enrichment/geolift', requiredServices:[] }]
 		  }
 	  ];
+
+      $scope.showItem = function(item) {
+        if (AccountService.isAdmin()) return true; //show all items to admin
+        var role = AccountService.getRole();
+        if (role==null) return false; //hide all
+        var allowedServices = role.services;
+        for (var ind in item.requiredServices) {
+            if (allowedServices.indexOf(item.requiredServices[ind]) == -1) //hide item if one of required services is not allowed for current user
+                return false;
+        }
+        return true;
+      };
+
+      $scope.showGroup = function(group) {
+        if (AccountService.isAdmin()) return true;
+        //hide group if all items are hidden
+        for (var ind in group.items) {
+            if ($scope.showItem(group.items[ind])) return true;
+        }
+        return false;
+      };
 
 	}
 

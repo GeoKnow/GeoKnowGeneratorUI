@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Locale;
 import java.util.UUID;
 
 import javax.mail.MessagingException;
@@ -19,11 +20,23 @@ import org.codehaus.jackson.map.ObjectMapper;
 
 import util.EmailSender;
 import util.HttpUtils;
+import util.Localizer;
 import util.RandomStringGenerator;
 import accounts.FrameworkUserManager;
 import accounts.UserProfile;
 import authentication.FrameworkConfiguration;
 
+/**
+ * Servlet provides some authentication functions: login, logout, register new user, restore password, change password.
+ *
+ * For some types of errors it sends error code and description in response.
+ * In these cases response has json format: {code : ERROR_CODE, message : ERROR_DESCRIPTION}.
+ *
+ * Error codes:
+ * 1 - user already exists (during user registration, user with the same name or e-mail already exists)
+ * 2 - incorrect old password (change password)
+ * 3 - user doesn't exists (in restore password)
+ */
 public class AuthenticationServlet extends HttpServlet {
   /**
    * 
@@ -35,7 +48,7 @@ public class AuthenticationServlet extends HttpServlet {
   public void init(ServletConfig config) throws ServletException {
     super.init(config);
     try {
-      frameworkUserManager = FrameworkConfiguration.getInstance(getServletContext(), false)
+      frameworkUserManager = FrameworkConfiguration.getInstance(getServletContext())
           .getFrameworkUserManager();
     } catch (FileNotFoundException e) {
       throw new ServletException(e);
@@ -55,6 +68,11 @@ public class AuthenticationServlet extends HttpServlet {
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
     String mode = request.getParameter("mode");
+
+      String language = request.getParameter("lang");
+      if (language==null)
+          language = "en";
+      Locale locale = new Locale(language);
 
     PrintWriter out = response.getWriter();
 
@@ -121,16 +139,28 @@ public class AuthenticationServlet extends HttpServlet {
 
       String username = request.getParameter("username");
       String email = request.getParameter("email");
+      //check if user already exists
+      boolean userExists = false;
+      try {
+          userExists = frameworkUserManager.checkUserExists(username, email);
+      } catch (Exception e) {
+          e.printStackTrace();
+      }
+      if (userExists) {
+          response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+          out.print("{\"code\" : \"1\", \"message\" : \"User already exists\"}");
+          return;
+      }
       // create user
-      String password = new RandomStringGenerator().generateSimple(8);
+      String password = new RandomStringGenerator().generateBasic(6);
       try {
         frameworkUserManager.createUser(username, password, email);
 
-        EmailSender emailSender = FrameworkConfiguration.getInstance(getServletContext(), false)
-            .getDefaultEmailSender();
+        FrameworkConfiguration frameworkConfiguration = FrameworkConfiguration.getInstance(getServletContext());
+        Localizer localizer = frameworkConfiguration.getLocalizer(locale);
+        EmailSender emailSender = frameworkConfiguration.getDefaultEmailSender();
 
-        emailSender.send(email, "GeoKnow registration", "Your login: " + username + ", password: "
-            + password);
+        emailSender.send(email, localizer.localize("email.subject.registration"), localizer.localize("login") + ": " + username + "\n" + localizer.localize("password") + ": " + password);
         String responseStr = "{\"message\" : \"Your password will be sent to your e-mail address "
             + email + " \"}";
         response.getWriter().print(responseStr);
@@ -153,15 +183,34 @@ public class AuthenticationServlet extends HttpServlet {
       boolean valid;
       try {
         valid = frameworkUserManager.checkToken(username, token);
-        if (!valid)
-          response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "invalid token " + token
-              + " for user " + username);
-        else {
+        if (!valid) {
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "invalid token " + token
+                    + " for user " + username);
+        } else {
+            //check old password
+            boolean isCorrect = frameworkUserManager.checkPassword(username, oldPassword);
+            if (!isCorrect) {
+                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                out.print("{\"code\" : \"2\", \"message\" : \"Incorrect old password\"}");
+                return;
+            }
+
           // change password
           frameworkUserManager.changePassword(username, oldPassword, newPassword);
+
+            // send new password to user
+            UserProfile userProfile = frameworkUserManager.getUserProfile(username);
+            if (userProfile == null) {
+                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "User profile " + username + " not found");
+                return;
+            }
+            FrameworkConfiguration frameworkConfiguration = FrameworkConfiguration.getInstance(getServletContext());
+            Localizer localizer = frameworkConfiguration.getLocalizer(locale);
+            EmailSender emailSender = frameworkConfiguration.getDefaultEmailSender();
+            emailSender.send(userProfile.getEmail(), localizer.localize("email.subject.passwordChanged"), localizer.localize("email.message.passwordChanged") + " " + username);
+
           String responseStr = "{\"message\" : \"Your password was changed\"}";
           response.getWriter().print(responseStr);
-
         }
       } catch (Exception e) {
         e.printStackTrace();
@@ -176,18 +225,20 @@ public class AuthenticationServlet extends HttpServlet {
       try {
         userProfile = frameworkUserManager.getUserProfile(username);
         if (userProfile == null) {
-          response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "User profile "
-              + username + " not found");
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            out.print("{\"code\" : \"3\", \"message\" : \"User doesn't exists\"}");
+            return;
         }
         // change password
-        String password = new RandomStringGenerator().generateSimple(8);
+        String password = new RandomStringGenerator().generateBasic(6);
         frameworkUserManager.setPassword(username, password);
 
         // send new password to user
-        EmailSender emailSender = FrameworkConfiguration.getInstance(getServletContext(), false)
-            .getDefaultEmailSender();
-        emailSender.send(userProfile.getEmail(), "GeoKnow restore password", "Your login: "
-            + username + ", password: " + password);
+        FrameworkConfiguration frameworkConfiguration = FrameworkConfiguration.getInstance(getServletContext());
+        Localizer localizer = frameworkConfiguration.getLocalizer(locale);
+        EmailSender emailSender = frameworkConfiguration.getDefaultEmailSender();
+        emailSender.send(userProfile.getEmail(), localizer.localize("email.subject.passwordRestored"), localizer.localize("login") + ": "
+            + username + "\n" + localizer.localize("password") + ": " + password);
         String responseStr = "{\"message\" : \"New password will be sent to your e-mail address "
             + userProfile.getEmail() + " \"}";
         response.getWriter().print(responseStr);

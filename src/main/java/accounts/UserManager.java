@@ -8,4 +8,5 @@ public interface UserManager {
     public void setRdfGraphPermissions(String user, String graph, int permissions) throws Exception;
     public void deleteRdfGraphPermissions(String user, String graph) throws Exception;
     public void setDefaultGraphPermissions(String graph, int permissions) throws Exception;
+    public boolean checkUserExists(String username, String email) throws Exception;
 }

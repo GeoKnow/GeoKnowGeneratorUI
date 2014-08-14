@@ -1,10 +1,4 @@
 <div ng-controller="OntologyCtrl">
-    <!-- Subscribe to all flash messages. -->
-    <div flash-alert active-class="in alert" class="fade" duration="0">
-        <button type="button" class="close" ng-click="hide()">&times;</button>
-        <span class="alert-message">{{flash.message}}</span>
-    </div>
-
 <div class="row below">
     <h3 class="green bold">
         <span class="btn-group">
@@ -38,6 +32,7 @@
     </table>
     
     <button type="button" class="btn btn-primary btn-large" data-toggle="modal" data-target="#modalOntology" ng-click="new();" ng-disabled="!isLoggedIn()" data-i18n="_add-ontology_"></button>
+    <button type="button" class="btn btn-primary btn-large" ng-confirm-click="clearHistory();" ng-confirm-message="{{'_clear-history-confirm-message_' | i18n}}?" ng-disabled="!isLoggedIn()" data-i18n="_clear-history_"></button>
 
 <div class="modal fade" id="modalOntology">
     <div class="modal-dialog">

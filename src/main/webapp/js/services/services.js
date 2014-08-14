@@ -149,3 +149,25 @@ return {
 	};
 });
 
+
+module.factory('AuthenticationErrorResponse', function(localize) {
+    return {
+        getMessage: function(code) {
+            var errorText = '';
+            switch (code) {
+                case 1:
+                    errorText = localize.getLocalizedString("_user-already-exists-error_");
+                    break;
+                case 2:
+                    errorText = localize.getLocalizedString("_incorrect-old-password-error_");
+                    break;
+                case 3:
+                    errorText = localize.getLocalizedString("_user-not-exists_");
+                    break;
+                default:
+                    errorText = code;
+            };
+            return errorText;
+        }
+    };
+});

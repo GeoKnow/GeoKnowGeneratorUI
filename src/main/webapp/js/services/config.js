@@ -46,6 +46,8 @@ angular.module("app.configuration", [])
     var SETTINGS_GRAPH_URI          = DEFAULT_SETTINGS_GRAPH_URI;
     // Create a graph for groups of users
     var GROUPS_GRAPH_URI            = "http://ldiw.ontos.com/resource/groupsGraph";
+    var FRAMEWORK_ONTOLOGY_NS = "http://ldiw.ontos.com/ontology/";
+    var ACCOUNTS_GRAPH = "http://ldiw.ontos.com/resource/accountsGraph";
     
 
     var namespaces =
@@ -92,7 +94,7 @@ angular.module("app.configuration", [])
             }
         })
         .error(function(data, status){
-            var message = ServerErrorResponse.getMessage(status) + "at " + AUTH_ENDPOINT ;
+            var message = ServerErrorResponse.getMessage(status) + " at " + AUTH_ENDPOINT ;
             flash.error = message;
             deferred.reject(message);
         });
@@ -102,7 +104,7 @@ angular.module("app.configuration", [])
 
     // Replaces the long name space by the prefix
     var ns = function(v){
-        var value = v.value || v;
+        var value = v.value==undefined ? v : v.value;
 
         if (!v.type || v.type == "uri")
         {
@@ -366,6 +368,14 @@ angular.module("app.configuration", [])
         return GROUPS_GRAPH_URI;
     };
 
+    var getFrameworkOntologyNS = function() {
+        return FRAMEWORK_ONTOLOGY_NS;
+    };
+
+    var getAccountsGraph = function() {
+        return ACCOUNTS_GRAPH;
+    };
+
     return {
         getNS               : getNS,
         getGraph            : getGraph,
@@ -381,6 +391,8 @@ angular.module("app.configuration", [])
         // setGraphPermissions : setGraphPermissions,
         parseSparqlResults  : parseSparqlResults,
         getGroupsGraph      : getGroupsGraph,
-        getFrameworkUri     : getFrameworkUri
+        getFrameworkUri     : getFrameworkUri,
+        getFrameworkOntologyNS: getFrameworkOntologyNS,
+        getAccountsGraph    : getAccountsGraph
     };
 });

@@ -1,7 +1,10 @@
 package authentication;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
 
 import javax.servlet.ServletContext;
 
@@ -9,6 +12,7 @@ import org.apache.jena.riot.RiotException;
 
 import rdf.SecureRdfStoreManagerImpl;
 import util.EmailSender;
+import util.Localizer;
 import util.SSLEmailSender;
 import util.TLSEmailSender;
 import accounts.FrameworkUserManager;
@@ -31,7 +35,6 @@ public class FrameworkConfiguration {
   private String emailUsername = "";
   private String emailPassword = "";
 
-  private String accountsOntologyNS = "";
   private String resourceNS = "";
   private String frameworkOntologyNS = "";
 
@@ -52,34 +55,26 @@ public class FrameworkConfiguration {
 
   private static FrameworkConfiguration instance;
 
+    private HashMap<Locale, Localizer> localizers = new HashMap<Locale, Localizer>();
+
   /**
    * 
    * @param context
-   * @param reset
    * @return
    * @throws Exception
    */
-  // TODO: replace System.out.println with a logging implementation
-  public static synchronized FrameworkConfiguration getInstance(ServletContext context,
-      boolean reset) throws Exception {
+  public static synchronized FrameworkConfiguration getInstance(ServletContext context) throws Exception {
 
     if (instance == null) {
-
-      System.out.println("[INFO] System Initialization ");
 
       instance = new FrameworkConfiguration();
 
       String configurationFile = "framework-configuration.ttl";
-      String datasetsFile = "framework-datasets.ttl";
-      String componentsFile = "framework-components.ttl";
-      String ontologyFile = "framework-ontology.ttl";
-      String accountsOntologyFile = "framework-accounts-ontology.ttl";
 
       // initialize parameters from context
       instance.frameworkUri = context.getInitParameter("framework-uri");
 
       instance.setFrameworkOntologyNS(context.getInitParameter("framework-ontology-ns"));
-      instance.setAccountsOntologyNamespace(context.getInitParameter("accounts-ns"));
       instance.setResourceNamespace(context.getInitParameter("framework-ns"));
 
       instance.setSmtpHost(context.getInitParameter("smtp-host"));
@@ -174,145 +169,6 @@ public class FrameworkConfiguration {
           instance.setGroupsGraph(soln.get("name").toString());
       }
       qexec.close();
-
-      // creates the system user exist for the application in virtuoso
-      VirtuosoUserManager userManager = instance.getVirtuosoUserManager();
-
-      // if the flag to reinstall is true
-      if (reset) {
-        try {
-          userManager.dropUser(instance.getAuthSparqlUser());
-        } catch (Exception e) {
-          // catches the error in case the user do not exist
-        }
-        // TODO: we may need to delete all users before to clean the store?
-      }
-
-      try {
-
-        userManager.createUser(instance.getAuthSparqlUser(), instance.getAuthSparqlPassword());
-        userManager.setDefaultRdfPermissions(instance.getAuthSparqlUser(), 3);
-        userManager.grantRole(instance.getAuthSparqlUser(), "SPARQL_UPDATE");
-        userManager.grantLOLook(instance.getAuthSparqlUser());
-        // TODO: check if we still need to grant these to SPARQL user
-        userManager.grantRole("SPARQL", "SPARQL_UPDATE");
-        userManager.grantLOLook("SPARQL");
-
-        System.out.println("[INFO] System User was created ");
-      } catch (Exception e) {
-        if ("virtuoso.jdbc4.VirtuosoException".equals(e.getClass().getCanonicalName()))
-          // TODO: replace with a logging implementation
-          System.out.println("Seems that the user is already there");
-        else
-          throw e;
-      }
-
-      SecureRdfStoreManagerImpl frameworkRdfStoreManager = new SecureRdfStoreManagerImpl(instance
-          .getAuthSparqlEndpoint(), instance.getAuthSparqlUser(), instance.getAuthSparqlPassword());
-      // delete all graphs if reinstall is requested
-      if (reset) {
-        try {
-          frameworkRdfStoreManager.dropGraph(instance.getSettingsGraph());
-          frameworkRdfStoreManager.dropGraph(instance.getAccountsGraph());
-          frameworkRdfStoreManager.dropGraph(instance.getGroupsGraph());
-          frameworkRdfStoreManager.dropGraph(instance.getInitialSettingsGraph());
-        } catch (Exception e) {
-        }
-      }
-
-      // check if settingsGraph exist do not overwrite
-      String queryString = " ASK { GRAPH <" + instance.getSettingsGraph() + "> {?s a ?o} }";
-      String response = frameworkRdfStoreManager.execute(queryString, "text/plain");
-      if (response.toLowerCase().indexOf("true") < 0) {
-
-        // TODO: replace with a logging implementation
-        System.out.println("[INFO] Default Graphs creation/configuration ");
-
-        // Read configuration files
-        Model datasetModel = ModelFactory.createDefaultModel();
-        Model componentsModel = ModelFactory.createDefaultModel();
-        Model ontologyModel = ModelFactory.createDefaultModel();
-        Model ontologyAccountsModel = ModelFactory.createDefaultModel();
-
-        try {
-          datasetModel.read(datasetsFile);
-          componentsModel.read(componentsFile);
-          ontologyModel.read(ontologyFile);
-          ontologyAccountsModel.read(accountsOntologyFile);
-        } catch (RiotException e) {
-          throw new IOException("Malformed configuration files");
-        }
-
-        // create required named graphs and load the configuration files
-        // using framework default user
-        frameworkRdfStoreManager.createGraph(instance.getSettingsGraph());
-        frameworkRdfStoreManager.createGraph(instance.getAccountsGraph());
-        frameworkRdfStoreManager.createGraph(instance.getGroupsGraph());
-        frameworkRdfStoreManager.createGraph(instance.getInitialSettingsGraph());
-
-        // Make graphs accessible to framework user only
-        userManager.setDefaultRdfPermissions("nobody", 0);
-        userManager.setRdfGraphPermissions(instance.getAuthSparqlUser(), instance
-            .getSettingsGraph(), 3);
-        userManager.setRdfGraphPermissions(instance.getAuthSparqlUser(), instance
-            .getAccountsGraph(), 3);
-        userManager.setRdfGraphPermissions(instance.getAuthSparqlUser(), instance.getGroupsGraph(),
-            3);
-        userManager.setRdfGraphPermissions(instance.getAuthSparqlUser(), instance
-            .getInitialSettingsGraph(), 3);
-
-        // join the settings files
-        Model settingsModel = ModelFactory.createDefaultModel();
-        settingsModel.add(datasetModel);
-        settingsModel.add(componentsModel);
-        settingsModel.add(ontologyModel);
-
-        // add to settings virtuoso component without users/passwords
-        queryString = "PREFIX foaf:<http://xmlns.com/foaf/0.1/> "
-            + "PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#> "
-            + "PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#> "
-            + "PREFIX lds:<http://stack.linkeddata.org/ldis-schema/>" + " CONSTRUCT   { <"
-            + instance.getFrameworkUri() + "> ?p ?o . " + "<" + instance.getFrameworkUri()
-            + "> lds:integrates ?component ."
-            + "?component rdfs:label ?label . ?component rdf:type ?type . "
-            + "?component lds:providesService ?service . ?service rdf:type ?servicetype ."
-            + "?service lds:serviceUrl ?serviceUrl .} " + " WHERE  { <"
-            + instance.getFrameworkUri() + "> ?p ?o ." + "<" + instance.getFrameworkUri()
-            + "> lds:integrates ?component ."
-            + "?component rdfs:label ?label . ?component rdf:type ?type . "
-            + "?component lds:providesService ?service . ?service rdf:type ?servicetype ."
-            + "?service lds:serviceUrl ?serviceUrl .}";
-        qexec = QueryExecutionFactory.create(queryString, configurationModel);
-        Model triples = qexec.execConstruct();
-        settingsModel.add(triples);
-        qexec.close();
-
-        // write the initial settings model (default settings for new
-        // users)
-        ByteArrayOutputStream os = new ByteArrayOutputStream();
-        settingsModel.write(os, "N-TRIPLES");
-        queryString = "INSERT DATA { GRAPH <" + instance.getInitialSettingsGraph() + "> { "
-            + os.toString() + " } }";
-        os.close();
-        frameworkRdfStoreManager.execute(queryString, null);
-
-        // write the system settings model (include system graphs data)
-        // settingsModel.add(graphsModel);
-        os = new ByteArrayOutputStream();
-        settingsModel.write(os, "N-TRIPLES");
-        queryString = "INSERT DATA { GRAPH <" + instance.getSettingsGraph() + "> { "
-            + os.toString() + " } }";
-        os.close();
-        frameworkRdfStoreManager.execute(queryString, null);
-
-        // create and add accounts ontology to the accounts graph
-        os = new ByteArrayOutputStream();
-        ontologyAccountsModel.write(os, "N-TRIPLES");
-        queryString = "INSERT DATA { GRAPH <" + instance.getAccountsGraph() + "> { "
-            + os.toString() + " } }";
-        os.close();
-        frameworkRdfStoreManager.execute(queryString, null);
-      }
     }
 
     return instance;
@@ -439,14 +295,6 @@ public class FrameworkConfiguration {
   // this.accountsNamespace = accountsNamespace;
   // }
 
-  public String getAccountsOntologyNamespace() {
-    return accountsOntologyNS;
-  }
-
-  public void setAccountsOntologyNamespace(String accountsNamespace) {
-    this.accountsOntologyNS = accountsNamespace;
-  }
-
   public String getAccountsGraph() {
     return accountsGraph;
   }
@@ -519,4 +367,30 @@ public class FrameworkConfiguration {
     this.frameworkUri = frameworkUri;
   }
 
+    public Localizer getLocalizer(Locale locale) {
+        Localizer localizer = localizers.get(locale);
+        if (localizer==null) {
+            try {
+                final ResourceBundle bundle = ResourceBundle.getBundle("locale/generator", locale);
+                localizer = new Localizer() {
+                    @Override
+                    public String localize(String str) {
+                        try {
+                            return bundle.getString(str);
+                        } catch (Exception e) {
+                            return str;
+                        }
+                    }
+                };
+            } catch (MissingResourceException e) {
+                localizer = new Localizer() {
+                    public String localize(String str) {
+                        return str;
+                    }
+                };
+            }
+            localizers.put(locale, localizer);
+        }
+        return localizer;
+    }
 }

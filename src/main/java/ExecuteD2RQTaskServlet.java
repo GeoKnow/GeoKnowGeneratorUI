@@ -24,7 +24,7 @@ public class ExecuteD2RQTaskServlet extends HttpServlet {
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
         try {
-            frameworkUserManager = FrameworkConfiguration.getInstance(getServletContext(), false).getFrameworkUserManager();
+            frameworkUserManager = FrameworkConfiguration.getInstance(getServletContext()).getFrameworkUserManager();
         } catch (Exception e) {
             throw new ServletException(e);
         }
