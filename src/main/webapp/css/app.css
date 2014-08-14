@@ -354,3 +354,25 @@ form{
     margin-top: 15px;
     margin-left: 15px;
 }
+
+/* Overflow div */
+
+.maxHeight {
+	height:55vh;
+}
+
+.overflow {
+	overflow-y: scroll;
+	height:100%;
+}
+
+#resultSlider .slider-selection {
+	background: #BABABA;
+}
+
+/* D2RQ */
+
+#patternColumns {
+	max-height: 200px;
+    overflow: auto;
+}

@@ -1,48 +1,54 @@
 <div class="contents" ng-controller="LimesCtrl" ng-init="StartLimes()">
 
 <!-- Subscribe to all flash messages. -->
-	<div flash-alert active-class="in alert" class="fade" duration="0">
+	<div flash-alert active-class="in alert" class="fade" duration="8000">
 		<button type="button" class="close" ng-click="hide()">&times;</button>
   	<span class="alert-message">{{flash.message}}</span>
 	</div>
 
-	<h3 class="green bold">LIMES</h3>
-	<b data-i18n="_limes-description_"></b>
-	<br>
-	<br>
-
-<form class="form-inline InputForm col-xs-11" role="form" ng-show="inputForm">
+<div class="col-xs-11" role="form" ng-show="inputForm">
+	<div class="row">
+	<div class="col-xs-11">
+	<h2>
+	Discovering links...
+	</h2>
+	</div>
+	</div>
 	<div class="row">
 		<div class="col-xs-11">
 		<div class="progress progress-striped active" ng-show="showProgress">
-		<div class="progress-bar progress-bar-success"  role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+		<div class="progress-bar progress-bar-info"  role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
 		</div>
 		</div>
 		</div>
 	</div>
 	<div class="row">
 	<div class="col-xs-11" ng-show="showProgress">
-		<b data-i18n="_wait-results-message_"></b>
+		<b>This might take a while... Please keep this browser window open. You can view and save the results here when execution is complete.</b>
 	</div>
 	</div>
-</form>
+</div>
 	
-<form class="form-horizontal InputForm col-xs-11" role="form" ng-show="reviewForm">
-	<div class="row">
-		<h5 class="green bold" data-i18n="_results_"></h5>
+<div class="col-xs-11 maxHeight" role="form" ng-show="reviewForm">
+	<div class="overflow below">
+	<table class="table table-striped">
+		<thead>
+		  <tr>
+		  	<th>Entity</th>
+		    <th>Entity</th>
+		    <th>Percentage Match</th>
+		  </tr>
+		</thead>
+		<tbody>
+		  <tr ng-repeat="allItems in allItems track by $index">
+		  	<td ng-repeat="item in allItems track by $index"><a href="item.entity1" target="blank">{{item.entity1}}</a></td>
+		  	<td ng-repeat="item in allItems track by $index"><a href="item.entity2" target="blank">{{item.entity2}}</a></td>
+		  	<td ng-repeat="item in allItems track by $index">{{item.match}}</td>
+		  </tr>
+		</tbody>
+	</table>
 	</div>
-	<br>
-	<div class="row">
-	    <label for="ReviewResults" data-i18n="_limes-res-review_"></label>
-	    <textarea class="form-control boldtext" id="ReviewResults" ng-model="limes.reviewResults"></textarea>
-	</div>
-	<br>
-	<div class="row">
-	    <label for="AcceptedResults" data-i18n="_limes-accepted-res_"></label>
-	    <textarea class="form-control boldtext" id="AcceptedResults" ng-model="limes.acceptedResults"></textarea>
-	</div>
-	<br>
-	<br>
+	
 <!-- 	
 TODO: add input text so user can provide the graph name
 <div class="row below">
@@ -58,10 +64,16 @@ TODO: add input text so user can provide the graph name
  -->	
 
 
-  <div class="row">
+<div class="row below">
+	<div class="col-xs-12">
+		<div class="pull-left col-xs-12 below" style="margin-left:0" ng-show="differing">
+			<span style="margin-right:20px"><b>Refine the results by adjusting the slider: </b></span>
+			<div id="result" data-slider-id='resultSlider'></div>
+		</div>
 		<div class="pull-left" style="padding-left:0">
-			  <a class="btn btn-sm btn-primary" ng-click="save()" data-i18n="_save-res-in-new-graph_"></a>
+			  <a class="btn btn-sm btn-primary" ng-click="save()">Save results in new graphs</a>
 		</div>
 	</div>
-</form>
+</div>
+</div>
 </div>

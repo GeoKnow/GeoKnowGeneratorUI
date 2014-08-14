@@ -107,6 +107,10 @@
 :PostGIS
       rdf:type :DatabaseType ;
       rdfs:label "PostGIS"^^xsd:string .
+      
+:MicrosoftSQLServer
+      rdf:type :DatabaseType ;
+      rdfs:label "MicrosoftSQLServer"^^xsd:string .
 
 dcterms:creator
       rdf:type owl:DatatypeProperty ;

@@ -95,12 +95,14 @@ app.controller('ModalWindow', function ($scope) {
     });
   }; 
  
+  /*
   $scope.close = function (id) {
 	  $("#" + id).modal('hide');
 	  $('body').removeClass('modal-open');
 	  $('.modal-backdrop').slideUp();
 	  $('.modal-scrollable').slideUp();
   };
+  */
   
   $scope.del = function (index) {
 	  

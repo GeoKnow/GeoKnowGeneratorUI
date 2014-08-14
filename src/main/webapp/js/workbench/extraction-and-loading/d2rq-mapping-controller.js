@@ -51,7 +51,7 @@ var D2RQMappingCtrl = function($scope, $http, $q, flash, ServerErrorResponse, Ac
         } else if ($scope.mgroup.database.dbType=="MicrosoftSQLServer") {
             $scope.mgroup.connection = "jdbc:jtds:sqlserver://" + $scope.mgroup.database.dbUser + ":" + $scope.mgroup.database.dbPassword
                                             + "@" + $scope.mgroup.database.dbHost + ":" + $scope.mgroup.database.dbPort
-                                            + ";" + $scope.mgroup.database.dbName;
+                                            + ";databaseName=" + $scope.mgroup.database.dbName+ ";";
         }
     };
 
