@@ -64,16 +64,37 @@ TODO: add input text so user can provide the graph name
  -->	
 
 
-<div class="row below">
+<div class="row">
+	<div class="row below">
 	<div class="col-xs-12">
 		<div class="pull-left col-xs-12 below" style="margin-left:0" ng-show="differing">
 			<span style="margin-right:20px"><b>Refine the results by adjusting the slider: </b></span>
 			<div id="result" data-slider-id='resultSlider'></div>
 		</div>
+	</div>
+	</div>
+	<div class="col-xs-12">
+	<div class="row">
+	<div class="col-xs-6">
+		<b data-i18n="_select-graph-save-message_"></b>
+	</div>
+	</div>
+	<br/>
+	<div class="row">
+	<div class="col-xs-6">
+    <select class="form-control" ng-model="saveDataset" ng-options="namedgraph.name as namedgraph.name for namedgraph in namedGraphs" required>
+    </select>
+  	</div>
+  	</div>
+	<br/>
+	<div class="row below">
+	<div class="col-xs-6">
 		<div class="pull-left" style="padding-left:0">
-			  <a class="btn btn-sm btn-primary" ng-click="save()">Save results in new graphs</a>
+			  <a class="btn btn-sm btn-primary" ng-click="save()" data-i18n="_save-results_"></a>
 		</div>
 	</div>
-</div>
+	</div>
+	</div>
+	</div>
 </div>
 </div>

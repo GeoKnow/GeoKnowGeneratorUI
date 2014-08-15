@@ -31,7 +31,10 @@ public class TabFileReader extends HttpServlet {
 		PrintWriter out = response.getWriter();
 		
 		String filePath = getServletContext().getRealPath(File.separator);
+		
+		// Replace the name of the generator servlet, so that the TAB output file can be loaded
 		filePath = filePath.replace("generator/", "");
+		filePath = filePath.replace("ontos-lds-ALL/", "");
 		//filePath = "file:///"+filePath.replace("\\", "/");
 		//filePath = filePath.replace(" ", "%20");
 		

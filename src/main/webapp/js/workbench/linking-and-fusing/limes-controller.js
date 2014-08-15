@@ -5,7 +5,7 @@
 * LIMES Controller
 *
 ***************************************************************************************************/
-var LimesCtrl = function($scope, $http, ConfigurationService, flash, ServerErrorResponse, $window, GraphService){
+var LimesCtrl = function($scope, $http, ConfigurationService, flash, ServerErrorResponse, $window, GraphService, AccountService){
 	
 	var services = ConfigurationService.getComponentServices(":Limes");
 	var serviceUrl = services[0].serviceUrl;
@@ -18,7 +18,7 @@ var LimesCtrl = function($scope, $http, ConfigurationService, flash, ServerError
 	$scope.defaultEndpoint = ConfigurationService.getSPARQLEndpoint();
 	$scope.endpoints = ConfigurationService.getAllEndpoints();
 	$scope.uriBase = ConfigurationService.getUriBase();
-	$scope.importServiceUrl = serviceUrl+"/ImportRDF";
+	var endpoint = ConfigurationService.getPublicSPARQLEndpoint(); // Only supporting saving
 
 	$scope.configOptions = true;
 	$scope.inputForm = true;
@@ -58,7 +58,11 @@ var LimesCtrl = function($scope, $http, ConfigurationService, flash, ServerError
 	
 	$scope.limes = { OutputFormat :    $scope.options.output[0],
 					 ExecType :        $scope.options.execType[0],
-					 Granularity : 	   $scope.options.granularity[0]
+					 Granularity : 	   $scope.options.granularity[0],
+					 AcceptThresh : "1",
+					 ReviewThresh : "0.2", // Default setting, input is hidden
+					 AcceptRelation : "owl:sameAs",
+					 ReviewRelation : "owl:sameAs" // Default setting input is hidden
 	};
 	
 	$scope.props = [{
@@ -231,11 +235,12 @@ $scope.LaunchLimes = function(){
 		params.AcceptThresh = $scope.limes.AcceptThresh;
 		params.ReviewThresh = $scope.limes.ReviewThresh;
 		params.AcceptRelation = $scope.limes.AcceptRelation;
-		params.ReviewRelation = $scope.limes.ReviewRelation;
+		params.ReviewRelation = $scope.limes.AcceptRelation; // Set to the same as the accept relation, 
+															// otherwise it makes no sense to mix the results in the comparison table
 		params.numberOfProps = numberOfProps;
 		
 		window.$windowScope = $scope;
- 		var newWindow = $window.open('popup.html#/popup-limes', 'frame', 'resizeable,height=600,width=800');
+ 		var newWindow = $window.open('popup.html#/popup-limes', 'frame', 'resizeable,height=800,width=1200');
 		newWindow.params = params;
 	};
 		
@@ -262,7 +267,7 @@ $scope.LaunchLimes = function(){
 		    	flash.success = data.message;
 		    	// get the files inside data.results, and these are to be proposed to be downloaded
 		    	// in this case probably LimesReview is not required anymore...
-				$scope.ReviewLimes();   
+				$scope.ReviewLimes(params);   
 	      }
 	      else {
 			        flash.error = data.message;
@@ -275,7 +280,7 @@ $scope.LaunchLimes = function(){
 
 	};
 	
-	$scope.ReviewLimes = function(){
+	$scope.ReviewLimes = function(params){
 
 		$scope.configOptions = false;
 		$scope.reviewForm = false;
@@ -289,7 +294,6 @@ $scope.LaunchLimes = function(){
 	      }).then(function(data){
 	    	  	var reviewResult = data.data[0];
 	    	  	var count = 0;
-	    	  	
 	  	  		if (reviewResult.length<3){
 	  	  			// Do nothing
 	  		  	}else{
@@ -299,11 +303,11 @@ $scope.LaunchLimes = function(){
 	  	  				$scope.allItems.push([]);
 	  	  				$scope.allItems[count].push({"entity1" : decodeURIComponent(parts[0]),
 								 					 "entity2" : decodeURIComponent(parts[1]),
-								 					 "match" : 100*parts[2]});
+								 					 "match" : 100*parts[2],
+								 					 "relation" : params.AcceptRelation});
 	  	  				count++;
 	  		  		}
 	  		  	}
-	  	  		
 	  	  		var acceptedResult = data.data[1];
 	  	  		
 	  	  		if (acceptedResult.length<3){
@@ -315,26 +319,27 @@ $scope.LaunchLimes = function(){
 	  	  				$scope.allItems.push([]);
 	  	  				$scope.allItems[count].push({"entity1" : decodeURIComponent(parts[0]),
 	  	  											 "entity2" : decodeURIComponent(parts[1]),
-	  	  											 "match" : 100*parts[2]});
+	  	  											 "match" : 100*parts[2],
+								 					 "relation" : params.AcceptRelation});
 	  	  				count++;
 	  		  		}
 	  	  			
 	  	  		}
 	  	  		
 		  	  	// Sort from highest to lowest
-	  	  			$scope.allItems.sort(function(a, b){
+	  	  		$scope.allItems.sort(function(a, b){
 		  	  		 return b[0].match-a[0].match
 		  	  		});
-	  	  			
 	  	  		// If all match values are the same it makes no sense to display the slider, therefore the values are compared first
 	  	  		if($scope.allItems[($scope.allItems.length-1)][0].match != $scope.allItems[0][0].match){
+	  	  			// Display slider and set slider min and max values
 	  	  			$scope.differing = true;
 		  	  		$('#result').slider({
 						min: $scope.allItems[($scope.allItems.length-1)][0].match,
 						max: $scope.allItems[0][0].match
 					});
-		  	  	
-		  	  	// Change array according to slider value
+		  	  		
+		  	  	// Move items from allItems into store array according to slider value
 			  	$('#result').bind('slideStop', function() {
 			  		console.log($scope.storeArray);
 			  	      //Remove items from allItems array and store them (slider increases)
@@ -344,7 +349,7 @@ $scope.LaunchLimes = function(){
 			  	  			};
 				  	  	};
 				  	  	
-				  	  // Put items from store into allItems array (slider decreases)	
+				  	  // Put items from store back into allItems array (slider decreases)	
 				  	  if ($scope.storeArray.length >= 1){
 					  	  for(var i=($scope.storeArray.length-1); i>=0; i--){
 				  	  			if($scope.storeArray[i][0].match > $('#result').slider('getValue')){
@@ -355,9 +360,7 @@ $scope.LaunchLimes = function(){
 				  	  
 				  	  // Refresh results table
 				  	  $scope.$digest();
-				  	  // Sort from highest to lowest
-		  	  		  
-				  	  console.log($scope.storeArray);
+				  	  
 			  	  	});
 	  	  		}
 	  	  		
@@ -454,7 +457,70 @@ $scope.LaunchLimes = function(){
 	};
 	
 	$scope.save = function(){
-			
+		
+		var saveDataset = $scope.saveDataset.replace(":", ConfigurationService.getUriBase());
+		var allTriples = "";
+		
+		for(var i = 0; i < $scope.allItems.length; i++){
+			allTriples = allTriples +
+						 "<" + $scope.allItems[i][0].entity1 + "> " + 
+						 $scope.allItems[i][0].relation + 
+						 " <" + $scope.allItems[i][0].entity2 + "> . ";	
+	  		};
+	  	
+	  	var params = {
+		        endpoint: endpoint,
+		        graph: saveDataset, 
+		        uriBase : ConfigurationService.getUriBase(),
+		        username: AccountService.getUsername(),
+		        saveString: allTriples
+		      	};
+	  	
+	  	$.ajax({ type :"post", 
+	         data : { 
+	        	 url: "ImportRDFString",
+	 	         method: "POST",
+	 	         dataType: "json",
+	 	         params: params,
+	 	         processData: false,
+	 	         contentType: "application/json; charset=utf-8"
+	        	 },
+	         url : "ImportRDFString"
+	      }).success(function (data, status, headers, config){
+		        if(data.status=="FAIL"){
+			          flash.error = data.message;
+			          importing = false;
+			        }
+			        else{
+			        	console.log(data.message);
+			          flash.success = data.message;
+			        }
+			      })
+			      .error(function(data, status, headers, config) {
+			          flash.error = data;
+			      });
+	  	/*
+	  	$http({
+			url: "ImportRDFString",
+	        method: "POST",
+	        dataType: "json",
+	        params: params,
+	        processData: false,
+	        contentType: "application/json; charset=utf-8"
+		})
+	      .success(function (data, status, headers, config){
+	        if(data.status=="FAIL"){
+	          flash.error = data.message;
+	          importing = false;
+	        }
+	        else{
+	          flash.success = data.message;
+	        }
+	      })
+	      .error(function(data, status, headers, config) {
+	          flash.error = data;
+	      });
+		/*
 		var parameters = { 
         endpoint: AccountService.getUsername() == null ? ConfigurationService.getPublicSPARQLEndpoint() : ConfigurationService.getSPARQLEndpoint(),
    		uriBase : ConfigurationService.getUriBase()
@@ -506,5 +572,6 @@ $scope.LaunchLimes = function(){
 			.error(function(data, status, headers, config) {
 			  flash.error = data;
 		});
+		*/
 	};
 };
