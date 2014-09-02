@@ -68,9 +68,10 @@ var D2RQTaskCtrl = function($scope, $http, $q, flash, ServerErrorResponse, Accou
     	console.log($scope.datasets);
         for (var ind in $scope.datasets) {
             var ds = $scope.datasets[ind];
-            if (ds.graph==graph && ds.httpEndpoint==endpoint && ds.ontology==ontology)
+            if (ds.graph==graph && ds.httpEndpoint==endpoint && ds.ontology==ontology) {
             	console.log(ds);
                 return ds;
+            }
         }
         return null;
     };
