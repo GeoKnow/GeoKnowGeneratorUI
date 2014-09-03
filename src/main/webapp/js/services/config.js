@@ -29,26 +29,28 @@
 "use strict";
 
 angular.module("app.configuration", [])
-.factory("Config", function($q, $http, flash, AccountService, ServerErrorResponse, Helpers)
-{
+.factory("Config", function($rootScope, $q, $http, flash, AccountService, ServerErrorResponse, Helpers){
     $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded; charset=UTF-8";
 
     // the public and authenticated enpoints that will be used by the application
+    $rootScope.frameworkUri = "";
+    $rootScope.ns = "";
+    $rootScope.defaultSettingsGraphUri = "";
+    $rootScope.groupsGraphUri = "";
+    $rootScope.frameworkOntologyNs = "";
+    $rootScope.accountsGraph = "";
+
+// $rootScope.frameworkUri = "http://alejandra.com/resource/LDWorkbench";
+// $rootScope.ns = "http://alejandra.com/resource";
+// $rootScope.defaultSettingsGraphUri = "http://alejandra.com/resource/settingsGraph";
+// $rootScope.groupsGraphUri = "http://alejandra.com/resource/groupsGraph";
+// $rootScope.frameworkOntologyNs = "http://ldiw.ontos.com/ontology/";
+// $rootScope.accountsGraph = "http://alejandra.com/resource/accountsGraph";
+
     var AUTH_ENDPOINT;
     var PUBLIC_ENDPOINT;
-    
-    var FRAMEWORK_URI  = "http://ldiw.ontos.com/resource/GeoKnowGenerator";
-    // if new resorces are created they will use this name space, and it can be changed
-    var NS                          = "http://ldiw.ontos.com/resource/";
-    // this is the graph where settings are stored, it doesnt change, and independent on the Namespace
-    var DEFAULT_SETTINGS_GRAPH_URI  = "http://ldiw.ontos.com/resource/settingsGraph";
-    // SETTINGS_GRAPH_URI is initalized with DEFAULT_SETTINGS_GRAPH_URI, but can be changed with setGraph, 
-    var SETTINGS_GRAPH_URI          = DEFAULT_SETTINGS_GRAPH_URI;
-    // Create a graph for groups of users
-    var GROUPS_GRAPH_URI            = "http://ldiw.ontos.com/resource/groupsGraph";
-    var FRAMEWORK_ONTOLOGY_NS = "http://ldiw.ontos.com/ontology/";
-    var ACCOUNTS_GRAPH = "http://ldiw.ontos.com/resource/accountsGraph";
-    
+    var SETTINGS_GRAPH_URI  = $rootScope.defaultSettingsGraphUri;
+    var GRAPH               = "<" + SETTINGS_GRAPH_URI + ">";
 
     var namespaces =
     {
@@ -64,11 +66,11 @@ angular.module("app.configuration", [])
         "http://rdfs.org/ns/void#"                         : "void:",
         "http://www.w3.org/ns/auth/acl#"                   : "acl:"
     };
-    namespaces[NS] = ":";
+    namespaces[$rootScope.ns] = ":";
     // a variable to lookup by prefix
     var prefixes = Helpers.invertMap(namespaces);
 
-    var GRAPH    = "<" + SETTINGS_GRAPH_URI + ">";
+  
     var EOL      = "\n";
     var PREFIXES = "";
     for (var namespace in namespaces)
@@ -76,6 +78,18 @@ angular.module("app.configuration", [])
 
     var settings = {};
     var isLoaded = false;
+
+    var initialize = function(q){
+        $http.get("rest/config").success(function(data){
+            $rootScope.frameworkUri = data.frameworkUri;
+            $rootScope.ns = data.ns;
+            $rootScope.defaultSettingsGraphUri = data.defaultSettingsGraphUri;
+            $rootScope.groupsGraphUri = data.groupsGraphUri;
+            $rootScope.frameworkOntologyNs = data.frameworkOntologyNs;
+            $rootScope.accountsGraph = data.accountsGraph;
+            q.resolve();
+        });
+    };
 
     var request = function(url, data, callbackSuccess){
         var deferred = $q.defer();
@@ -94,7 +108,7 @@ angular.module("app.configuration", [])
             }
         })
         .error(function(data, status){
-            var message = ServerErrorResponse.getMessage(status) + " at " + AUTH_ENDPOINT ;
+            var message = ServerErrorResponse.getMessage(status);
             flash.error = message;
             deferred.reject(message);
         });
@@ -132,17 +146,17 @@ angular.module("app.configuration", [])
 
     var getFrameworkUri = function()
     {
-        return ns(FRAMEWORK_URI);
+        return ns($rootScope.frameworkUri);
     };
 
     var setNS = function(ns)
     {
-        NS = ns;
+        $rootScope.ns = ns;
     };
 
     var getNS = function()
     {
-        return NS;
+        return $rootScope.ns;
     };
 
     var getGraph = function()
@@ -158,7 +172,7 @@ angular.module("app.configuration", [])
     };
 
     var restoreDefault = function() {
-        return setGraph(DEFAULT_SETTINGS_GRAPH_URI);
+        return setGraph($rootScope.defaultSettingsGraphUri);
     };
 
     var getSettings = function()
@@ -258,6 +272,8 @@ angular.module("app.configuration", [])
             return deferred.promise;
         }
 
+        console.log("Reading Settings from " + GRAPH);
+
         var requestData = {
             format: "application/sparql-results+json",
             query: "SELECT * FROM " + GRAPH + EOL
@@ -271,7 +287,6 @@ angular.module("app.configuration", [])
             {
                 settings = parseSparqlResults(data);
                 isLoaded = true;
-                console.log("Reading Settings from " + GRAPH);
                 console.log(settings);
                 return settings;
             }
@@ -323,24 +338,8 @@ angular.module("app.configuration", [])
                     + "}",
             mode: "settings"
         };
-
-        // console.log(requestData);
         return request("RdfStoreProxy", requestData);
     };
-
-    // var createGraph = function(name, permissions, callback)
-    // {
-    //     var requestData = {
-    //         format: "application/sparql-results+json",
-    //         mode: "create",
-    //         graph: name,
-    //         permissions: permissions,
-    //         username: AccountService.getUsername()
-    //     }
-    //     console.log("request create graph");
-    //     console.log(requestData);
-    //     return request("GraphManagerServlet", requestData, callback);
-    // };
 
     var dropGraph = function(name)
     {
@@ -353,30 +352,20 @@ angular.module("app.configuration", [])
         return request("GraphManagerServlet", requestData);
     };
 
-    // var setGraphPermissions = function(name, permissions) {
-    //     var requestData = {
-    //         format: "application/sparql-results+json",
-    //         graph: name,
-    //         mode: "update",
-    //         permissions: permissions,
-    //         username: AccountService.getUsername()
-    //     };
-    //     return request("GraphManagerServlet", requestData);
-    // };
-
     var getGroupsGraph = function() {
-        return GROUPS_GRAPH_URI;
+        return $rootScope.groupsGraphUri;
     };
 
     var getFrameworkOntologyNS = function() {
-        return FRAMEWORK_ONTOLOGY_NS;
+        return $rootScope.frameworkOntologyNs;
     };
 
     var getAccountsGraph = function() {
-        return ACCOUNTS_GRAPH;
+        return $rootScope.accountsGraph;
     };
 
     return {
+        initialize          : initialize,
         getNS               : getNS,
         getGraph            : getGraph,
         setGraph            : setGraph,
@@ -386,9 +375,7 @@ angular.module("app.configuration", [])
         read                : read,
         write               : write,
         request             : request,
-        // createGraph         : createGraph,
         dropGraph           : dropGraph,
-        // setGraphPermissions : setGraphPermissions,
         parseSparqlResults  : parseSparqlResults,
         getGroupsGraph      : getGroupsGraph,
         getFrameworkUri     : getFrameworkUri,

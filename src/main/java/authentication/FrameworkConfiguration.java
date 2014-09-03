@@ -80,7 +80,7 @@ public class FrameworkConfiguration {
 
 	    // TODO: this property has to be removed and replaced with the LDIWO
 	    // class
-	    instance.setFrameworkOntologyNS(context.getInitParameter(LDIWO.NS));
+	    instance.setFrameworkOntologyNS(LDIWO.NS);
 
 	    instance.setSmtpHost(context.getInitParameter("smtp-host"));
 	    instance.setSmtpTLSPort(context.getInitParameter("smpt-tls-port"));

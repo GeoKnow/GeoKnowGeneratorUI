@@ -35,6 +35,7 @@ public class RDFStoreSetupManager {
 
     private File catalinaBase = new File(System.getProperty("catalina.base"))
 	    .getAbsoluteFile();
+    // TODO: move a file outside the application (i.e. /etc/ontos)
     private File initFile = new File(catalinaBase.getAbsoluteFile(),
 	    "webapps/generator/WEB-INF/init.txt");
 

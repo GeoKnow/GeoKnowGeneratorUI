@@ -91,6 +91,12 @@ app.config(function($routeSegmentProvider, $routeProvider)
         .segment('default', {
             templateUrl :'js/workbench/default.html',
             resolve: {
+                    app: function($q, Config){
+                    var defer = $q.defer();
+                    // defer.resolve();
+                    Config.initialize(defer);
+                    return defer.promise;
+                },
                       settings: function (Config) {
                         return Config.read();
                       },
