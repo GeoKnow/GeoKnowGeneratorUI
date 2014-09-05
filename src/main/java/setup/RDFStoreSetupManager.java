@@ -128,7 +128,8 @@ public class RDFStoreSetupManager {
 	    userManager.grantLOLook("SPARQL");
 	} catch (Exception e) {
 	    // role is already granted
-	    e.printStackTrace();
+	    log.warn("SPARQL has already SPARQL_UPDATE rol");
+	    // e.printStackTrace();
 	}
 
 	log.info(" Default Graphs creation and configuration ");

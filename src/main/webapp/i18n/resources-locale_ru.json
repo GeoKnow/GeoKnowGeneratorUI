@@ -1,11 +1,14 @@
 [
     {
+        "key":"_framework-uri_",
+        "value":"Рамочная URI",
+        "description":"uri of the framework"
+    },
+    {
         "key":"_home-title_",
         "value":"Связанные данные",
         "description":"Home page title"
     },
-
-
     {
         "key":"_components-page-description_",
         "value":"Текущая конфигурация включает в себя следующие компоненты.",
@@ -63,8 +66,18 @@
     },
     {
         "key":"_system-setup-page-content_",
-        "value":"Система не инициализирована. Для инициализации используйте сервлет http://localhost:8080/generator/InitialSetup",
+        "value":"Система не настроена. Это можно инициализировать со следующими параметрами:",
         "description":"content of system-setup page"
+    },
+    {
+        "key":"_setup_",
+        "value":"Настройка",
+        "description":"System setup button"
+    },
+    {
+        "key":"_reset_",
+        "value":"Сброс",
+        "description":"System reset checkbox"
     },
     {
         "key":"_access-denied-page-content_",

@@ -12,7 +12,7 @@ public class SecureRdfStoreManagerImpl extends RdfStoreManagerImpl {
         this.password = password;
     }
 
-    protected String executePost(String endpoint, String urlParameters) throws Exception {
+    protected String executePost(String endpoint, String urlParameters) throws Exception{
         return HttpRequestManager.executePost(endpoint, urlParameters, username, password);
     }
 }

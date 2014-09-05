@@ -64,7 +64,7 @@ public class WorkbenchSetup {
 			.entity(e.getMessage()).build();
 	}
 	log.info("System was reseted successfully.");
-	return Response.ok().build();
+	return Response.ok().entity("System reseted successfully").build();
     }
 
     /**
@@ -101,7 +101,8 @@ public class WorkbenchSetup {
 			.entity(e.getMessage()).build();
 	    }
 	    log.info("System was set up successfully.");
-	    return Response.ok().build();
+	    return Response.ok().entity("System initialized successfully")
+		    .build();
 	}
     }
 }

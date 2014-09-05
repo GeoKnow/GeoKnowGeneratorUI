@@ -32,25 +32,24 @@ angular.module("app.configuration", [])
 .factory("Config", function($rootScope, $q, $http, flash, AccountService, ServerErrorResponse, Helpers){
     $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded; charset=UTF-8";
 
-    // the public and authenticated enpoints that will be used by the application
-    $rootScope.frameworkUri = "";
-    $rootScope.ns = "";
-    $rootScope.defaultSettingsGraphUri = "";
-    $rootScope.groupsGraphUri = "";
-    $rootScope.frameworkOntologyNs = "";
-    $rootScope.accountsGraph = "";
-
-// $rootScope.frameworkUri = "http://alejandra.com/resource/LDWorkbench";
-// $rootScope.ns = "http://alejandra.com/resource";
-// $rootScope.defaultSettingsGraphUri = "http://alejandra.com/resource/settingsGraph";
-// $rootScope.groupsGraphUri = "http://alejandra.com/resource/groupsGraph";
-// $rootScope.frameworkOntologyNs = "http://ldiw.ontos.com/ontology/";
-// $rootScope.accountsGraph = "http://alejandra.com/resource/accountsGraph";
+    var FRAMEWORK_URI;
+    var NS;
+    var DEFAULT_SETTINGS_GRAPH_URI;
+    var GROUPS_GRAPH_URI;
+    var FRAMEWORK_ONTOLOGY_NS;
+    var ACCOUNTS_GRAPH;
 
     var AUTH_ENDPOINT;
     var PUBLIC_ENDPOINT;
-    var SETTINGS_GRAPH_URI  = $rootScope.defaultSettingsGraphUri;
-    var GRAPH               = "<" + SETTINGS_GRAPH_URI + ">";
+    var SETTINGS_GRAPH_URI;
+    var GRAPH;
+
+    // a variable to lookup by prefix
+    var prefixes;
+    var EOL      = "\n";
+    var PREFIXES = "";   
+    var settings = {};
+    var isLoaded = false;
 
     var namespaces =
     {
@@ -66,29 +65,42 @@ angular.module("app.configuration", [])
         "http://rdfs.org/ns/void#"                         : "void:",
         "http://www.w3.org/ns/auth/acl#"                   : "acl:"
     };
-    namespaces[$rootScope.ns] = ":";
-    // a variable to lookup by prefix
-    var prefixes = Helpers.invertMap(namespaces);
+    
 
-  
-    var EOL      = "\n";
-    var PREFIXES = "";
-    for (var namespace in namespaces)
-            PREFIXES += "PREFIX " + namespaces[namespace] + " <" + namespace + ">" + EOL;
-
-    var settings = {};
-    var isLoaded = false;
 
     var initialize = function(q){
-        $http.get("rest/config").success(function(data){
-            $rootScope.frameworkUri = data.frameworkUri;
-            $rootScope.ns = data.ns;
-            $rootScope.defaultSettingsGraphUri = data.defaultSettingsGraphUri;
-            $rootScope.groupsGraphUri = data.groupsGraphUri;
-            $rootScope.frameworkOntologyNs = data.frameworkOntologyNs;
-            $rootScope.accountsGraph = data.accountsGraph;
+        
+        if(FRAMEWORK_URI != undefined){
+            console.log("FRAMEWORK_URI defined:"+ FRAMEWORK_URI);
             q.resolve();
-        });
+            return;
+        }
+
+        console.log("FRAMEWORK_URI undefined:"+ FRAMEWORK_URI);
+
+        $http.get("rest/config")
+            .success(function(data){
+                FRAMEWORK_URI = data.frameworkUri;
+                NS = data.ns;
+                DEFAULT_SETTINGS_GRAPH_URI = data.defaultSettingsGraphUri;
+                GROUPS_GRAPH_URI = data.groupsGraphUri;
+                FRAMEWORK_ONTOLOGY_NS = data.frameworkOntologyNs;
+                ACCOUNTS_GRAPH = data.accountsGraph;
+                PUBLIC_ENDPOINT = data.sparqlEndpoint;
+                AUTH_ENDPOINT = data.authSparqlEndpoint;
+                namespaces[NS] = ":";
+                SETTINGS_GRAPH_URI  = DEFAULT_SETTINGS_GRAPH_URI;
+                GRAPH = "<" + SETTINGS_GRAPH_URI + ">";
+                for (var namespace in namespaces)
+                    PREFIXES += "PREFIX " + namespaces[namespace] + " <" + namespace + ">" + EOL;
+                prefixes = Helpers.invertMap(namespaces);
+                console.log("FRAMEWORK_URI reolved:"+ FRAMEWORK_URI);
+                q.resolve();
+                })
+            .error(function(data, status){
+                var message = ServerErrorResponse.getMessage(status);
+                flash.error = message;
+            });     
     };
 
     var request = function(url, data, callbackSuccess){
@@ -146,22 +158,37 @@ angular.module("app.configuration", [])
 
     var getFrameworkUri = function()
     {
-        return ns($rootScope.frameworkUri);
+        return ns(FRAMEWORK_URI);
     };
 
     var setNS = function(ns)
     {
-        $rootScope.ns = ns;
+        NS = ns;
     };
 
     var getNS = function()
     {
-        return $rootScope.ns;
+        return NS;
+    };
+
+    var getEndpoint = function()
+    {
+        return PUBLIC_ENDPOINT;
+    };
+
+    var getAuthEndpoint = function()
+    {
+        return AUTH_ENDPOINT;
     };
 
     var getGraph = function()
     {
         return SETTINGS_GRAPH_URI;
+    };
+
+    var getDefaultSettingsGraph = function()
+    {
+        return DEFAULT_SETTINGS_GRAPH_URI;
     };
 
     var setGraph = function(uri) {
@@ -172,7 +199,7 @@ angular.module("app.configuration", [])
     };
 
     var restoreDefault = function() {
-        return setGraph($rootScope.defaultSettingsGraphUri);
+        return setGraph(DEFAULT_SETTINGS_GRAPH_URI);
     };
 
     var getSettings = function()
@@ -263,6 +290,7 @@ angular.module("app.configuration", [])
         return result;
     };
 
+
     var read = function()
     {
         if (isLoaded)
@@ -273,6 +301,7 @@ angular.module("app.configuration", [])
         }
 
         console.log("Reading Settings from " + GRAPH);
+        console.log("FRAMEWORK_URI " + FRAMEWORK_URI);
 
         var requestData = {
             format: "application/sparql-results+json",
@@ -287,6 +316,7 @@ angular.module("app.configuration", [])
             {
                 settings = parseSparqlResults(data);
                 isLoaded = true;
+                console.log("read settings");
                 console.log(settings);
                 return settings;
             }
@@ -353,33 +383,37 @@ angular.module("app.configuration", [])
     };
 
     var getGroupsGraph = function() {
-        return $rootScope.groupsGraphUri;
+        return GROUPS_GRAPH_URI;
     };
 
     var getFrameworkOntologyNS = function() {
-        return $rootScope.frameworkOntologyNs;
+        return FRAMEWORK_ONTOLOGY_NS;
     };
 
     var getAccountsGraph = function() {
-        return $rootScope.accountsGraph;
+        return ACCOUNTS_GRAPH;
     };
 
+
     return {
-        initialize          : initialize,
-        getNS               : getNS,
-        getGraph            : getGraph,
-        setGraph            : setGraph,
-        restoreDefault      : restoreDefault,
-        getSettings         : getSettings,
-        select              : select,
-        read                : read,
-        write               : write,
-        request             : request,
-        dropGraph           : dropGraph,
-        parseSparqlResults  : parseSparqlResults,
-        getGroupsGraph      : getGroupsGraph,
-        getFrameworkUri     : getFrameworkUri,
-        getFrameworkOntologyNS: getFrameworkOntologyNS,
-        getAccountsGraph    : getAccountsGraph
+        initialize              : initialize,
+        getNS                   : getNS,
+        getEndpoint             : getEndpoint,
+        getAuthEndpoint         : getAuthEndpoint,
+        getDefaultSettingsGraph : getDefaultSettingsGraph,
+        getGraph                : getGraph,
+        setGraph                : setGraph,
+        restoreDefault          : restoreDefault,
+        getSettings             : getSettings,
+        select                  : select,
+        read                    : read,
+        write                   : write,
+        request                 : request,
+        dropGraph               : dropGraph,
+        parseSparqlResults      : parseSparqlResults,
+        getGroupsGraph          : getGroupsGraph,
+        getFrameworkUri         : getFrameworkUri,
+        getFrameworkOntologyNS  : getFrameworkOntologyNS,
+        getAccountsGraph        : getAccountsGraph
     };
 });

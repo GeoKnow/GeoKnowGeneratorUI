@@ -1,6 +1,5 @@
 'use strict';
 
-
 function AccountMenuCtrl($scope) {
   $scope.oneAtATime = true;
   // these data can be replaced later with the configuration

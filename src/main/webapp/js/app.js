@@ -24,6 +24,7 @@ var app = angular.module('app', ['ngRoute',
 
 app.config(function($routeSegmentProvider, $routeProvider)
 {
+
     $routeSegmentProvider.options.autoLoadTemplates = true;
     $routeSegmentProvider
         // TODO: these routes may have to be loaded from the configuration
@@ -91,18 +92,28 @@ app.config(function($routeSegmentProvider, $routeProvider)
         .segment('default', {
             templateUrl :'js/workbench/default.html',
             resolve: {
-                    app: function($q, Config){
-                    var defer = $q.defer();
-                    // defer.resolve();
-                    Config.initialize(defer);
-                    return defer.promise;
-                },
-                      settings: function (Config) {
-                        return Config.read();
-                      },
-                      userInfo : function(UsersService) {
-                        return UsersService.readUserNamesEmails();
-                      }
+                        init: function($q, Config, UsersService){
+                            console.log("init default");
+                            var defer = $q.defer();
+                            Config.initialize(defer);
+                            var promise = defer.promise;
+                            promise
+                                .then(function(){
+                                    Config.read();  
+                                })
+                                .then(function(){
+                                    //why this function is required at this level? 
+                                    UsersService.readUserNamesEmails(); 
+                                });
+
+                        }
+                    // },
+                    //     settings: function (Config) {
+                    //     return Config.read();
+                    // },
+                    //     userInfo : function(UsersService) {
+                    //     return UsersService.readUserNamesEmails();
+                    // }
                 }
             })
             .within()
@@ -173,12 +184,39 @@ app.config(function($routeSegmentProvider, $routeProvider)
 		{
 			templateUrl: 'js/settings/settings.html',
             resolve: {
-              settings: function (Config) {
-                return Config.read();
-              },
-              userInfo : function(UsersService) {
-                return UsersService.readUserNamesEmails();
-              }
+                    init: function($q, Config, UsersService){
+                        console.log("init settings");
+                        var defer = $q.defer();
+                        var promise = defer.promise;
+                        Config.initialize(defer);
+                        promise
+                            .then(function(){
+                                Config.read();  
+                            })
+                            .then(function(){
+                                //why this function is required at this level? 
+                                UsersService.readUserNamesEmails(); 
+                            });
+                        return promise;
+                    },
+                    //   settings: function ($q,Config) {
+
+
+                    //     var deferred = $q.defer();
+                    //     var promise = deferred.promise;
+                         
+                    //     // assign behavior before resolving
+                    //     promise.then(function (data) {
+                    //       Config.initialize()
+                    //     });
+                         
+                    //     deferred.resolve('Oh look we\'re done already.')
+
+                    //     return Config.read();
+                    // },
+                      userInfo : function(UsersService) {
+                      return UsersService.readUserNamesEmails();
+                    }
             }
 		})
             .within()
@@ -215,7 +253,36 @@ app.config(function($routeSegmentProvider, $routeProvider)
                     templateUrl: 'js/account/preferences/preferences.html' })
             .up()
         .segment('system-setup', {
-            templateUrl: 'system-setup.html'
+            templateUrl: 'system-setup.html',
+            resolve: {
+                    init: function($q, Config){
+                        console.log("init system-setup");
+                        var defer = $q.defer();
+                        var promise = defer.promise;
+                        Config.initialize(defer);
+                        promise
+                            .then(function(){
+                                console.log("config system-setup");
+                                Config.read();  
+                            });
+                        return promise;
+                    }
+                    // settings: function ($q, Config) {
+
+
+                    //     var deferred = $q.defer();
+                    //     var promise = deferred.promise;
+                         
+                    //     // assign behavior before resolving
+                    //     promise.then(function (data) {
+                    //       Config.initialize()
+                    //     });
+                         
+                    //     deferred.resolve('Oh look we\'re done already.')
+
+                    //     return Config.read();
+                    // }
+            }
         })
         .segment('access-denied', {
             templateUrl: 'access-denied.html'
@@ -254,8 +321,8 @@ app.config(function($routeSegmentProvider, $routeProvider)
     //redirect to access-denied page if user has no access to page
     $rootScope.$on("$routeChangeStart", function(event, next, current) {
         if ($rootScope.isSystemSetUp==undefined) {
-            $http.get("InitialSetup?check=true").then(function(response) {
-                $rootScope.isSystemSetUp = response.data.setup=="true";
+            $http.get("rest/setup").then(function(response) {
+                $rootScope.isSystemSetUp = response.data == "true";
                 if (!$rootScope.isSystemSetUp) {
                     $location.path('/system-setup');
                 }

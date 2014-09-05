@@ -1,4 +1,4 @@
-@prefix :        <http://ontos-master.com/resource/> .
+@prefix :        <http://***PROJECT_URL***/resource/> .
 @prefix d2rq:    <http://www.wiwiss.fu-berlin.de/suhl/bizer/D2RQ/0.1#> .
 @prefix dcmit:   <http://purl.org/dc/dcmitype/> .
 @prefix dcterms:  <http://purl.org/dc/terms/> .
@@ -11,7 +11,7 @@
 @prefix void:    <http://rdfs.org/ns/void#> .
 @prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
 @prefix foaf:    <http://xmlns.com/foaf/0.1/> .
-@prefix gkg:     <http://ldiw.ontos.com/ontology/> .
+@prefix ontos:     <http://ldiw.ontos.com/ontology/> .
 @prefix acl:     <http://www.w3.org/ns/auth/acl#> .
 
 ########### ABOUT THIS FILE #############################################################
@@ -48,8 +48,8 @@
   rdfs:comment "This resource contains all the configuration required by the application"^^xsd:string ;
   rdfs:label "LDWorkbench"^^xsd:string ;
   dcterms:hasVersion "2.0"^^xsd:string ;
-  gkg:publicEndpoint :VirtuosoEndpoint ;
-  gkg:authEndpoint :VirtuosoAuthSPARQLEndpoint ;
+  ontos:publicEndpoint :VirtuosoEndpoint ;
+  ontos:authEndpoint :VirtuosoAuthSPARQLEndpoint ;
   lds:integrates :Facete, :Limes, :Sparqlify, :TripleGeo, :GeoLift, :OntoWiki, :Mappify ;
   foaf:homepage <http://localhost:8080/generator> .
 
@@ -159,12 +159,12 @@
 # #######################################################################################
 
 :OntologyRouteRestriction
-      a     gkg:RouteRestriction;
-      gkg:partialUrl "/home/manual-revision-and-authoring/ontology"^^xsd:string;
-      gkg:requiredService :D2RQService;
-      gkg:requiredService :MiniDixService .
+      a     ontos:RouteRestriction;
+      ontos:partialUrl "/home/manual-revision-and-authoring/ontology"^^xsd:string;
+      ontos:requiredService :D2RQService;
+      ontos:requiredService :MiniDixService .
 
 :RolesRouteRestriction
-      a     gkg:RouteRestriction;
-      gkg:partialUrl "/settings/roles"^^xsd:string;
-      gkg:requiredService :UserManagerService .
+      a     ontos:RouteRestriction;
+      ontos:partialUrl "/settings/roles"^^xsd:string;
+      ontos:requiredService :UserManagerService .

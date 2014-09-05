@@ -67,10 +67,11 @@ public class FrameworkConfiguration {
      * 
      * @param context
      * @return
+     * @throws IOException
      * @throws Exception
      */
     public static synchronized FrameworkConfiguration getInstance(
-	    ServletContext context) throws Exception {
+	    ServletContext context) throws IOException {
 
 	if (instance == null) {
 
@@ -122,9 +123,10 @@ public class FrameworkConfiguration {
 		instance.setFrameworkUri(soln.get("uri").toString());
 		instance.setPublicSparqlEndpoint(soln.get("endpoint")
 			.toString());
-		instance.setResourceNamespace(instance.getFrameworkUri()
+		instance.setResourceNamespace(instance
+			.getFrameworkUri()
 			.substring(0,
-				instance.getFrameworkUri().lastIndexOf("/")));
+				instance.getFrameworkUri().lastIndexOf("/") + 1));
 	    }
 	    qexec.close();
 

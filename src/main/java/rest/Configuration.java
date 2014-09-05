@@ -1,11 +1,14 @@
 package rest;
 
+import java.io.IOException;
+
 import javax.servlet.ServletContext;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import org.apache.log4j.Logger;
 
@@ -30,7 +33,7 @@ public class Configuration {
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public String getConfiguration(@Context ServletContext context) {
+    public Response getConfiguration(@Context ServletContext context) {
 
 	FrameworkConfiguration frameworkConf;
 	JsonObject config = null;
@@ -41,17 +44,23 @@ public class Configuration {
 	    config.addProperty("ns", frameworkConf.getResourceNamespace());
 	    config.addProperty("defaultSettingsGraphUri",
 		    frameworkConf.getSettingsGraph());
-	    config.addProperty("groupsGraphUri",
-		    frameworkConf.getGroupsGraph());
+	    config.addProperty("groupsGraphUri", frameworkConf.getGroupsGraph());
 	    config.addProperty("frameworkOntologyNs",
 		    frameworkConf.getFrameworkOntologyNS());
 	    config.addProperty("accountsGraph",
 		    frameworkConf.getAccountsGraph());
+	    config.addProperty("sparqlEndpoint",
+		    frameworkConf.getPublicSparqlEndpoint());
+	    config.addProperty("authSparqlEndpoint",
+		    frameworkConf.getAuthSparqlEndpoint());
 
-	} catch (Exception e) {
+	} catch (IOException e) {
 	    log.error(e);
 	    e.printStackTrace();
+	    return Response.status(Response.Status.EXPECTATION_FAILED)
+		    .entity("Error reading configuration files.").build();
 	}
-	return config.toString();
+	return Response.ok(config.toString(), MediaType.APPLICATION_JSON)
+		.build();
     }
 }

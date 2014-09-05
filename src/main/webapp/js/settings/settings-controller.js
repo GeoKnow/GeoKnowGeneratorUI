@@ -26,14 +26,32 @@ function SettingsMenuCtrl($scope, AccountService) {
 }
 
 
-function GeneralSettingsCtrl($scope, ConfigurationService) {
+function GeneralSettingsCtrl($rootScope, $scope, $location, ConfigurationService, flash, $timeout) {
 
     $scope.endpointServices = ConfigurationService.getResourcesType("lds:SPARQLEndPointService");
 
     $scope.settings = {
         uriBase: ConfigurationService.getUriBase(),
         endpointService: ConfigurationService.getSPARQLEndpoint(),
-        settingsGraph: ConfigurationService.getSettingsGraph()
+        settingsGraph: ConfigurationService.getSettingsGraph(),
+        publicEndpointService : ConfigurationService.getPublicSPARQLEndpoint(),
+        defaultSettingsGraphUri : ConfigurationService.getDefaultSettingsGraph(),
+        frameworkUri : ConfigurationService.getFrameworkUri()
+    };
+    // checkbox to initialize or reset the system
+    $scope.reset=true;
+    
+    $scope.setup = function(){
+      ConfigurationService.setup($scope.reset).then(function(response) {        
+        $rootScope.isSystemSetUp =true;
+        $timeout(function(){ 
+          $scope.$apply(function() {
+            $location.path("/home").replace();
+          });
+        }, 3000);
+      }, function(response){
+        flash.error = response.data;
+      });
     };
 
     $scope.$watch(function () {
@@ -42,6 +60,7 @@ function GeneralSettingsCtrl($scope, ConfigurationService) {
         $scope.settings.settingsGraph = ConfigurationService.getSettingsGraph();
     });
 
+ 
     // $scope.update = function(){
     // 	ConfigurationService.setUriBase($scope.settings.);
     // 	ConfigurationService.getSPARQLEndpoint($scope.settings);

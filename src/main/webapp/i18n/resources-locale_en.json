@@ -1,11 +1,14 @@
 [
     {
+        "key":"_framework-uri_",
+        "value":"Framework URI",
+        "description":"uri of the framework"
+    },
+    {
         "key":"_home-title_",
         "value":"Ontos Linked Data Suite",
         "description":"Home page title"
     },
-
-
     {
         "key":"_components-page-description_",
         "value":"Current workbench configuration has integrated the following components.",
@@ -63,8 +66,18 @@
     },
     {
         "key":"_system-setup-page-content_",
-        "value":"System is not set up. Call setup servlet first: http://localhost:8080/generator/InitialSetup.",
+        "value":"System is not set up. It can be initialized with the following parameters:",
         "description":"content of system-setup page"
+    },
+    {
+        "key":"_setup_",
+        "value":"Setup",
+        "description":"System setup button"
+    },
+    {
+        "key":"_reset_",
+        "value":"Reset",
+        "description":"System reset checkbox"
     },
     {
         "key":"_access-denied-page-content_",
