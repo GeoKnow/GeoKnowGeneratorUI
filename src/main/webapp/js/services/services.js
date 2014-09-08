@@ -158,6 +158,12 @@ module.factory('AuthenticationErrorResponse', function() {
                 case 1:
                     errorText = 'User already exists';
                     break;
+                case 2:
+                    errorText = "Incorrect old password";
+                    break;
+                case 3:
+                    errorText = "User doesn't exist";
+                    break;
                 default:
                     errorText = code;
             };

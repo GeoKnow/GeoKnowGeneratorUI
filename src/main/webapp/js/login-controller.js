@@ -98,7 +98,11 @@ function LoginCtrl($scope, flash, AccountService, LoginService, ServerErrorRespo
                 flash.success = response.data.message;
             }, function(response) {
             	$scope.close('#modalRestorePassword');
-                flash.error = ServerErrorResponse.getMessage(response.status);
+                if (response.status==500 && response.data) {
+                    flash.error = AuthenticationErrorResponse.getMessage(parseInt(response.data.code));
+                } else {
+                    flash.error = ServerErrorResponse.getMessage(response.status);
+                }
             });
     };
 
