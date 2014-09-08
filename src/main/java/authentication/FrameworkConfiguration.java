@@ -79,8 +79,6 @@ public class FrameworkConfiguration {
 
 	    String configurationFile = "framework-configuration.ttl";
 
-	    // TODO: this property has to be removed and replaced with the LDIWO
-	    // class
 	    instance.setFrameworkOntologyNS(LDIWO.NS);
 
 	    instance.setSmtpHost(context.getInitParameter("smtp-host"));
