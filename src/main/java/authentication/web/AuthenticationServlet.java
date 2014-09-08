@@ -152,7 +152,11 @@ public class AuthenticationServlet extends HttpServlet {
         EmailSender emailSender = FrameworkConfiguration.getInstance(getServletContext())
             .getDefaultEmailSender();
 
+<<<<<<< HEAD
         emailSender.send(email, "Ontos LDIW for ACC registration", "Your login: " + username + ", password: "
+=======
+        emailSender.send(email, "GeoKnow registration", "Your login: " + username + ", password: "
+>>>>>>> parent of 9df1f1d... use ACC instead of GeoKnow in e-mails
             + password);
         String responseStr = "{\"message\" : \"Your password will be sent to your e-mail address "
             + email + " \"}";
@@ -198,7 +202,11 @@ public class AuthenticationServlet extends HttpServlet {
                 return;
             }
             EmailSender emailSender = FrameworkConfiguration.getInstance(getServletContext()).getDefaultEmailSender();
+<<<<<<< HEAD
             emailSender.send(userProfile.getEmail(), "Ontos LDIW for ACC change password", "Your password for the Linked Data Information Workbench account "  + username + " was changed.");
+=======
+            emailSender.send(userProfile.getEmail(), "GeoKnow change password", "Your password was changed. Your login: " + username + ", new password: " + newPassword);
+>>>>>>> parent of 9df1f1d... use ACC instead of GeoKnow in e-mails
 
           String responseStr = "{\"message\" : \"Your password was changed\"}";
           response.getWriter().print(responseStr);
@@ -227,7 +235,11 @@ public class AuthenticationServlet extends HttpServlet {
         // send new password to user
         EmailSender emailSender = FrameworkConfiguration.getInstance(getServletContext())
             .getDefaultEmailSender();
+<<<<<<< HEAD
         emailSender.send(userProfile.getEmail(), "Ontos LDIW for ACC restore password", "Your login: "
+=======
+        emailSender.send(userProfile.getEmail(), "GeoKnow restore password", "Your login: "
+>>>>>>> parent of 9df1f1d... use ACC instead of GeoKnow in e-mails
             + username + ", password: " + password);
         String responseStr = "{\"message\" : \"New password will be sent to your e-mail address "
             + userProfile.getEmail() + " \"}";
