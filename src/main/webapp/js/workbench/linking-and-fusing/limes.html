@@ -6,15 +6,17 @@
 			dataset="{{}}"></save>
 
 	<!-- Subscribe to all flash messages. -->
-	<div flash-alert active-class="in alert" class="fade" duration="0">
+	<!-- <div flash-alert active-class="in alert" class="fade" duration="0">
 		<button type="button" class="close" ng-click="hide()">&times;</button>
   	<span class="alert-message">{{flash.message}}</span>
-	</div>
+	</div> -->
 
-	<h3 class="green bold">LIMES</h3>
-	<b>Link Discovery Framework for Metric Spaces</b>
-	<br>
-	<br>
+	<h3 class="green bold">{{component.label}} <span ng-show="component.offline" class="glyphicon glyphicon-warning-sign btn-sm red"></span></h3>	
+	<dl class="dl-horizontal">
+  <dt>Version:</dt><dd>{{component.version}}</dd>
+  <dt>Homepage:</dt><dd>{{component.homepage}}</dd>
+  </dl>
+	<p>Link Discovery Framework for Metric Spaces</p>
 	<p>To get started either upload a configuration file, choose an example, or fill in the options form.</p>
 	
 <form class="form-inline InputForm col-xs-11" role="form" ng-show="inputForm">

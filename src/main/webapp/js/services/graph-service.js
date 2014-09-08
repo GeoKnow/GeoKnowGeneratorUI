@@ -42,7 +42,6 @@ module.factory("GraphService", function ($http, $q, Config, AccountService) {
             for (var resource in data) {
                 var namedGraph = data[resource];
                 // be sure that is named one
-                console.log(namedGraph);
                 if(namedGraph["sd:name"] == undefined) continue;
                 //skip own graphs (if needs)
                 if (skipOwn && namedGraph["acl:owner"] == AccountService.getAccountURI())

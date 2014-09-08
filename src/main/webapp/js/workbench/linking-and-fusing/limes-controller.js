@@ -5,8 +5,9 @@
 * LIMES Controller
 *
 ***************************************************************************************************/
-var LimesCtrl = function($scope, $http, ConfigurationService, flash, ServerErrorResponse, $window, GraphService){
+var LimesCtrl = function($scope, $http, ConfigurationService, flash, ServerErrorResponse, $window, GraphService, AccountService){
 	
+	$scope.component = ConfigurationService.getComponent(":Limes");
 	var services = ConfigurationService.getComponentServices(":Limes");
 	var serviceUrl = services[0].serviceUrl;
 	
@@ -64,6 +65,13 @@ var LimesCtrl = function($scope, $http, ConfigurationService, flash, ServerError
 				  target: ""
 				}]
 	}];
+
+	$scope.component.offline = false;
+	
+  $http.get(serviceUrl).then( function ( response ) {
+  }, function ( response ) {
+   	$scope.component.offline = true;
+  });
 
 	$scope.appendInput = function(source, target){
 		idx++;
@@ -234,6 +242,7 @@ $scope.LaunchLimes = function(){
 		
 		window.$windowScope = $scope;
  		var newWindow = $window.open('popup.html#/popup-limes', 'frame', 'resizeable,height=600,width=800');
+ 		console.log(params);
 		newWindow.params = params;
 	};
 		
