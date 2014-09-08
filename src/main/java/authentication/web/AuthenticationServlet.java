@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Locale;
 import java.util.UUID;
 
 import javax.mail.MessagingException;
@@ -20,7 +19,6 @@ import org.codehaus.jackson.map.ObjectMapper;
 
 import util.EmailSender;
 import util.HttpUtils;
-import util.Localizer;
 import util.RandomStringGenerator;
 import accounts.FrameworkUserManager;
 import accounts.UserProfile;
@@ -68,11 +66,6 @@ public class AuthenticationServlet extends HttpServlet {
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
     String mode = request.getParameter("mode");
-
-      String language = request.getParameter("lang");
-      if (language==null)
-          language = "en";
-      Locale locale = new Locale(language);
 
     PrintWriter out = response.getWriter();
 
@@ -156,11 +149,11 @@ public class AuthenticationServlet extends HttpServlet {
       try {
         frameworkUserManager.createUser(username, password, email);
 
-        FrameworkConfiguration frameworkConfiguration = FrameworkConfiguration.getInstance(getServletContext());
-        Localizer localizer = frameworkConfiguration.getLocalizer(locale);
-        EmailSender emailSender = frameworkConfiguration.getDefaultEmailSender();
+        EmailSender emailSender = FrameworkConfiguration.getInstance(getServletContext())
+            .getDefaultEmailSender();
 
-        emailSender.send(email, localizer.localize("email.subject.registration"), localizer.localize("login") + ": " + username + "\n" + localizer.localize("password") + ": " + password);
+        emailSender.send(email, "Ontos LDIW for ACC registration", "Your login: " + username + ", password: "
+            + password);
         String responseStr = "{\"message\" : \"Your password will be sent to your e-mail address "
             + email + " \"}";
         response.getWriter().print(responseStr);
@@ -204,10 +197,8 @@ public class AuthenticationServlet extends HttpServlet {
                 response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "User profile " + username + " not found");
                 return;
             }
-            FrameworkConfiguration frameworkConfiguration = FrameworkConfiguration.getInstance(getServletContext());
-            Localizer localizer = frameworkConfiguration.getLocalizer(locale);
-            EmailSender emailSender = frameworkConfiguration.getDefaultEmailSender();
-            emailSender.send(userProfile.getEmail(), localizer.localize("email.subject.passwordChanged"), localizer.localize("email.message.passwordChanged") + " " + username);
+            EmailSender emailSender = FrameworkConfiguration.getInstance(getServletContext()).getDefaultEmailSender();
+            emailSender.send(userProfile.getEmail(), "Ontos LDIW for ACC change password", "Your password for the Linked Data Information Workbench account "  + username + " was changed.");
 
           String responseStr = "{\"message\" : \"Your password was changed\"}";
           response.getWriter().print(responseStr);
@@ -234,11 +225,10 @@ public class AuthenticationServlet extends HttpServlet {
         frameworkUserManager.setPassword(username, password);
 
         // send new password to user
-        FrameworkConfiguration frameworkConfiguration = FrameworkConfiguration.getInstance(getServletContext());
-        Localizer localizer = frameworkConfiguration.getLocalizer(locale);
-        EmailSender emailSender = frameworkConfiguration.getDefaultEmailSender();
-        emailSender.send(userProfile.getEmail(), localizer.localize("email.subject.passwordRestored"), localizer.localize("login") + ": "
-            + username + "\n" + localizer.localize("password") + ": " + password);
+        EmailSender emailSender = FrameworkConfiguration.getInstance(getServletContext())
+            .getDefaultEmailSender();
+        emailSender.send(userProfile.getEmail(), "Ontos LDIW for ACC restore password", "Your login: "
+            + username + ", password: " + password);
         String responseStr = "{\"message\" : \"New password will be sent to your e-mail address "
             + userProfile.getEmail() + " \"}";
         response.getWriter().print(responseStr);
