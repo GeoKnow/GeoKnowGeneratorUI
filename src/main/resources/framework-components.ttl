@@ -82,7 +82,7 @@
       foaf:homepage <http://aksw.org/Projects/LIMES.html> .
 :LimesService
       a       lds:InterlinkingService ;
-      lds:serviceUrl <http://localhost:8080/Limes-Service> .
+      lds:serviceUrl <http://localhost:8080/limes-service> .
 
 :TripleGeo
       a       lds:StackComponent ;

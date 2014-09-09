@@ -68,8 +68,9 @@ var LimesCtrl = function($scope, $http, ConfigurationService, flash, ServerError
 
 	$scope.component.offline = false;
 	
-  $http.get(serviceUrl).then( function ( response ) {
-  }, function ( response ) {
+  $http.get(serviceUrl).then( function(response) {
+  	$scope.component.offline = false;
+  }, function(response) {
    	$scope.component.offline = true;
   });
 
@@ -251,35 +252,24 @@ $scope.LaunchLimes = function(){
 			var params = $window.params;
 			$scope.showProgress = true;
 			$http({
-					url: serviceUrl+"/LimesRun",
+					url: serviceUrl+"/run",
 			        method: "POST",
 			        params: params,
 			        dataType: "json",
 			        contentType: "application/json; charset=utf-8"})
-		  .success(function (data, status, headers, config){
-	    	// to get the file list of results instead of review 
-	    	// $scope.ReviewLimes();
-	      // }, function (response){ // in the case of an error      	
-	
-	      if(data.status=="SUCCESS"){
-	        
+		  .success(function (response){
 	       	$scope.startLimes = false;
 		    	$scope.showProgress = false;
 		    	$scope.inputForm = true;
-		    	flash.success = data.message;
+		    	flash.success = "Limes finished";
 		    	// get the files inside data.results, and these are to be proposed to be downloaded
 		    	// in this case probably LimesReview is not required anymore...
-				$scope.ReviewLimes();   
-	      }
-	      else {
-			        flash.error = data.message;
-			        $scope.startLimes = false;
-		    	    $scope.showProgress = false;
-	      	}}).error(function(data, status, headers, config) {
-			        flash.error = ServerErrorResponse.getMessage(data.message);
-			        $scope.startLimes = false;
-				    $scope.showProgress = false;});
-
+					$scope.ReviewLimes();   
+	      })
+		  .error(function(response) {
+			    flash.error = ServerErrorResponse.getMessage(response.status);
+			    $scope.startLimes = false;
+				  $scope.showProgress = false;});
 	};
 	
 	$scope.ReviewLimes = function(){
