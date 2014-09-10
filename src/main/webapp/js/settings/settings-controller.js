@@ -36,13 +36,15 @@ function GeneralSettingsCtrl($rootScope, $scope, $location, ConfigurationService
         settingsGraph: ConfigurationService.getSettingsGraph(),
         publicEndpointService : ConfigurationService.getPublicSPARQLEndpoint(),
         defaultSettingsGraphUri : ConfigurationService.getDefaultSettingsGraph(),
-        frameworkUri : ConfigurationService.getFrameworkUri()
+        frameworkUri : ConfigurationService.getFrameworkUri(),
+        flagPath : ConfigurationService.getFlagPath()
+
     };
     // checkbox to initialize or reset the system
     $scope.reset=true;
     
     $scope.setup = function(){
-      ConfigurationService.setup($scope.reset).then(function(response) {        
+      return ConfigurationService.setup($scope.reset).then(function(response) {        
         $rootScope.isSystemSetUp =true;
         $timeout(function(){ 
           $scope.$apply(function() {

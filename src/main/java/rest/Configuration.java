@@ -53,6 +53,8 @@ public class Configuration {
 		    frameworkConf.getPublicSparqlEndpoint());
 	    config.addProperty("authSparqlEndpoint",
 		    frameworkConf.getAuthSparqlEndpoint());
+	    config.addProperty("flagPath",
+		    context.getInitParameter("framework-setup-path"));
 
 	} catch (IOException e) {
 	    log.error(e);

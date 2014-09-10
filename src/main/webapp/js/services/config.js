@@ -33,6 +33,7 @@ angular.module("app.configuration", [])
     $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded; charset=UTF-8";
 
     var FRAMEWORK_URI;
+    var FLAG_PATH;
     var NS;
     var DEFAULT_SETTINGS_GRAPH_URI;
     var GROUPS_GRAPH_URI;
@@ -88,6 +89,7 @@ angular.module("app.configuration", [])
                 ACCOUNTS_GRAPH = data.accountsGraph;
                 PUBLIC_ENDPOINT = data.sparqlEndpoint;
                 AUTH_ENDPOINT = data.authSparqlEndpoint;
+                FLAG_PATH = data.flagPath;
                 namespaces[NS] = ":";
                 SETTINGS_GRAPH_URI  = DEFAULT_SETTINGS_GRAPH_URI;
                 GRAPH = "<" + SETTINGS_GRAPH_URI + ">";
@@ -96,7 +98,7 @@ angular.module("app.configuration", [])
                 prefixes = Helpers.invertMap(namespaces);
                 console.log("FRAMEWORK_URI reolved:"+ FRAMEWORK_URI);
                 q.resolve();
-                })
+            })
             .error(function(data, status){
                 var message = ServerErrorResponse.getMessage(status);
                 flash.error = message;
@@ -159,6 +161,11 @@ angular.module("app.configuration", [])
     var getFrameworkUri = function()
     {
         return ns(FRAMEWORK_URI);
+    };
+
+    var getFlagPath = function()
+    {
+        return FLAG_PATH;
     };
 
     var setNS = function(ns)
@@ -301,7 +308,6 @@ angular.module("app.configuration", [])
         }
 
         console.log("Reading Settings from " + GRAPH);
-        console.log("FRAMEWORK_URI " + FRAMEWORK_URI);
 
         var requestData = {
             format: "application/sparql-results+json",
@@ -316,7 +322,6 @@ angular.module("app.configuration", [])
             {
                 settings = parseSparqlResults(data);
                 isLoaded = true;
-                console.log("read settings");
                 console.log(settings);
                 return settings;
             }
@@ -398,6 +403,7 @@ angular.module("app.configuration", [])
     return {
         initialize              : initialize,
         getNS                   : getNS,
+        getFlagPath             : getFlagPath,
         getEndpoint             : getEndpoint,
         getAuthEndpoint         : getAuthEndpoint,
         getDefaultSettingsGraph : getDefaultSettingsGraph,

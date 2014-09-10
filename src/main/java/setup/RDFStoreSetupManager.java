@@ -33,11 +33,11 @@ public class RDFStoreSetupManager {
     private static final Logger log = Logger
 	    .getLogger(RDFStoreSetupManager.class);
 
-    private File catalinaBase = new File(System.getProperty("catalina.base"))
-	    .getAbsoluteFile();
-    // TODO: move a file outside the application (i.e. /etc/ontos)
-    private File initFile = new File(catalinaBase.getAbsoluteFile(),
-	    "webapps/generator/WEB-INF/init.txt");
+    private File initFile;
+
+    public RDFStoreSetupManager(String path) {
+	initFile = new File(path, "init.txt");
+    }
 
     // set rdf store up using configuration; if reset==true than clear (using
     // config) rdf store and set up once again
@@ -165,6 +165,7 @@ public class RDFStoreSetupManager {
 	queryString = "PREFIX foaf:<http://xmlns.com/foaf/0.1/> "
 		+ "PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#> "
 		+ "PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#> "
+		+ "PREFIX void:    <http://rdfs.org/ns/void#> "
 		+ "PREFIX lds:<http://stack.linkeddata.org/ldis-schema/>"
 		+ " CONSTRUCT   { <"
 		+ config.getFrameworkUri()
@@ -173,8 +174,12 @@ public class RDFStoreSetupManager {
 		+ config.getFrameworkUri()
 		+ "> lds:integrates ?component ."
 		+ "?component rdfs:label ?label . ?component rdf:type ?type . "
-		+ "?component lds:providesService ?service . ?service rdf:type ?servicetype ."
-		+ "?service lds:serviceUrl ?serviceUrl .} "
+		+ "?component lds:providesService ?service . "
+		+ "?service rdf:type ?servicetype ."
+		+ "?service rdfs:label ?servicelabel ."
+		+ "?service void:sparqlEndpoint ?serviceendpoint ."
+		+ "?service lds:serviceUrl ?serviceUrl ."
+		+ "} "
 		+ " WHERE  { <"
 		+ config.getFrameworkUri()
 		+ "> ?p ?o ."
@@ -182,8 +187,16 @@ public class RDFStoreSetupManager {
 		+ config.getFrameworkUri()
 		+ "> lds:integrates ?component ."
 		+ "?component rdfs:label ?label . ?component rdf:type ?type . "
-		+ "?component lds:providesService ?service . ?service rdf:type ?servicetype ."
-		+ "?service lds:serviceUrl ?serviceUrl .}";
+		+ "?component lds:providesService ?service . "
+		+ "?service rdf:type ?servicetype ."
+		+ "?service lds:serviceUrl ?serviceUrl ."
+		+ "OPTIONAL { "
+		+ "   ?service rdfs:label ?servicelabel ."
+		+ "   ?service void:sparqlEndpoint ?serviceendpoint "
+		+ "  }"
+		+ "}";
+
+	log.debug(queryString);
 	QueryExecution qexec = QueryExecutionFactory.create(queryString,
 		configurationModel);
 	Model triples = qexec.execConstruct();
@@ -239,10 +252,16 @@ public class RDFStoreSetupManager {
 	}
 	qexec.close();
 
-	boolean created = initFile.createNewFile();
-	if (!created)
-	    throw new Exception("Failed to create init flag file "
-		    + initFile.getPath());
+	try {
+	    boolean created = initFile.createNewFile();
+	    if (!created) {
+		log.error("Failed to create init flag file "
+			+ initFile.getPath());
+	    }
+	} catch (Exception e) {
+	    log.error("Failed to create init flag file " + initFile.getPath());
+	    throw new Exception(e);
+	}
 
 	log.info("System was initialized successfully.");
     }
@@ -290,6 +309,8 @@ public class RDFStoreSetupManager {
     }
 
     public boolean isSetUp() {
+	log.info("Checking if " + initFile.getPath() + initFile.getName()
+		+ " exists");
 	return initFile.exists();
     }
 }

@@ -5,6 +5,13 @@
 	version="2.4">
 
 	<display-name>GeoKnow Generator</display-name>
+	
+	<!-- FrameWork Configuration parameters  -->
+  <context-param> 
+    <description>Framework configuration flag</description> 
+    <param-name>framework-setup-path</param-name> 
+    <param-value>/etc/ontos-ldiw</param-value>
+  </context-param> 
 
 	<!-- File Upload parameters -->
 	<context-param>
@@ -32,7 +39,7 @@
 	<context-param>
 		<description>SMPT Host</description>
 		<param-name>smtp-host</param-name>
-		<param-value>smtp.strato.de</param-value>
+		<param-value>***REMOVED***</param-value>
 	</context-param>
 	<context-param>
 		<description>SMPT TLS Port</description>

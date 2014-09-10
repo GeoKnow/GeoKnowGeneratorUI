@@ -99,13 +99,13 @@ app.config(function($routeSegmentProvider, $routeProvider)
                             var promise = defer.promise;
                             promise
                                 .then(function(){
-                                    Config.read();  
-                                })
-                                .then(function(){
-                                    //why this function is required at this level? 
-                                    UsersService.readUserNamesEmails(); 
-                                });
-
+                                    Config.read().then(function(){
+                                        //why this function is required at this level? 
+                                        // UsersService.readUserNamesEmails(); 
+                                        UsersService.readRoles();
+                                    });
+                                }); 
+                            return promise;
                         }
                     // },
                     //     settings: function (Config) {
@@ -191,31 +191,14 @@ app.config(function($routeSegmentProvider, $routeProvider)
                         Config.initialize(defer);
                         promise
                             .then(function(){
-                                Config.read();  
-                            })
-                            .then(function(){
-                                //why this function is required at this level? 
-                                UsersService.readUserNamesEmails(); 
+                                Config.read().then(function(){
+                                    //why this function is required at this level? 
+                                    // UsersService.readRoles();
+                                    // UsersService.readUserNamesEmails(); 
+                                }); 
                             });
+                            
                         return promise;
-                    },
-                    //   settings: function ($q,Config) {
-
-
-                    //     var deferred = $q.defer();
-                    //     var promise = deferred.promise;
-                         
-                    //     // assign behavior before resolving
-                    //     promise.then(function (data) {
-                    //       Config.initialize()
-                    //     });
-                         
-                    //     deferred.resolve('Oh look we\'re done already.')
-
-                    //     return Config.read();
-                    // },
-                      userInfo : function(UsersService) {
-                      return UsersService.readUserNamesEmails();
                     }
             }
 		})
@@ -233,15 +216,29 @@ app.config(function($routeSegmentProvider, $routeProvider)
                 .segment('roles', {
                     templateUrl: 'js/admin/roles.html',
                     resolve: {
-                            users: function(UsersService) {
-                                return UsersService.readUsers();
-                            },
-                            roles: function(UsersService) {
-                                return UsersService.readRoles();
-                            },
-                            settings: function (Config) {
-                                return Config.read();
-                            }
+                        init: function($q, Config, UsersService){
+                            console.log("init roles");
+                            var defer = $q.defer();
+                            var promise = defer.promise;
+                            Config.initialize(defer);
+                            promise
+                                .then(function(){
+                                    Config.read().then(function(){
+                                        UsersService.readRoles();
+                                    });
+                                });
+                            return promise;
+                        }
+
+                            // users: function(UsersService) {
+                            //     return UsersService.readUsers();
+                            // },
+                            // roles: function(UsersService) {
+                            //     return UsersService.readRoles();
+                            // },
+                            // settings: function (Config) {
+                            //     return Config.read();
+                            // }
                         }
                     })
             .up()

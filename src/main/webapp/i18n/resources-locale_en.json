@@ -5,6 +5,11 @@
         "description":"uri of the framework"
     },
     {
+        "key":"_framework-path-flag_",
+        "value":"Framework path setup flag, make sure this directory is Writable",
+        "description":"path to put the setup flag of the framework"
+    },
+    {
         "key":"_home-title_",
         "value":"Ontos Linked Data Suite",
         "description":"Home page title"

@@ -79,8 +79,8 @@
   <tbody>
     <tr ng-repeat="endpoint in endpoints">
       <td ng-if="isUserAuthenticated()">
-        <button type="button" class="btn btn-default btn-xs" ng-click="delete('{{endpoint.uri}}')"><span class="glyphicon glyphicon-trash"></span></button>
-        <button type="button" class="btn btn-default btn-xs" ng-click="edit('{{endpoint.uri}}');" data-toggle="modal" data-target="#modalEndpoint"><span class="glyphicon glyphicon-edit"></span></button>
+        <button ng-disabled="!isEditable(endpoint.endpoint)" type="button" class="btn btn-default btn-xs" ng-click="delete('{{endpoint.uri}}')"><span class="glyphicon glyphicon-trash"></span></button>
+        <button ng-disabled="!isEditable(endpoint.endpoint)"  type="button" class="btn btn-default btn-xs" ng-click="edit('{{endpoint.uri}}');" data-toggle="modal" data-target="#modalEndpoint"><span class="glyphicon glyphicon-edit"></span></button>
       </td>
       <td>{{endpoint.uri}}</td>
       <td>{{endpoint.label}}</td>

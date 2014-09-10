@@ -1,17 +1,13 @@
-@prefix :        <http://***PROJECT_URL***/resource/> .
-@prefix d2rq:    <http://www.wiwiss.fu-berlin.de/suhl/bizer/D2RQ/0.1#> .
-@prefix dcmit:   <http://purl.org/dc/dcmitype/> .
+@prefix :        <http://ldiw.ontos.com/resource/> .
 @prefix dcterms:  <http://purl.org/dc/terms/> .
 @prefix lds:     <http://stack.linkeddata.org/ldis-schema/> .
-@prefix owl:     <http://www.w3.org/2002/07/owl#> .
 @prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix schema:  <http://schema.org/> .
 @prefix sd:      <http://www.w3.org/ns/sparql-service-description#> .
 @prefix void:    <http://rdfs.org/ns/void#> .
 @prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
 @prefix foaf:    <http://xmlns.com/foaf/0.1/> .
-@prefix ontos:   <http://ldiw.ontos.com/ontology/> .
+@prefix ontos:     <http://ldiw.ontos.com/ontology/> .
 
 ########### ABOUT THIS FILE #############################################################
 # This file contains the configuration for the GeoKnow generator concerning
@@ -48,13 +44,15 @@
   lds:user   "***REMOVED***"^^xsd:string .
 
 :VirtuosoAuthSPARQLEndpoint
-  a       lds:SecuredSPARQLEndPointService ;
+  a       lds:SecuredSPARQLEndPointService,  void:Dataset , ontos:SPARQLEndpoint , ontos:DataSource ;
+  rdfs:label "Workbench Auth" ;
   lds:password "***REMOVED***"^^xsd:string ;
   lds:serviceUrl <http://***ENDPOINT***:8890/sparql-auth> ;
   lds:user   "***REMOVED***"^^xsd:string .
 
 :VirtuosoEndpoint
-  a       lds:SPARQLEndPointService ;
+  a       lds:SecuredSPARQLEndPointService,  void:Dataset , ontos:SPARQLEndpoint , ontos:DataSource ;
+  rdfs:label "Workbench Pub" ;
   lds:serviceUrl <http://***ENDPOINT***:8890/sparql> .
 
 

@@ -1,5 +1,7 @@
-<div ng-controller="GeneralSettingsCtrl">
+<div class="container-fluid" ng-controller="GeneralSettingsCtrl">
+
     <h4 data-i18n="_system-setup-page-content_"></h4>
+
 
     <dl class="dl-horizontal">
         <dt>{{'_framework-uri_' | i18n}}</dt>
@@ -13,13 +15,16 @@
 
         <dt>{{'_settings-endpoint_' | i18n}}</dt>
         <dd>{{settings.publicEndpointService}}</dd>
+
+        <dt>{{'_framework-path-flag_' | i18n}}</dt>
+        <dd>{{settings.flagPath}}</dd>
     </dl>
 
     <div class="form-actions">
-        <div class="checkbox">
-        <label>
-        <input type="checkbox" ng-model="reset"> {{'_reset_' | i18n}}
-        </label>
+         <div class="checkbox">
+            <label>
+            <input type="checkbox" ng-model="reset"> {{'_reset_' | i18n}}
+            </label>
         </div>
         <button type="submit" ng-click="setup();" class="btn btn-sm btn-primary" data-i18n="_setup_"></button>
     </div>

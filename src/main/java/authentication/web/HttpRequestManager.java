@@ -14,8 +14,6 @@ import javax.xml.ws.http.HTTPException;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.log4j.Logger;
 
-import util.UnsupportedAuthenticationSchema;
-
 public class HttpRequestManager {
 
     private static final Logger log = Logger
@@ -38,7 +36,7 @@ public class HttpRequestManager {
     }
 
     public static String executePost(String url, String urlParameters,
-	    String username, String password) throws IOException {
+	    String username, String password) throws Exception {
 	// TODO: May be try to do Authorized post by default first ??? to avoid
 	// doing two queries? are all the queries made by the generator will use
 	// the
@@ -73,10 +71,8 @@ public class HttpRequestManager {
 		    throw new HTTPException(responseCode);
 		}
 	    } else
-		throw new UnsupportedAuthenticationSchema(
-			"Unsupported authentication type: "
-				+ wwwAuthenticateHeader
-					.getAuthenticationScheme());
+		throw new Exception("Unsupported authentication type: "
+			+ wwwAuthenticateHeader.getAuthenticationScheme());
 	case 400: // bad request
 	    log.error(connection.getResponseCode() + "\n\t "
 		    + connection.getResponseMessage() + "\n\t url:" + url
@@ -119,8 +115,7 @@ public class HttpRequestManager {
 
     private static HttpURLConnection sendAuthorizedPost(String url,
 	    String urlParameters, WWWAuthenticateHeader wwwAuthenticateHeader,
-	    String username, String password) throws IOException,
-	    UnsupportedAuthenticationSchema {
+	    String username, String password) throws Exception {
 	log.debug("Execute authorized POST to " + url);
 	URL targetURL = new URL(url);
 	HttpURLConnection connection = (HttpURLConnection) targetURL
@@ -178,13 +173,11 @@ public class HttpRequestManager {
 
     private static String getDigestAuthorizationProperty(String endpoint,
 	    WWWAuthenticateHeader wwwAuthenticateHeader, String username,
-	    String password, String requestMethod)
-	    throws UnsupportedAuthenticationSchema {
+	    String password, String requestMethod) throws Exception {
 	if (!wwwAuthenticateHeader.isDigest())
-	    throw new UnsupportedAuthenticationSchema(
-		    "Unexpected authentication scheme "
-			    + wwwAuthenticateHeader.getAuthenticationScheme()
-			    + ", Digest expected");
+	    throw new Exception("Unexpected authentication scheme "
+		    + wwwAuthenticateHeader.getAuthenticationScheme()
+		    + ", Digest expected");
 	String nc = "00000001";
 	String cnonce = DigestUtils.md5Hex(Long.toString(System
 		.currentTimeMillis()));

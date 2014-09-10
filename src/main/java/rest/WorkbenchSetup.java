@@ -25,6 +25,9 @@ public class WorkbenchSetup {
 
     private static final Logger log = Logger.getLogger(WorkbenchSetup.class);
 
+    private @Context
+    ServletContext context;
+
     /**
      * Get the status of the setup
      * 
@@ -33,7 +36,8 @@ public class WorkbenchSetup {
     @GET
     @Produces(MediaType.TEXT_PLAIN)
     public Response isSetuUp() {
-	RDFStoreSetupManager setupManager = new RDFStoreSetupManager();
+	RDFStoreSetupManager setupManager = new RDFStoreSetupManager(
+		context.getInitParameter("framework-setup-path"));
 	return Response.ok(setupManager.isSetUp(), MediaType.TEXT_PLAIN)
 		.build();
     }
@@ -46,7 +50,8 @@ public class WorkbenchSetup {
      */
     @POST
     public Response reset(@Context ServletContext context) {
-	RDFStoreSetupManager setupManager = new RDFStoreSetupManager();
+	RDFStoreSetupManager setupManager = new RDFStoreSetupManager(
+		context.getInitParameter("framework-setup-path"));
 	FrameworkConfiguration frameworkConfiguration = null;
 	try {
 	    frameworkConfiguration = FrameworkConfiguration
@@ -75,7 +80,8 @@ public class WorkbenchSetup {
      */
     @PUT
     public Response initialize(@Context ServletContext context) {
-	RDFStoreSetupManager setupManager = new RDFStoreSetupManager();
+	RDFStoreSetupManager setupManager = new RDFStoreSetupManager(
+		context.getInitParameter("framework-setup-path"));
 
 	if (setupManager.isSetUp()) {
 	    log.info("System is already set up. To reset system use PUT method");

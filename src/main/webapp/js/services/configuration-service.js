@@ -7,16 +7,15 @@ module.factory('ConfigurationService', function (Config, $http, $location, flash
     var SettingsService = {
         
         setup: function(reset){
-            var promise;
+            console.log("setup reset: " + reset);
             if(reset)
-                promise = $http.post('rest/setup').success(function(data){
+                return $http.post('rest/setup').success(function(data){
                     flash.success = data;   
                 });
             else
-                promise = $http.put('rest/setup').success(function(data){
+                return $http.put('rest/setup').success(function(data){
                     flash.success = data;
                 });
-            return promise;
         },
 
         setSPARQLEndpoint: function (endpoint) {
@@ -42,6 +41,10 @@ module.factory('ConfigurationService', function (Config, $http, $location, flash
 
         getFrameworkUri: function () {
             return Config.getFrameworkUri();
+        },
+        
+        getFlagPath: function () {
+            return Config.getFlagPath();
         },
 
         setUriBase: function (uri) {
@@ -131,14 +134,14 @@ module.factory('ConfigurationService', function (Config, $http, $location, flash
         getAllEndpoints: function () {
             var results = [];
             var elements = Config.select("rdf:type", "gkg:SPARQLEndpoint");
-
             for (var resource in elements) {
                 var element = elements[resource];
+                if(element["rdfs:label"]== undefined) continue;
                 results.push({
                     uri: resource,
                     label: element["rdfs:label"][0],
                     endpoint: element["void:sparqlEndpoint"][0],
-                    homepage: element["foaf:homepage"][0]
+                    homepage: element["foaf:homepage"] == undefined ? "" : element["foaf:homepage"][0]
                 });
             }
             return results;
@@ -150,7 +153,7 @@ module.factory('ConfigurationService', function (Config, $http, $location, flash
                 uri: uri,
                 label: settings[uri]["rdfs:label"][0],
                 endpoint: settings[uri]["void:sparqlEndpoint"][0],
-                homepage: settings[uri]["foaf:homepage"][0]
+                homepage: settings[uri]["foaf:homepage"] == undefined ? "" : settings[uri]["foaf:homepage"][0]
             };
             return results;
         },
