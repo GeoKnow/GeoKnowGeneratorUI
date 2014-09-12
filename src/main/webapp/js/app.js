@@ -58,8 +58,8 @@ app.config(function($routeSegmentProvider, $routeProvider)
         .segment('popup-limes', {
             templateUrl: 'js/workbench/linking-and-fusing/limes-result.html',
             resolve: {
-                      settings: function (Config) {
-                        return Config.read();
+                      settings: function (ConfigurationService) {
+                        return ConfigurationService.getSettings();
                       }
                 }
             })
@@ -67,8 +67,8 @@ app.config(function($routeSegmentProvider, $routeProvider)
         .segment('popup-triplegeo', {
             templateUrl: 'js/workbench/extraction-and-loading/triplegeo-result.html',
             resolve: {
-                      settings: function (Config) {
-                        return Config.read();
+                      settings: function (ConfigurationService) {
+                        return ConfigurationService.getSettings();
                       }
                 }
             })
@@ -76,8 +76,8 @@ app.config(function($routeSegmentProvider, $routeProvider)
         .segment('popup-geolift', {
             templateUrl: 'js/workbench/classification-and-enrichment/geolift-result.html',
             resolve: {
-                      settings: function (Config) {
-                        return Config.read();
+                      settings: function (ConfigurationService) {
+                        return ConfigurationService.getSettings();
                       }
                 }
             })
@@ -85,25 +85,10 @@ app.config(function($routeSegmentProvider, $routeProvider)
         .segment('default', {
             templateUrl :'js/workbench/default.html',
             resolve: {
-                        init: function($q, Config, UsersService){
-                            console.log("init default");
-                            var defer = $q.defer();
-                            Config.initialize(defer);
-                            var promise = defer.promise;
-                            promise
-                                .then(function(){
-                                    Config.read().then(function(){
-                                        //why this function is required at this level? 
-                                        UsersService.readUserNamesEmails(); 
-                                        //UsersService.readRoles();
-                                    });
-                                }); 
-                            return promise;
+                        settings : function (ConfigurationService){
+                             return ConfigurationService.getSettings();
                         }
-                    // },
-                    //     settings: function (Config) {
-                    //     return Config.read();
-                    // },
+                    // }
                     //     userInfo : function(UsersService) {
                     //     return UsersService.readUserNamesEmails();
                     // }
@@ -140,22 +125,25 @@ app.config(function($routeSegmentProvider, $routeProvider)
 		{
 			templateUrl: 'js/settings/settings.html',
             resolve: {
-                    init: function($q, Config, UsersService){
-                        console.log("init settings");
-                        var defer = $q.defer();
-                        var promise = defer.promise;
-                        Config.initialize(defer);
-                        promise
-                            .then(function(){
-                                Config.read().then(function(){
-                                    //why this function is required at this level? 
-                                    // UsersService.readRoles();
-                                    // UsersService.readUserNamesEmails(); 
-                                }); 
-                            });
-                            
-                        return promise;
+                    settings: function (ConfigurationService) {
+                                return ConfigurationService.getSettings();
                     }
+                    // init: function($q, Config, UsersService){
+                    //     console.log("init settings");
+                    //     var defer = $q.defer();
+                    //     var promise = defer.promise;
+                    //     Config.initialize(defer);
+                    //     promise
+                    //         .then(function(){
+                    //             Config.read().then(function(){
+                    //                 //why this function is required at this level? 
+                    //                 // UsersService.readRoles();
+                    //                 // UsersService.readUserNamesEmails(); 
+                    //             }); 
+                    //         });
+                            
+                    //     return promise;
+                    // }
             }
 		})
             .within()
@@ -172,30 +160,15 @@ app.config(function($routeSegmentProvider, $routeProvider)
                 .segment('roles', {
                     templateUrl: 'js/admin/roles.html',
                     resolve: {
-                        init: function($q, Config, UsersService){
-                            console.log("init roles");
-                            var defer = $q.defer();
-                            var promise = defer.promise;
-                            Config.initialize(defer);
-                            promise
-                                .then(function(){
-                                    Config.read().then(function(){
-                                        UsersService.readRoles();
-                                        UsersService.readUsers();
-                                    });
-                                });
-                            return promise;
-                        }
-
-                            // users: function(UsersService) {
-                            //     return UsersService.readUsers();
-                            // },
-                            // roles: function(UsersService) {
-                            //     return UsersService.readRoles();
-                            // },
-                            // settings: function (Config) {
-                            //     return Config.read();
-                            // }
+                            settings: function (ConfigurationService) {
+                                return ConfigurationService.getSettings();
+                            },
+                            users: function(UsersService) {
+                                return UsersService.readUsers();
+                            },
+                            roles: function(UsersService) {
+                                return UsersService.readRoles();
+                            }                        
                         }
                     })
             .up()
@@ -209,17 +182,10 @@ app.config(function($routeSegmentProvider, $routeProvider)
         .segment('system-setup', {
             templateUrl: 'system-setup.html',
             resolve: {
-                    init: function($q, Config){
-                        console.log("init system-setup");
-                        var defer = $q.defer();
-                        var promise = defer.promise;
-                        Config.initialize(defer);
-                        promise
-                            .then(function(){
-                                console.log("config system-setup");
-                                Config.read();  
-                            });
-                        return promise;
+                    roles: function (ConfigurationService, UsersService) {
+                        ConfigurationService.getSettings().then(function(settings){
+                            return UsersService.readRoles();
+                        });
                     }
             }
         })
