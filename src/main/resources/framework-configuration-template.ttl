@@ -1,33 +1,31 @@
-@prefix :        <http://generator.geoknow.eu/resource/> .
-@prefix d2rq:    <http://www.wiwiss.fu-berlin.de/suhl/bizer/D2RQ/0.1#> .
-@prefix dcmit:   <http://purl.org/dc/dcmitype/> .
+@prefix :        <http://***PROJECT_URL***/resource/> .
 @prefix dcterms:  <http://purl.org/dc/terms/> .
 @prefix lds:     <http://stack.linkeddata.org/ldis-schema/> .
-@prefix owl:     <http://www.w3.org/2002/07/owl#> .
 @prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix schema:  <http://schema.org/> .
 @prefix sd:      <http://www.w3.org/ns/sparql-service-description#> .
 @prefix void:    <http://rdfs.org/ns/void#> .
 @prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
 @prefix foaf:    <http://xmlns.com/foaf/0.1/> .
-@prefix gkg:     <http://generator.geoknow.eu/ontology/> .
-
+@prefix ontos:   <http://ldiw.ontos.com/ontology/> .
 
 ########### ABOUT THIS FILE #############################################################
 # This file contains the configuration for the GeoKnow generator concerning
 # the endpoints and default user credentials
+# To have different instances of the workbench different prefixes for projects:
+# Replace ***PROJECT_URL*** with the desided URI
+# Replace ***ENDPOINT*** and ***REMOVED*** with the corresponding data
 # #######################################################################################
 
 # These triples describes the URL endpoints for the application
 
-:GeoKnowGenerator
+:LDWorkbench
   a       lds:StackComponent ;
   rdfs:comment "This resource contains all the configuration required by the application"^^xsd:string ;
-  rdfs:label "GeoKnowGeneator"^^xsd:string ;
+  rdfs:label "LDWorkbench"^^xsd:string ;
   dcterms:hasVersion "2.0"^^xsd:string ;
-  gkg:publicEndpoint :VirtuosoEndpoint ;
-  gkg:authEndpoint :VirtuosoAuthSPARQLEndpoint ;
+  ontos:publicEndpoint :VirtuosoEndpoint ;
+  ontos:authEndpoint :VirtuosoAuthSPARQLEndpoint ;
   lds:integrates :Virtuoso ;
   foaf:homepage <http://localhost:8080/generator> .
 
@@ -41,19 +39,21 @@
 :VirtuosoConductor 
   a  lds:StorageService ;
   lds:password "***REMOVED***"^^xsd:string ;
-  lds:serviceUrl <http://***REMOVED***:8890/conductor> ;
-  lds:connectionString "jdbc:virtuoso://***REMOVED***:1111/"^^xsd:string;
+  lds:serviceUrl <http://:8890/conductor> ;
+  lds:connectionString "jdbc:virtuoso://***ENDPOINT***:1111/"^^xsd:string;
   lds:user   "***REMOVED***"^^xsd:string .
 
 :VirtuosoAuthSPARQLEndpoint
-  a       lds:SecuredSPARQLEndPointService ;
+  a       lds:SecuredSPARQLEndPointService,  void:Dataset , ontos:SPARQLEndpoint , ontos:DataSource ;
+  rdfs:label "Workbench Auth" ;
   lds:password "***REMOVED***"^^xsd:string ;
-  lds:serviceUrl <http://***REMOVED***:8890/sparql-auth> ;
+  lds:serviceUrl <http://***ENDPOINT***:8890/sparql-auth> ;
   lds:user   "***REMOVED***"^^xsd:string .
 
 :VirtuosoEndpoint
-  a       lds:SPARQLEndPointService ;
-  lds:serviceUrl <http://***REMOVED***:8890/sparql> .
+  a       lds:SecuredSPARQLEndPointService,  void:Dataset , ontos:SPARQLEndpoint , ontos:DataSource ;
+  rdfs:label "Workbench Pub" ;
+  lds:serviceUrl <http://***ENDPOINT***:8890/sparql> .
 
 
 # #######################################################################################
@@ -75,7 +75,11 @@
   .
 
 :defaultNamedGraph
+<<<<<<< HEAD
   sd:name <http://***REMOVED***/DAV>;
+=======
+  sd:name <http://***ENDPOINT***:8890/DAV>;
+>>>>>>> master
   sd:graph [
     a sd:Graph, void:Dataset;
     rdfs:label "default"^^xsd:string;
@@ -92,7 +96,11 @@
     dcterms:description "GeoKnow Generator settings and configurations"^^xsd:string;
     dcterms:modified "2013-09-12"^^xsd:date;
     dcterms:created "2013-09-12"^^xsd:date;
+<<<<<<< HEAD
     void:sparqlEndpoint <http://***REMOVED***/sparql> ]
+=======
+    void:sparqlEndpoint <http://***ENDPOINT***:8890/sparql> ]
+>>>>>>> master
   .
 
 :initialSettingsNamedGraph
@@ -104,7 +112,11 @@
     dcterms:description "Initial configuration of components in the framework"^^xsd:string;
     dcterms:modified "2013-09-12"^^xsd:date;
     dcterms:created "2013-09-12"^^xsd:date;
+<<<<<<< HEAD
     void:sparqlEndpoint <http://***REMOVED***/sparql> ]
+=======
+    void:sparqlEndpoint <http://***ENDPOINT***:8890/sparql> ]
+>>>>>>> master
   .
 
 :accountsNamedGraph
@@ -116,7 +128,11 @@
     dcterms:description "A graph to store the users accounts"^^xsd:string;
     dcterms:modified "2014-04-12"^^xsd:date;
     dcterms:created "2014-04-12"^^xsd:date;
+<<<<<<< HEAD
     void:sparqlEndpoint <http://***REMOVED***/sparql> ]
+=======
+    void:sparqlEndpoint <http://***ENDPOINT***:8890/sparql> ]
+>>>>>>> master
   .
 
 :groupsNamedGraph
@@ -128,14 +144,16 @@
     dcterms:description "A graph for groups of graphs"^^xsd:string;
     dcterms:modified "2014-04-12"^^xsd:date;
     dcterms:created "2014-04-12"^^xsd:date;
+<<<<<<< HEAD
     void:sparqlEndpoint <http://***REMOVED***/sparql> ]
+=======
+    void:sparqlEndpoint <http://***ENDPOINT***:8890/sparql> ]
+>>>>>>> master
   .
 
 :admin
-  a gkg:Account;
+  a ontos:Account;
   foaf:accountName "***REMOVED***"^^xsd:string;
   lds:password "***REMOVED***"^^xsd:string;
   foaf:mbox <mailto:***REMOVED***>;
-  gkg:Role gkg:Administrator.
-
-
+  ontos:Role ontos:Administrator.

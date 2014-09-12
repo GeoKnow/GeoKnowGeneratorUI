@@ -1,18 +1,13 @@
-@prefix :        <http://generator.geoknow.eu/resource/> .
-@prefix d2rq:    <http://www.wiwiss.fu-berlin.de/suhl/bizer/D2RQ/0.1#> .
-@prefix dcmit:   <http://purl.org/dc/dcmitype/> .
+@prefix :        <http://***PROJECT_URL***/resource/> .
 @prefix dcterms:  <http://purl.org/dc/terms/> .
 @prefix lds:     <http://stack.linkeddata.org/ldis-schema/> .
-@prefix owl:     <http://www.w3.org/2002/07/owl#> .
 @prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix schema:  <http://schema.org/> .
 @prefix sd:      <http://www.w3.org/ns/sparql-service-description#> .
 @prefix void:    <http://rdfs.org/ns/void#> .
 @prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
 @prefix foaf:    <http://xmlns.com/foaf/0.1/> .
-@prefix gkg:     <http://generator.geoknow.eu/ontology/> .
-@prefix acl:     <http://www.w3.org/ns/auth/acl#> .
+@prefix ontos:   <http://ldiw.ontos.com/ontology/> .
 
 ########### ABOUT THIS FILE #############################################################
 # This file contains the default set-up of components in the framework; 
@@ -22,15 +17,15 @@
 #    - https://www.mail-archive.com/virtuoso-users@lists.sourceforge.net/msg05138.html
 # #######################################################################################
 
-:GeoKnowGeneratorService a sd:Service;
+:LDWorkbenchService a sd:Service;
     sd:endpoint <http://localhost:8890/sparql>;
     sd:supportedLanguage sd:SPARQL11Query ;
     sd:defaultDataset :default-dataset;
     .
 
 :default-dataset a sd:Dataset;
-    rdfs:label "GeoKnow Generator";
-    dcterms:description "The GeoKnow Generator Service"^^xsd:string;
+    rdfs:label "LDWorkbench";
+    dcterms:description "LDWorkbench Service"^^xsd:string;
     sd:defaultGraph <http://localhost:8890/DAV>;
     sd:namedGraph :settingsGraph;
     .
@@ -43,13 +38,13 @@
 # Following triples  describes the configured components in the framework
 # #######################################################################################
 
-:GeoKnowGenerator
+:LDWorkbench
   a       lds:StackComponent ;
   rdfs:comment "This resource contains all the configuration required by the application"^^xsd:string ;
-  rdfs:label "GeoKnowGeneator"^^xsd:string ;
+  rdfs:label "LDWorkbench"^^xsd:string ;
   dcterms:hasVersion "2.0"^^xsd:string ;
-  gkg:publicEndpoint :VirtuosoEndpoint ;
-  gkg:authEndpoint :VirtuosoAuthSPARQLEndpoint ;
+  ontos:publicEndpoint :VirtuosoEndpoint ;
+  ontos:authEndpoint :VirtuosoAuthSPARQLEndpoint ;
   lds:integrates :Facete, :Limes, :Sparqlify, :TripleGeo, :GeoLift, :OntoWiki, :Mappify ;
   foaf:homepage <http://localhost:8080/generator> .
 
@@ -138,7 +133,13 @@
 # Following triples describe required services for routes. It is used in conditional routing.
 # #######################################################################################
 
+:OntologyRouteRestriction
+      a     ontos:RouteRestriction;
+      ontos:partialUrl "/home/manual-revision-and-authoring/ontology"^^xsd:string;
+      ontos:requiredService :D2RQService;
+      ontos:requiredService :MiniDixService .
+
 :RolesRouteRestriction
-      a     gkg:RouteRestriction;
-      gkg:partialUrl "/settings/roles"^^xsd:string;
-      gkg:requiredService :UserManagerService .
+      a     ontos:RouteRestriction;
+      ontos:partialUrl "/settings/roles"^^xsd:string;
+      ontos:requiredService :UserManagerService .

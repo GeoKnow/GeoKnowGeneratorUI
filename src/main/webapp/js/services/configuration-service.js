@@ -2,27 +2,49 @@
 
 var module = angular.module('app.configuration-service', []);
 
-module.factory('ConfigurationService', function (Config) {
-
+module.factory('ConfigurationService', function (Config, $http, $location, flash) {
 
     var SettingsService = {
         
+        setup: function(reset){
+            console.log("setup reset: " + reset);
+            if(reset)
+                return $http.post('rest/setup').success(function(data){
+                    flash.success = data;   
+                });
+            else
+                return $http.put('rest/setup').success(function(data){
+                    flash.success = data;
+                });
+        },
+
         setSPARQLEndpoint: function (endpoint) {
             Config.setEndpoint(endpoint);
         },
 
         getSPARQLEndpoint: function () {
-            var settings = Config.getSettings();
-            var endpoint = settings[Config.getFrameworkUri()]["gkg:authEndpoint"][0];
-            var endpointUrl = settings[endpoint]["lds:serviceUrl"][0];
-            return endpointUrl;
+            // var settings = Config.getSettings();
+            // console.log(Config.getFrameworkUri());
+            // console.log(settings);
+            // var endpoint = settings[Config.getFrameworkUri()]["gkg:authEndpoint"][0];
+            // var endpointUrl = settings[endpoint]["lds:serviceUrl"][0];
+            return Config.getAuthEndpoint();
         },
 
         getPublicSPARQLEndpoint: function () {
-            var settings = Config.getSettings();
-            var endpoint = settings[Config.getFrameworkUri()]["gkg:publicEndpoint"][0];
-            var endpointUrl = settings[endpoint]["lds:serviceUrl"][0];
-            return endpointUrl;
+            // var settings = Config.getSettings();
+            // var endpoint = settings[Config.getFrameworkUri()]["gkg:publicEndpoint"][0];
+            // var endpointUrl = settings[endpoint]["lds:serviceUrl"][0];
+            // return endpointUrl;
+            return Config.getEndpoint();
+        },
+
+        getFrameworkUri: function () {
+            return Config.getFrameworkUri();
+        },
+        
+        getFlagPath: function () {
+            return Config.getFlagPath();
         },
 
         setUriBase: function (uri) {
@@ -35,6 +57,10 @@ module.factory('ConfigurationService', function (Config) {
 
         getFrameworkOntologyNS: function() {
             return Config.getFrameworkOntologyNS();
+        },
+
+        getDefaultSettingsGraph: function () {
+            return Config.getGraph();
         },
 
         getSettingsGraph: function () {
@@ -108,14 +134,14 @@ module.factory('ConfigurationService', function (Config) {
         getAllEndpoints: function () {
             var results = [];
             var elements = Config.select("rdf:type", "gkg:SPARQLEndpoint");
-
             for (var resource in elements) {
                 var element = elements[resource];
+                if(element["rdfs:label"]== undefined) continue;
                 results.push({
                     uri: resource,
                     label: element["rdfs:label"][0],
                     endpoint: element["void:sparqlEndpoint"][0],
-                    homepage: element["foaf:homepage"][0]
+                    homepage: element["foaf:homepage"] == undefined ? "" : element["foaf:homepage"][0]
                 });
             }
             return results;
@@ -127,7 +153,7 @@ module.factory('ConfigurationService', function (Config) {
                 uri: uri,
                 label: settings[uri]["rdfs:label"][0],
                 endpoint: settings[uri]["void:sparqlEndpoint"][0],
-                homepage: settings[uri]["foaf:homepage"][0]
+                homepage: settings[uri]["foaf:homepage"] == undefined ? "" : settings[uri]["foaf:homepage"][0]
             };
             return results;
         },

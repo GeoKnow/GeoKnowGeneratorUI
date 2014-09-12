@@ -283,26 +283,45 @@ body.modal-open {
 
 /* Modal dialogs */
 .modal-body {
-	max-height: 500px;
-	overflow-y: scroll;
+  overflow: auto;
+	font: .87em Helvetica, arial, freesans, clean, sans-serif;
 }
 
-/* table with fixed first column */
-.table-fixed {
-  table-layout: fixed;
-  width: auto !important;
+.modal {
+    overflow: auto;
+    margin-top: 0px !important;
+    width: 1100px !important;
 }
-.col-header {
-  position:absolute;
-  left:0;
-  width:250px;
+
+.nav, .pagination, .carousel, .panel-title a { cursor: pointer; }
+
+.scrollable {
+    overflow: auto;
 }
-.table-fixed-outer {
-    position:relative
+
+.lang-select {
+    margin-top: 15px;
+    margin-left: 15px;
 }
-.table-fixed-inner {
-  overflow-x:scroll;
-  overflow-y:visible;
-  width:80%;
-  margin-left:250px;
+
+/* Overflow div */
+
+.maxHeight {
+	height:55vh;
+}
+
+.overflow {
+	overflow-y: scroll;
+	height:100%;
+}
+
+#resultSlider .slider-selection {
+	background: #BABABA;
+}
+
+/* D2RQ */
+
+#patternColumns {
+	max-height: 200px;
+    overflow: auto;
 }

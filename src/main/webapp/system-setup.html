@@ -1,3 +1,31 @@
-<div>
-    <h4>System is not set up. Call setup servlet first: http://localhost:8080/generator/InitialSetup.</h4>
+<div class="container-fluid" ng-controller="GeneralSettingsCtrl">
+
+    <h4 data-i18n="_system-setup-page-content_"></h4>
+
+
+    <dl class="dl-horizontal">
+        <dt>Framework URI</dt>
+        <dd>{{settings.publicEndpointService}}</dd>
+
+        <dt>Resources NS</dt>
+        <dd>{{settings.uriBase}}</dd>
+
+        <dt>Settings graph</dt>
+        <dd>{{settings.defaultSettingsGraphUri}}</dd>
+
+        <dt>Endpoint</dt>
+        <dd>{{settings.publicEndpointService}}</dd>
+
+        <dt>Setup flag paht</dt>
+        <dd>{{settings.flagPath}}</dd>
+    </dl>
+
+    <div class="form-actions">
+         <div class="checkbox">
+            <label>
+            <input type="checkbox" ng-model="reset"> Reset
+            </label>
+        </div>
+        <button type="submit" ng-click="setup();" class="btn btn-sm btn-primary">Setup</button>
+    </div>
 </div>
