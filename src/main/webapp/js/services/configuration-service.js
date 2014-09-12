@@ -2,9 +2,45 @@
 
 var module = angular.module('app.configuration-service', []);
 
-module.factory('ConfigurationService', function (Config, $http, $location, flash) {
-
+module.factory('ConfigurationService', function ($q, AccountService, Config, $http, $location, flash, Helpers) {
+    
     var SettingsService = {
+        getSettings : function(){
+            var defer = $q.defer();
+            if(Config.getGraph() == undefined){
+                $http.get("rest/config").then(
+                    function (response) {
+                        Config.setFrameworkUri(response.data.frameworkUri);
+                        Config.setNS(response.data.ns);
+                        Config.setDefaultSettingsGraph(response.data.defaultSettingsGraphUri);
+                        Config.setGraph(response.data.defaultSettingsGraphUri);
+                        Config.setGroupsGraph(response.data.groupsGraphUri);
+                        Config.setFrameworkOntologyNS(response.data.frameworkOntologyNs);
+                        Config.setAccountsGraph(response.data.accountsGraph);
+                        Config.setEndpoint(response.data.sparqlEndpoint);
+                        Config.setAuthEndpoint(response.data.authSparqlEndpoint);
+                        Config.setFlagPath(response.data.flagPath);
+                        Config.namespaces[Config.getNS()] = ":";
+                        Config.buildPrefixesString();
+                        console.log("Settings Graph:" + Config.getGraph());
+                        Config.read(Config.getGraph()).then(function(settings){
+                            console.log("settings");
+                            console.log(settings);
+                            defer.resolve(settings);
+                        });
+                    }, function(response){
+                        var message = ServerErrorResponse.getMessage(response.status);
+                        flash.error = message;
+                    })
+                } else{
+                    if( AccountService.isLogged() ){
+                        console.log("get the settings graph of the user");
+                        console.log(AccountService.getAccountURI());
+                    }
+                    defer.resolve(Config.getSettings);
+                }
+             return defer.promise;
+        },
         
         setup: function(reset){
             console.log("setup reset: " + reset);
@@ -92,10 +128,8 @@ module.factory('ConfigurationService', function (Config, $http, $location, flash
             return results;
         },
 
-
         getIdentifiers: function () {
-            Config.read(); //update the list of identifiers
-            return Object.keys(Config.getSettings());
+            return Object.keys(Config.getSettings());  
         },
 
         getDatabaseTypes: function () {

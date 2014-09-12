@@ -50,7 +50,6 @@ angular.module("app.configuration", [])
     var EOL      = "\n";
     var PREFIXES = "";   
     var settings = {};
-    var isLoaded = false;
 
     var namespaces =
     {
@@ -67,42 +66,10 @@ angular.module("app.configuration", [])
         "http://www.w3.org/ns/auth/acl#"                   : "acl:"
     };
     
-
-
-    var initialize = function(q){
-        
-        if(FRAMEWORK_URI != undefined){
-            console.log("FRAMEWORK_URI defined:"+ FRAMEWORK_URI);
-            q.resolve();
-            return;
-        }
-
-        console.log("FRAMEWORK_URI undefined:"+ FRAMEWORK_URI);
-
-        $http.get("rest/config")
-            .success(function(data){
-                FRAMEWORK_URI = data.frameworkUri;
-                NS = data.ns;
-                DEFAULT_SETTINGS_GRAPH_URI = data.defaultSettingsGraphUri;
-                GROUPS_GRAPH_URI = data.groupsGraphUri;
-                FRAMEWORK_ONTOLOGY_NS = data.frameworkOntologyNs;
-                ACCOUNTS_GRAPH = data.accountsGraph;
-                PUBLIC_ENDPOINT = data.sparqlEndpoint;
-                AUTH_ENDPOINT = data.authSparqlEndpoint;
-                FLAG_PATH = data.flagPath;
-                namespaces[NS] = ":";
-                SETTINGS_GRAPH_URI  = DEFAULT_SETTINGS_GRAPH_URI;
-                GRAPH = "<" + SETTINGS_GRAPH_URI + ">";
-                for (var namespace in namespaces)
-                    PREFIXES += "PREFIX " + namespaces[namespace] + " <" + namespace + ">" + EOL;
-                prefixes = Helpers.invertMap(namespaces);
-                console.log("FRAMEWORK_URI reolved:"+ FRAMEWORK_URI);
-                q.resolve();
-            })
-            .error(function(data, status){
-                var message = ServerErrorResponse.getMessage(status);
-                flash.error = message;
-            });     
+    var buildPrefixesString = function(){
+        for (var namespace in namespaces)
+            PREFIXES += "PREFIX " + namespaces[namespace] + " <" + namespace + ">" + EOL;
+        prefixes = Helpers.invertMap(namespaces);
     };
 
     var request = function(url, data, callbackSuccess){
@@ -163,9 +130,21 @@ angular.module("app.configuration", [])
         return ns(FRAMEWORK_URI);
     };
 
+    var setFrameworkUri = function(framework_uri)
+    {
+        FRAMEWORK_URI = framework_uri;
+        console.log(FRAMEWORK_URI);
+
+    };
+
     var getFlagPath = function()
     {
         return FLAG_PATH;
+    };
+
+    var setFlagPath = function(flag_path)
+    {
+        FLAG_PATH = flag_path;
     };
 
     var setNS = function(ns)
@@ -183,14 +162,19 @@ angular.module("app.configuration", [])
         return PUBLIC_ENDPOINT;
     };
 
+    var setEndpoint = function(public_endpoint)
+    {
+        PUBLIC_ENDPOINT = public_endpoint;
+    };
+
     var getAuthEndpoint = function()
     {
         return AUTH_ENDPOINT;
     };
 
-    var getGraph = function()
+    var setAuthEndpoint = function(auth_endpoint)
     {
-        return SETTINGS_GRAPH_URI;
+        AUTH_ENDPOINT =auth_endpoint;
     };
 
     var getDefaultSettingsGraph = function()
@@ -198,11 +182,19 @@ angular.module("app.configuration", [])
         return DEFAULT_SETTINGS_GRAPH_URI;
     };
 
+    var setDefaultSettingsGraph = function(default_settings_graph_uri)
+    {
+        DEFAULT_SETTINGS_GRAPH_URI = default_settings_graph_uri;
+    };
+
+    var getGraph = function()
+    {
+        return SETTINGS_GRAPH_URI;
+    };
+
     var setGraph = function(uri) {
         SETTINGS_GRAPH_URI = uri;
         GRAPH = "<" + SETTINGS_GRAPH_URI + ">";
-        isLoaded = false;
-        read();
     };
 
     var restoreDefault = function() {
@@ -298,34 +290,25 @@ angular.module("app.configuration", [])
     };
 
 
-    var read = function()
+    var read = function(graph)
     {
-        if (isLoaded)
-        {
-            var deferred = $q.defer();
-            deferred.resolve(settings);
-            return deferred.promise;
-        }
-
-        console.log("Reading Settings from " + GRAPH);
-
+        var deferred = $q.defer();
         var requestData = {
             format: "application/sparql-results+json",
-            query: "SELECT * FROM " + GRAPH + EOL
+            query: "SELECT * FROM <" + graph + ">"+ EOL
                     + "WHERE { ?s ?p ?o }" + EOL
                     + "ORDER BY ?s ?p ?o",
             mode: "settings"
         };
 
-        return request("RdfStoreProxy", requestData,
-            function(data)
-            {
-                settings = parseSparqlResults(data);
-                isLoaded = true;
-                console.log(settings);
-                return settings;
-            }
-        );
+        console.log("readSettings from " + graph);
+
+        $http.post("RdfStoreProxy", $.param(requestData)).then(function (response) {
+            settings = parseSparqlResults(response.data);
+            deferred.resolve(settings);
+        });
+
+        return deferred.promise;
     };
 
     var write = function()
@@ -391,35 +374,61 @@ angular.module("app.configuration", [])
         return GROUPS_GRAPH_URI;
     };
 
+    var setGroupsGraph = function(groups_graph_uri) {
+        GROUPS_GRAPH_URI = groups_graph_uri;
+    };
+
+    var setGroupsGraph = function(groups_graph_uri) {
+        GROUPS_GRAPH_URI = groups_graph_uri;
+    };
+
     var getFrameworkOntologyNS = function() {
         return FRAMEWORK_ONTOLOGY_NS;
+    };
+
+    var setFrameworkOntologyNS = function(framework_ontology_ns) {
+        FRAMEWORK_ONTOLOGY_NS = framework_ontology_ns;
     };
 
     var getAccountsGraph = function() {
         return ACCOUNTS_GRAPH;
     };
 
-
+    var setAccountsGraph = function(accounts_graph) {
+        ACCOUNTS_GRAPH = accounts_graph;
+    };
+    
     return {
-        initialize              : initialize,
+        PREFIXES                : PREFIXES,
+        namespaces              : namespaces,
         getNS                   : getNS,
+        setNS                   : setNS,
         getFlagPath             : getFlagPath,
+        setFlagPath             : setFlagPath,
         getEndpoint             : getEndpoint,
+        setEndpoint             : setEndpoint,
         getAuthEndpoint         : getAuthEndpoint,
+        setAuthEndpoint         : setAuthEndpoint,
         getDefaultSettingsGraph : getDefaultSettingsGraph,
+        setDefaultSettingsGraph : setDefaultSettingsGraph,
         getGraph                : getGraph,
         setGraph                : setGraph,
+        getGroupsGraph          : getGroupsGraph,
+        setGroupsGraph          : setGroupsGraph,
+        getFrameworkUri         : getFrameworkUri,
+        setFrameworkUri         : setFrameworkUri,
+        getFrameworkOntologyNS  : getFrameworkOntologyNS,
+        setFrameworkOntologyNS  : setFrameworkOntologyNS,
+        getAccountsGraph        : getAccountsGraph,
+        setAccountsGraph        : setAccountsGraph,
         restoreDefault          : restoreDefault,
         getSettings             : getSettings,
         select                  : select,
-        read                    : read,
         write                   : write,
+        read                    : read,
         request                 : request,
         dropGraph               : dropGraph,
         parseSparqlResults      : parseSparqlResults,
-        getGroupsGraph          : getGroupsGraph,
-        getFrameworkUri         : getFrameworkUri,
-        getFrameworkOntologyNS  : getFrameworkOntologyNS,
-        getAccountsGraph        : getAccountsGraph
+        buildPrefixesString     : buildPrefixesString
     };
 });
