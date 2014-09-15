@@ -35,15 +35,14 @@ angular.module("app.configuration", [])
     var FRAMEWORK_URI;
     var FLAG_PATH;
     var NS;
-    var DEFAULT_SETTINGS_GRAPH_URI;
-    var GROUPS_GRAPH_URI;
+    var DEFAULT_SETTINGS_GRAPH;
+    var GROUPS_GRAPH;
     var FRAMEWORK_ONTOLOGY_NS;
     var ACCOUNTS_GRAPH;
 
     var AUTH_ENDPOINT;
     var PUBLIC_ENDPOINT;
-    var SETTINGS_GRAPH_URI;
-    var GRAPH;
+    var SETTINGS_GRAPH;
 
     // a variable to lookup by prefix
     var prefixes;
@@ -179,26 +178,27 @@ angular.module("app.configuration", [])
 
     var getDefaultSettingsGraph = function()
     {
-        return DEFAULT_SETTINGS_GRAPH_URI;
+        return DEFAULT_SETTINGS_GRAPH;
     };
 
-    var setDefaultSettingsGraph = function(default_settings_graph_uri)
+    var setDefaultSettingsGraph = function(default_settings_graph)
     {
-        DEFAULT_SETTINGS_GRAPH_URI = default_settings_graph_uri;
+        DEFAULT_SETTINGS_GRAPH = default_settings_graph;
     };
 
-    var getGraph = function()
+    var getSettingsGraph = function()
     {
-        return SETTINGS_GRAPH_URI;
+        return SETTINGS_GRAPH;
     };
 
-    var setGraph = function(uri) {
-        SETTINGS_GRAPH_URI = uri;
-        GRAPH = "<" + SETTINGS_GRAPH_URI + ">";
+    var setSettingsGraph = function(uri) {
+        SETTINGS_GRAPH = uri;
+        // update settings with new graph
+        read();
     };
 
     var restoreDefault = function() {
-        return setGraph(DEFAULT_SETTINGS_GRAPH_URI);
+        return setSettingsGraph(DEFAULT_SETTINGS_GRAPH);
     };
 
     var getSettings = function()
@@ -290,18 +290,18 @@ angular.module("app.configuration", [])
     };
 
 
-    var read = function(graph)
+    var read = function()
     {
         var deferred = $q.defer();
         var requestData = {
             format: "application/sparql-results+json",
-            query: "SELECT * FROM <" + graph + ">"+ EOL
+            query: "SELECT * FROM <" + SETTINGS_GRAPH + ">"+ EOL
                     + "WHERE { ?s ?p ?o }" + EOL
                     + "ORDER BY ?s ?p ?o",
             mode: "settings"
         };
 
-        console.log("readSettings from " + graph);
+        console.log("readSettings from " + SETTINGS_GRAPH);
 
         $http.post("RdfStoreProxy", $.param(requestData)).then(function (response) {
             settings = parseSparqlResults(response.data);
@@ -348,9 +348,9 @@ angular.module("app.configuration", [])
         var requestData = {
             format: "application/sparql-results+json",
             query: PREFIXES
-                    + "DROP SILENT GRAPH "   + GRAPH + EOL
-                    + "CREATE SILENT GRAPH " + GRAPH + EOL
-                    + "INSERT INTO " + GRAPH + EOL
+                    + "DROP SILENT GRAPH <"   + SETTINGS_GRAPH + ">" + EOL
+                    + "CREATE SILENT GRAPH <" + SETTINGS_GRAPH + ">" + EOL
+                    + "INSERT INTO <" + SETTINGS_GRAPH + ">" + EOL
                     + "{" + EOL
                     +        data
                     + "}",
@@ -371,15 +371,15 @@ angular.module("app.configuration", [])
     };
 
     var getGroupsGraph = function() {
-        return GROUPS_GRAPH_URI;
+        return GROUPS_GRAPH;
     };
 
-    var setGroupsGraph = function(groups_graph_uri) {
-        GROUPS_GRAPH_URI = groups_graph_uri;
+    var setGroupsGraph = function(groups_graph) {
+        GROUPS_GRAPH = groups_graph;
     };
 
-    var setGroupsGraph = function(groups_graph_uri) {
-        GROUPS_GRAPH_URI = groups_graph_uri;
+    var setGroupsGraph = function(groups_graph) {
+        GROUPS_GRAPH = groups_graph;
     };
 
     var getFrameworkOntologyNS = function() {
@@ -411,8 +411,6 @@ angular.module("app.configuration", [])
         setAuthEndpoint         : setAuthEndpoint,
         getDefaultSettingsGraph : getDefaultSettingsGraph,
         setDefaultSettingsGraph : setDefaultSettingsGraph,
-        getGraph                : getGraph,
-        setGraph                : setGraph,
         getGroupsGraph          : getGroupsGraph,
         setGroupsGraph          : setGroupsGraph,
         getFrameworkUri         : getFrameworkUri,
@@ -422,6 +420,8 @@ angular.module("app.configuration", [])
         getAccountsGraph        : getAccountsGraph,
         setAccountsGraph        : setAccountsGraph,
         restoreDefault          : restoreDefault,
+        setSettingsGraph        : setSettingsGraph,
+        getSettingsGraph        : getSettingsGraph,
         getSettings             : getSettings,
         select                  : select,
         write                   : write,

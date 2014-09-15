@@ -174,10 +174,16 @@ app.config(function($routeSegmentProvider, $routeProvider)
             .up()
            
         .segment('account', {
-            templateUrl:'js/account/account.html' })
+            templateUrl:'js/account/account.html',
+            resolve: {
+                        settings: function (ConfigurationService) {
+                        return ConfigurationService.getSettings();
+                    }
+            }})
             .within()
                 .segment('preferences', {
-                    templateUrl: 'js/account/preferences/preferences.html' })
+                    templateUrl: 'js/account/preferences/preferences.html'
+                })
             .up()
         .segment('system-setup', {
             templateUrl: 'system-setup.html',

@@ -7,13 +7,13 @@ module.factory('ConfigurationService', function ($q, AccountService, Config, $ht
     var SettingsService = {
         getSettings : function(){
             var defer = $q.defer();
-            if(Config.getGraph() == undefined){
+            if(Config.getSettingsGraph() == undefined){
                 $http.get("rest/config").then(
                     function (response) {
                         Config.setFrameworkUri(response.data.frameworkUri);
                         Config.setNS(response.data.ns);
                         Config.setDefaultSettingsGraph(response.data.defaultSettingsGraphUri);
-                        Config.setGraph(response.data.defaultSettingsGraphUri);
+                        Config.setSettingsGraph(response.data.defaultSettingsGraphUri);
                         Config.setGroupsGraph(response.data.groupsGraphUri);
                         Config.setFrameworkOntologyNS(response.data.frameworkOntologyNs);
                         Config.setAccountsGraph(response.data.accountsGraph);
@@ -22,22 +22,23 @@ module.factory('ConfigurationService', function ($q, AccountService, Config, $ht
                         Config.setFlagPath(response.data.flagPath);
                         Config.namespaces[Config.getNS()] = ":";
                         Config.buildPrefixesString();
-                        console.log("Settings Graph:" + Config.getGraph());
-                        Config.read(Config.getGraph()).then(function(settings){
-                            console.log("settings");
-                            console.log(settings);
+                        Config.read().then(function(settings){
+                            var currentAccount = angular.copy(AccountService.getAccount()); 
+                            console.log("user:" +currentAccount.user);
+                            // Try to get here the user's settings graph
                             defer.resolve(settings);
                         });
+
                     }, function(response){
                         var message = ServerErrorResponse.getMessage(response.status);
                         flash.error = message;
                     })
                 } else{
-                    if( AccountService.isLogged() ){
-                        console.log("get the settings graph of the user");
-                        console.log(AccountService.getAccountURI());
-                    }
-                    defer.resolve(Config.getSettings);
+                    // if( AccountService.isLogged() ){
+                    //     console.log("get the settings graph of the user");
+                    //     console.log(AccountService.getAccountURI());
+                    // }
+                    defer.resolve(Config.getSettings());
                 }
              return defer.promise;
         },
@@ -59,19 +60,10 @@ module.factory('ConfigurationService', function ($q, AccountService, Config, $ht
         },
 
         getSPARQLEndpoint: function () {
-            // var settings = Config.getSettings();
-            // console.log(Config.getFrameworkUri());
-            // console.log(settings);
-            // var endpoint = settings[Config.getFrameworkUri()]["gkg:authEndpoint"][0];
-            // var endpointUrl = settings[endpoint]["lds:serviceUrl"][0];
             return Config.getAuthEndpoint();
         },
 
         getPublicSPARQLEndpoint: function () {
-            // var settings = Config.getSettings();
-            // var endpoint = settings[Config.getFrameworkUri()]["gkg:publicEndpoint"][0];
-            // var endpointUrl = settings[endpoint]["lds:serviceUrl"][0];
-            // return endpointUrl;
             return Config.getEndpoint();
         },
 
@@ -96,15 +88,15 @@ module.factory('ConfigurationService', function ($q, AccountService, Config, $ht
         },
 
         getDefaultSettingsGraph: function () {
-            return Config.getGraph();
+            return Config.getDefaultSettingsGraph();
         },
 
         getSettingsGraph: function () {
-            return Config.getGraph();
+            return Config.getSettingsGraph();
         },
 
         setSettingsGraph: function (uri) {
-            Config.setGraph(uri);
+            Config.setSettingsGraph(uri);
         },
 
         restoreDefaultSettingsGraph: function () {
