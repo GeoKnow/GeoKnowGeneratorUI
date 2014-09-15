@@ -572,7 +572,7 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErr
 					$scope.startButton = true;
 					      		
 				}, function (response){ // in the case of an error      	
-				 	flash.error = ServerErrorResponse.getMessage(response.status);
+				 	flash.error = ServerErrorResponse.getMessage(response);
 	    	});
 			    	  
 			  if(response.data.status=="FAIL"){
@@ -638,7 +638,7 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErr
 		.then(function() {
 		  $scope.reviewGeoLiftResult();
 	  	},  function (response){ // in the case of an error      	
-			flash.error = ServerErrorResponse.getMessage(response.status);
+			flash.error = ServerErrorResponse.getMessage(response);
 	  });		
 	};
 	
@@ -664,7 +664,7 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErr
 	  	    		//$scope.showDownload();
 	  	    		
 	      				}, function (response){ // in the case of an error      	
-						 	flash.error = ServerErrorResponse.getMessage(response.status);
+						 	flash.error = ServerErrorResponse.getMessage(response);
 	  });
 	};
 	

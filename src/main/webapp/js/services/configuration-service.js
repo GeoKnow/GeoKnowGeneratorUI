@@ -2,7 +2,7 @@
 
 var module = angular.module('app.configuration-service', []);
 
-module.factory('ConfigurationService', function ($q, AccountService, Config, $http, $location, flash, Helpers) {
+module.factory('ConfigurationService', function ($q, AccountService, Config, $http, $location, flash, Helpers, ServerErrorResponse) {
     
     var SettingsService = {
         getSettings : function(){
@@ -30,7 +30,7 @@ module.factory('ConfigurationService', function ($q, AccountService, Config, $ht
                         });
 
                     }, function(response){
-                        var message = ServerErrorResponse.getMessage(response.status);
+                        var message = ServerErrorResponse.getMessage(response);
                         flash.error = message;
                     })
                 } else{

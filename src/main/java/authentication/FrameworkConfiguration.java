@@ -64,7 +64,7 @@ public class FrameworkConfiguration {
      * @throws Exception
      */
     public static synchronized FrameworkConfiguration getInstance(
-	    ServletContext context) throws IOException {
+	    ServletContext context) throws Exception {
 
 	if (instance == null) {
 
@@ -87,6 +87,7 @@ public class FrameworkConfiguration {
 	    try {
 		configurationModel.read(configurationFile);
 	    } catch (RiotException e) {
+		instance = null;
 		throw new IOException("Malformed " + configurationFile
 			+ " file");
 	    }
@@ -106,9 +107,11 @@ public class FrameworkConfiguration {
 	    QueryExecution qexec = QueryExecutionFactory.create(query,
 		    configurationModel);
 	    ResultSet results = qexec.execSelect();
-	    if (!results.hasNext())
+	    if (!results.hasNext()) {
+		instance = null;
 		throw new NullPointerException(
-			"Invalid initial parameter required at:" + query);
+			"Invalid initial parameter required at:\n" + query);
+	    }
 	    for (; results.hasNext();) {
 		QuerySolution soln = results.next();
 		instance.setFrameworkUri(soln.get("uri").toString());
@@ -140,9 +143,11 @@ public class FrameworkConfiguration {
 
 	    qexec = QueryExecutionFactory.create(query, configurationModel);
 	    results = qexec.execSelect();
-	    if (!results.hasNext())
+	    if (!results.hasNext()) {
+		instance = null;
 		throw new NullPointerException(
 			"Invalid initial parameter required");
+	    }
 	    for (; results.hasNext();) {
 		QuerySolution soln = results.next();
 		instance.setAuthSparqlEndpoint(soln.get("endpoint").toString());
@@ -165,9 +170,11 @@ public class FrameworkConfiguration {
 		    + " ?service lds:password ?password }";
 	    qexec = QueryExecutionFactory.create(query, configurationModel);
 	    results = qexec.execSelect();
-	    if (!results.hasNext())
+	    if (!results.hasNext()) {
+		instance = null;
 		throw new NullPointerException(
 			"Invalid initial parameter required");
+	    }
 	    for (; results.hasNext();) {
 		QuerySolution soln = results.next();
 		instance.setVirtuosoJdbcConnString(soln.get("connectionString")
@@ -187,9 +194,11 @@ public class FrameworkConfiguration {
 		    + "{ ?s sd:namedGraph  ?o .  ?o sd:name ?name . ?o sd:graph ?g . ?g rdfs:label ?label } ";
 	    qexec = QueryExecutionFactory.create(query, configurationModel);
 	    results = qexec.execSelect();
-	    if (!results.hasNext())
+	    if (!results.hasNext()) {
+		instance = null;
 		throw new NullPointerException(
 			"Invalid initial parameter required");
+	    }
 	    for (; results.hasNext();) {
 		QuerySolution soln = results.next();
 

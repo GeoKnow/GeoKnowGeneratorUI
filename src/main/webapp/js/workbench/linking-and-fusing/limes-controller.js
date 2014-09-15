@@ -281,8 +281,8 @@ $scope.LaunchLimes = function(){
 			        flash.error = data.message;
 			        $scope.startLimes = false;
 		    	    $scope.showProgress = false;
-	      	}}).error(function(data, status, headers, config) {
-			        flash.error = ServerErrorResponse.getMessage(data.message);
+	      	}}).error(function(response) {
+			        flash.error = ServerErrorResponse.getMessage(response);
 			        $scope.startLimes = false;
 				    $scope.showProgress = false;});
 
@@ -382,7 +382,7 @@ $scope.LaunchLimes = function(){
 		    	$scope.showProgress = false;
 		    	$scope.inputForm = true;
 		    	$scope.reviewForm = false;
-		    	flash.error = ServerErrorResponse.getMessage(response.status);
+		    	flash.error = ServerErrorResponse.getMessage(response);
 	    });
 	      
 	};

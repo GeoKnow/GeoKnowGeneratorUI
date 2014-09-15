@@ -404,7 +404,7 @@ var TripleGeoCtrl = function($scope, $http, ConfigurationService, flash, ServerE
 				      		}
 						    	
 					      }, function (response){ // in the case of an error      	
-						    	flash.error = ServerErrorResponse.getMessage(response.status);
+						    	flash.error = ServerErrorResponse.getMessage(response);
 	    					});
 		    	  
 		        if(response.data.status=="FAIL"){
@@ -506,7 +506,7 @@ var TripleGeoCtrl = function($scope, $http, ConfigurationService, flash, ServerE
 		      }, function (response){ // in the case of an error      	
 		      		$scope.stTripleGeo = false;
 		    		$scope.showProgress = false;
-						flash.error = ServerErrorResponse.getMessage(response.status);
+						flash.error = ServerErrorResponse.getMessage(response);
 	    		});
 			
 		};
@@ -534,7 +534,7 @@ var TripleGeoCtrl = function($scope, $http, ConfigurationService, flash, ServerE
 	    		$scope.showProgress = false;
 	    		$scope.inputForm = false;
 	    		$scope.reviewForm = false;
-				flash.error = ServerErrorResponse.getMessage(response.status);
+				flash.error = ServerErrorResponse.getMessage(response);
 	    	});
 		};
 	

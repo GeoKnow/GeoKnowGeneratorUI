@@ -95,7 +95,7 @@ function UserRolesCtrl($scope, UsersService, ConfigurationService, $q, ServerErr
         }, function(response) {
             $scope.roleCreating = false;
             $scope.close("#modalRole");
-            flash.error = ServerErrorResponse.getMessage(response.status);
+            flash.error = ServerErrorResponse.getMessage(response);
             $window.scrollTo(0,0);
         });
     };
@@ -125,7 +125,7 @@ function UserRolesCtrl($scope, UsersService, ConfigurationService, $q, ServerErr
             $window.scrollTo(0,0);
         }, function(response) {
             $scope.savingRoles = false;
-            flash.error = ServerErrorResponse.getMessage(response.status);
+            flash.error = ServerErrorResponse.getMessage(response);
             $window.scrollTo(0,0);
         });
     };
@@ -166,7 +166,7 @@ function UserRolesCtrl($scope, UsersService, ConfigurationService, $q, ServerErr
             $window.scrollTo(0,0);
         }, function(response) {
             $scope.savingUsers = false;
-            flash.error = ServerErrorResponse.getMessage(response.status);
+            flash.error = ServerErrorResponse.getMessage(response);
             $window.scrollTo(0,0);
         });
     };
@@ -196,7 +196,7 @@ function UserRolesCtrl($scope, UsersService, ConfigurationService, $q, ServerErr
         }, function(response) {
             $scope.userCreating = false;
             $scope.close("#modalUser");
-            flash.error = ServerErrorResponse.getMessage(response.status);
+            flash.error = ServerErrorResponse.getMessage(response);
             $window.scrollTo(0,0);
         });
     };
@@ -205,7 +205,7 @@ function UserRolesCtrl($scope, UsersService, ConfigurationService, $q, ServerErr
         UsersService.deleteUser(user.profile.username).then(function(response) {
             $scope.refreshUsers();
         }, function(response) {
-            flash.error = ServerErrorResponse.getMessage(response.status);
+            flash.error = ServerErrorResponse.getMessage(response);
             $window.scrollTo(0,0);
             $scope.refreshUsers();
         })

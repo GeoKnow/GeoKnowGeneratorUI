@@ -10,7 +10,7 @@
   <context-param> 
     <description>Framework configuration flag</description> 
     <param-name>framework-setup-path</param-name> 
-    <param-value>/etc/generator</param-value>
+    <param-value>***SETUP-PATH***</param-value>
   </context-param> 
 
 	<!-- File Upload parameters -->

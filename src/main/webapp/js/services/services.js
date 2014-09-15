@@ -35,10 +35,12 @@ module.factory('ServerErrorResponse', function() {
 
   var ServerErrorResponseService = {
 
-   getMessage: function(status){
+   getMessage: function(response){
    
+    console.log("ServerErrorResponse");
+    console.log(response);
     var statusText = '';
-      switch (status) {
+      switch (response.status) {
       case 400:
         statusText = 'Bad Request';
         break;
@@ -52,10 +54,10 @@ module.factory('ServerErrorResponse', function() {
         statusText = 'Not Found ';
         break;
       case 500:
-        statusText = 'Internal Server Error';
+        statusText = 'Internal Server Error' + ( response.data =! ''? ': ' + response.data : '') ;
         break;
       default:
-        statusText = 'An error occurred:'+status;
+        statusText = 'An '+ response.status +' error occurred ' +( response.data =! ''? ': ' + response.data : '') ;
       };
       return statusText;
     }

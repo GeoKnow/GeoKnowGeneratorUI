@@ -30,7 +30,7 @@ function AccountCtrl($scope, $http, $cookieStore, flash, AccountService, LoginSe
                 if (response.status==500 && response.data) {
                     flash.error = AuthenticationErrorResponse.getMessage(parseInt(response.data.code));
                 } else {
-                    flash.error = ServerErrorResponse.getMessage(response.status);
+                    flash.error = ServerErrorResponse.getMessage(response);
                 }
             });
     };

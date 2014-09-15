@@ -1,7 +1,5 @@
 package rest;
 
-import java.io.IOException;
-
 import javax.servlet.ServletContext;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -56,11 +54,11 @@ public class Configuration {
 	    config.addProperty("flagPath",
 		    context.getInitParameter("framework-setup-path"));
 
-	} catch (IOException e) {
+	} catch (Exception e) {
 	    log.error(e);
 	    e.printStackTrace();
 	    return Response.status(Response.Status.EXPECTATION_FAILED)
-		    .entity("Error reading configuration files.").build();
+		    .entity(e.getMessage()).build();
 	}
 	return Response.ok(config.toString(), MediaType.APPLICATION_JSON)
 		.build();

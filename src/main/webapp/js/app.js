@@ -188,11 +188,9 @@ app.config(function($routeSegmentProvider, $routeProvider)
         .segment('system-setup', {
             templateUrl: 'system-setup.html',
             resolve: {
-                    roles: function (ConfigurationService, UsersService) {
-                        ConfigurationService.getSettings().then(function(settings){
-                            return UsersService.readRoles();
-                        });
-                    }
+                settings: function (ConfigurationService) {
+                    return ConfigurationService.getSettings();
+                }
             }
         })
         .segment('access-denied', {
