@@ -10,6 +10,7 @@
     <!-- Le styles -->
     <link href="css/bootstrap.css" rel="stylesheet"/>
     <link href="css/bootstrap-modal.css" rel="stylesheet"/>
+    <link href="css/bootstrap-slider.css" rel="stylesheet"/>
     <link href="css/app.css" rel="stylesheet"/>
 
     <link rel="icon" type="image/png" href="img/favicon.png">
@@ -31,7 +32,7 @@
   <body ng-cloak ng-app="app" ng-controller="LoginCtrl">
 
       <!-- Subscribe to all flash messages. -->
-      <div flash-alert active-class="in alert" class="fade" duration="0">
+      <div flash-alert active-class="in alert" class="fade" duration="5000">
         <button type="button" class="close" ng-click="hide()">&times;</button>
         <span class="alert-message">{{flash.message}}</span>
       </div>
@@ -197,6 +198,7 @@
     <script src="lib/modal-master/bootstrap-modal.js"></script>
     <script src="lib/modal-master/bootstrap-modalmanager.js"></script>
     <script src="js/app.js"></script>
+    <script src="lib/slider/bootstrap-slider.js"></script>
     <!-- services for the different modules/pages -->
     <script src="js/services/config.js"></script>
     <script src="js/services/services.js"></script>

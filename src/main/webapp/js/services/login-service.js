@@ -43,7 +43,7 @@ module.factory("LoginService", function ($http, $location, $cookieStore, Account
             //console.log($http.defaults.headers.common);
 
         }, function (response) {
-            flash.error = ServerErrorResponse.getMessage(response.status);
+            flash.error = ServerErrorResponse.getMessage(response);
         });
     };
 

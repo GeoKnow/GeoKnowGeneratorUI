@@ -1,6 +1,5 @@
 'use strict';
 
-
 function AccountMenuCtrl($scope) {
   $scope.oneAtATime = true;
   // these data can be replaced later with the configuration
@@ -108,12 +107,14 @@ app.controller('ModalWindow', function ($scope) {
     });
   }; 
  
+  /*
   $scope.close = function (id) {
 	  $("#" + id).modal('hide');
 	  $('body').removeClass('modal-open');
 	  $('.modal-backdrop').slideUp();
 	  $('.modal-scrollable').slideUp();
   };
+  */
   
   $scope.del = function (index) {
 	  

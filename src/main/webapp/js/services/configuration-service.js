@@ -2,27 +2,77 @@
 
 var module = angular.module('app.configuration-service', []);
 
-module.factory('ConfigurationService', function (Config) {
-
-
+module.factory('ConfigurationService', function ($q, AccountService, Config, $http, $location, flash, Helpers, ServerErrorResponse) {
+    
     var SettingsService = {
+        getSettings : function(){
+            var defer = $q.defer();
+            if(Config.getSettingsGraph() == undefined){
+                $http.get("rest/config").then(
+                    function (response) {
+                        Config.setFrameworkUri(response.data.frameworkUri);
+                        Config.setNS(response.data.ns);
+                        Config.setDefaultSettingsGraph(response.data.defaultSettingsGraphUri);
+                        Config.setSettingsGraph(response.data.defaultSettingsGraphUri);
+                        Config.setGroupsGraph(response.data.groupsGraphUri);
+                        Config.setFrameworkOntologyNS(response.data.frameworkOntologyNs);
+                        Config.setAccountsGraph(response.data.accountsGraph);
+                        Config.setEndpoint(response.data.sparqlEndpoint);
+                        Config.setAuthEndpoint(response.data.authSparqlEndpoint);
+                        Config.setFlagPath(response.data.flagPath);
+                        Config.namespaces[Config.getNS()] = ":";
+                        Config.buildPrefixesString();
+                        Config.read().then(function(settings){
+                            var currentAccount = angular.copy(AccountService.getAccount()); 
+                            console.log("user:" +currentAccount.user);
+                            // Try to get here the user's settings graph
+                            defer.resolve(settings);
+                        });
+
+                    }, function(response){
+                        var message = ServerErrorResponse.getMessage(response);
+                        flash.error = message;
+                    })
+                } else{
+                    // if( AccountService.isLogged() ){
+                    //     console.log("get the settings graph of the user");
+                    //     console.log(AccountService.getAccountURI());
+                    // }
+                    defer.resolve(Config.getSettings());
+                }
+             return defer.promise;
+        },
         
+        setup: function(reset){
+            console.log("setup reset: " + reset);
+            if(reset)
+                return $http.post('rest/setup').success(function(data){
+                    flash.success = data;   
+                });
+            else
+                return $http.put('rest/setup').success(function(data){
+                    flash.success = data;
+                });
+        },
+
         setSPARQLEndpoint: function (endpoint) {
             Config.setEndpoint(endpoint);
         },
 
         getSPARQLEndpoint: function () {
-            var settings = Config.getSettings();
-            var endpoint = settings[Config.getFrameworkUri()]["gkg:authEndpoint"][0];
-            var endpointUrl = settings[endpoint]["lds:serviceUrl"][0];
-            return endpointUrl;
+            return Config.getAuthEndpoint();
         },
 
         getPublicSPARQLEndpoint: function () {
-            var settings = Config.getSettings();
-            var endpoint = settings[Config.getFrameworkUri()]["gkg:publicEndpoint"][0];
-            var endpointUrl = settings[endpoint]["lds:serviceUrl"][0];
-            return endpointUrl;
+            return Config.getEndpoint();
+        },
+
+        getFrameworkUri: function () {
+            return Config.getFrameworkUri();
+        },
+        
+        getFlagPath: function () {
+            return Config.getFlagPath();
         },
 
         setUriBase: function (uri) {
@@ -37,12 +87,16 @@ module.factory('ConfigurationService', function (Config) {
             return Config.getFrameworkOntologyNS();
         },
 
+        getDefaultSettingsGraph: function () {
+            return Config.getDefaultSettingsGraph();
+        },
+
         getSettingsGraph: function () {
-            return Config.getGraph();
+            return Config.getSettingsGraph();
         },
 
         setSettingsGraph: function (uri) {
-            Config.setGraph(uri);
+            Config.setSettingsGraph(uri);
         },
 
         restoreDefaultSettingsGraph: function () {
@@ -66,10 +120,8 @@ module.factory('ConfigurationService', function (Config) {
             return results;
         },
 
-
         getIdentifiers: function () {
-            Config.read(); //update the list of identifiers
-            return Object.keys(Config.getSettings());
+            return Object.keys(Config.getSettings());  
         },
 
         getDatabaseTypes: function () {
@@ -108,14 +160,14 @@ module.factory('ConfigurationService', function (Config) {
         getAllEndpoints: function () {
             var results = [];
             var elements = Config.select("rdf:type", "gkg:SPARQLEndpoint");
-
             for (var resource in elements) {
                 var element = elements[resource];
+                if(element["rdfs:label"]== undefined) continue;
                 results.push({
                     uri: resource,
                     label: element["rdfs:label"][0],
                     endpoint: element["void:sparqlEndpoint"][0],
-                    homepage: element["foaf:homepage"][0]
+                    homepage: element["foaf:homepage"] == undefined ? "" : element["foaf:homepage"][0]
                 });
             }
             return results;
@@ -127,7 +179,7 @@ module.factory('ConfigurationService', function (Config) {
                 uri: uri,
                 label: settings[uri]["rdfs:label"][0],
                 endpoint: settings[uri]["void:sparqlEndpoint"][0],
-                homepage: settings[uri]["foaf:homepage"][0]
+                homepage: settings[uri]["foaf:homepage"] == undefined ? "" : settings[uri]["foaf:homepage"][0]
             };
             return results;
         },

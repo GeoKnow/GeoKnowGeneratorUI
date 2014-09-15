@@ -29,26 +29,26 @@
 "use strict";
 
 angular.module("app.configuration", [])
-.factory("Config", function($q, $http, flash, AccountService, ServerErrorResponse, Helpers)
-{
+.factory("Config", function($rootScope, $q, $http, flash, AccountService, ServerErrorResponse, Helpers){
     $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded; charset=UTF-8";
 
-    // the public and authenticated enpoints that will be used by the application
+    var FRAMEWORK_URI;
+    var FLAG_PATH;
+    var NS;
+    var DEFAULT_SETTINGS_GRAPH;
+    var GROUPS_GRAPH;
+    var FRAMEWORK_ONTOLOGY_NS;
+    var ACCOUNTS_GRAPH;
+
     var AUTH_ENDPOINT;
     var PUBLIC_ENDPOINT;
-    
-    var FRAMEWORK_URI  = "http://generator.geoknow.eu/resource/GeoKnowGenerator";
-    // if new resorces are created they will use this name space, and it can be changed
-    var NS                          = "http://generator.geoknow.eu/resource/";
-    // this is the graph where settings are stored, it doesnt change, and independent on the Namespace
-    var DEFAULT_SETTINGS_GRAPH_URI  = "http://generator.geoknow.eu/resource/settingsGraph";
-    // SETTINGS_GRAPH_URI is initalized with DEFAULT_SETTINGS_GRAPH_URI, but can be changed with setGraph, 
-    var SETTINGS_GRAPH_URI          = DEFAULT_SETTINGS_GRAPH_URI;
-    // Create a graph for groups of users
-    var GROUPS_GRAPH_URI            = "http://generator.geoknow.eu/resource/groupsGraph";
-    var FRAMEWORK_ONTOLOGY_NS = "http://generator.geoknow.eu/ontology/";
-    var ACCOUNTS_GRAPH = "http://generator.geoknow.eu/resource/accountsGraph";
-    
+    var SETTINGS_GRAPH;
+
+    // a variable to lookup by prefix
+    var prefixes;
+    var EOL      = "\n";
+    var PREFIXES = "";   
+    var settings = {};
 
     var namespaces =
     {
@@ -64,18 +64,12 @@ angular.module("app.configuration", [])
         "http://rdfs.org/ns/void#"                         : "void:",
         "http://www.w3.org/ns/auth/acl#"                   : "acl:"
     };
-    namespaces[NS] = ":";
-    // a variable to lookup by prefix
-    var prefixes = Helpers.invertMap(namespaces);
-
-    var GRAPH    = "<" + SETTINGS_GRAPH_URI + ">";
-    var EOL      = "\n";
-    var PREFIXES = "";
-    for (var namespace in namespaces)
+    
+    var buildPrefixesString = function(){
+        for (var namespace in namespaces)
             PREFIXES += "PREFIX " + namespaces[namespace] + " <" + namespace + ">" + EOL;
-
-    var settings = {};
-    var isLoaded = false;
+        prefixes = Helpers.invertMap(namespaces);
+    };
 
     var request = function(url, data, callbackSuccess){
         var deferred = $q.defer();
@@ -94,7 +88,7 @@ angular.module("app.configuration", [])
             }
         })
         .error(function(data, status){
-            var message = ServerErrorResponse.getMessage(status) + " at " + AUTH_ENDPOINT ;
+            var message = ServerErrorResponse.getMessage(status);
             flash.error = message;
             deferred.reject(message);
         });
@@ -135,6 +129,23 @@ angular.module("app.configuration", [])
         return ns(FRAMEWORK_URI);
     };
 
+    var setFrameworkUri = function(framework_uri)
+    {
+        FRAMEWORK_URI = framework_uri;
+        console.log(FRAMEWORK_URI);
+
+    };
+
+    var getFlagPath = function()
+    {
+        return FLAG_PATH;
+    };
+
+    var setFlagPath = function(flag_path)
+    {
+        FLAG_PATH = flag_path;
+    };
+
     var setNS = function(ns)
     {
         NS = ns;
@@ -145,20 +156,49 @@ angular.module("app.configuration", [])
         return NS;
     };
 
-    var getGraph = function()
+    var getEndpoint = function()
     {
-        return SETTINGS_GRAPH_URI;
+        return PUBLIC_ENDPOINT;
     };
 
-    var setGraph = function(uri) {
-        SETTINGS_GRAPH_URI = uri;
-        GRAPH = "<" + SETTINGS_GRAPH_URI + ">";
-        isLoaded = false;
+    var setEndpoint = function(public_endpoint)
+    {
+        PUBLIC_ENDPOINT = public_endpoint;
+    };
+
+    var getAuthEndpoint = function()
+    {
+        return AUTH_ENDPOINT;
+    };
+
+    var setAuthEndpoint = function(auth_endpoint)
+    {
+        AUTH_ENDPOINT =auth_endpoint;
+    };
+
+    var getDefaultSettingsGraph = function()
+    {
+        return DEFAULT_SETTINGS_GRAPH;
+    };
+
+    var setDefaultSettingsGraph = function(default_settings_graph)
+    {
+        DEFAULT_SETTINGS_GRAPH = default_settings_graph;
+    };
+
+    var getSettingsGraph = function()
+    {
+        return SETTINGS_GRAPH;
+    };
+
+    var setSettingsGraph = function(uri) {
+        SETTINGS_GRAPH = uri;
+        // update settings with new graph
         read();
     };
 
     var restoreDefault = function() {
-        return setGraph(DEFAULT_SETTINGS_GRAPH_URI);
+        return setSettingsGraph(DEFAULT_SETTINGS_GRAPH);
     };
 
     var getSettings = function()
@@ -249,33 +289,26 @@ angular.module("app.configuration", [])
         return result;
     };
 
+
     var read = function()
     {
-        if (isLoaded)
-        {
-            var deferred = $q.defer();
-            deferred.resolve(settings);
-            return deferred.promise;
-        }
-
+        var deferred = $q.defer();
         var requestData = {
             format: "application/sparql-results+json",
-            query: "SELECT * FROM " + GRAPH + EOL
+            query: "SELECT * FROM <" + SETTINGS_GRAPH + ">"+ EOL
                     + "WHERE { ?s ?p ?o }" + EOL
                     + "ORDER BY ?s ?p ?o",
             mode: "settings"
         };
 
-        return request("RdfStoreProxy", requestData,
-            function(data)
-            {
-                settings = parseSparqlResults(data);
-                isLoaded = true;
-                console.log("Reading Settings from " + GRAPH);
-                console.log(settings);
-                return settings;
-            }
-        );
+        console.log("readSettings from " + SETTINGS_GRAPH);
+
+        $http.post("RdfStoreProxy", $.param(requestData)).then(function (response) {
+            settings = parseSparqlResults(response.data);
+            deferred.resolve(settings);
+        });
+
+        return deferred.promise;
     };
 
     var write = function()
@@ -315,32 +348,16 @@ angular.module("app.configuration", [])
         var requestData = {
             format: "application/sparql-results+json",
             query: PREFIXES
-                    + "DROP SILENT GRAPH "   + GRAPH + EOL
-                    + "CREATE SILENT GRAPH " + GRAPH + EOL
-                    + "INSERT INTO " + GRAPH + EOL
+                    + "DROP SILENT GRAPH <"   + SETTINGS_GRAPH + ">" + EOL
+                    + "CREATE SILENT GRAPH <" + SETTINGS_GRAPH + ">" + EOL
+                    + "INSERT INTO <" + SETTINGS_GRAPH + ">" + EOL
                     + "{" + EOL
                     +        data
                     + "}",
             mode: "settings"
         };
-
-        // console.log(requestData);
         return request("RdfStoreProxy", requestData);
     };
-
-    // var createGraph = function(name, permissions, callback)
-    // {
-    //     var requestData = {
-    //         format: "application/sparql-results+json",
-    //         mode: "create",
-    //         graph: name,
-    //         permissions: permissions,
-    //         username: AccountService.getUsername()
-    //     }
-    //     console.log("request create graph");
-    //     console.log(requestData);
-    //     return request("GraphManagerServlet", requestData, callback);
-    // };
 
     var dropGraph = function(name)
     {
@@ -353,46 +370,65 @@ angular.module("app.configuration", [])
         return request("GraphManagerServlet", requestData);
     };
 
-    // var setGraphPermissions = function(name, permissions) {
-    //     var requestData = {
-    //         format: "application/sparql-results+json",
-    //         graph: name,
-    //         mode: "update",
-    //         permissions: permissions,
-    //         username: AccountService.getUsername()
-    //     };
-    //     return request("GraphManagerServlet", requestData);
-    // };
-
     var getGroupsGraph = function() {
-        return GROUPS_GRAPH_URI;
+        return GROUPS_GRAPH;
+    };
+
+    var setGroupsGraph = function(groups_graph) {
+        GROUPS_GRAPH = groups_graph;
+    };
+
+    var setGroupsGraph = function(groups_graph) {
+        GROUPS_GRAPH = groups_graph;
     };
 
     var getFrameworkOntologyNS = function() {
         return FRAMEWORK_ONTOLOGY_NS;
     };
 
+    var setFrameworkOntologyNS = function(framework_ontology_ns) {
+        FRAMEWORK_ONTOLOGY_NS = framework_ontology_ns;
+    };
+
     var getAccountsGraph = function() {
         return ACCOUNTS_GRAPH;
     };
 
+    var setAccountsGraph = function(accounts_graph) {
+        ACCOUNTS_GRAPH = accounts_graph;
+    };
+    
     return {
-        getNS               : getNS,
-        getGraph            : getGraph,
-        setGraph            : setGraph,
-        restoreDefault      : restoreDefault,
-        getSettings         : getSettings,
-        select              : select,
-        read                : read,
-        write               : write,
-        request             : request,
-        // createGraph         : createGraph,
-        dropGraph           : dropGraph,
-        // setGraphPermissions : setGraphPermissions,
-        parseSparqlResults  : parseSparqlResults,
-        getGroupsGraph      : getGroupsGraph,
-        getFrameworkUri     : getFrameworkUri,
-        getFrameworkOntologyNS: getFrameworkOntologyNS,
-        getAccountsGraph    : getAccountsGraph
+        PREFIXES                : PREFIXES,
+        namespaces              : namespaces,
+        getNS                   : getNS,
+        setNS                   : setNS,
+        getFlagPath             : getFlagPath,
+        setFlagPath             : setFlagPath,
+        getEndpoint             : getEndpoint,
+        setEndpoint             : setEndpoint,
+        getAuthEndpoint         : getAuthEndpoint,
+        setAuthEndpoint         : setAuthEndpoint,
+        getDefaultSettingsGraph : getDefaultSettingsGraph,
+        setDefaultSettingsGraph : setDefaultSettingsGraph,
+        getGroupsGraph          : getGroupsGraph,
+        setGroupsGraph          : setGroupsGraph,
+        getFrameworkUri         : getFrameworkUri,
+        setFrameworkUri         : setFrameworkUri,
+        getFrameworkOntologyNS  : getFrameworkOntologyNS,
+        setFrameworkOntologyNS  : setFrameworkOntologyNS,
+        getAccountsGraph        : getAccountsGraph,
+        setAccountsGraph        : setAccountsGraph,
+        restoreDefault          : restoreDefault,
+        setSettingsGraph        : setSettingsGraph,
+        getSettingsGraph        : getSettingsGraph,
+        getSettings             : getSettings,
+        select                  : select,
+        write                   : write,
+        read                    : read,
+        request                 : request,
+        dropGraph               : dropGraph,
+        parseSparqlResults      : parseSparqlResults,
+        buildPrefixesString     : buildPrefixesString
     };
 });

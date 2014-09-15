@@ -1,11 +1,11 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>eu.geoknow</groupId>
-	<artifactId>generator</artifactId>
-	<packaging>war</packaging>
-	<version>1.0.1</version>
-	<name>GeoKnow Generator</name>
+  <groupId>eu.geoknow</groupId>
+  <artifactId>generator</artifactId>
+  <packaging>war</packaging>
+  <version>1.0.1</version>
+  <name>GeoKnow Generator</name>
 
 	<properties>
 		<endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
@@ -27,10 +27,10 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-		  <groupId>javax.servlet</groupId>
-		  <artifactId>servlet-api</artifactId>
-		  <version>2.5</version>
-            <scope>provided</scope>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>2.5</version>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>commons-fileupload</groupId>
@@ -53,22 +53,42 @@
 			<type>pom</type>
 			<version>2.10.1</version>
 		</dependency>
-        <dependency>
-            <groupId>javax.mail</groupId>
-            <artifactId>mail</artifactId>
-            <version>1.4.7</version>
-        </dependency>
+		<dependency>
+			<groupId>javax.mail</groupId>
+			<artifactId>mail</artifactId>
+			<version>1.4.7</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>2.2.4</version>
+		</dependency>
 
-        <!-- for digest authentication -->
-        <dependency>
-            <groupId>commons-codec</groupId>
-            <artifactId>commons-codec</artifactId>
-            <version>1.9</version>
-        </dependency>
-    </dependencies>
+		<!-- for digest authentication -->
+		<dependency>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+			<version>1.9</version>
+		</dependency>
+
+		<!-- Logger -->
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.16</version>
+		</dependency>
+		
+		<!-- Javax web services with jersey -->
+		<dependency>
+      <groupId>org.glassfish.jersey.containers</groupId>
+      <artifactId>jersey-container-servlet</artifactId>
+      <version>2.12</version>
+    </dependency>
+		
+	</dependencies>
 
 	<build>
-		<finalName>generator</finalName>
+		<finalName>${project.artifactId}</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -93,11 +113,11 @@
 			<!-- Maven Tomcat Plugin -->
 			<plugin>
 				<version>1.1</version>
-		    <groupId>org.codehaus.mojo</groupId>
-		    <artifactId>tomcat-maven-plugin</artifactId>
-		    <configuration>
-		      <url>http://127.0.0.1:8080/manager/text</url>
-		      <server>tomcat</server>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>tomcat-maven-plugin</artifactId>
+				<configuration>
+					<url>http://127.0.0.1:8080/manager/text</url>
+					<server>tomcat</server>
 					<path>/${project.build.finalName}</path>
 				</configuration>
 			</plugin>
@@ -114,12 +134,9 @@
 						<artifactId>maven-antrun-plugin</artifactId>
 						<configuration>
 							<tasks>
-								<echo
-									message="Creating debian package">
+								<echo message="Creating debian package">
 								</echo>
-								<exec
-									dir="${basedir}/deb-package"
-									executable="${basedir}/deb-package/build_debpkg.sh"
+								<exec dir="${basedir}/deb-package" executable="${basedir}/deb-package/build_debpkg.sh"
 									failonerror="true">
 								</exec>
 							</tasks>

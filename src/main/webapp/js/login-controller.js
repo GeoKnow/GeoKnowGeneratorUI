@@ -17,7 +17,7 @@ function LoginCtrl($scope, flash, AccountService, LoginService, ServerErrorRespo
             $scope.login.password = null;
              $scope.loggedIn = true;
         }, function(response) {
-            flash.error = ServerErrorResponse.getMessage(response.status);
+            flash.error = ServerErrorResponse.getMessage(response);
             $scope.login.username = null;
             $scope.login.password = null;
         });
@@ -51,7 +51,7 @@ function LoginCtrl($scope, flash, AccountService, LoginService, ServerErrorRespo
                  	$scope.loggedIn = true;
                  }
             }, function(response) {
-                flash.error = ServerErrorResponse.getMessage(response.status);
+                flash.error = ServerErrorResponse.getMessage(response);
                 $scope.login.username = null;
                 $scope.login.password = null;
                 $scope.loggedIn = false;
@@ -85,7 +85,7 @@ function LoginCtrl($scope, flash, AccountService, LoginService, ServerErrorRespo
             	if (response.status==500 && response.data) {
                     flash.error = AuthenticationErrorResponse.getMessage(parseInt(response.data.code));
                 } else {
-                    flash.error = ServerErrorResponse.getMessage(response.status);
+                    flash.error = ServerErrorResponse.getMessage(response);
                 }
                 $scope.isRegistering = false;
             });
@@ -101,7 +101,7 @@ function LoginCtrl($scope, flash, AccountService, LoginService, ServerErrorRespo
                 if (response.status==500 && response.data) {
                     flash.error = AuthenticationErrorResponse.getMessage(parseInt(response.data.code));
                 } else {
-                    flash.error = ServerErrorResponse.getMessage(response.status);
+                    flash.error = ServerErrorResponse.getMessage(response);
                 }
             });
     };

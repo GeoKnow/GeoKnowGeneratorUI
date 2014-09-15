@@ -19,7 +19,7 @@ var LimesCtrl = function($scope, $http, ConfigurationService, flash, ServerError
 	$scope.defaultEndpoint = ConfigurationService.getSPARQLEndpoint();
 	$scope.endpoints = ConfigurationService.getAllEndpoints();
 	$scope.uriBase = ConfigurationService.getUriBase();
-	$scope.importServiceUrl = serviceUrl+"/ImportRDF";
+	var endpoint = ConfigurationService.getPublicSPARQLEndpoint(); // Only supporting saving
 
 	$scope.configOptions = true;
 	$scope.inputForm = true;
@@ -31,8 +31,12 @@ var LimesCtrl = function($scope, $http, ConfigurationService, flash, ServerError
 	var idx = 0;
 	var numberOfProps = 1;
 	
+	// Arrays for comparisons
+	$scope.allItems = [];
+	$scope.storeArray = [];
+	
 	$scope.examples = [
-						{ name : "Duplicate Dbpedia country entries for the CET time zone" },
+						{ name : "Ontos CRM to DBPedia" },
 						{ name : "Geo Data" }
 					];
 	
@@ -55,7 +59,11 @@ var LimesCtrl = function($scope, $http, ConfigurationService, flash, ServerError
 	
 	$scope.limes = { OutputFormat :    $scope.options.output[0],
 					 ExecType :        $scope.options.execType[0],
-					 Granularity : 	   $scope.options.granularity[0]
+					 Granularity : 	   $scope.options.granularity[0],
+					 AcceptThresh : "1",
+					 ReviewThresh : "0.2", // Default setting, input is hidden
+					 AcceptRelation : "owl:sameAs",
+					 ReviewRelation : "owl:sameAs" // Default setting input is hidden
 	};
 	
 	$scope.props = [{
@@ -102,24 +110,22 @@ var LimesCtrl = function($scope, $http, ConfigurationService, flash, ServerError
 		$scope.enterConfig = true;
 		$scope.startLimes = true;
 		
-		if(example === "Duplicate Dbpedia country entries for the CET time zone"){
+		if(example === "Ontos CRM to DBPedia"){
 			
-		$scope.limes = { SourceServiceURI : "http://dbpedia.org/sparql",
-						 TargetServiceURI  : "http://dbpedia.org/sparql",
+		$scope.limes = { SourceServiceURI : "http://localhost:8890/sparql",
+						 TargetServiceURI  : "http://localhost:8890/sparql",
 						 SourceVar: "?x",
 						 TargetVar: "?y",
 						 SourceSize: "1000",
 						 TargetSize: "1000",
-						 SourceRestr: "?x dbpedia:timeZone dbresource:Central_European_Time. " +
-						 		"?x dbpedia2:country ?z",
-						 TargetRestr: "?y dbpedia:timeZone dbresource:Central_European_Time. " +
-						 		"?y dbpedia2:country ?z",
-						 Metric: "levenshtein(y.rdfs:label, x.rdfs:label)",
-						 OutputFormat: $scope.options.output[0],
+						 SourceRestr: "?x foaf:name ?e",
+						 TargetRestr: "?y skos:prefLabel ?z",
+						 Metric: "levenshtein(y.foaf:name, x.skos:prefLabel)",
+						 OutputFormat: $scope.options.output[1],
 						 ExecType: $scope.options.execType[0],
 						 Granularity : 	   $scope.options.granularity[0],
 						 AcceptThresh: "1",
-						 ReviewThresh: "0.95",
+						 ReviewThresh: "0.35",
 						 AcceptRelation: "owl:sameAs",
 						 ReviewRelation: "owl:sameAs" 
 				};
@@ -127,8 +133,8 @@ var LimesCtrl = function($scope, $http, ConfigurationService, flash, ServerError
 		$scope.props = [{
 						inputs : [{
 						          idx : 0,
-						          source: "rdfs:label",
-						          target: "rdfs:label"
+						          source: "foaf:name",
+						          target: "skos:prefLabel"
 								}]
 						}];
 			idx++;
@@ -145,7 +151,7 @@ var LimesCtrl = function($scope, $http, ConfigurationService, flash, ServerError
 								SourceRestr: "?x a lgdo:RelayBox",
 								TargetRestr: "?y a lgdo:RelayBox",
 								Metric: "hausdorff(x.polygon, y.polygon)",
-								OutputFormat: $scope.options.output[0],
+								OutputFormat: $scope.options.output[1],
 								ExecType: $scope.options.execType[0],
 								Granularity : $scope.options.granularity[0],
 								AcceptThresh: "0.9",
@@ -238,12 +244,12 @@ $scope.LaunchLimes = function(){
 		params.AcceptThresh = $scope.limes.AcceptThresh;
 		params.ReviewThresh = $scope.limes.ReviewThresh;
 		params.AcceptRelation = $scope.limes.AcceptRelation;
-		params.ReviewRelation = $scope.limes.ReviewRelation;
+		params.ReviewRelation = $scope.limes.AcceptRelation; // Set to the same as the accept relation, 
+															// otherwise it makes no sense to mix the results in the comparison table
 		params.numberOfProps = numberOfProps;
 		
 		window.$windowScope = $scope;
- 		var newWindow = $window.open('popup.html#/popup-limes', 'frame', 'resizeable,height=600,width=800');
- 		console.log(params);
+ 		var newWindow = $window.open('popup.html#/popup-limes', 'frame', 'resizeable,height=800,width=1200');
 		newWindow.params = params;
 	};
 		
@@ -269,46 +275,105 @@ $scope.LaunchLimes = function(){
 		  .error(function(response) {
 			    flash.error = ServerErrorResponse.getMessage(response.status);
 			    $scope.startLimes = false;
-				  $scope.showProgress = false;});
+				  $scope.showProgress = false;
+				});
 	};
 	
-	$scope.ReviewLimes = function(){
+	$scope.ReviewLimes = function(params){
 
 		$scope.configOptions = false;
 		$scope.reviewForm = false;
+		$scope.differing = false;
 
 	  $http({
-			url: serviceUrl+"/LimesReview",
+			url: "TabFileReader",
 	        method: "POST",
 	        dataType: "json",
 	        contentType: "application/json; charset=utf-8"
 	      }).then(function(data){
-	    	    console.log(data);
-	    	  	var result = data.data[0];
-	  	  		if (result.length<3){
-	  	  			$scope.limes.reviewResults = "No results to review";
+	    	  	var reviewResult = data.data[0];
+	    	  	var count = 0;
+	  	  		if (reviewResult.length<3){
+	  	  			// Do nothing
 	  		  	}else{
-	  		  		$scope.limes.reviewResults = result;
+	  		  		for(var i = count; i < reviewResult.length; i++){
+		  		  		var cleanedUris = reviewResult[i].replace(/<|>/g,"");
+	  	  				var parts = cleanedUris.split("	");
+	  	  				$scope.allItems.push([]);
+	  	  				$scope.allItems[count].push({"entity1" : decodeURIComponent(parts[0]),
+								 					 "entity2" : decodeURIComponent(parts[1]),
+								 					 "match" : 100*parts[2],
+								 					 "relation" : params.AcceptRelation});
+	  	  				count++;
+	  		  		}
 	  		  	}
+	  	  		var acceptedResult = data.data[1];
 	  	  		
-	  	  		result = data.data[1];
-	  	  		if (result.length<3){
-	  	  			$scope.limes.acceptedResults = "No results meet the acceptance threshold";
+	  	  		if (acceptedResult.length<3){
+	  	  			// Do nothing
 	  	  		}else{
-	  	  			$scope.limes.acceptedResults = result;
+	  	  			for(var i = 0; i < acceptedResult.length; i++){
+	  	  				var cleanedUris = acceptedResult[i].replace(/<|>/g,"");
+	  	  				var parts = cleanedUris.split("	");
+	  	  				$scope.allItems.push([]);
+	  	  				$scope.allItems[count].push({"entity1" : decodeURIComponent(parts[0]),
+	  	  											 "entity2" : decodeURIComponent(parts[1]),
+	  	  											 "match" : 100*parts[2],
+								 					 "relation" : params.AcceptRelation});
+	  	  				count++;
+	  		  		}
+	  	  			
+	  	  		}
+	  	  		
+		  	  	// Sort from highest to lowest
+	  	  		$scope.allItems.sort(function(a, b){
+		  	  		 return b[0].match-a[0].match
+		  	  		});
+	  	  		// If all match values are the same it makes no sense to display the slider, therefore the values are compared first
+	  	  		if($scope.allItems[($scope.allItems.length-1)][0].match != $scope.allItems[0][0].match){
+	  	  			// Display slider and set slider min and max values
+	  	  			$scope.differing = true;
+		  	  		$('#result').slider({
+						min: $scope.allItems[($scope.allItems.length-1)][0].match,
+						max: $scope.allItems[0][0].match
+					});
+		  	  		
+		  	  	// Move items from allItems into store array according to slider value
+			  	$('#result').bind('slideStop', function() {
+			  		console.log($scope.storeArray);
+			  	      //Remove items from allItems array and store them (slider increases)
+			  	  	  for(var i=($scope.allItems.length-1); i>=0; i--){
+			  	  			if($scope.allItems[i][0].match < $('#result').slider('getValue')){
+			  	  				$scope.storeArray.push($scope.allItems.pop());
+			  	  			};
+				  	  	};
+				  	  	
+				  	  // Put items from store back into allItems array (slider decreases)	
+				  	  if ($scope.storeArray.length >= 1){
+					  	  for(var i=($scope.storeArray.length-1); i>=0; i--){
+				  	  			if($scope.storeArray[i][0].match > $('#result').slider('getValue')){
+				  	  				$scope.allItems.push($scope.storeArray.pop());
+				  	  			};
+					  	  	};
+				  	  }
+				  	  
+				  	  // Refresh results table
+				  	  $scope.$digest();
+				  	  
+			  	  	});
 	  	  		}
 	  	  		
 	  		  	$scope.enterConfig = false;
+	  		    $scope.inputForm = false;
 	  		  	$scope.showProgress = false;
-	    			$scope.inputForm = false;
-		    		$scope.reviewForm = true;
+		    	$scope.reviewForm = true;
 	  		 }, function (response){ // in the case of an error 
 	  			console.log(response);
 	  			$scope.startLimes = false;
 		    	$scope.showProgress = false;
 		    	$scope.inputForm = true;
 		    	$scope.reviewForm = false;
-		    	flash.error = ServerErrorResponse.getMessage(response.status);
+		    	flash.error = ServerErrorResponse.getMessage(response);
 	    });
 	      
 	};
@@ -391,7 +456,70 @@ $scope.LaunchLimes = function(){
 	};
 	
 	$scope.save = function(){
-			
+		
+		var saveDataset = $scope.saveDataset.replace(":", ConfigurationService.getUriBase());
+		var allTriples = "";
+		
+		for(var i = 0; i < $scope.allItems.length; i++){
+			allTriples = allTriples +
+						 "<" + $scope.allItems[i][0].entity1 + "> " + 
+						 $scope.allItems[i][0].relation + 
+						 " <" + $scope.allItems[i][0].entity2 + "> . ";	
+	  		};
+	  	
+	  	var params = {
+		        endpoint: endpoint,
+		        graph: saveDataset, 
+		        uriBase : ConfigurationService.getUriBase(),
+		        username: AccountService.getUsername(),
+		        saveString: allTriples
+		      	};
+	  	
+	  	$.ajax({ type :"post", 
+	         data : { 
+	        	 url: "ImportRDFString",
+	 	         method: "POST",
+	 	         dataType: "json",
+	 	         params: params,
+	 	         processData: false,
+	 	         contentType: "application/json; charset=utf-8"
+	        	 },
+	         url : "ImportRDFString"
+	      }).success(function (data, status, headers, config){
+		        if(data.status=="FAIL"){
+			          flash.error = data.message;
+			          importing = false;
+			        }
+			        else{
+			        	console.log(data.message);
+			          flash.success = data.message;
+			        }
+			      })
+			      .error(function(data, status, headers, config) {
+			          flash.error = data;
+			      });
+	  	/*
+	  	$http({
+			url: "ImportRDFString",
+	        method: "POST",
+	        dataType: "json",
+	        params: params,
+	        processData: false,
+	        contentType: "application/json; charset=utf-8"
+		})
+	      .success(function (data, status, headers, config){
+	        if(data.status=="FAIL"){
+	          flash.error = data.message;
+	          importing = false;
+	        }
+	        else{
+	          flash.success = data.message;
+	        }
+	      })
+	      .error(function(data, status, headers, config) {
+	          flash.error = data;
+	      });
+		/*
 		var parameters = { 
         endpoint: AccountService.getUsername() == null ? ConfigurationService.getPublicSPARQLEndpoint() : ConfigurationService.getSPARQLEndpoint(),
    		uriBase : ConfigurationService.getUriBase()
@@ -443,5 +571,6 @@ $scope.LaunchLimes = function(){
 			.error(function(data, status, headers, config) {
 			  flash.error = data;
 		});
+		*/
 	};
 };

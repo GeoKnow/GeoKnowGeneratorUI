@@ -10,6 +10,13 @@ function EndpointCtrl($scope, ConfigurationService,  AccountService){
 	$scope.uribase = ConfigurationService.getUriBase();
 	$scope.modaltitle = "";
 
+	$scope.isEditable = function(endpoint){
+		if (endpoint==ConfigurationService.getSPARQLEndpoint() || endpoint==ConfigurationService.getPublicSPARQLEndpoint() ) 
+			return false;
+		else
+			return true;
+	};
+
   $scope.isNew = function(){
 		return newEndpoint;
 	};

@@ -46,14 +46,18 @@
   lds:user   "***REMOVED***"^^xsd:string .
 
 :VirtuosoAuthSPARQLEndpoint
-  a       lds:SecuredSPARQLEndPointService ;
+  a       lds:SecuredSPARQLEndPointService, void:Dataset , gkg:SPARQLEndpoint , gkg:DataSource ;
+  rdfs:label  "Workbench Authenticated Endpoint" ;
   lds:password "***REMOVED***"^^xsd:string ;
+  void:sparqlEndpoint <http://***REMOVED***:8890/sparql-auth> ;
   lds:serviceUrl <http://***REMOVED***:8890/sparql-auth> ;
   lds:user   "***REMOVED***"^^xsd:string .
 
 :VirtuosoEndpoint
-  a       lds:SPARQLEndPointService ;
-  lds:serviceUrl <http://***REMOVED***:8890/sparql> .
+  a       lds:SPARQLEndPointService, void:Dataset , gkg:SPARQLEndpoint , gkg:DataSource ;
+  rdfs:label  "Workbench public Endpoint" ;
+  lds:serviceUrl <http://***REMOVED***:8890/sparql> ;
+  void:sparqlEndpoint <http://***REMOVED***:8890/sparql> .
 
 
 # #######################################################################################
@@ -75,7 +79,7 @@
   .
 
 :defaultNamedGraph
-  sd:name <http://***REMOVED***/DAV>;
+  sd:name <http://***REMOVED***:8890/DAV>;
   sd:graph [
     a sd:Graph, void:Dataset;
     rdfs:label "default"^^xsd:string;
@@ -92,7 +96,7 @@
     dcterms:description "GeoKnow Generator settings and configurations"^^xsd:string;
     dcterms:modified "2013-09-12"^^xsd:date;
     dcterms:created "2013-09-12"^^xsd:date;
-    void:sparqlEndpoint <http://***REMOVED***/sparql> ]
+    void:sparqlEndpoint <http://***REMOVED***:8890/sparql> ]
   .
 
 :initialSettingsNamedGraph
@@ -104,7 +108,7 @@
     dcterms:description "Initial configuration of components in the framework"^^xsd:string;
     dcterms:modified "2013-09-12"^^xsd:date;
     dcterms:created "2013-09-12"^^xsd:date;
-    void:sparqlEndpoint <http://***REMOVED***/sparql> ]
+    void:sparqlEndpoint <http://***REMOVED***:8890/sparql> ]
   .
 
 :accountsNamedGraph
@@ -116,7 +120,7 @@
     dcterms:description "A graph to store the users accounts"^^xsd:string;
     dcterms:modified "2014-04-12"^^xsd:date;
     dcterms:created "2014-04-12"^^xsd:date;
-    void:sparqlEndpoint <http://***REMOVED***/sparql> ]
+    void:sparqlEndpoint <http://***REMOVED***:8890/sparql> ]
   .
 
 :groupsNamedGraph
@@ -128,13 +132,13 @@
     dcterms:description "A graph for groups of graphs"^^xsd:string;
     dcterms:modified "2014-04-12"^^xsd:date;
     dcterms:created "2014-04-12"^^xsd:date;
-    void:sparqlEndpoint <http://***REMOVED***/sparql> ]
+    void:sparqlEndpoint <http://***REMOVED***:8890/sparql> ]
   .
 
 :admin
   a gkg:Account;
-  foaf:accountName "***REMOVED***"^^xsd:string;
-  lds:password "***REMOVED***"^^xsd:string;
+  foaf:accountName "admin"^^xsd:string;
+  lds:password "admin"^^xsd:string;
   foaf:mbox <mailto:***REMOVED***>;
   gkg:Role gkg:Administrator.
 
