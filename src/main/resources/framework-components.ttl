@@ -11,7 +11,7 @@
 @prefix void:    <http://rdfs.org/ns/void#> .
 @prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
 @prefix foaf:    <http://xmlns.com/foaf/0.1/> .
-@prefix gkg:     <http://generator.geoknow.eu/ontology/> .
+@prefix gkg:     <http://ldiw.ontos.com/ontology/> .
 @prefix acl:     <http://www.w3.org/ns/auth/acl#> .
 
 ########### ABOUT THIS FILE #############################################################
@@ -42,16 +42,6 @@
 ########### COMPONENT DESCRIPTION #######################################################
 # Following triples  describes the configured components in the framework
 # #######################################################################################
-
-:GeoKnowGenerator
-  a       lds:StackComponent ;
-  rdfs:comment "This resource contains all the configuration required by the application"^^xsd:string ;
-  rdfs:label "GeoKnowGeneator"^^xsd:string ;
-  dcterms:hasVersion "2.0"^^xsd:string ;
-  gkg:publicEndpoint :VirtuosoEndpoint ;
-  gkg:authEndpoint :VirtuosoAuthSPARQLEndpoint ;
-  lds:integrates :Facete, :Limes, :Sparqlify, :TripleGeo, :GeoLift, :OntoWiki, :Mappify ;
-  foaf:homepage <http://localhost:8080/generator> .
 
 :Sparqlify
       a       lds:StackComponent ;

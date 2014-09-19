@@ -3,6 +3,7 @@
 var app = angular.module('app', ['ngRoute',
                                  'ngCookies',
                                  'app.services', 
+                                 'app.ns-service',
                                  'app.configuration-service',
                                  'app.graph-service',
                                  'app.account-service',

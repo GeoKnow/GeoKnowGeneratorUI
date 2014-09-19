@@ -13,8 +13,7 @@ These option will not install any integrated component from the stack and you re
 
 ### Requirements
 
-
-* Have a clean triple store and make sure to have a superuser created.
+* Virtuoso 7.1 triple store and make sure to have a superuser created.
 
 ### Application configuration
 

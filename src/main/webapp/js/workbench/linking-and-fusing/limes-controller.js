@@ -5,29 +5,25 @@
 * LIMES Controller
 *
 ***************************************************************************************************/
-var LimesCtrl = function($scope, $http, ConfigurationService, flash, ServerErrorResponse, $window, GraphService, AccountService){
+
+var LimesCtrl = function($scope, $http, ConfigurationService, flash, ServerErrorResponse, $window, GraphService, AccountService, $timeout, Ns){
 	
 	$scope.component = ConfigurationService.getComponent(":Limes");
-	var services = ConfigurationService.getComponentServices(":Limes");
-	var serviceUrl = services[0].serviceUrl;
-	
-	// parameters for saving results
-	$scope.namedGraphs = [];
-    GraphService.getAccessibleGraphs(false, false, true).then(function(graphs) {
-	    $scope.namedGraphs = graphs;
-    });
-	$scope.defaultEndpoint = ConfigurationService.getSPARQLEndpoint();
 	$scope.endpoints = ConfigurationService.getAllEndpoints();
 	$scope.uriBase = ConfigurationService.getUriBase();
-	var endpoint = ConfigurationService.getPublicSPARQLEndpoint(); // Only supporting saving
-
 	$scope.configOptions = true;
 	$scope.inputForm = true;
 	$scope.deleteProp = false;
+	
+	var services = ConfigurationService.getComponentServices(":Limes");
+	var workbench = ConfigurationService.getComponent(ConfigurationService.getFrameworkUri());
+	var serviceUrl = services[0].serviceUrl;
+	console.log(workbench.homepage);
+
 	var importing = false;
 	var uploadError = false;
 	var uploadedFiles = null;
-	var params = {};
+
 	var idx = 0;
 	var numberOfProps = 1;
 	
@@ -35,8 +31,12 @@ var LimesCtrl = function($scope, $http, ConfigurationService, flash, ServerError
 	$scope.allItems = [];
 	$scope.storeArray = [];
 	
+	var SourceServiceURI = null;
+	var TargetServiceURI = null;
+
 	$scope.examples = [
-						{ name : "Ontos CRM to DBPedia" },
+						{ name : "Authorization Demo" },
+						{ name : "Duplicate Dbpedia country entries for the CET time zone" },
 						{ name : "Geo Data" }
 					];
 	
@@ -82,6 +82,24 @@ var LimesCtrl = function($scope, $http, ConfigurationService, flash, ServerError
    	$scope.component.offline = true;
   });
 
+  $scope.updateSourceGraphs = function(){
+  	if( $scope.limes.SourceServiceURI == ConfigurationService.getSPARQLEndpoint())
+				GraphService.getAccessibleGraphs(false, false, true).then(function(graphs) {
+    			$scope.namedSourceGraphs = graphs;
+    		});
+		else
+			$scope.namedSourceGraphs = {};
+  };
+
+  $scope.updateTargetGraphs = function(){
+  	if( $scope.limes.TargetServiceURI == ConfigurationService.getSPARQLEndpoint())
+			GraphService.getAccessibleGraphs(false, false, true).then(function(graphs) {
+    		$scope.namedTargetGraphs = graphs;
+    	});
+		else
+			$scope.namedTargetGraphs = {};
+  };
+
 	$scope.appendInput = function(source, target){
 		idx++;
 		$scope.props[0].inputs.push({ 
@@ -105,15 +123,49 @@ var LimesCtrl = function($scope, $http, ConfigurationService, flash, ServerError
 	};
 	
 	$scope.FillForm = function(example){
-		
-		params = {};
+
 		$scope.enterConfig = true;
 		$scope.startLimes = true;
 		
-		if(example === "Ontos CRM to DBPedia"){
+		if(example === "Authorization Demo"){
+			alert("this demo requires of a private graph :cantons loaded with cantons-data.admin.ch.rdf ");
+			$scope.limes.SourceServiceURI = ConfigurationService.getSPARQLEndpoint();
+			$scope.updateSourceGraphs();
 			
-		$scope.limes = { SourceServiceURI : "http://localhost:8890/sparql",
-						 TargetServiceURI  : "http://localhost:8890/sparql",
+			$scope.limes = { SourceServiceURI : ConfigurationService.getSPARQLEndpoint(),
+							 TargetServiceURI  : "http://data.admin.ch/sparql",
+							 SourceGraph : ":cantons",
+							 SourceVar: "?x",
+							 TargetVar: "?y",
+							 SourceSize: "1000",
+							 TargetSize: "5000",
+							 SourceRestr: "?x a ch:Canton",
+							 TargetRestr: "?y a gz:Canton",
+							 Metric: "trigrams(x.rdfs:label, y.gz:cantonLongName)",
+							 OutputFormat: $scope.options.output[0],
+							 ExecType: $scope.options.execType[0],
+							 Granularity : 	   $scope.options.granularity[0],
+							 AcceptThresh: "0.1",
+							 ReviewThresh: "0.1",
+							 AcceptRelation: "owl:sameAs",
+							 ReviewRelation: "owl:sameAs",
+							 prefixes: Ns.getMap(["rdfs","gz","owl","ch"])
+					};
+			
+			$scope.props = [{
+				inputs : [{
+				          idx : 0,
+				          source: "rdfs:label",
+				          target: "gz:cantonLongName"
+						}]
+				}];
+			idx++;
+		}
+		
+		if(example === "Duplicate Dbpedia country entries for the CET time zone"){
+			
+			$scope.limes = { SourceServiceURI : "http://dbpedia.org/sparql",
+						 TargetServiceURI  : "http://dbpedia.org/sparql",
 						 SourceVar: "?x",
 						 TargetVar: "?y",
 						 SourceSize: "1000",
@@ -127,10 +179,11 @@ var LimesCtrl = function($scope, $http, ConfigurationService, flash, ServerError
 						 AcceptThresh: "1",
 						 ReviewThresh: "0.35",
 						 AcceptRelation: "owl:sameAs",
-						 ReviewRelation: "owl:sameAs" 
+						 ReviewRelation: "owl:sameAs",
+						 prefixes: Ns.getMap(["foaf","skos","owl"])
 				};
 		
-		$scope.props = [{
+			$scope.props = [{
 						inputs : [{
 						          idx : 0,
 						          source: "foaf:name",
@@ -157,8 +210,9 @@ var LimesCtrl = function($scope, $http, ConfigurationService, flash, ServerError
 								AcceptThresh: "0.9",
 								ReviewThresh: "0.5",
 								AcceptRelation: "lgdo:near",
-								ReviewRelation: "lgdo:near"
-									};
+								ReviewRelation: "lgdo:near",
+								prefixes: Ns.getMap(["lgdo","geom","geos"])
+				};
 		
 			$scope.props = [{
 							inputs : [{
@@ -179,13 +233,30 @@ var LimesCtrl = function($scope, $http, ConfigurationService, flash, ServerError
 			}
 		};
 	
-$scope.LaunchLimes = function(){
+	$scope.LaunchLimes = function(){
+	
+		SourceServiceURI = $scope.limes.SourceServiceURI;
+		TargetServiceURI = $scope.limes.TargetServiceURI;
+
+		if($scope.limes.SourceServiceURI == ConfigurationService.getSPARQLEndpoint() ||
+			 $scope.limes.TargetServiceURI == ConfigurationService.getSPARQLEndpoint()) {
+				AccountService.createSession().then(function(response){
+					if($scope.limes.SourceServiceURI == ConfigurationService.getSPARQLEndpoint())
+						SourceServiceURI = workbench.homepage + response.data.endpoint;
+					if($scope.limes.TargetServiceURI == ConfigurationService.getSPARQLEndpoint())
+						TargetServiceURI = workbench.homepage + response.data.endpoint;
+					$scope.setParams();
+				});
+		}
+		else $scope.setParams();
+	};
+	
+	$scope.setParams = function(){
 		
 		var SourceGraph = null;
 		var TargetGraph = null;
 		var SourceRestr = null;
 		var TargetRestr = null;
-		
 		
 		if($scope.limes.SourceGraph != null){
 			SourceGraph = $scope.limes.SourceGraph.replace(':', ConfigurationService.getUriBase());
@@ -218,83 +289,89 @@ $scope.LaunchLimes = function(){
 		
 		numberOfProps = $scope.propsCopy[0].inputs.length;
 		
-		var params = {};
-		
-		for(var i=0; i<numberOfProps; i++){
-			var SourceProp = "SourceProp"+i;
-			var TargetProp = "TargetProp"+i;
-			params[SourceProp] = $scope.propsCopy[0].inputs[i].source;
-			params[TargetProp] = $scope.propsCopy[0].inputs[i].target;
+		var params = {
+      "sourceserviceuri" : SourceServiceURI,
+      "targetserviceuri" : TargetServiceURI,
+      "sourcegraph" : SourceGraph,
+      "targetgraph" : TargetGraph,
+      "sourcevar" : $scope.limes.SourceVar,
+      "targetvar" : $scope.limes.TargetVar,
+      "sourcesize" : $scope.limes.SourceSize,
+      "targetsize" : $scope.limes.TargetSize,
+      "sourcerestr" : SourceRestr,
+      "targetrestr" : TargetRestr,
+      "metric" : $scope.limes.Metric,
+      "granularity" : $scope.limes.Granularity,
+      "outputformat" : $scope.limes.OutputFormat,
+      "exectype" : $scope.limes.ExecType,
+      "acceptthresh" : $scope.limes.AcceptThresh,
+      "reviewthresh" : $scope.limes.ReviewThresh,
+      "acceptrelation" : $scope.limes.AcceptRelation,
+      "reviewrelation" : $scope.limes.AcceptRelation
 		};
 		
-		params.SourceServiceURI = $scope.limes.SourceServiceURI;
-		params.TargetServiceURI = $scope.limes.TargetServiceURI;
-		params.SourceGraph = SourceGraph;
-		params.TargetGraph = TargetGraph;
-		params.SourceVar = $scope.limes.SourceVar;
-		params.TargetVar = $scope.limes.TargetVar;
-		params.SourceSize = $scope.limes.SourceSize;
-		params.TargetSize = $scope.limes.TargetSize;
-		params.SourceRestr = SourceRestr;
-		params.TargetRestr = TargetRestr;
-		params.Metric = $scope.limes.Metric;
-		params.Granularity = $scope.limes.Granularity;
-		params.OutputFormat = $scope.limes.OutputFormat;
-		params.ExecType = $scope.limes.ExecType;
-		params.AcceptThresh = $scope.limes.AcceptThresh;
-		params.ReviewThresh = $scope.limes.ReviewThresh;
-		params.AcceptRelation = $scope.limes.AcceptRelation;
-		params.ReviewRelation = $scope.limes.AcceptRelation; // Set to the same as the accept relation, 
-															// otherwise it makes no sense to mix the results in the comparison table
-		params.numberOfProps = numberOfProps;
-		
-		window.$windowScope = $scope;
- 		var newWindow = $window.open('popup.html#/popup-limes', 'frame', 'resizeable,height=800,width=1200');
-		newWindow.params = params;
+		params["prefixes"] = $scope.limes.prefixes;
+		params["sourceprop"] = [];
+		params["targetprop"] = [];
+
+		for(var i=0; i<numberOfProps; i++){
+			params["sourceprop"][i]=$scope.propsCopy[0].inputs[i].source;
+			params["targetprop"][i]=$scope.propsCopy[0].inputs[i].target;
+		};		
+
+		$timeout(function() {
+			window.$windowScope = $scope;
+	 		var newWindow = $window.open('popup.html#/popup-limes', 'frame', 'resizeable,height=600,width=800');
+			newWindow.params = params;
+			});
 	};
 		
 	$scope.StartLimes = function(){
 		
 			var params = $window.params;
 			$scope.showProgress = true;
+
 			$http({
-					url: serviceUrl+"/run",
-			        method: "POST",
-			        params: params,
-			        dataType: "json",
-			        contentType: "application/json; charset=utf-8"})
-		  .success(function (response){
+					method: 'PUT',
+    			url: serviceUrl+"/run",
+    			headers: { 'Content-type': 'application/json'},
+    			data : params })
+		  	.success(function(data, status, headers, config){
 	       	$scope.startLimes = false;
 		    	$scope.showProgress = false;
 		    	$scope.inputForm = true;
 		    	flash.success = "Limes finished";
 		    	// get the files inside data.results, and these are to be proposed to be downloaded
 		    	// in this case probably LimesReview is not required anymore...
-					$scope.ReviewLimes();   
+					$scope.ReviewLimes(data);   
 	      })
-		  .error(function(response) {
-			    flash.error = ServerErrorResponse.getMessage(response.status);
+		  	.error(function(response) {
+			    flash.error = ServerErrorResponse.getMessage(response);
 			    $scope.startLimes = false;
 				  $scope.showProgress = false;
 				});
 	};
 	
-	$scope.ReviewLimes = function(params){
+	$scope.ReviewLimes = function(config){
+
+		console.log(config);
 
 		$scope.configOptions = false;
 		$scope.reviewForm = false;
 		$scope.differing = false;
 
 	  $http({
-			url: "TabFileReader",
-	        method: "POST",
+			url: serviceUrl+"/review/"+config.uuid,
+	        method: "GET",
 	        dataType: "json",
 	        contentType: "application/json; charset=utf-8"
-	      }).then(function(data){
-	    	  	var reviewResult = data.data[0];
+	      }).then(function(response){
+	      		console.log(response);
+	    	  	var reviewResult = response.data.review;
 	    	  	var count = 0;
-	  	  		if (reviewResult.length<3){
-	  	  			// Do nothing
+	  	  		// if (reviewResult.length<3){
+	  	  		if (reviewResult.length == 0 ){
+	  	  			flash.info="No results to review";
 	  		  	}else{
 	  		  		for(var i = count; i < reviewResult.length; i++){
 		  		  		var cleanedUris = reviewResult[i].replace(/<|>/g,"");
@@ -303,14 +380,15 @@ $scope.LaunchLimes = function(){
 	  	  				$scope.allItems[count].push({"entity1" : decodeURIComponent(parts[0]),
 								 					 "entity2" : decodeURIComponent(parts[1]),
 								 					 "match" : 100*parts[2],
-								 					 "relation" : params.AcceptRelation});
+								 					 "relation" : config.acceptrelation});
 	  	  				count++;
 	  		  		}
 	  		  	}
-	  	  		var acceptedResult = data.data[1];
+	  	  		var acceptedResult = response.data.accepted;
 	  	  		
-	  	  		if (acceptedResult.length<3){
-	  	  			// Do nothing
+	  	  		// if (acceptedResult.length<3){
+	  	  		if (acceptedResult.length == 0){
+	  	  			flash.info= flash.info + "<br/>No accepted results ";
 	  	  		}else{
 	  	  			for(var i = 0; i < acceptedResult.length; i++){
 	  	  				var cleanedUris = acceptedResult[i].replace(/<|>/g,"");
@@ -319,7 +397,7 @@ $scope.LaunchLimes = function(){
 	  	  				$scope.allItems[count].push({"entity1" : decodeURIComponent(parts[0]),
 	  	  											 "entity2" : decodeURIComponent(parts[1]),
 	  	  											 "match" : 100*parts[2],
-								 					 "relation" : params.AcceptRelation});
+								 					 "relation" : config.acceptrelation});
 	  	  				count++;
 	  		  		}
 	  	  			
@@ -468,7 +546,7 @@ $scope.LaunchLimes = function(){
 	  		};
 	  	
 	  	var params = {
-		        endpoint: endpoint,
+		        endpoint: ConfigurationService.getPublicSPARQLEndpoint(),
 		        graph: saveDataset, 
 		        uriBase : ConfigurationService.getUriBase(),
 		        username: AccountService.getUsername(),
@@ -498,79 +576,5 @@ $scope.LaunchLimes = function(){
 			      .error(function(data, status, headers, config) {
 			          flash.error = data;
 			      });
-	  	/*
-	  	$http({
-			url: "ImportRDFString",
-	        method: "POST",
-	        dataType: "json",
-	        params: params,
-	        processData: false,
-	        contentType: "application/json; charset=utf-8"
-		})
-	      .success(function (data, status, headers, config){
-	        if(data.status=="FAIL"){
-	          flash.error = data.message;
-	          importing = false;
-	        }
-	        else{
-	          flash.success = data.message;
-	        }
-	      })
-	      .error(function(data, status, headers, config) {
-	          flash.error = data;
-	      });
-		/*
-		var parameters = { 
-        endpoint: AccountService.getUsername() == null ? ConfigurationService.getPublicSPARQLEndpoint() : ConfigurationService.getSPARQLEndpoint(),
-   		uriBase : ConfigurationService.getUriBase()
-		};
-				
-		$http({
-			url: serviceUrl+"/ImportRDF",
-      method: "POST",
-      dataType: "json",
-      params: parameters,
-      contentType: "application/json; charset=utf-8"
-			})
-	    .success(function (data, status, headers, config){
-	      if(data.status=="FAIL"){
-		      flash.error = data.message;
-		      importing = false;
-		    }
-		    else{
-		      flash.success = data.message;
-		      console.log(data);
-		      // add the graph metadata to settingsGraph
-		      var now = Helpers.getCurrentDate();
-		      var newGraph = {  name:"" ,  graph: {
-					  	created : now, endpoint: ConfigurationService.getSPARQLEndpoint(), 
-					  	description: "", 
-					  	modified: now, label:"" 
-						}};
-					var sucess;
-			    for (var res in data.result){
-			     	var graphName = data.result[res].replace(ConfigurationService.getUriBase() ,":");
-			     	if (graphName.indexOf("accepted") >= 0){
-			     		newGraph.name = graphName;
-			     		newGraph.graph.description = "Accepted results from LIMES";
-			     		newGraph.graph.label = "LIMES Accepted";
-			     		sucess  = GraphService.addGraph(newGraph);
-			     		// TODO: handle succes/error
-			     	}
-						if (graphName.indexOf("review") >= 0){
-			     		newGraph.name = graphName;
-			     		newGraph.graph.description = "Results to review from LIMES";
-			     		newGraph.graph.label = "LIMES review";
-				   		sucess = GraphService.addGraph(newGraph);
-				   		console.log(newGraph);
-			     		// TODO: handle succes/error
-			     	}
-			    }
-			  }
-			})
-			.error(function(data, status, headers, config) {
-			  flash.error = data;
-		});
-		*/
 	};
 };

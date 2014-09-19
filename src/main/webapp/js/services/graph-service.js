@@ -16,7 +16,6 @@ module.factory("GraphService", function ($http, $q, Config, AccountService) {
     var namedGraphs = {};
     var namedGraphsLoaded = false;
 
-    // TODO: graphs may be read once when loading the app like the Config.read 
     var readNamedGraphs = function (reload) {
         if (namedGraphsLoaded && !reload) {
             var deferred = $q.defer();
@@ -368,14 +367,14 @@ module.factory("GraphService", function ($http, $q, Config, AccountService) {
             username: AccountService.getUsername()
         }
 
+        console.log(requestData);
+
         Config.request("GraphManagerServlet", requestData, function () {
             // if the creation succeed, then add the metadata insert the metadata of the graph
             var settings = Config.getSettings();
-            console.log("write settings");
             settings[parNamedGraph.name] = namedgraph;
             settings[parNamedGraph.name + "Graph"] = graph;
             settings[":default-dataset"]["sd:namedGraph"].push(parNamedGraph.name);
-            console.log(settings);
             Config.write();
 
         });

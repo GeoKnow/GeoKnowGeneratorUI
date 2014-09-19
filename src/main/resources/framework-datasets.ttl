@@ -1,10 +1,11 @@
 @prefix :        <http://generator.geoknow.eu/resource/> .
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
 @prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix void:    <http://rdfs.org/ns/void#> .
 @prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
 @prefix foaf:    <http://xmlns.com/foaf/0.1/> .
-@prefix gkg:     <http://ldiw.ontos.com/ontology/> .
+@prefix onots:   <http://ldiw.ontos.com/ontology/> .
 
 ########### ABOUT THIS FILE #############################################################
 # This file contains the default set-up of components in the framework; 
@@ -15,31 +16,38 @@
 #########################################################################################
 
 :Dbpedia
-      a       void:Dataset , gkg:SPARQLEndpoint , gkg:DataSource ;
+      a       void:Dataset , onots:SPARQLEndpoint , onots:DataSource ;
       rdfs:label "Dbpedia"^^xsd:string ;
       foaf:homepage <http://dbpedia.org/> ;
       void:sparqlEndpoint <http://dbpedia.org/sparql> .
 
 :GeoLinkedDataEs
-      a       void:Dataset , gkg:SPARQLEndpoint , gkg:DataSource ;
+      a       void:Dataset , onots:SPARQLEndpoint , onots:DataSource ;
       rdfs:label "Spanish GeoLinkedData"^^xsd:string ;
       foaf:homepage <http://geo.linkeddata.es/> ;
       void:sparqlEndpoint <http://geo.linkeddata.es/sparql> .
 
 :osm-semantic-network
-      a       void:Dataset , gkg:SPARQLEndpoint , gkg:DataSource ;
+      a       void:Dataset , onots:SPARQLEndpoint , onots:DataSource ;
       rdfs:label "OSM Semantic Network"^^xsd:string ;
       foaf:homepage <http://wiki.openstreetmap.org/wiki/OSM_Semantic_Network> ;
       void:sparqlEndpoint <http://spatial.ucd.ie/lod/sparql> .
 
 :LinkedGeoData
-      a       void:Dataset , gkg:SPARQLEndpoint , gkg:DataSource ;
+      a       void:Dataset , onots:SPARQLEndpoint , onots:DataSource ;
       rdfs:label "LinkedGeoData"^^xsd:string ;
       foaf:homepage <http://linkedgeodata.org> ;
       void:sparqlEndpoint <http://linkedgeodata.org/sparql> .
 
 :oxpoints
-      a       void:Dataset , gkg:SPARQLEndpoint , gkg:DataSource ;
+      a       void:Dataset , onots:SPARQLEndpoint , onots:DataSource ;
       rdfs:label "OxPoints (University of Oxford)"^^xsd:string ;
       foaf:homepage <https://data.ox.ac.uk/doc/dataset/oxpoints> ;
       void:sparqlEndpoint <https://data.ox.ac.uk/sparql/> .
+ 
+:adminch
+      a       void:Dataset , onots:SPARQLEndpoint , onots:DataSource ;
+      rdfs:label "data.admin.ch - Linked Data Prototype"^^xsd:string ;
+      foaf:homepage <http://data.admin.ch> ;
+      void:sparqlEndpoint <http://data.admin.ch/sparql> .
+

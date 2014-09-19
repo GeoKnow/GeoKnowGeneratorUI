@@ -29,7 +29,7 @@
 "use strict";
 
 angular.module("app.configuration", [])
-.factory("Config", function($rootScope, $q, $http, flash, AccountService, ServerErrorResponse, Helpers){
+.factory("Config", function($rootScope, $q, $http, flash, AccountService, ServerErrorResponse, Helpers, Ns){
     $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded; charset=UTF-8";
 
     var FRAMEWORK_URI;
@@ -44,36 +44,11 @@ angular.module("app.configuration", [])
     var PUBLIC_ENDPOINT;
     var SETTINGS_GRAPH;
 
-    // a variable to lookup by prefix
-    var prefixes;
     var EOL      = "\n";
-    var PREFIXES = "";   
     var settings = {};
-
-    var namespaces =
-    {
-        "http://dbpedia.org/resource/"                     : "dbpedia:",
-        "http://purl.org/dc/elements/1.1/"                 : "dc:",
-        "http://purl.org/dc/terms/"                        : "dcterms:",
-        "http://xmlns.com/foaf/0.1/"                       : "foaf:",
-        "http://stack.linkeddata.org/ldis-schema/"   	   : "lds:",
-        "http://generator.geoknow.eu/ontology/"            : "gkg:",
-        "http://www.w3.org/1999/02/22-rdf-syntax-ns#"      : "rdf:",
-        "http://www.w3.org/2000/01/rdf-schema#"            : "rdfs:",
-        "http://www.w3.org/ns/sparql-service-description#" : "sd:",
-        "http://rdfs.org/ns/void#"                         : "void:",
-        "http://www.w3.org/ns/auth/acl#"                   : "acl:"
-    };
-    
-    var buildPrefixesString = function(){
-        for (var namespace in namespaces)
-            PREFIXES += "PREFIX " + namespaces[namespace] + " <" + namespace + ">" + EOL;
-        prefixes = Helpers.invertMap(namespaces);
-    };
 
     var request = function(url, data, callbackSuccess){
         var deferred = $q.defer();
-
         $http.post(url, $.param(data))
         .success(function(data)
         {
@@ -96,44 +71,14 @@ angular.module("app.configuration", [])
         return deferred.promise;
     };
 
-    // Replaces the long name space by the prefix
-    var ns = function(v){
-        var value = v.value==undefined ? v : v.value;
-
-        if (!v.type || v.type == "uri")
-        {
-            var namespace = /.*[#\/]/.exec(value);
-            if (namespace)
-            {
-                var prefix = namespaces[namespace = namespace[0]];
-                if (prefix)
-                   return prefix + value.slice(namespace.length);
-            }
-        }
-
-        return value;
-    };
-
-    var isUri = function (v){
-        if (/^:/.test(v))
-            return true;
-        else if(/^\w*:/.test(v)){
-            if( prefixes[v.substr(0, v.indexOf(':')+1)] != undefined )
-                return true;
-        }
-        return false;
-    }
-
     var getFrameworkUri = function()
     {
-        return ns(FRAMEWORK_URI);
+        return Ns.shorten(FRAMEWORK_URI);
     };
 
     var setFrameworkUri = function(framework_uri)
     {
         FRAMEWORK_URI = framework_uri;
-        console.log(FRAMEWORK_URI);
-
     };
 
     var getFlagPath = function()
@@ -208,8 +153,8 @@ angular.module("app.configuration", [])
 
     var select = function(property, value)
     {
-        property = ns(property);
-        value    = ns(value);
+        property = Ns.shorten(property);
+        value    = Ns.shorten(value);
 
         var elements = {};
         var resource;
@@ -253,7 +198,7 @@ angular.module("app.configuration", [])
         for (var i in bindings)
         {
             var binding = bindings[i];
-            triples.push([ ns(binding.s), ns(binding.p), ns(binding.o) ]);
+            triples.push([ Ns.shorten(binding.s), Ns.shorten(binding.p), Ns.shorten(binding.o) ]);
         }
 
         var result = {};
@@ -305,6 +250,7 @@ angular.module("app.configuration", [])
 
         $http.post("RdfStoreProxy", $.param(requestData)).then(function (response) {
             settings = parseSparqlResults(response.data);
+            console.log(settings);
             deferred.resolve(settings);
         });
 
@@ -313,10 +259,25 @@ angular.module("app.configuration", [])
 
     var write = function()
     {
+        var PREFIXES = [];   
+    
         var wrap = function(s)
         {
+            if(/^https?:\/\//.test(s))
+                return "<" + s + ">";
+            else if(/^_:b/.test(s))
+                return s;
+            else if(Ns.isUri(s)){
+                // get the prefix for the query
+                var p = s.substr(0, s.indexOf(':'));
+                p = (p == "" ? ":" : p);
+                if(PREFIXES.indexOf(p) == -1) 
+                    PREFIXES.push(p);
+                return s;
+            }
+            else
             // TODO: we have also to validate the datatype!
-            return /^https?:\/\//.test(s) ? "<" + s + ">" : isUri(s) || /^_:b/.test(s) ? s : '"' + s + '"';
+                return '"' + s + '"';
         };
 
         var data = "",
@@ -347,7 +308,7 @@ angular.module("app.configuration", [])
 
         var requestData = {
             format: "application/sparql-results+json",
-            query: PREFIXES
+            query: Ns.getQueryPrefixes(PREFIXES) + EOL
                     + "DROP SILENT GRAPH <"   + SETTINGS_GRAPH + ">" + EOL
                     + "CREATE SILENT GRAPH <" + SETTINGS_GRAPH + ">" + EOL
                     + "INSERT INTO <" + SETTINGS_GRAPH + ">" + EOL
@@ -399,8 +360,6 @@ angular.module("app.configuration", [])
     };
     
     return {
-        PREFIXES                : PREFIXES,
-        namespaces              : namespaces,
         getNS                   : getNS,
         setNS                   : setNS,
         getFlagPath             : getFlagPath,
@@ -428,7 +387,6 @@ angular.module("app.configuration", [])
         read                    : read,
         request                 : request,
         dropGraph               : dropGraph,
-        parseSparqlResults      : parseSparqlResults,
-        buildPrefixesString     : buildPrefixesString
+        parseSparqlResults      : parseSparqlResults
     };
 });

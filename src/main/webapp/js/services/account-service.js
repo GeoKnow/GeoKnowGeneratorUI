@@ -2,7 +2,7 @@
 
 var module = angular.module('app.account-service', []);
 
-module.factory("AccountService", function ($cookieStore) {
+module.factory("AccountService", function ($cookieStore, $http) {
     var username = null;
     var accountURI = null;
     var email = null;
@@ -67,7 +67,16 @@ module.factory("AccountService", function ($cookieStore) {
         return role && role.uri == "gkg:Administrator";
     };
 
+    var createSession = function() {
+        return $http({
+                    url: "rest/session",
+                    method: "PUT",
+                    params : {'username':username} 
+                });
+    };
+
     return {
+        createSession: createSession,
         getUsername: getUsername,
         setUsername: setUsername,
         getAccountURI: getAccountURI,

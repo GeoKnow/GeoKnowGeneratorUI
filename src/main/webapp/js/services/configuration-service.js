@@ -2,7 +2,7 @@
 
 var module = angular.module('app.configuration-service', []);
 
-module.factory('ConfigurationService', function ($q, AccountService, Config, $http, $location, flash, Helpers, ServerErrorResponse) {
+module.factory('ConfigurationService', function ($q, AccountService, Config, $http, $location, flash, Helpers, ServerErrorResponse, Ns) {
     
     var SettingsService = {
         getSettings : function(){
@@ -20,8 +20,8 @@ module.factory('ConfigurationService', function ($q, AccountService, Config, $ht
                         Config.setEndpoint(response.data.sparqlEndpoint);
                         Config.setAuthEndpoint(response.data.authSparqlEndpoint);
                         Config.setFlagPath(response.data.flagPath);
-                        Config.namespaces[Config.getNS()] = ":";
-                        Config.buildPrefixesString();
+                        Ns.getAllNamespaces                        
+                        Ns.add(":", Config.getNS());
                         Config.read().then(function(settings){
                             var currentAccount = angular.copy(AccountService.getAccount()); 
                             console.log("user:" +currentAccount.user);
@@ -277,25 +277,6 @@ module.factory('ConfigurationService', function ($q, AccountService, Config, $ht
         },
 
         /**
-         * NAMESPACES functions
-         */
-        getAllNamespaces: function () {
-
-        },
-
-        addNamespace: function () {
-
-        },
-
-        deleteNamespace: function () {
-
-        },
-
-        updateNamespace: function () {
-
-        },
-
-        /**
          * COMPONENTS functions
          */
         // TODO: @Alejandra add categories to the ontology and get them with the config service
@@ -323,7 +304,6 @@ module.factory('ConfigurationService', function ($q, AccountService, Config, $ht
         getComponent: function (uri) {
             var component = Config.getSettings()[uri];
             var results = this.elementToJson(uri, component);
-            console.log(results);
             return results;
         },
 

@@ -210,6 +210,7 @@ public class RDFStoreSetupManager {
 		+ config.getInitialSettingsGraph() + "> { " + os.toString()
 		+ " } }";
 	os.close();
+	log.debug(queryString);
 	frameworkRdfStoreManager.execute(queryString, null);
 
 	// write the system settings model (include system graphs data)

@@ -1,9 +1,9 @@
 <div class="contents" ng-controller="LimesCtrl">
 
-<save endpoint="{{defaultEndpoint}}" 
+<!-- <save endpoint="{{defaultEndpoint}}" 
 			uri-base="{{uriBase}}" 
 			import-service-url="{{importServiceUrl}}"
-			dataset="{{}}"></save>
+			dataset="{{}}"></save> -->
 
 	<h3 class="green bold">{{component.label}} <span ng-show="component.offline" class="glyphicon glyphicon-warning-sign btn-sm red"></span></h3>	
 	<dl class="dl-horizontal">
@@ -67,7 +67,8 @@
 				<label for="showConfig">Options Form</label>
 		    </div>
 		    <div class="col-xs-2">
-				<a class="btn btn-sm btn-success btn-block" id="showConfig" ng-model="limes.showConfig" ng-click="enterConfig = !enterConfig">Show Form</a>
+				<a class="btn btn-sm btn-success btn-block" id="showConfig" ng-model="limes.showConfig" 
+					ng-click="enterConfig = !enterConfig; startLimes = !startLimes">Show Form</a>
 	  		</div>
 	</div>
 	<br>
@@ -95,7 +96,8 @@
 	    </div>
 	    <div class="col-xs-4">
 	    <!-- <input class="form-control input-sm" id="SourceServiceURI" ng-model="limes.SourceServiceURI"></input> -->
-	   	 <select id="SourceServiceURI" class="form-control" ng-model="limes.SourceServiceURI" ng-options="c.endpoint as c.label for c in endpoints" required>
+	   	 <select id="SourceServiceURI" class="form-control" ng-model="limes.SourceServiceURI" 
+	   	 ng-change="updateSourceGraphs()" ng-options="c.endpoint as c.label for c in endpoints" required>
 		   </select>
 	   </div>
 	    <div class="col-xs-2">
@@ -103,7 +105,8 @@
 	    </div>
 	    <div class="col-xs-4">
 	    <!-- <input class="form-control input-sm" id="TargetServiceURI" ng-model="limes.TargetServiceURI"></input> -->
-	    <select id="TargetServiceURI" class="form-control" ng-model="limes.TargetServiceURI" ng-options="c.endpoint as c.label for c in endpoints" required>
+	    <select id="TargetServiceURI" class="form-control" ng-model="limes.TargetServiceURI" 
+	    ng-change="updateTargetGraphs()" ng-options="c.endpoint as c.label for c in endpoints" required>
 		   </select>
 	    </div>
 	</div>
@@ -113,14 +116,14 @@
 	    <label for="SourceServiceURI">Graph</label>
 	    </div>
 	    <div class="col-xs-4">
-	   	 <select id="SourceGraph" class="form-control" ng-model="limes.SourceGraph" ng-options="namedgraph.name as namedgraph.name for namedgraph in namedGraphs" required>
+	   	 <select id="SourceGraph" class="form-control" ng-model="limes.SourceGraph" ng-options="namedgraph.name as namedgraph.name for namedgraph in namedSourceGraphs" required>
 		   </select>
 	   </div>
 	    <div class="col-xs-2">
 	    <label for="TargetGraph">Graph</label>
 	    </div>
 	    <div class="col-xs-4">
-	    <select id="TargetGraph" class="form-control" ng-model="limes.TargetGraph" ng-options="namedgraph.name as namedgraph.name for namedgraph in namedGraphs" required>
+	    <select id="TargetGraph" class="form-control" ng-model="limes.TargetGraph" ng-options="namedgraph.name as namedgraph.name for namedgraph in namedTargetGraphs" required>
 		   </select>
 	    </div>
 	</div>

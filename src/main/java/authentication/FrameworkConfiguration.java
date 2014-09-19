@@ -337,14 +337,6 @@ public class FrameworkConfiguration {
 	this.AuthSparqlPassword = authSparqlPassword;
     }
 
-    // public String getAccountsNamespace() {
-    // return accountsNamespace;
-    // }
-    //
-    // public void setAccountsNamespace(String accountsNamespace) {
-    // this.accountsNamespace = accountsNamespace;
-    // }
-
     public String getAccountsGraph() {
 	return accountsGraph;
     }
