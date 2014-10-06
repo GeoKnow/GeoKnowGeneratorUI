@@ -3,7 +3,6 @@
 /****************************************************************************************************
 *
 * LIMES Controller
-*
 ***************************************************************************************************/
 
 var LimesCtrl = function($scope, $http, ConfigurationService, flash, ServerErrorResponse, $window, GraphService, AccountService, $timeout, Ns){
@@ -18,64 +17,77 @@ var LimesCtrl = function($scope, $http, ConfigurationService, flash, ServerError
 	var services = ConfigurationService.getComponentServices(":Limes");
 	var workbench = ConfigurationService.getComponent(ConfigurationService.getFrameworkUri());
 	var serviceUrl = services[0].serviceUrl;
-	console.log(workbench.homepage);
 
 	var importing = false;
 	var uploadError = false;
 	var uploadedFiles = null;
-
-	var idx = 0;
-	var numberOfProps = 1;
 	
 	// Arrays for comparisons
 	$scope.allItems = [];
 	$scope.storeArray = [];
-	
-	var SourceServiceURI = null;
-	var TargetServiceURI = null;
 
 	$scope.examples = [
-						{ name : "Authorization Demo" },
-						{ name : "Duplicate Dbpedia country entries for the CET time zone" },
-						{ name : "Geo Data" }
-					];
+		{ description : "dblp-semanticwebresearcher", file : "dblp-semanticwebresearcher.xml"},
+		{ description : "dbpedia-actors", file : "dbpedia-actors.xml"},
+		{ description : "dbpedia-dbpedia", file : "dbpedia-dbpedia.xml"},
+		{ description : "dbpedia-drugbank-complex", file : "dbpedia-drugbank-complex.xml"},
+		{ description : "dbpedia-drugbank", file : "dbpedia-drugbank.xml"},
+		{ description : "europeana-deduplication", file : "europeana-deduplication.xml"},
+		{ description : "lgd-lgd-surjection", file : "lgd-lgd-surjection.xml"},
+		{ description : "lgd-lgd-symmetric", file : "lgd-lgd-symmetric.xml"},
+		{ description : "lgd-lgd", file : "lgd-lgd.xml"},
+	];
 	
-	$scope.options = { 	output: [
-			                "N3" ,
-			                "TAB" ,
-			                "TURTLE" 
-			                ],
-						execType: [
-			                "Simple" ,
-			                "FILTER" ,
-			                "OneToOne" 
-			                ],
-					    granularity: [
-							"1" ,
-							"2" ,
-							"3" ,
-							"4" ]
-					};
-	
-	$scope.limes = { OutputFormat :    $scope.options.output[0],
-					 ExecType :        $scope.options.execType[0],
-					 Granularity : 	   $scope.options.granularity[0],
-					 AcceptThresh : "1",
-					 ReviewThresh : "0.2", // Default setting, input is hidden
-					 AcceptRelation : "owl:sameAs",
-					 ReviewRelation : "owl:sameAs" // Default setting input is hidden
+	$scope.options = { 	
+		output: 	["N3", "TAB", "TTL"],
+		execType: ["Simple", "FILTER", "OneToOne"],
+		granularity: ["1", "2", "3", "4" ]
 	};
 	
-	$scope.props = [{
-		inputs : [{
-		          idx : idx,
-		          source: "",
-				  target: ""
-				}]
-	}];
+	$scope.limes =  {
+    execution : "",
+    granularity : "",
+    output : $scope.options.output[0],
+    metric : "",
+    saveendpoint : "",
+    reviewgraph : "",
+    acceptgraph : "",
+    uribase : "",
+    prefix : [],
+    source : {
+	    id : "Source",
+	    endpoint : "",
+	    graph : "",
+	    var : "",
+	    pagesize : "",
+	    restriction : "",
+	    type : "",
+	    property : [""]
+		},
+		target : {
+	    id : "Target",
+	    endpoint : "",
+	    graph : "",
+	    var : "",
+	    pagesize : "",
+	    restriction : "",
+	    type : "",
+	    property : [""]
+		},
+		acceptance : {
+	    threshold : "1",
+	    relation : "owl:sameAs",
+	    file : ""
+		},
+		review : {
+	    threshold : "0.2",
+	    relation : "owl:sameAs",
+	    file : ""
+		}
+	}
 
+	// check if the limes service is available
 	$scope.component.offline = false;
-	
   $http.get(serviceUrl).then( function(response) {
   	$scope.component.offline = false;
   }, function(response) {
@@ -99,241 +111,81 @@ var LimesCtrl = function($scope, $http, ConfigurationService, flash, ServerError
 		else
 			$scope.namedTargetGraphs = {};
   };
-
-	$scope.appendInput = function(source, target){
-		idx++;
-		$scope.props[0].inputs.push({ 
-								idx : idx,
-								source: source,
-								target: target
-								});
-		numberOfProps++;
-		$scope.deleteProp = true;
-	};
 	
-	$scope.removeInput = function () {
-		
-		  $scope.props[0].inputs.splice( (numberOfProps-1) , 1 );
-		  numberOfProps--;
-		  
-		  if(numberOfProps === 1){
-			  $scope.deleteProp = false;
-		  }
-		  
-	};
-	
-	$scope.FillForm = function(example){
+	$scope.FillForm = function(file){
 
 		$scope.enterConfig = true;
 		$scope.startLimes = true;
-		
-		if(example === "Authorization Demo"){
-			alert("this demo requires of a private graph :cantons loaded with cantons-data.admin.ch.rdf ");
-			$scope.limes.SourceServiceURI = ConfigurationService.getSPARQLEndpoint();
-			$scope.updateSourceGraphs();
-			
-			$scope.limes = { SourceServiceURI : ConfigurationService.getSPARQLEndpoint(),
-							 TargetServiceURI  : "http://data.admin.ch/sparql",
-							 SourceGraph : ":cantons",
-							 SourceVar: "?x",
-							 TargetVar: "?y",
-							 SourceSize: "1000",
-							 TargetSize: "5000",
-							 SourceRestr: "?x a ch:Canton",
-							 TargetRestr: "?y a gz:Canton",
-							 Metric: "trigrams(x.rdfs:label, y.gz:cantonLongName)",
-							 OutputFormat: $scope.options.output[0],
-							 ExecType: $scope.options.execType[0],
-							 Granularity : 	   $scope.options.granularity[0],
-							 AcceptThresh: "0.1",
-							 ReviewThresh: "0.1",
-							 AcceptRelation: "owl:sameAs",
-							 ReviewRelation: "owl:sameAs",
-							 prefixes: Ns.getMap(["rdfs","gz","owl","ch"])
-					};
-			
-			$scope.props = [{
-				inputs : [{
-				          idx : 0,
-				          source: "rdfs:label",
-				          target: "gz:cantonLongName"
-						}]
-				}];
-			idx++;
-		}
-		
-		if(example === "Duplicate Dbpedia country entries for the CET time zone"){
-			
-			$scope.limes = { SourceServiceURI : "http://dbpedia.org/sparql",
-						 TargetServiceURI  : "http://dbpedia.org/sparql",
-						 SourceVar: "?x",
-						 TargetVar: "?y",
-						 SourceSize: "1000",
-						 TargetSize: "1000",
-						 SourceRestr: "?x foaf:name ?e",
-						 TargetRestr: "?y skos:prefLabel ?z",
-						 Metric: "levenshtein(y.foaf:name, x.skos:prefLabel)",
-						 OutputFormat: $scope.options.output[1],
-						 ExecType: $scope.options.execType[0],
-						 Granularity : 	   $scope.options.granularity[0],
-						 AcceptThresh: "1",
-						 ReviewThresh: "0.35",
-						 AcceptRelation: "owl:sameAs",
-						 ReviewRelation: "owl:sameAs",
-						 prefixes: Ns.getMap(["foaf","skos","owl"])
-				};
-		
-			$scope.props = [{
-						inputs : [{
-						          idx : 0,
-						          source: "foaf:name",
-						          target: "skos:prefLabel"
-								}]
-						}];
-			idx++;
-		}
-		
-		if(example === "Geo Data"){
+		var path="data/limesexamples/";
 
-			$scope.limes = { 	SourceServiceURI : "http://linkedgeodata.org/sparql",
-								TargetServiceURI : "http://linkedgeodata.org/sparql",
-								SourceVar: "?x",
-								TargetVar: "?y",
-								SourceSize: "2000",
-								TargetSize: "2000",
-								SourceRestr: "?x a lgdo:RelayBox",
-								TargetRestr: "?y a lgdo:RelayBox",
-								Metric: "hausdorff(x.polygon, y.polygon)",
-								OutputFormat: $scope.options.output[1],
-								ExecType: $scope.options.execType[0],
-								Granularity : $scope.options.granularity[0],
-								AcceptThresh: "0.9",
-								ReviewThresh: "0.5",
-								AcceptRelation: "lgdo:near",
-								ReviewRelation: "lgdo:near",
-								prefixes: Ns.getMap(["lgdo","geom","geos"])
-				};
-		
-			$scope.props = [{
-							inputs : [{
-							          idx : 0,
-							          source: "geom:geometry/geos:asWKT RENAME polygon",
-							          target: "geom:geometry/geos:asWKT RENAME polygon"
-									}
-							/*
-									{
-								          idx : 1,
-								          source: "geom:geometry/geos:asWKT RENAME polygon",
-								          target: "geom:geometry/geos:asWKT RENAME polygon"
-										}*/]
-							}];
-				//idx++;
-				//numberOfProps++;
-				
-			}
-		};
+		$http.get(path+file).success(function(data) { 
+      fillForm(data);
+    });
+	};
 	
 	$scope.LaunchLimes = function(){
 	
-		SourceServiceURI = $scope.limes.SourceServiceURI;
-		TargetServiceURI = $scope.limes.TargetServiceURI;
+		var params = angular.copy($scope.limes);
 
-		if($scope.limes.SourceServiceURI == ConfigurationService.getSPARQLEndpoint() ||
-			 $scope.limes.TargetServiceURI == ConfigurationService.getSPARQLEndpoint()) {
+		// check if graphs are private, and if its the case provide the session URL
+		if($scope.limes.source.endpoint == ConfigurationService.getSPARQLEndpoint() ||
+			 $scope.limes.target.endpoint == ConfigurationService.getSPARQLEndpoint()) {
+				// retrives a URL for a autnenticated session
 				AccountService.createSession().then(function(response){
-					if($scope.limes.SourceServiceURI == ConfigurationService.getSPARQLEndpoint())
-						SourceServiceURI = workbench.homepage + response.data.endpoint;
-					if($scope.limes.TargetServiceURI == ConfigurationService.getSPARQLEndpoint())
-						TargetServiceURI = workbench.homepage + response.data.endpoint;
-					$scope.setParams();
+					if($scope.limes.source.endpoint == ConfigurationService.getSPARQLEndpoint())
+						params.source.endpoint = workbench.homepage + response.data.endpoint;
+					if($scope.limes.target.endpoint == ConfigurationService.getSPARQLEndpoint())
+						params.target.endpoint = workbench.homepage + response.data.endpoint;
+					
 				});
 		}
-		else $scope.setParams();
-	};
-	
-	$scope.setParams = function(){
+		// TODO: create the graphs ?
+		if($scope.limes.source.graph != null)
+			params.source.graph = $scope.limes.source.graph.replace(':', ConfigurationService.getUriBase());
+		if($scope.limes.TargetGraph != null)
+			params.target.graph = $scope.limes.target.graph.replace(':', ConfigurationService.getUriBase());
 		
-		var SourceGraph = null;
-		var TargetGraph = null;
-		var SourceRestr = null;
-		var TargetRestr = null;
-		
-		if($scope.limes.SourceGraph != null){
-			SourceGraph = $scope.limes.SourceGraph.replace(':', ConfigurationService.getUriBase());
-		}
-		if($scope.limes.TargetGraph != null){
-			TargetGraph = $scope.limes.TargetGraph.replace(':', ConfigurationService.getUriBase());
-		}
+		// check prefixes?
+		// create a list of the required prefixes 
+		// (those inside source|target.restriction, source|target.property, acceptance|result.relation and metric)
+		var requredlabel = [];
+		var re = new RegExp('[a-z]+(?=:)','gi');
+		var v;
+		while (v = re.exec(params.metric))
+  		if (requredlabel.indexOf(v[0]) == -1) requredlabel.push(v[0]);
+  	while (v = re.exec(params.source.property))
+  		if (requredlabel.indexOf(v[0]) == -1) requredlabel.push(v[0]);
+  	while (v = re.exec(params.source.property))
+  		if (requredlabel.indexOf(v[0]) == -1) requredlabel.push(v[0]);
+  	while (v = re.exec(params.source.restriction))
+  		if (requredlabel.indexOf(v[0]) == -1) requredlabel.push(v[0]);
+  	while (v = re.exec(params.source.restriction))
+  		if (requredlabel.indexOf(v[0]) == -1) requredlabel.push(v[0]);
+  	while (v = re.exec(params.acceptance.relation))
+  		if (requredlabel.indexOf(v[0]) == -1) requredlabel.push(v[0]);
+  	while (v = re.exec(params.review.relation))
+  		if (requredlabel.indexOf(v[0]) == -1) requredlabel.push(v[0]);
 
-		if($scope.limes.SourceRestr.length != 0){
-			SourceRestr = $scope.limes.SourceRestr;
-		}
+  	// check that limes.prefix has all prequired prefixes
+		var labels = [];
+		for(var i in params.prefix)
+			labels.push(params.prefix[i].label);
 		
-		if($scope.limes.TargetRestr.length != 0){
-			TargetRestr = $scope.limes.TargetRestr;
-		}
-		
-		$scope.propsCopy = [{
-			inputs : []
-		}];
-		
-		for(var i=0; i<numberOfProps; i++){
-			if($("#SourceProp"+i).val().length != 0 || $("#TargetProp"+i).val().length != 0){
-				$scope.propsCopy[0].inputs.push({ 
-					idx : i,
-					source: $("#SourceProp"+i).val(),
-					target: $("#TargetProp"+i).val()
-					});
-				}
-		}
-		
-		numberOfProps = $scope.propsCopy[0].inputs.length;
-		
-		var params = {
-      "sourceserviceuri" : SourceServiceURI,
-      "targetserviceuri" : TargetServiceURI,
-      "sourcegraph" : SourceGraph,
-      "targetgraph" : TargetGraph,
-      "sourcevar" : $scope.limes.SourceVar,
-      "targetvar" : $scope.limes.TargetVar,
-      "sourcesize" : $scope.limes.SourceSize,
-      "targetsize" : $scope.limes.TargetSize,
-      "sourcerestr" : SourceRestr,
-      "targetrestr" : TargetRestr,
-      "metric" : $scope.limes.Metric,
-      "granularity" : $scope.limes.Granularity,
-      "outputformat" : $scope.limes.OutputFormat,
-      "exectype" : $scope.limes.ExecType,
-      "acceptthresh" : $scope.limes.AcceptThresh,
-      "reviewthresh" : $scope.limes.ReviewThresh,
-      "acceptrelation" : $scope.limes.AcceptRelation,
-      "reviewrelation" : $scope.limes.AcceptRelation
-		};
-		
-		params["prefixes"] = $scope.limes.prefixes;
-		params["sourceprop"] = [];
-		params["targetprop"] = [];
+		for(var i in requredlabel)
+			// if not found try to add it from the namespaces
+			if(labels.indexOf(requredlabel[i]) == -1){
+				var ns = Ns.getNamespace[requredlabel];
+				if(ns != undefined)
+					params.prefix.push({label:requredlabel , namespace: ns});
+				else
+					console.error("NOT FOUND "+ requredlabel[i]);
+			}
 
-		for(var i=0; i<numberOfProps; i++){
-			params["sourceprop"][i]=$scope.propsCopy[0].inputs[i].source;
-			params["targetprop"][i]=$scope.propsCopy[0].inputs[i].target;
-		};		
+		console.log(params);
 
-		$timeout(function() {
-			window.$windowScope = $scope;
-	 		var newWindow = $window.open('popup.html#/popup-limes', 'frame', 'resizeable,height=600,width=800');
-			newWindow.params = params;
-			});
-	};
-		
-	$scope.StartLimes = function(){
-		
-			var params = $window.params;
-			$scope.showProgress = true;
-
-			$http({
-					method: 'PUT',
-    			url: serviceUrl+"/run",
+		$http({
+					method: 'POST',
+    			url: serviceUrl,
     			headers: { 'Content-type': 'application/json'},
     			data : params })
 		  	.success(function(data, status, headers, config){
@@ -342,8 +194,45 @@ var LimesCtrl = function($scope, $http, ConfigurationService, flash, ServerError
 		    	$scope.inputForm = true;
 		    	flash.success = "Limes finished";
 		    	// get the files inside data.results, and these are to be proposed to be downloaded
-		    	// in this case probably LimesReview is not required anymore...
-					$scope.ReviewLimes(data);   
+		    	// in this case probably LimesReview is not required anymore... 
+					console.log(data);
+					// $scope.ReviewLimes(data); 
+	      })
+		  	.error(function(response) {
+			    flash.error = ServerErrorResponse.getMessage(response);
+			    $scope.startLimes = false;
+				  $scope.showProgress = false;
+				});
+				
+		// no more new window. TODO: create a service in the generator to create batch job and 
+		// launch it
+		// $timeout(function() {
+		// 	window.$windowScope = $scope;
+	 // 		var newWindow = $window.open('popup.html#/popup-limes', 'frame', 'resizeable,height=600,width=800');
+		// 	newWindow.params = params;
+		// 	});
+	};
+	
+	// this is to be REMOVED with the new batch processing
+	$scope.StartLimes = function(){
+		
+			var params = $window.params;
+			$scope.showProgress = true;
+
+			$http({
+					method: 'POST',
+    			url: serviceUrl,
+    			headers: { 'Content-type': 'application/json'},
+    			data : params })
+		  	.success(function(data, status, headers, config){
+	       	$scope.startLimes = false;
+		    	$scope.showProgress = false;
+		    	$scope.inputForm = true;
+		    	flash.success = "Limes finished";
+		    	// get the files inside data.results, and these are to be proposed to be downloaded
+		    	// in this case probably LimesReview is not required anymore... 
+					console.log(data);
+					$scope.ReviewLimes(data); 
 	      })
 		  	.error(function(response) {
 			    flash.error = ServerErrorResponse.getMessage(response);
@@ -352,6 +241,7 @@ var LimesCtrl = function($scope, $http, ConfigurationService, flash, ServerError
 				});
 	};
 	
+	// this is to be REMOVED and added in an new page #/home/manual-revision-and-authoring/limes-review
 	$scope.ReviewLimes = function(config){
 
 		console.log(config);
@@ -455,84 +345,79 @@ var LimesCtrl = function($scope, $http, ConfigurationService, flash, ServerError
 	    });
 	      
 	};
+
+	var fillForm = function(content){
+ 		var x2js = new X2JS();				
+		var conf = x2js.xml_str2json(content);
+		console.log(conf.LIMES);
+	  $scope.limes.execution = conf.LIMES.EXECUTION;
+	  $scope.limes.granularity = conf.LIMES.GRANULARITY;
+	  $scope.limes.output = conf.LIMES.OUTPUT;
+	  $scope.limes.metric = conf.LIMES.METRIC;			
+  	$scope.limes.source.id = conf.LIMES.SOURCE.ID;
+  	$scope.limes.source.endpoint = conf.LIMES.SOURCE.ENDPOINT;
+  	$scope.limes.source.graph = conf.LIMES.SOURCE.GRAPH;
+  	$scope.limes.source.var = conf.LIMES.SOURCE.VAR;
+  	$scope.limes.source.pagesize = conf.LIMES.SOURCE.PAGESIZE;
+  	$scope.limes.source.restriction = conf.LIMES.SOURCE.RESTRICTION;
+  	$scope.limes.source.type = conf.LIMES.SOURCE.TYPE;
+  	$scope.limes.source.property = [];
+		if(typeof conf.LIMES.SOURCE.PROPERTY === 'string' ) 
+    	$scope.limes.source.property.push(conf.LIMES.SOURCE.PROPERTY);
+  	else {
+  		for(var index in conf.SOURCE.TARGET.PROPERTY){
+  			console.log(index);
+  			$scope.limes.source.property.push(conf.LIMES.SOURCE.PROPERTY[index]);
+  		}
+  	}
+  	$scope.limes.target.id = conf.LIMES.TARGET.ID;
+  	$scope.limes.target.endpoint = conf.LIMES.TARGET.ENDPOINT;
+  	$scope.limes.target.graph = conf.LIMES.TARGET.GRAPH;
+  	$scope.limes.target.var = conf.LIMES.TARGET.VAR;
+  	$scope.limes.target.pagesize = conf.LIMES.TARGET.PAGESIZE;
+  	$scope.limes.target.restriction = conf.LIMES.TARGET.RESTRICTION;
+  	$scope.limes.target.type = conf.LIMES.TARGET.TYPE;
+  	$scope.limes.target.property = [];
+  	if(typeof conf.LIMES.TARGET.PROPERTY === 'string' ) 
+  		$scope.limes.target.property.push(conf.LIMES.TARGET.PROPERTY);
+  	else {
+  		for(var index in conf.LIMES.TARGET.PROPERTY)
+  			$scope.limes.target.property.push(conf.LIMES.TARGET.PROPERTY[index]);
+  	}
+  	$scope.limes.acceptance.threshold = conf.LIMES.ACCEPTANCE.THRESHOLD;
+  	$scope.limes.acceptance.relation = conf.LIMES.ACCEPTANCE.RELATION;
+  	$scope.limes.acceptance.file = conf.LIMES.ACCEPTANCE.FILE;
+  	$scope.limes.review.threshold = conf.LIMES.REVIEW.THRESHOLD;
+  	$scope.limes.review.relation = conf.LIMES.REVIEW.RELATION;
+  	$scope.limes.review.file = conf.LIMES.REVIEW.FILE;
+  	$scope.limes.prefix = [];
+  	for(var index in conf.LIMES.PREFIX){
+  		var p = {
+  			label : conf.LIMES.PREFIX[index].LABEL,
+  			namespace : conf.LIMES.PREFIX[index].NAMESPACE
+  		};
+  		$scope.limes.prefix.push(p);
+  	}
+	}
 	
 	$scope.loadLimesXML = function($files){
-		
 		for (var i = 0; i < $files.length; i++) {
 		  var $file = $files[i];
-		  $http.uploadFile({
-		    url: 'UploadServlet', //upload.php script, node.js route, or servlet uplaod url)
-		    file: $file
-		  }).then(function(response, status, headers, config) {
-		        // file is uploaded successfully
-			  var filename = $files[0].name;
-			  $('#dummyInput').val(filename);
-			  		
-				$http({
-						method: "POST",
-						url: serviceUrl+"/LoadFile",
-						params: {file : filename}})
+	  	var reader = new FileReader();
+			reader.onloadstart = function(e) {
+	    	console.log('loading');
+	  	};
+		  reader.onloadend = function(evt) {
+	    	if (evt.target.readyState == FileReader.DONE) { 
+	     		fillForm(evt.target.result);
+	     	}
+	  	};
+	  	reader.readAsText($file, "utf-8");
 
-					.then(function(data) {
-						
-						$scope.limes = { 
-							SourceServiceURI : data.data[0][0],
-							TargetServiceURI  : data.data[1][0],
-							SourceVar: data.data[0][1],
-							TargetVar: data.data[1][1],
-							SourceSize: data.data[0][2],
-							TargetSize: data.data[1][2],
-							SourceRestr: data.data[0][3],
-							TargetRestr: data.data[1][3],
-							Metric: data.data[2],
-							OutputFormat: data.data[5],
-							ExecType: data.data[7],
-							Granularity: data.data[6],
-							AcceptThresh: data.data[3][0],
-							ReviewThresh: data.data[4][0],
-							AcceptRelation: data.data[3][1],
-							ReviewRelation: data.data[4][1] 
-						};
-						
-						idx=0;
-						
-						$scope.props = [{
-							inputs : []
-						}];
-						
-						for(var i=0; i<data.data[8].length; i++){
-							
-							$scope.props[0].inputs.push({ 
-								idx : idx,
-								source: data.data[8][i],
-								target: data.data[9][i]
-								});
-							
-							idx++;
-							
-						};
-						
-						numberOfProps = data.data[8].length;
-						
-						$scope.enterConfig = true;
-						$scope.startLimes = true;
-						
-					}, function (response){ // in the case of an error
-						flash.error = "Invalid LIMES Configuration file: " +response.data;
-			  });
-			    	  
-			  if(response.data.status=="FAIL"){
-			    uploadError = true;
-			    $scope.uploadMessage=response.data.message;
-			  }
-			  else {
-			    uploadError = false;
-			    uploadedFiles = $file.name;
-			  }
-		  }); 
 		}
 	};
 	
+	// this is also to be REMOVED and replaced by the RDFImport on the generator
 	$scope.save = function(){
 		
 		var saveDataset = $scope.saveDataset.replace(":", ConfigurationService.getUriBase());

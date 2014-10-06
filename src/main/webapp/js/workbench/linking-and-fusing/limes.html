@@ -1,356 +1,277 @@
 <div class="contents" ng-controller="LimesCtrl">
-
-<!-- <save endpoint="{{defaultEndpoint}}" 
-			uri-base="{{uriBase}}" 
-			import-service-url="{{importServiceUrl}}"
-			dataset="{{}}"></save> -->
-
-	<h3 class="green bold">{{component.label}} <span ng-show="component.offline" class="glyphicon glyphicon-warning-sign btn-sm red"></span></h3>	
-	<dl class="dl-horizontal">
-  <dt>Version:</dt><dd>{{component.version}}</dd>
-  <dt>Homepage:</dt><dd>{{component.homepage}}</dd>
+  <h3 class="green bold">{{component.label}} <span ng-show="component.offline" class="glyphicon glyphicon-warning-sign btn-sm red"></span></h3>
+  <dl class="dl-horizontal">
+    <dt>Version:</dt>
+    <dd>{{component.version}}</dd>
+    <dt>Homepage:</dt>
+    <dd>{{component.homepage}}</dd>
   </dl>
-	<p>Link Discovery Framework for Metric Spaces</p>
-	<p>To get started either upload a configuration file, choose an example, or fill in the options form.</p>
-	
-<form class="form-inline InputForm col-xs-11" role="form" ng-show="inputForm">
-	<button type="button" class="btn btn-link reset" onclick="document.location.reload()">
-	<i class="glyphicon glyphicon-refresh" aria-hidden="false"></i>
-	</button>
-	<div class="row">
-		<div class="col-xs-12">
-		<h5 class="green bold">LIMES Configuration</h5>
-		</div>
-	</div>
-	<br>
-	<div ng-show="configOptions">
-	<div class="row" ng-controller="ImportFormCtrl">
-			<label for="inputFile" class="col-xs-2 control-label">Upload a LIMES Configuration File (XML)</label>
-		    	<div class="col-xs-8">
-					    <input id="lefile" class="form-control input-sm" type="file" ng-file-select="loadLimesXML($files)" 
-					    		multiple name="fileName" accept=".xml" style="display:none">
-					  	<div class="error" ng-show="uploadedError()">Invalid:
-					  	<span>{{uploadMessage}}</span></div>
-						<div class="input-append">
-						<input id="dummyInput" class="input-sm pull-left col-xs-9" type="text" onclick="$('input[id=lefile]').click();">
-						<a class="btn btn-sm btn-success btn-large pull-left col-xs-3" onclick="$('input[id=lefile]').click();">Browse</a>
-						</div>
-			    </div>
+  <p>Link Discovery Framework for Metric Spaces</p>
+  <p>To get started either upload a configuration file, choose an example, or fill in the options form.</p>
+  <form class="form-inline InputForm col-xs-11" role="form" ng-show="inputForm">
+    <button type="button" class="btn btn-link reset" onclick="document.location.reload()">
+    <i class="glyphicon glyphicon-refresh" aria-hidden="false"></i>
+    </button>
+    <div class="row">
+      <div class="col-xs-12">
+        <h5 class="green bold">LIMES Configuration</h5>
+      </div>
     </div>
-	<div class="row">
-					  <script type="text/javascript">
-						$('input[id=lefile]').change(function() {
-						$('#dummyInput').val($(this).val());
-						});
-					  </script>
-					  <div class="error" ng-show="uploadedError()">Invalid:
-	          	      <span>{{uploadMessage}}</span>
-		  		      </div>
-	  </div>
-	  <br>
-	
-	<div class="row">
-			<div class="col-xs-2">
-			<label for="Example">Examples</label>
-			</div>
-			<div class="col-xs-8">
-			<select id="Example" class="form-control input-sm" ng-model="Example" 
-			ng-options="example.name for example in examples" ng-change="FillForm(Example.name)">
-			 <option value="">Choose an example</option>
-			</select>
-			</div>
-	  </div>
-	  <br>
+    <br>
+    <div ng-show="configOptions">
+      <div class="row" ng-controller="ImportFormCtrl">
+        <label for="inputFile" class="col-xs-2 control-label">Upload a LIMES Configuration File (XML)</label>
+        <div class="col-xs-8">
+          <input id="lefile" class="form-control input-sm" type="file" ng-file-select="loadLimesXML($files)" 
+            multiple name="fileName" accept=".xml" style="display:none">
+          <div class="error" ng-show="uploadedError()">Invalid:
+            <span>{{uploadMessage}}</span>
+          </div>
+          <div class="input-append">
+            <input id="dummyInput" class="input-sm pull-left col-xs-9" type="text" onclick="$('input[id=lefile]').click();">
+            <a class="btn btn-sm btn-success btn-large pull-left col-xs-3" onclick="$('input[id=lefile]').click();">Browse</a>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <script type="text/javascript">
+          $('input[id=lefile]').change(function() {
+          $('#dummyInput').val($(this).val());
+          });
+           
+        </script>
+        <div class="error" ng-show="uploadedError()">Invalid:
+          <span>{{uploadMessage}}</span>
+        </div>
+      </div>
+      <br>
+      <div class="row">
+        <div class="col-xs-2">
+          <label for="Example">Examples</label>
+        </div>
+        <div class="col-xs-8">
+          <select id="Example" class="form-control input-sm" ng-model="Example" 
+            ng-options="example.description for example in examples" ng-change="FillForm(Example.file)">
+            <option value="">Choose an example</option>
+          </select>
+        </div>
+      </div>
+      <br>
 
-	<div class="row">
-			<div class="col-xs-2">
-				<label for="showConfig">Options Form</label>
-		    </div>
-		    <div class="col-xs-2">
-				<a class="btn btn-sm btn-success btn-block" id="showConfig" ng-model="limes.showConfig" 
-					ng-click="enterConfig = !enterConfig; startLimes = !startLimes">Show Form</a>
-	  		</div>
-	</div>
-	<br>
-	<br>
-	</div>
-	<div id="limesOptions" ng-model="limes.Options" ng-show="enterConfig">
-	<div class="row">
-		<div class="col-xs-12">
-		<h5 class="green bold">LIMES Configuration</h5>
-		</div>
-	</div>
-	<br>
-	<div class="row">
-	<div class="col-xs-6">
-		<h5 class="green bold">Source Data</h5>
-	</div>
-	<div class="col-xs-6">
-		<h5 class="green bold">Target Data</h5>
-	</div>
-	</div>
-	<br>
-	<div class="row">
-		<div class="col-xs-2">
-	    <label for="SourceServiceURI">Endpoint URL</label>
-	    </div>
-	    <div class="col-xs-4">
-	    <!-- <input class="form-control input-sm" id="SourceServiceURI" ng-model="limes.SourceServiceURI"></input> -->
-	   	 <select id="SourceServiceURI" class="form-control" ng-model="limes.SourceServiceURI" 
-	   	 ng-change="updateSourceGraphs()" ng-options="c.endpoint as c.label for c in endpoints" required>
-		   </select>
-	   </div>
-	    <div class="col-xs-2">
-	    <label for="TargetServiceURI">Endpoint URL</label>
-	    </div>
-	    <div class="col-xs-4">
-	    <!-- <input class="form-control input-sm" id="TargetServiceURI" ng-model="limes.TargetServiceURI"></input> -->
-	    <select id="TargetServiceURI" class="form-control" ng-model="limes.TargetServiceURI" 
-	    ng-change="updateTargetGraphs()" ng-options="c.endpoint as c.label for c in endpoints" required>
-		   </select>
-	    </div>
-	</div>
-	<br>
-	<div class="row">
-		<div class="col-xs-2">
-	    <label for="SourceServiceURI">Graph</label>
-	    </div>
-	    <div class="col-xs-4">
-	   	 <select id="SourceGraph" class="form-control" ng-model="limes.SourceGraph" ng-options="namedgraph.name as namedgraph.name for namedgraph in namedSourceGraphs" required>
-		   </select>
-	   </div>
-	    <div class="col-xs-2">
-	    <label for="TargetGraph">Graph</label>
-	    </div>
-	    <div class="col-xs-4">
-	    <select id="TargetGraph" class="form-control" ng-model="limes.TargetGraph" ng-options="namedgraph.name as namedgraph.name for namedgraph in namedTargetGraphs" required>
-		   </select>
-	    </div>
-	</div>
-	<br>
-	<!-- 
-	<div class="row">
-		<div class="col-xs-2">
-	    <label for="SourceGraph">Graph</label>
-	    </div>
-	    <div class="col-xs-4">
-	    <input class="form-control input-sm" id="SourceGraph" ng-model="SourceGraph"></input>
-	    </div>
-	    <div class="col-xs-2">
-	    <label for="TargetGraph">Graph</label>
-	    </div>
-	    <div class="col-xs-4">
-	    <input class="form-control input-sm" id="TargetGraph" ng-model="TargetGraph"></input>
-	    </div>
-	</div>
-	<br>
-	 -->
-	<div class="row">
-		<div class="col-xs-2">
-	    <label for="SourceVar">Variable</label>
-	    </div>
-	    <div class="col-xs-4">
-	    <input class="form-control input-sm" id="SourceVar" ng-model="limes.SourceVar"></input>
-	    </div>
-	    <div class="col-xs-2">
-	    <label for="TargetVar">Variable</label>
-	    </div>
-	    <div class="col-xs-4">
-	    <input class="form-control input-sm" id="TargetVar" ng-model="limes.TargetVar"></input>
-	    </div>
-	</div>
-	<br>
-	<div class="row">
-		<div class="col-xs-2">
-	    <label for="SourceSize">Pagesize</label>
-	    </div>
-	    <div class="col-xs-4">
-	    <input class="form-control input-sm" id="SourceSize" ng-model="limes.SourceSize"></input>
-	    </div>
-	    <div class="col-xs-2">
-	    <label for="TargetSize">Pagesize</label>
-	    </div>
-	    <div class="col-xs-4">
-	    <input class="form-control input-sm" id="TargetSize" ng-model="limes.TargetSize"></input>
-	    </div>
-	</div>
-	<br>
-	<div class="row">
-		<div class="col-xs-2">
-	    <label for="SourceRestr">Restriction</label>
-	    </div>
-	    <div class="col-xs-4">
-	    <textarea class="form-control input-sm" id="SourceRestr" ng-model="limes.SourceRestr"></textarea>
-	    </div>
-	    <div class="col-xs-2">
-	    <label for="TargetRestr">Restriction</label>
-	    </div>
-	    <div class="col-xs-4">
-	    <textarea class="form-control input-sm" id="TargetRestr" ng-model="limes.TargetRestr"></textarea>
-	    </div>
-	</div>
-	<br>
-	<div class="row below" ng-repeat="prop in props[0].inputs">
-		<div class="col-xs-2">
-	    <label>Property</label>
-	    </div>
-		<div class="col-xs-4">
-		<input class="form-control input-sm" id="SourceProp{{prop.idx}}" value="{{prop.source}}"></input>
-		</div>
-		<div class="col-xs-2">
-	    <label>Property</label>
-	    </div>
-		<div class="col-xs-4">
-		<input class="form-control input-sm" id="TargetProp{{prop.idx}}" value="{{prop.target}}"></input>
-		</select>
-		</div>
-	</div>
-	<div class="row below">
-		<div class="col-xs-4">
-		</div>
-		<div class="col-xs-4">
-		</div>
-			<div class="col-xs-2">
-			<a class="btn btn-sm btn-success btn-block" ng-click="appendInput()">Add Properties</a>
-			</div>
-		    <div class="col-xs-2">
-			<a class="btn btn-sm btn-success btn-block" ng-click="removeInput()" ng-show="deleteProp">Delete</a>
-			</div>
-	</div>
-	<!-- 
-	<br>
-	<div class="row">
-		<div class="col-xs-2">
-	    <label for="SourceProp1">Property</label>
-	    </div>
-	    <div class="col-xs-4">
-	    <input class="form-control input-sm" id="SourceProp" ng-model="limes.SourceProp1"></input>
-	    </div>
-	    <div class="col-xs-2">
-	    <label for="TargetProp1">Property</label>
-	    </div>
-	    <div class="col-xs-4">
-	    <input class="form-control input-sm" id="TargetProp" ng-model="limes.TargetProp1"></input>
-	    </div>
-	</div>
-	<br>
-	<div class="row">
-		<div class="col-xs-2">
-	    <label for="SourceProp2">Property</label>
-	    </div>
-	    <div class="col-xs-4">
-	    <input class="form-control input-sm" id="SourceProp" ng-model="limes.SourceProp2"></input>
-	    </div>
-	    <div class="col-xs-2">
-	    <label for="TargetProp2">Property</label>
-	    </div>
-	    <div class="col-xs-4">
-	    <input class="form-control input-sm" id="TargetProp" ng-model="limes.TargetProp2"></input>
-	    </div>
-	</div>
-	
-	<br>
-	<div class="row">
-		<div class="col-xs-2">
-	    <label for="SourceType">Type</label>
-	    </div>
-	    <div class="col-xs-4">
-	    <input class="form-control input-sm" id="SourceType" ng-model="limes.SourceType"></input>
-	    </div>
-	    <div class="col-xs-2">
-	    <label for="TargetType">Type</label>
-	    </div>
-	    <div class="col-xs-4">
-	    <input class="form-control input-sm" id="TargetType" ng-model="limes.TargetType"></input>
-	    </div>
-	</div>
-	-->
-	<br>
-	<div class="row">
-		<div class="col-xs-2">
-	    <label for="Metric">Metric</label>
-	    </div>
-	    <div class="col-xs-10">
-	    <input class="form-control input-sm" ng-model="limes.Metric"></input>
-	    </div>
-	</div>
-	<br>
-	<div class="row">
-		<div class="col-xs-2">
-	    <label for="OutputFormat">Output Format</label>
-	    </div>
-	    <div class="col-xs-10">
-	    <select class="form-control input-sm" ng-model="limes.OutputFormat"
-	    ng-options="option for option in options.output"></select>
-	    </div>
-	</div>
-	<br>
-	<div class="row">
-		<div class="col-xs-2">
-	    <label for="ExecType">Execution</label>
-	    </div>
-	    <div class="col-xs-10">
-	    <select class="form-control input-sm" ng-model="limes.ExecType"
-	    ng-options="option for option in options.execType"></select>
-	    </div>
-	</div>
-	<br>
-	<div class="row">
-		<div class="col-xs-2">
-	    <label for="Granularity">Granularity</label>
-	    </div>
-	    <div class="col-xs-10">
-	    <select class="form-control input-sm" ng-model="limes.Granularity"
-	    ng-options="option for option in options.granularity"></select>
-	    </div>
-	</div>
-	<br>
-	<div class="row">
-	<div class="col-xs-6">
-		<h5 class="green bold">Acceptance Settings</h5>
-	</div>
-	<div class="col-xs-6">
-		<h5 class="green bold">Review Settings</h5>
-	</div>
-	</div>
-	<br>
-	<div class="row">
-		<div class="col-xs-2">
-	    <label for="AcceptThresh">Threshold</label>
-	    </div>
-	    <div class="col-xs-4">
-	    <input class="form-control input-sm" id="AcceptThresh" ng-model="limes.AcceptThresh"></input>
-	    </div>
-	    <div class="col-xs-2">
-	  
-	    </div>
-	    <div class="col-xs-4">
-	    <input class="form-control input-sm" id="ReviewThresh" ng-model="limes.ReviewThresh" style="display: none;"/>
-	    </div>
-	</div>
-	<br>
-	<div class="row">
-		<div class="col-xs-2">
-	    <label for="AcceptRelation">Relation</label>
-	    </div>
-	    <div class="col-xs-4">
-	    <input class="form-control input-sm" id="AcceptRelation" ng-model="limes.AcceptRelation"></input>
-	    </div>
-	    <div class="col-xs-2">
-	  
-	    </div>
-	    <div class="col-xs-4">
-	    <input class="form-control input-sm" id="ReviewRelation" ng-model="limes.ReviewRelation" style="display: none;"/>
-	    </div>
-	</div>
-	<br>
-	</div>
-	<div class="row">
-		<div class="col-xs-2"></div>
-		<div class="col-xs-2">
-		  <a class="btn btn-sm btn-success btn-block" id="startLimes" ng-show="startLimes" ng-click="LaunchLimes()">Start LIMES</a>
-		</div>
-	</div>
-</form>
-	
+    </div>
+    <div id="limesOptions">
+      <div class="row">
+        <div class="col-xs-12">
+          <h5 class="green bold">LIMES Configuration</h5>
+        </div>
+      </div>
+      <br>
+      <div class="row">
+        <div class="col-xs-6">
+          <h5 class="green bold">Source Dataset</h5>
+        </div>
+        <div class="col-xs-6">
+          <h5 class="green bold">Target Dataset</h5>
+        </div>
+      </div>
+      <br>
+      <div class="row">
+        <div class="col-xs-2">
+          <label for="SourceServiceURI">Endpoint URL</label>
+        </div>
+        <div class="col-xs-4">
+          <!-- <input class="form-control input-sm" id="SourceServiceURI" ng-model="limes.SourceServiceURI"></input> -->
+          <select id="SourceServiceURI" class="form-control" ng-model="limes.source.endpoint" 
+            ng-change="updateSourceGraphs()" ng-options="c.endpoint as c.label for c in endpoints" required>
+          </select>
+        </div>
+        <div class="col-xs-2">
+          <label for="TargetServiceURI">Endpoint URL</label>
+        </div>
+        <div class="col-xs-4">
+          <!-- <input class="form-control input-sm" id="TargetServiceURI" ng-model="limes.TargetServiceURI"></input> -->
+          <select id="TargetServiceURI" class="form-control" ng-model="limes.target.endpoint" 
+            ng-change="updateTargetGraphs()" ng-options="c.endpoint as c.label for c in endpoints" required>
+          </select>
+        </div>
+      </div>
+      <br>
+      <div class="row">
+        <div class="col-xs-2">
+          <label for="SourceServiceURI">Graph</label>
+        </div>
+        <div class="col-xs-4">
+          <select id="SourceGraph" class="form-control" ng-model="limes.source.graph" ng-options="namedgraph.name as namedgraph.name for namedgraph in namedSourceGraphs" required>
+          </select>
+        </div>
+        <div class="col-xs-2">
+          <label for="TargetGraph">Graph</label>
+        </div>
+        <div class="col-xs-4">
+          <select id="TargetGraph" class="form-control" ng-model="limes.target.graph" ng-options="namedgraph.name as namedgraph.name for namedgraph in namedTargetGraphs" required>
+          </select>
+        </div>
+      </div>
+      <br>
+      <div class="row">
+        <div class="col-xs-2">
+          <label for="SourceVar">Variable</label>
+        </div>
+        <div class="col-xs-4">
+          <input class="form-control input-sm" id="SourceVar" ng-model="limes.source.var"></input>
+        </div>
+        <div class="col-xs-2">
+          <label for="TargetVar">Variable</label>
+        </div>
+        <div class="col-xs-4">
+          <input class="form-control input-sm" id="TargetVar" ng-model="limes.target.var"></input>
+        </div>
+      </div>
+      <br>
+      <div class="row">
+        <div class="col-xs-2">
+          <label for="SourceSize">Pagesize</label>
+        </div>
+        <div class="col-xs-4">
+          <input class="form-control input-sm" id="SourceSize" ng-model="limes.source.pagesize"></input>
+        </div>
+        <div class="col-xs-2">
+          <label for="TargetSize">Pagesize</label>
+        </div>
+        <div class="col-xs-4">
+          <input class="form-control input-sm" id="TargetSize" ng-model="limes.target.pagesize"></input>
+        </div>
+      </div>
+      <br>
+      <div class="row">
+        <div class="col-xs-2">
+          <label for="SourceRestr">Restriction</label>
+        </div>
+        <div class="col-xs-4">
+          <textarea class="form-control input-sm" id="SourceRestr" ng-model="limes.source.restriction"></textarea>
+        </div>
+        <div class="col-xs-2">
+          <label for="TargetRestr">Restriction</label>
+        </div>
+        <div class="col-xs-4">
+          <textarea class="form-control input-sm" id="TargetRestr" ng-model="limes.target.restriction"></textarea>
+        </div>
+      </div>
+      <br>
+   		<div class="row">
+        <div class="col-xs-2">
+          <label>Property</label>
+        </div>
+        <div class="col-xs-4">
+        	<div ng-repeat="p in limes.source.property track by $index">
+          	<input class="form-control input-sm" value="{{p}}"></input>
+          </div>
+        </div>
+
+        <div class="col-xs-2">
+          <label>Property</label>
+        </div>
+        <div class="col-xs-4">
+        	<div ng-repeat="p in limes.target.property track by $index">
+          	<input class="form-control input-sm" value="{{p}}"></input>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+      	<div class="col-xs-2"></div>
+        <div class="col-xs-4">
+        	<span class="glyphicon glyphicon-plus plusbutton" ng-click="limes.source.property.push('')" ></span>
+					<span class="glyphicon glyphicon-minus removebutton" ng-click="limes.source.property.splice((item.property.length-1) , 1)" ng-show="limes.source.property.length>1"></span>	
+        </div>
+      	<div class="col-xs-2"></div>
+        <div class="col-xs-4">
+        	<span class="glyphicon glyphicon-plus plusbutton" ng-click="limes.target.property.push('')"></span>
+					<span class="glyphicon glyphicon-minus removebutton" ng-click="limes.target.property.splice((item.property.length-1) , 1)" ng-show="limes.target.property.length>1"></span>	
+        </div>
+      </div>
+      <br>
+      <div class="row">
+        <div class="col-xs-2">
+          <label for="Metric">Metric</label>
+        </div>
+        <div class="col-xs-10">
+          <input class="form-control input-sm" ng-model="limes.metric"></input>
+        </div>
+      </div>
+      <br>
+      <div class="row">
+        <div class="col-xs-2">
+          <label for="OutputFormat">Output Format</label>
+        </div>
+        <div class="col-xs-10">
+          <select class="form-control input-sm" ng-model="limes.output"
+            ng-options="option for option in options.output"></select>
+        </div>
+      </div>
+      <br>
+      <div class="row">
+        <div class="col-xs-2">
+          <label for="ExecType">Execution (Optional)</label>
+        </div>
+        <div class="col-xs-10">
+          <select class="form-control input-sm" ng-model="limes.execution"
+            ng-options="option for option in options.execType"></select>
+        </div>
+      </div>
+      <br>
+      <div class="row">
+        <div class="col-xs-2">
+          <label for="Granularity">Granularity (Optional)</label>
+        </div>
+        <div class="col-xs-10">
+          <select class="form-control input-sm" ng-model="limes.granularity"
+            ng-options="option for option in options.granularity"></select>
+        </div>
+      </div>
+      <br>
+      <div class="row">
+        <div class="col-xs-6">
+          <h5 class="green bold">Acceptance Settings</h5>
+        </div>
+        <div class="col-xs-6">
+          <h5 class="green bold">Review Settings</h5>
+        </div>
+      </div>
+      <br>
+      <div class="row">
+        <div class="col-xs-2">
+          <label for="AcceptThresh">Threshold</label>
+        </div>
+        <div class="col-xs-4">
+          <input class="form-control input-sm" id="AcceptThresh" ng-model="limes.acceptance.threshold"></input>
+        </div>
+        <div class="col-xs-2">
+        </div>
+        <div class="col-xs-4">
+          <input class="form-control input-sm" id="ReviewThresh" ng-model="limes.review.threshold"/>
+        </div>
+      </div>
+      <br>
+      <div class="row">
+        <div class="col-xs-2">
+          <label for="AcceptRelation">Relation</label>
+        </div>
+        <div class="col-xs-4">
+          <input class="form-control input-sm" id="AcceptRelation" ng-model="limes.acceptance.relation"></input>
+        </div>
+        <div class="col-xs-2">
+        </div>
+        <div class="col-xs-4">
+          <input class="form-control input-sm" id="ReviewRelation" ng-model="limes.review.relation"/>
+        </div>
+      </div>
+      <br>
+    </div>
+    <div class="row">
+      <div class="col-xs-2"></div>
+      <div class="col-xs-2">
+        <a class="btn btn-sm btn-success btn-block" id="startLimes" ng-click="LaunchLimes()">Start LIMES</a>
+      </div>
+    </div>
+  </form>
 </div>
