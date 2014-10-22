@@ -2,6 +2,7 @@
 
 var app = angular.module('app', ['ngRoute',
                                  'ngCookies',
+                                 'app.job-service',
                                  'app.services', 
                                  'app.ns-service',
                                  'app.configuration-service',
@@ -32,6 +33,7 @@ app.config(function($routeSegmentProvider, $routeProvider)
         .when('/popup-geolift','popup-geolift')
 
         .when('/home', 'default')
+        .when('/workbench', 'workbench')
         .when('/account','account')
         .when('/system-setup', 'system-setup')
         .when('/access-denied', 'access-denied')
@@ -41,20 +43,19 @@ app.config(function($routeSegmentProvider, $routeProvider)
         .when('/settings/datasets', 'settings.datasets')
         .when('/settings/namespaces', 'settings.namespaces')
         .when('/settings/components', 'settings.components')
-        // .when('/settings/users', 'settings.users')
         .when('/settings/roles', 'settings.roles')
-        .when('/home/extraction-and-loading/import-rdf', 'default.import-rdf')
-        .when('/home/extraction-and-loading/sparqlify', 'default.sparqlify')
-        .when('/home/extraction-and-loading/triplegeo', 'default.triplegeo')
-        .when('/home/extraction-and-loading/triplegeo-result', 'default.triplegeo-result')
-        .when('/home/search-querying-and-exploration/virtuoso', 'default.virtuoso')
-        .when('/home/search-querying-and-exploration/geospatial', 'default.geospatial')
-     /*   .when('/home/search-querying-and-exploration/googlemap', 'default.googlemap') */
-        .when('/home/search-querying-and-exploration/facete', 'default.facete')
-        .when('/home/search-querying-and-exploration/mappify', 'default.mappify')
-        .when('/home/manual-revision-and-authoring/ontowiki', 'default.ontowiki')
-        .when('/home/linking-and-fusing/limes', 'default.limes')
-        .when('/home/classification-and-enrichment/geolift', 'default.geolift')
+        .when('/workbench/extraction-and-loading/import-rdf', 'workbench.import-rdf')
+        .when('/workbench/extraction-and-loading/sparqlify', 'workbench.sparqlify')
+        .when('/workbench/extraction-and-loading/triplegeo', 'workbench.triplegeo')
+        .when('/workbench/extraction-and-loading/triplegeo-result', 'workbench.triplegeo-result')
+        .when('/workbench/search-querying-and-exploration/virtuoso', 'workbench.virtuoso')
+        .when('/workbench/search-querying-and-exploration/geospatial', 'workbench.geospatial')
+     /*   .when('/workbench/search-querying-and-exploration/googlemap', 'workbench.googlemap') */
+        .when('/workbench/search-querying-and-exploration/facete', 'workbench.facete')
+        .when('/workbench/search-querying-and-exploration/mappify', 'workbench.mappify')
+        .when('/workbench/manual-revision-and-authoring/ontowiki', 'workbench.ontowiki')
+        .when('/workbench/linking-and-fusing/limes', 'workbench.limes')
+        .when('/workbench/classification-and-enrichment/geolift', 'workbench.geolift')
 
         .segment('popup-limes', {
             templateUrl: 'js/workbench/linking-and-fusing/limes-result.html',
@@ -83,8 +84,8 @@ app.config(function($routeSegmentProvider, $routeProvider)
                 }
             })
          
-        .segment('default', {
-            templateUrl :'js/workbench/default.html',
+        .segment('workbench', {
+            templateUrl :'js/workbench/dashboard.html',
             resolve: {
                         settings : function (ConfigurationService){
                              return ConfigurationService.getSettings();
@@ -128,7 +129,13 @@ app.config(function($routeSegmentProvider, $routeProvider)
             resolve: {
                     settings: function (ConfigurationService) {
                                 return ConfigurationService.getSettings();
-                    }
+                    },
+                    users: function(UsersService) {
+                        return UsersService.readUsers();
+                    },
+                    roles: function(UsersService) {
+                        return UsersService.readRoles();
+                    }    
                     // init: function($q, Config, UsersService){
                     //     console.log("init settings");
                     //     var defer = $q.defer();
@@ -194,10 +201,10 @@ app.config(function($routeSegmentProvider, $routeProvider)
                 }
             }
         })
+        .segment('default', {
+            templateUrl: 'default.html'})
         .segment('access-denied', {
-            templateUrl: 'access-denied.html'
-        })
-
+            templateUrl: 'access-denied.html'})
         .segment('about', {
             templateUrl:'about.html' })
         .segment('under-construction', {
@@ -234,13 +241,14 @@ app.config(function($routeSegmentProvider, $routeProvider)
             });
         } else if (!$rootScope.isSystemSetUp) {
             $location.path('/system-setup');
-        } else if (next.$$route) { //check route permissions
+        } else if (AccountService.isLogged() && next.$$route) { //check route permissions
             var requiredServices = ConfigurationService.getRequiredServices(next.$$route.originalPath);
             if (requiredServices==null) return;
             if (AccountService.isAdmin()) return;
             var role = AccountService.getRole();
             if (role==null) {
                 $location.path("/access-denied");
+                return;
             } else {
                 var allowedServices = role.services;
                 for (var ind in requiredServices) {
@@ -250,6 +258,9 @@ app.config(function($routeSegmentProvider, $routeProvider)
                     }
                 }
             }
+        }
+        else {
+            $location.path("/access-denied");
         }
     });
 });

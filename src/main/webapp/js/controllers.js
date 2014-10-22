@@ -15,35 +15,35 @@ function StackMenuCtrl($scope, AccountService) {
 	      title: "Extraction and Loading",
 	      id:"extraction-loading",
 	      items: [
-	        {name: 'Import RDF data', route:'#/home/extraction-and-loading/import-rdf',  url:'/home/extraction-and-loading/import-rdf', requiredServices:[] },
-	        {name: 'Sparqlify Extraction', route:'#/home/extraction-and-loading/sparqlify', url:'/home/extraction-and-loading/sparqlify', requiredServices:[] },
-	        {name: 'TripleGeo Extraction', route:'#/home/extraction-and-loading/triplegeo', url:'/home/extraction-and-loading/triplegeo', requiredServices:[] }]
+	        {name: 'Import RDF data', route:'#/workbench/extraction-and-loading/import-rdf',  url:'/workbench/extraction-and-loading/import-rdf', requiredServices:[] },
+	        {name: 'Sparqlify Extraction', route:'#/workbench/extraction-and-loading/sparqlify', url:'/workbench/extraction-and-loading/sparqlify', requiredServices:[] },
+	        {name: 'TripleGeo Extraction', route:'#/workbench/extraction-and-loading/triplegeo', url:'/workbench/extraction-and-loading/triplegeo', requiredServices:[] }]
 	    },
 	    {
 		      title: "Search Querying and Exploration",
 		      id:"search-querying-and-exploration",
 		      items: [
-		       {name: 'Virtuoso', route:'#/home/search-querying-and-exploration/virtuoso', url:'/home/search-querying-and-exploration/virtuoso', requiredServices:[] },
-		       {name: 'Facete', route:'#/home/search-querying-and-exploration/facete', url:'/home/search-querying-and-exploration/facete', requiredServices:[] },
-		       {name: 'Mappify', route:'#/home/search-querying-and-exploration/mappify', url:'/home/search-querying-and-exploration/mappify', requiredServices:[] }]
+		       {name: 'Virtuoso', route:'#/workbench/search-querying-and-exploration/virtuoso', url:'/workbench/search-querying-and-exploration/virtuoso', requiredServices:[] },
+		       {name: 'Facete', route:'#/workbench/search-querying-and-exploration/facete', url:'/workbench/search-querying-and-exploration/facete', requiredServices:[] },
+		       {name: 'Mappify', route:'#/workbench/search-querying-and-exploration/mappify', url:'/workbench/search-querying-and-exploration/mappify', requiredServices:[] }]
 		    },
 	    {
 	      title: "Manual revision and Authoring",
 	      id:"manual-revision-and-authoring",
 	      items: [
-	       {name: 'OntoWiki', route:'#/home/manual-revision-and-authoring/ontowiki', url:'/home/manual-revision-and-authoring/ontowiki', requiredServices:[] }]
+	       {name: 'OntoWiki', route:'#/workbench/manual-revision-and-authoring/ontowiki', url:'/workbench/manual-revision-and-authoring/ontowiki', requiredServices:[] }]
 	    },
 	    {
 		    title: "Linking and Fusing",
 		    id:"linking-and-fusing",
 		    items: [
-		     {name: 'LIMES', route:'#/home/linking-and-fusing/limes', url:'/home/linking-and-fusing/limes', requiredServices:[] }]
+		     {name: 'LIMES', route:'#/workbench/linking-and-fusing/limes', url:'/workbench/linking-and-fusing/limes', requiredServices:[] }]
 		  },
 		{
 			 title: "Classification and Enrichment",
 			 id:"classification-and-enrichment",
 			 items: [
-			   {name: 'GeoLift', route:'#/home/classification-and-enrichment/geolift', url:'/home/classification-and-enrichment/geolift', requiredServices:[] }]
+			   {name: 'GeoLift', route:'#/workbench/classification-and-enrichment/geolift', url:'/workbench/classification-and-enrichment/geolift', requiredServices:[] }]
 		  }
 	  ];
 

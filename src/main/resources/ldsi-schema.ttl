@@ -101,7 +101,7 @@
 
 :password
       rdf:type rdf:Property ;
-      rdfs:label "Oracel"^^xsd:string .
+      rdfs:label "Password"^^xsd:string .
 
 :providesService
       rdf:type owl:ObjectProperty ;
@@ -118,12 +118,14 @@
 
 :user
       rdf:type rdf:Property ;
-      rdfs:label "Oracel"^^xsd:string .
+      rdfs:label "User"^^xsd:string .
 
 dcterms:hasVersion
+      rdfs:label "has version"^^xsd:string ;
       rdf:type rdf:Property ;
       rdfs:domain :StackComponent .
 
 foaf:homepage
+      rdfs:label "homepage"^^xsd:string ;
       rdf:type rdf:Property ;
       rdfs:domain :StackComponent .

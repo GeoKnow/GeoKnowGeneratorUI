@@ -1,0 +1,68 @@
+  <div class="contents">
+  	<div class="col-xs-2 sidebar">
+			
+			<div class="panel-group" id="accordion" ng-controller="StackMenuCtrl">
+			  <div class="panel panel-default" ng-repeat="group in groups | filter:showGroup">
+				  <div class="panel-heading">
+					  <h5 class="panel-title">
+				        <span class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#{{group.id}}">
+				          {{group.title}}
+				        </span>
+				      </h5>
+				  </div>
+				  <div id="{{group.id}}" class="panel-collapse collapse" ng-controller="SidebarCtrl">
+					  <div class="list-item" ng-class="{selected:isSelected('{{item.url}}')}" ng-repeat="item in group.items | filter:showItem">
+							<h6><a class="list-group-item" target="{{item.target}}" href="{{item.route}}">{{item.name}}</a></h6>
+					  </div>
+				  </div>
+			  	</div>
+			</div>
+
+		</div>
+
+	<div class="col-xs-10 contents" app-view-segment="1" ng-controller="DashboardCtrl">
+  	<div class="col-xs-8">
+ 			<h3 class="green bold">Dashboard</h3>
+ 			<br>
+
+ 			<table class="table table-striped">
+  		<thead>
+    	<tr>
+      <th>Name</th>
+      <th>Description</th>
+      <!-- <th>Label</th>
+      <th>Description</th>
+      <th>Created</th>
+      <th>Modified</th>
+      <th>Public Access</th>
+      <th>Read Access</th>
+      <th>Write Access</th> -->
+    	</tr>
+  		</thead>
+  		<tbody>
+     	<tr ng-repeat="job in jobs">
+      <!-- <td>
+        <button type="button" class="btn btn-default btn-xs" ng-click="delete('{{namedgraph.name}}')"><span class="glyphicon glyphicon-trash"></span></button>
+        <button type="button" class="btn btn-default btn-xs" data-toggle="modal" data-target="#modalGraph" ng-click="edit('{{namedgraph.name}}');"><span class="glyphicon glyphicon-edit"></span></button>
+      </td> -->
+      <td>{{job.name}}</td>
+      <!-- <td>{{job.label}}</td> -->
+      <td>{{job.description}}</td>
+      <!-- <td>{{job.created}}</td> -->
+      <!-- <td>{{job.modified}}</td> -->
+    	</tr>
+  		</tbody>
+  		</table>
+
+	  </div>
+
+
+
+  </div>
+
+
+
+
+
+
+
