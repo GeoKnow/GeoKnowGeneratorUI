@@ -2,18 +2,59 @@
 
 var module = angular.module('app.job-service', []);
 
-module.factory('JobService', function ($http, $q, AccountService) {
+module.factory('JobService', function ($http, $q) {
 
 	var jobService = {
 
 		getAllJobs : function(){
-			var config = { params: { username: AccountService.getUsername() }};
-			return $http.get("rest/jobs", config).then( function (result){
-					return result.data.jobs;
+			return $http.get("rest/jobs").then( 
+				// success
+				function (response){
+					return response.data.jobs;
+	    });
+		},
+
+		getJob : function(jobName){
+			
+			return $http.get("rest/jobs/"+jobName).then( 
+				// success
+				function (response){
+					return response.data;
+	    	});	
+		},
+
+		run : function(jobName){
+			return $http.post("rest/jobs/"+jobName+"/run").then( 
+				// success
+				function (response){
+					return response.data;
+	    	});
+		},
+
+		/**
+		* body is encoced to avoid confusion with the job object in the case
+		* where the body content for the service is also json
+		*/
+		addServiceJob : function(id, pdescription, pservice, pcontenttype, pmethod, pbody){
+			console.log(pbody);
+			
+			var data = { 
+				name : id,
+				description : pdescription,
+				service : pservice,
+				contenttype : pcontenttype,
+				method : pmethod,
+				body : JSON.stringify(pbody)
+			};
+			console.log(data);
+			return $http.put("rest/jobs", data).then( function (response){
+					return response.data;
 	    });
 		}
 
 	};
+
+	
 
 	return jobService;
 

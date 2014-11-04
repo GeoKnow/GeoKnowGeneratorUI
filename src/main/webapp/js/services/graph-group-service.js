@@ -65,7 +65,7 @@ module.factory("GraphGroupService", function ($http, $q, Config, AccountService)
             mode: "createGroup",
             group: uri,
             graphs: [],
-            username: AccountService.getUsername()
+            username: AccountService.getAccount().getUsername()
         };
         for (var ind in graphGroup.namedGraphs) {
             request.graphs.push(Config.getNS() + graphGroup.namedGraphs[ind].replace(':', ''));
@@ -92,7 +92,7 @@ module.factory("GraphGroupService", function ($http, $q, Config, AccountService)
             mode: "updateGroup",
             group: uri,
             graphs: [],
-            username: AccountService.getUsername()
+            username: AccountService.getAccount().getUsername()
         };
         for (var ind in graphGroup.namedGraphs) {
             request.graphs.push(Config.getNS() + graphGroup.namedGraphs[ind].replace(':', ''));
@@ -117,7 +117,7 @@ module.factory("GraphGroupService", function ($http, $q, Config, AccountService)
         var request = {
             mode: "dropGroup",
             group: uri,
-            username: AccountService.getUsername()
+            username: AccountService.getAccount().getUsername()
         };
         return $http.post("GraphManagerServlet", $.param(request))
             .then(function (response) {

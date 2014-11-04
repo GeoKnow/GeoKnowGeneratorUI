@@ -1,11 +1,13 @@
 package accounts;
 
 import java.io.IOException;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.log4j.Logger;
@@ -18,6 +20,8 @@ import rdf.SecureRdfStoreManagerImpl;
 import util.ObjectPair;
 import util.RandomStringGenerator;
 import authentication.FrameworkConfiguration;
+
+import com.google.gson.Gson;
 
 // TODO: make methods synchronized?
 public class FrameworkUserManager implements UserManager {
@@ -637,6 +641,30 @@ public class FrameworkUserManager implements UserManager {
         return null;
     }
 
+    /**
+     * Validates that the user has a session using the token and returns the
+     * UserProfile object
+     * 
+     * @param userc
+     *            json object passed in the request cookies
+     * @param token
+     * @return user profile object if token valid and null if the opposite
+     * @throws Exception
+     */
+    public UserProfile validate(String userc, String token) throws Exception {
+        String userstr = URLDecoder.decode(userc, "utf-8");
+        log.debug(" userstr: " + userstr + " token:" + token);
+        Gson gson = new Gson();
+        UserProfile user = gson.fromJson(userstr, UserProfile.class);
+
+        boolean checkToken = checkToken(user.getUsername(), token);
+
+        if (!checkToken)
+            return null;
+
+        return user;
+    }
+
     private String getPrefixes() {
         if (prefixes == null) {
             prefixes = "PREFIX : <" + frameworkConfig.getResourceNamespace() + ">\n"
@@ -759,7 +787,7 @@ public class FrameworkUserManager implements UserManager {
     private UserRole getRole(String roleURI) throws Exception {
         UserRole role = new UserRole();
         role.setUri(roleURI);
-        Collection<String> roleServices = new ArrayList<>();
+        List<String> roleServices = new ArrayList<>();
         String query = getPrefixes() + "\n" + "SELECT ?s ?p ?o FROM <"
                 + frameworkConfig.getAccountsGraph() + "> " + "WHERE {?s ?p ?o . filter(?s=<"
                 + roleURI + ">)}";

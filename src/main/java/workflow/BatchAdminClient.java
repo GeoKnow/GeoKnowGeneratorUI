@@ -13,6 +13,7 @@ import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
@@ -45,7 +46,7 @@ public class BatchAdminClient {
 
     private static final Logger log = Logger.getLogger(BatchAdminClient.class);
 
-    private static String serviceUrl = "http://localhost:8080/spring-batch-admin-geoknow";
+    private static String serviceUrl = "http://localhost:9999/spring-batch-admin-geoknow";
 
     /**
      * Get the service URL
@@ -72,12 +73,12 @@ public class BatchAdminClient {
      * @return JobExecution
      * @throws Exception
      */
-    public static JobExecution getExecution(String executionId) throws Exception {
+    public static JobExecutionWraper getExecutionDetail(String executionId) throws Exception {
         HttpGet JobExecution = new HttpGet(serviceUrl + "/jobs/executions/" + executionId + ".json");
         String jsonString = apiRequest(JobExecution);
         Gson gson = new Gson();
         JobExecutionWraper execution = gson.fromJson(jsonString, JobExecutionWraper.class);
-        return execution.getJobExecution();
+        return execution;
     }
 
     /**
@@ -86,7 +87,7 @@ public class BatchAdminClient {
      * @return JobExecutions
      * @throws Exception
      */
-    public static JobExecutions getExecutions() throws Exception {
+    public static JobExecutions getAllExecutions() throws Exception {
         HttpGet getExecutions = new HttpGet(serviceUrl + "/jobs/executions.json");
         String jsonString = apiRequest(getExecutions);
         Gson gson = new Gson();
@@ -150,6 +151,23 @@ public class BatchAdminClient {
         Gson gson = new Gson();
         JobExecutionWraper execution = gson.fromJson(jsonString, JobExecutionWraper.class);
         return execution.getJobExecution();
+    }
+
+    /**
+     * Stop job execution
+     * 
+     * @param execId
+     * @return JobExecution
+     * @throws Exception
+     */
+    public static JobExecutionWraper stopExecution(String execId) throws Exception {
+        HttpDelete deleteJob = new HttpDelete(serviceUrl + "/jobs/executions/" + execId + ".json");
+        String jsonString = apiRequest(deleteJob);
+        log.debug(jsonString);
+        Gson gson = new Gson();
+        JobExecutionWraper execution = gson.fromJson(jsonString, JobExecutionWraper.class);
+
+        return execution;
     }
 
     /**
@@ -254,11 +272,10 @@ public class BatchAdminClient {
 
         CloseableHttpClient httpClient = HttpClients.createDefault();
         try {
+            log.debug(method.getURI().toString());
             CloseableHttpResponse response = httpClient.execute(method);
             String jsonString = IOUtils.toString(response.getEntity().getContent());
-
             return jsonString;
-
         } catch (Exception e) {
             log.error(e);
             e.printStackTrace();

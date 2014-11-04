@@ -52,7 +52,29 @@
         "relation": "lgdo:near",
         "file": null
     },
-
+    "review": {
+        "threshold": "0.5",
+        "relation": "lgdo:near",
+        "file": null
+    },
+    "execution": "Simple",
+    "granularity": null,
+    "output": "N3",
+    "prefix": [
+        {
+            "label": "geom",
+            "namespace": "http://geovocab.org/geometry#"
+        },
+        {
+            "label": "geos",
+            "namespace": "http://www.opengis.net/ont/geosparql#"
+        },
+        {
+            "label": "lgdo",
+            "namespace": "http://linkedgeodata.org/ontology/"
+        }
+    ]
+}
       </value>
     </property> 
   </bean>

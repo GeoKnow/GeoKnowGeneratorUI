@@ -1,60 +1,64 @@
 'use strict';
 
+/**
+* LoginCtrl is at the top of all controles, thus its scope is shared among all of them
+* and  are ment to be used by the childs contollers :
+*
+* $scope.$parent.currentAccount and $scope.$parent.settings
+*/
+function LoginCtrl($q, $scope, $location, flash, AccountService, LoginService, ServerErrorResponse, Base64, AuthenticationErrorResponse, ConfigurationService, UsersService) {
+    
+    initialize();
 
-function LoginCtrl($scope, flash, AccountService, LoginService, ServerErrorResponse, Base64, UsersService, AuthenticationErrorResponse) {
-    $scope.currentAccount = angular.copy(AccountService.getAccount());
-    $scope.loggedIn = false;
-    $scope.signUp = {username:null, email:null};
-    $scope.restorePassword = {username:null};
-    $scope.isRegistering = false;
+    function initialize(){
+        $scope.login = {
+            username : null,
+            password : null 
+        }; 
+        $scope.signUp = {username:null, email:null};
+        $scope.restorePassword = {username:null};
+        $scope.isRegistering = false;
 
-    if($scope.currentAccount.user){
-    	LoginService.login($scope.currentAccount.user, $scope.currentAccount.pass)
-        .then(function(data) {
-            $scope.currentAccount = angular.copy(AccountService.getAccount());
-            $scope.close('#modalLogin');
-            $scope.login.username = null;
-            $scope.login.password = null;
-             $scope.loggedIn = true;
-        }, function(response) {
-            flash.error = ServerErrorResponse.getMessage(response);
-            $scope.login.username = null;
-            $scope.login.password = null;
-        });
-    } else { //set role for not logged in user
-        UsersService.readNotLoggedInRole().then(function(response) {
-            AccountService.setRole(response);
+        // get the application settings and initalize scope variables
+        ConfigurationService.getSettings().then(function(settings){
+            console.log(settings);
+            $scope.currentAccount = AccountService.getAccount();
+            // retrive default role if no user logged in
+            if($scope.currentAccount.getRole() == undefined){
+                console.log("assign readNotLoggedInRole");
+                UsersService.readNotLoggedInRole().then(function(response) {
+                    $scope.currentAccount.setRole(response);
+                });
+            }
+            console.log($scope.currentAccount);
+            
+            $scope.isUserAuthenticated = function () {
+                return $scope.currentAccount.getUsername() != undefined;
+            };
+
+            $scope.isAdminLogged = function () {
+                return $scope.currentAccount.isAdmin();
+            };
+            
         });
     }
 
-    $scope.login = {
-        username : null,
-        password : null //$scope.currentAccount.user, $scope.currentAccount.pass
-    }; 
-
-    $scope.isUserAuthenticated = function () {
-        return $scope.loggedIn;
-    };
-
-    $scope.isAdminLogged = function () {
-        return AccountService.isAdmin();
-    };
-
     $scope.login = function() {
+        console.log($scope.login.username);
         LoginService.login(Base64.encode($scope.login.username), Base64.encode($scope.login.password))
             .then(function(data) {
-                $scope.currentAccount = angular.copy(AccountService.getAccount());
+                console.log(data);
+                $scope.currentAccount = data;
+                // $scope.account = $scope.currentAccount.getData();
                 $scope.close('#modalLogin');
                 $scope.login.username = null;
                 $scope.login.password = null;
-                 if($scope.currentAccount.user != null){
-                 	$scope.loggedIn = true;
-                 }
+                $location.path("/workbench");
+                
             }, function(response) {
                 flash.error = ServerErrorResponse.getMessage(response);
                 $scope.login.username = null;
                 $scope.login.password = null;
-                $scope.loggedIn = false;
             });
     };
     
@@ -68,8 +72,9 @@ function LoginCtrl($scope, flash, AccountService, LoginService, ServerErrorRespo
     $scope.logout = function() {
         LoginService.logout()
             .then(function(data) {
-                $scope.currentAccount = angular.copy(AccountService.getAccount());
-                 $scope.loggedIn = false;
+                console.log(data);
+                $scope.currentAccount = data;
+                $location.path("/");
             });
     };
 

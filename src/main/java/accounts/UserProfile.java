@@ -49,11 +49,8 @@ public class UserProfile {
 
     @Override
     public String toString() {
-        return "UserProfile{" +
-                "username='" + username + '\'' +
-                ", settingsGraph='" + settingsGraph + '\'' +
-                ", accountURI='" + accountURI + '\'' +
-                ", email='" + email + '\'' +
-                '}';
+        return "UserProfile{" + "username='" + username + '\'' + ", settingsGraph='"
+                + settingsGraph + '\'' + ", accountURI='" + accountURI + '\'' + ", role='" + role
+                + '\'' + ", email='" + email + '\'' + '}';
     }
 }

@@ -1,7 +1,7 @@
 'use strict';
 
 
-function EndpointCtrl($scope, ConfigurationService,  AccountService){
+function EndpointCtrl($scope, ConfigurationService){
 	
 	var emptyEndpoint = { uri: "", label:"", endpoint: "", homepage: ""};
 	var newEndpoint=true;

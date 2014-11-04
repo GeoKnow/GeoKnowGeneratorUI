@@ -132,3 +132,40 @@
       a     gkg:RouteRestriction;
       gkg:partialUrl "/settings/roles"^^xsd:string;
       gkg:requiredService :UserManagerService .
+    
+:SparqlifyRouteRestriction
+      a     gkg:RouteRestriction;
+      gkg:partialUrl "/workbench/extraction-and-loading/sparqlify"^^xsd:string;
+      gkg:requiredService :SparqlifyService .
+
+:TripleGeoRouteRestriction
+      a     gkg:RouteRestriction;
+      gkg:partialUrl "/workbench/extraction-and-loading/triplegeo"^^xsd:string;
+      gkg:requiredService :TripleGeoService .
+
+:FaceteRouteRestriction
+      a     gkg:RouteRestriction;
+      gkg:partialUrl "/workbench/search-querying-and-exploration/facete"^^xsd:string;
+      gkg:requiredService :FaceteService .
+    
+:MappifyRouteRestriction
+      a     gkg:RouteRestriction;
+      gkg:partialUrl "/workbench/search-querying-and-exploration/mappify"^^xsd:string;
+      gkg:requiredService :MappifyService .
+    
+:OntoWikiRouteRestriction
+      a     gkg:RouteRestriction;
+      gkg:partialUrl "/workbench/manual-revision-and-authoring/ontowiki"^^xsd:string;
+      gkg:requiredService :OntoWikiService .
+    
+:LIMESRouteRestriction
+      a     gkg:RouteRestriction;
+      gkg:partialUrl "/workbench/linking-and-fusing/limes"^^xsd:string;
+      gkg:requiredService :LimesService .
+    
+:GeoLiftRouteRestriction
+      a     gkg:RouteRestriction;
+      gkg:partialUrl "/workbench/classification-and-enrichment/geolift"^^xsd:string;
+      gkg:requiredService :GeoLiftService .
+    
+

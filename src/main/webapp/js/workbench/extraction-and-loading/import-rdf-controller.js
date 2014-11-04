@@ -8,6 +8,7 @@
 
 var ImportFormCtrl = function($scope, $http, ConfigurationService, flash, AccountService, GraphService) {
 
+  var currentAccount = AccountService.getAccount();
 	$scope.namedGraphs = [];
     $scope.refreshGraphList = function() {
         GraphService.getAccessibleGraphs(true, false, true).then(function(graphs) {
@@ -111,7 +112,7 @@ var ImportFormCtrl = function($scope, $http, ConfigurationService, flash, Accoun
         endpoint: ConfigurationService.getSPARQLEndpoint(), 
         graph: $scope.importFile.graph.replace(':',ConfigurationService.getUriBase()), 
         uriBase : ConfigurationService.getUriBase(),
-        username : AccountService.getUsername()
+        username : currentAccount.getUsername()
       };
       
     }
@@ -121,7 +122,7 @@ var ImportFormCtrl = function($scope, $http, ConfigurationService, flash, Accoun
         endpoint: ConfigurationService.getSPARQLEndpoint(), 
         graph: $scope.importUrl.graph.replace(':',ConfigurationService.getUriBase()), 
         uriBase : ConfigurationService.getUriBase(),
-        username : AccountService.getUsername()
+        username : currentAccount.getUsername()
       };
 
     }
@@ -129,10 +130,10 @@ var ImportFormCtrl = function($scope, $http, ConfigurationService, flash, Accoun
       parameters ={
         rdfQuery: $scope.importSparql.sparqlQuery,
         rdfQueryEndpoint: $scope.importSparql.endPoint, 
-        endpoint: AccountService.getUsername()==null ? ConfigurationService.getPublicSPARQLEndpoint() : ConfigurationService.getSPARQLEndpoint(),
+        endpoint: currentAccount.getUsername()==null ? ConfigurationService.getPublicSPARQLEndpoint() : ConfigurationService.getSPARQLEndpoint(),
         graph: $scope.importSparql.graph.replace(':',ConfigurationService.getUriBase()), 
         uriBase : ConfigurationService.getUriBase(),
-        username : AccountService.getUsername()
+        username : currentAccount.getUsername()
       };
     }
     $http({
@@ -174,7 +175,7 @@ var ImportFormCtrl = function($scope, $http, ConfigurationService, flash, Accoun
     $scope.importSparql = {endpoint:"", sparqlQuery:"", graph:"?"};
   };
 
-  $scope.$watch( function () { return AccountService.getUsername(); }, function () {
+  $scope.$watch( function () { return currentAccount.getUsername(); }, function () {
     $scope.refreshGraphList();
   });
 

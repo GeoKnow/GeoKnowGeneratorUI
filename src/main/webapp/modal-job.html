@@ -1,0 +1,34 @@
+<div class="modal-content">
+    <form name="jobForm" class="form-horizontal InputForm" role="form" novalidate>
+        <div class="modal-header">
+            <h3 class="modal-title">Job Info</h3>
+        </div>
+        <div class="modal-body">
+            
+            <div class="form-group">
+              <label for="name" class="col-lg-2 control-label">Name</label>
+              <div class="col-lg-10">
+                <input type="text" class="form-control" id="label" name="label" placeholder="Name" ng-model="job.name" required />
+                <div class="error"  ng-show="jobForm.name.$dirty && jobForm.name.$invalid">Invalid:
+                  <span ng-show="jobForm.name.$error.required">Specify a name</span>
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="description" class="col-lg-2 control-label">Description</label>
+              <div class="col-lg-10">
+                <textarea class="form-control input-sm" name="description" id="description" placeholder="Description" ng-model="job.description" required >
+                </textarea>
+                <div class="error"  ng-show="jobForm.description.$dirty && jobForm.description.$invalid">Invalid:
+                  <span ng-show="jobForm.description.$error.required">Give a description</span>
+                </div>
+              </div>
+            </div>
+            
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-success" ng-click="ok()" ng-disabled="jobForm.$invalid">OK</button>
+            <button class="btn btn-default" ng-click="cancel()">Cancel</button>
+        </div>
+    </form>
+</div>

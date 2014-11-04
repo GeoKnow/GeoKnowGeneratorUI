@@ -117,8 +117,8 @@
   <tbody>
      <tr ng-repeat="namedgraph in namedgraphs">
       <td>
-        <button type="button" class="btn btn-default btn-xs" ng-click="delete('{{namedgraph.name}}')"><span class="glyphicon glyphicon-trash"></span></button>
-        <button type="button" class="btn btn-default btn-xs" data-toggle="modal" data-target="#modalGraph" ng-click="edit('{{namedgraph.name}}');"><span class="glyphicon glyphicon-edit"></span></button>
+        <button type="button" class="btn btn-default btn-xs" ng-click="delete(namedgraph.name)"><span class="glyphicon glyphicon-trash"></span></button>
+        <button type="button" class="btn btn-default btn-xs" data-toggle="modal" data-target="#modalGraph" ng-click="edit(namedgraph.name);"><span class="glyphicon glyphicon-edit"></span></button>
       </td>
       <td>{{namedgraph.name}}</td>
       <td>{{namedgraph.graph.label}}</td>

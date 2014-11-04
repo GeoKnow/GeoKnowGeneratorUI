@@ -3,6 +3,7 @@ package authentication.web;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.UUID;
@@ -105,9 +106,13 @@ public class AuthenticationServlet extends HttpServlet {
             try {
                 userProfile = frameworkUserManager.getUserProfile(username);
                 // send request with session token and user profile
-                response.addCookie(new Cookie("token", token));
+
                 ObjectMapper objectMapper = new ObjectMapper();
                 String responseStr = objectMapper.writeValueAsString(userProfile);
+
+                response.addCookie(new Cookie("token", token));
+                response.addCookie(new Cookie("user", URLEncoder.encode(responseStr, "utf-8")));
+                response.setHeader("content-type", "application/json");
                 out.print(responseStr);
 
             } catch (Exception e) {
@@ -123,7 +128,9 @@ public class AuthenticationServlet extends HttpServlet {
                 frameworkUserManager.removeAllSessionTokens(username);
                 // remove session token from cookies
                 Cookie tokenCookie = new Cookie("token", "");
+                Cookie userCookie = new Cookie("user", "");
                 tokenCookie.setMaxAge(0);
+                userCookie.setMaxAge(0);
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -143,6 +150,7 @@ public class AuthenticationServlet extends HttpServlet {
             }
             if (userExists) {
                 response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                response.setHeader("content-type", "application/json");
                 out.print("{\"code\" : \"1\", \"message\" : \"User already exists\"}");
                 return;
             }

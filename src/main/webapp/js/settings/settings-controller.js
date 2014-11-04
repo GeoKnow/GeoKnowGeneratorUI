@@ -1,6 +1,7 @@
 'use strict';
 
-function SettingsMenuCtrl($scope, AccountService) {
+function SettingsMenuCtrl($scope) {
+  
   $scope.oneAtATime = true;
   // these data can be replaced later with the configuration
   $scope.items = [
@@ -13,8 +14,8 @@ function SettingsMenuCtrl($scope, AccountService) {
   ];
 
   $scope.showItem = function(item) {
-    if (AccountService.isAdmin()) return true; //show all items to admin
-    var role = AccountService.getRole();
+    if ($scope.$parent.currentAccount.isAdmin()) return true; //show all items to admin
+    var role = $scope.$parent.currentAccount.getRole();
     if (role==null) return false; //hide all
     var allowedServices = role.services;
     for (var ind in item.requiredServices) {
@@ -28,18 +29,29 @@ function SettingsMenuCtrl($scope, AccountService) {
 
 function GeneralSettingsCtrl($rootScope, $scope, $location, ConfigurationService, flash, $timeout) {
 
-    $scope.endpointServices = ConfigurationService.getResourcesType("lds:SPARQLEndPointService");
+    ConfigurationService.getSettings().then(function(){
 
-    $scope.settings = {
-        uriBase: ConfigurationService.getUriBase(),
-        endpointService: ConfigurationService.getSPARQLEndpoint(),
-        settingsGraph: ConfigurationService.getSettingsGraph(),
-        publicEndpointService : ConfigurationService.getPublicSPARQLEndpoint(),
-        defaultSettingsGraphUri : ConfigurationService.getDefaultSettingsGraph(),
-        frameworkUri : ConfigurationService.getFrameworkUri(),
-        flagPath : ConfigurationService.getFlagPath()
+      $scope.endpointServices = ConfigurationService.getResourcesType("lds:SPARQLEndPointService");
 
-    };
+      $scope.settings = {
+          uriBase: ConfigurationService.getUriBase(),
+          endpointService: ConfigurationService.getSPARQLEndpoint(),
+          settingsGraph: ConfigurationService.getSettingsGraph(),
+          publicEndpointService : ConfigurationService.getPublicSPARQLEndpoint(),
+          defaultSettingsGraphUri : ConfigurationService.getDefaultSettingsGraph(),
+          frameworkUri : ConfigurationService.getFrameworkUri(),
+          flagPath : ConfigurationService.getFlagPath()
+
+      };  
+
+      // $scope.$watch(function () {
+      //   return ConfigurationService.getSettingsGraph();
+      // }, function () {
+      //   $scope.settings.settingsGraph = ConfigurationService.getSettingsGraph();
+      // });
+
+    });
+    
     // checkbox to initialize or reset the system
     $scope.reset=true;
     
@@ -48,7 +60,7 @@ function GeneralSettingsCtrl($rootScope, $scope, $location, ConfigurationService
         $rootScope.isSystemSetUp =true;
         $timeout(function(){ 
           $scope.$apply(function() {
-            $location.path("/home").replace();
+            $location.path("/").replace();
           });
         }, 3000);
       }, function(response){
@@ -56,15 +68,4 @@ function GeneralSettingsCtrl($rootScope, $scope, $location, ConfigurationService
       });
     };
 
-    $scope.$watch(function () {
-        return ConfigurationService.getSettingsGraph();
-    }, function () {
-        $scope.settings.settingsGraph = ConfigurationService.getSettingsGraph();
-    });
-
- 
-    // $scope.update = function(){
-    // 	ConfigurationService.setUriBase($scope.settings.);
-    // 	ConfigurationService.getSPARQLEndpoint($scope.settings);
-    // }
 }

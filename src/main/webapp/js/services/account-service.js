@@ -2,92 +2,101 @@
 
 var module = angular.module('app.account-service', []);
 
-module.factory("AccountService", function ($cookieStore, $http) {
-    var username = null;
-    var accountURI = null;
-    var email = null;
-    var role = null;
+module.factory("AccountService", function ( $cookieStore, $http, ConfigurationService) {
 
-    var getUsername = function () {
-        return username;
+    var currentAccount;
+    /**
+    * Constructor, with class name
+    */
+    function Account(username, accountURI, email, role, settingsGraph) {
+        this.username = username;
+        this.accountURI = accountURI;
+        this.role = role;
+        this.email = email;
+        this.settingsGraph = settingsGraph;
+        // update with prefixes
+        if (this.accountURI != undefined) 
+            this.accountURI = accountURI.replace(ConfigurationService.getUriBase(), ':');
+        // update preview result or original ones
+        if (this.role != undefined) {
+            this.role.uri = this.role.uri.replace(ConfigurationService.getFrameworkOntologyNS(), "gkg:");
+            var roleServices = [];
+            for (var ind in this.role.services) 
+                roleServices.push(this.role.services[ind].replace(ConfigurationService.getUriBase(), ":"));
+            this.role.services = roleServices;
+        }
     };
 
-    var setUsername = function (name) {
-        username = name;
+    /**
+    * Public method, assigned to prototype
+    */
+    Account.prototype.getUsername = function () {
+        return this.username;
     };
 
-    var getAccountURI = function () {
-        return accountURI;
+    Account.prototype.getAccountURI = function () {
+        return this.accountURI;
     };
 
-    var setAccountURI = function (uri) {
-        accountURI = uri;
+    Account.prototype.getEmail = function () {
+        return this.email;
     };
 
-    var getEmail = function () {
-        return email;
+    Account.prototype.getSettingsGraph = function() {
+        return this.settingsGraph;
     };
 
-    var setEmail = function (mail) {
-        email = mail;
+    Account.prototype.getRole = function() {
+        return this.role;
     };
 
-    var getRole = function() {
-        return role;
+    Account.prototype.setRole = function(role) {
+        this.role = role;
+        
+        this.role.uri = this.role.uri.replace(ConfigurationService.getFrameworkOntologyNS(), "gkg:");
+        var roleServices = [];
+        for (var ind in this.role.services) 
+            roleServices.push(this.role.services[ind].replace(ConfigurationService.getUriBase(), ":"));
+        this.role.services = roleServices;
+
+        
     };
 
-    var setRole = function(r) {
-        role = r;
+    Account.prototype.isAdmin = function () {
+        return this.role != undefined && this.role.uri == "gkg:Administrator";
     };
 
-    var clear = function () {
-        setUsername(null);
-        setAccountURI(null);
-        setEmail(null);
-        setRole(null);
-    };
-
-    var isLogged = function () {
-        return username != null;
-    };
-
-    var getAccount = function () {
-        var user = $cookieStore.get('User');
-        var pass = $cookieStore.get('Pass');
-        return {
-            username: username,
-            email: email,
-            user: user,
-            pass: pass,
-            role: role
-        };
-    };
-
-    var isAdmin = function () {
-        return role && role.uri == "gkg:Administrator";
-    };
-
-    var createSession = function() {
+    Account.prototype.createSession = function() {
         return $http({
-                    url: "rest/session",
-                    method: "PUT",
-                    params : {'username':username} 
-                });
+            url: "rest/session",
+            method: "PUT",
+            params : {'username': this.username} 
+        });
     };
 
-    return {
-        createSession: createSession,
-        getUsername: getUsername,
-        setUsername: setUsername,
-        getAccountURI: getAccountURI,
-        setAccountURI: setAccountURI,
-        getEmail: getEmail,
-        setEmail: setEmail,
-        clear: clear,
-        isLogged: isLogged,
-        getAccount: getAccount,
-        isAdmin: isAdmin,
-        getRole: getRole,
-        setRole: setRole
+   /**
+   * Static methods
+   * Instance ('this') is not available in static context
+   */
+    Account.create = function(username, accountURI, email, role, settingsGraph) {
+        return new Account(username, accountURI, email, role, settingsGraph);
     };
+
+
+    Account.clearAccount = function () {
+        $cookieStore.remove('user');
+        $cookieStore.remove('token');
+        return new Account(undefined, undefined, undefined, undefined, undefined);
+    };
+
+    Account.getAccount = function () {
+        if($cookieStore.get('user') != undefined){
+            var s = $cookieStore.get('user');
+            return new Account(s.username, s.accountURI, s.email, s.role, s.settingsGraph); 
+        }
+        else
+            return Account.clearAccount();
+    };
+
+    return (Account);
 });

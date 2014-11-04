@@ -3,20 +3,34 @@
 function DashboardCtrl($scope, JobService) {
   
 	$scope.jobs = [];
-  // 0: Object
-  // description: "No description"
-  // executionCount: 0
-  // incrementable: true
-  // jobInstances: Object
-  // launchable: true
-  // name: "admin_60aefecc-371a-490b-a309-19b4c519f881"
-  // resource: "http://localhost:8080/spring-batch-admin-geoknow/jobs/admin_60aefecc-371a-490b-a309-19b4c519f881.json"
-
+ 
   JobService.getAllJobs().then(function(jobs){
   	$scope.jobs = jobs;
-  	console.log($scope.jobs);
   });
 
- 
+  $scope.getJobDetail = function(index){
+    if($scope.jobs[index].executions == undefined){
+      JobService.getJob($scope.jobs[index].name).then(
+        function(response){
+          // if(response.executions.status!="COMPLETED" || response.executions.status!="FAILED")
+          $scope.jobs[index].executions = response.executions;
+        });
+    }
+  },
 
+  $scope.execute = function(index){
+    JobService.run($scope.jobs[index].name).then(
+      function(response){
+        $scope.jobs[index].executions.push(response.execution);
+    });
+  }
+
+  $scope.reload = function(index){
+    $scope.jobs[index].executions = undefined;
+    $scope.getJobDetail(index);
+  },
+
+  $scope.stopExecution = function(id){
+
+  }
 }

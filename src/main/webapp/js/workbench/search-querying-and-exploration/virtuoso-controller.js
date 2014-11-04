@@ -7,11 +7,13 @@
 ***************************************************************************************************/
 app.controller('VirtuosoCtrl', function($scope, ConfigurationService, AccountService, GraphService, GraphGroupService) {
 
+	var currentAccount = AccountService.getAccount();
+
 	$scope.namedGraphs = [];
 	$scope.component = ConfigurationService.getComponent(":Virtuoso");
 	// $scope.services = ConfigurationService.getComponentServices(":Virtuoso", "lds:SPARQLEndPointService");
 	$scope.virtuoso = {
-		service   : AccountService.getUsername()==null ? ConfigurationService.getPublicSPARQLEndpoint() : ConfigurationService.getSPARQLEndpoint(),
+		service   : currentAccount.getUsername()==null ? ConfigurationService.getPublicSPARQLEndpoint() : ConfigurationService.getSPARQLEndpoint(),
 	 	dataset   : "",
 	}
 
@@ -30,7 +32,7 @@ app.controller('VirtuosoCtrl', function($scope, ConfigurationService, AccountSer
 
 	$scope.url = "";
 	$scope.setUrl = function(){
-	    if (AccountService.getUsername()==null) { //user is not authorized
+	    if (currentAccount.getUsername()==null) { //user is not authorized
 	        $scope.url= $scope.virtuoso.service +
 	            '?default-graph-uri=' + $scope.virtuoso.dataset.replace(':',ConfigurationService.getUriBase()) +
 	            '&qtxt=select+distinct+%3FConcept+where+%7B%5B%5D+a+%3FConcept%7D+LIMIT+100'
@@ -42,11 +44,11 @@ app.controller('VirtuosoCtrl', function($scope, ConfigurationService, AccountSer
                                     '&qtxt=select+distinct+%3FConcept+where+%7B%5B%5D+a+%3FConcept%7D+LIMIT+100' +
                                     '&format=text%2Fhtml' +
                                     '&timeout=30000' +
-                                    '&username=' + AccountService.getUsername();
+                                    '&username=' + currentAccount.getUsername();
         }
 	};
 
-	$scope.$watch( function () { return AccountService.getUsername(); }, function () {
+	$scope.$watch( function () { return currentAccount.getUsername(); }, function () {
 	    $scope.refreshGraphList();
     });
 

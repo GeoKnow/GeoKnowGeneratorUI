@@ -9,16 +9,14 @@ import javax.xml.bind.JAXBException;
 
 import org.junit.Test;
 
-import workflow.JobFactory;
-
 public class JobFactoryTest {
 
     @Test
     public void createOneStepServiceJobTest() throws JAXBException, IOException {
 
         JobFactory.getInstance();
-        File file = JobFactory.createOneStepServiceJobFile("test", "http:...", "application/json",
-                "post", "{some:json}");
+        File file = JobFactory.createOneStepServiceJobFile("test", "description", "http:...",
+                "application/json", "post", "{some:json}");
         assertTrue(file.exists());
 
     }

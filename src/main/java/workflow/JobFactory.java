@@ -3,6 +3,7 @@ package workflow;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.net.URLDecoder;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -17,6 +18,8 @@ import org.springframework.schema.batch.ObjectFactory;
 import org.springframework.schema.batch.TaskletType;
 import org.springframework.schema.beans.Bean;
 import org.springframework.schema.beans.Beans;
+
+import workflow.beans.OneStepServiceJob;
 
 /**
  * This class is used to create spring batch jobs definitions. This class is to
@@ -55,10 +58,11 @@ public class JobFactory {
         return instance;
     }
 
-    private static Job createJob(ObjectFactory factory, String id) {
+    private static Job createJob(ObjectFactory factory, String id, String description) {
 
         Job job = factory.createJob();
         job.setId(id);
+        job.setDescription(description);
         // the job can be restarted
         job.setRestartable("true");
 
@@ -78,12 +82,17 @@ public class JobFactory {
      * @throws JAXBException
      * @throws IOException
      */
-    public static File createOneStepServiceJobFile(String jobId, String service,
-            String contenttype, String method, String body) throws JAXBException, IOException {
+    public static File createOneStepServiceJobFile(String jobId, String description,
+            String service, String contenttype, String method, String body) throws JAXBException,
+            IOException {
 
-        String xml = createOneStepServiceJobXml(jobId, service, contenttype, method, body);
+        log.debug(service);
+        log.debug(body);
+        String xml = createOneStepServiceJobXml(jobId, description, service, contenttype, method,
+                body);
         Path file = Files.write(Paths.get(files_dir, jobId + ".xml"), xml.getBytes());
 
+        log.debug(file.toAbsolutePath());
         return file.toFile();
     }
 
@@ -99,8 +108,9 @@ public class JobFactory {
      * @throws JAXBException
      * @throws IOException
      */
-    public static String createOneStepServiceJobXml(String jobId, String service,
-            String contenttype, String method, String body) throws JAXBException, IOException {
+    public static String createOneStepServiceJobXml(String jobId, String description,
+            String service, String contenttype, String method, String body) throws JAXBException,
+            IOException {
 
         // creates the bean of the service with the corresponding parameters
         Bean beanService = BeanFactory.createServiceTaskletBean(beanFactory, "beanService",
@@ -124,7 +134,8 @@ public class JobFactory {
         jobIncrementer.setId("jobParamatersIncrementer");
         jobIncrementer.setClazz("org.springframework.batch.core.launch.support.RunIdIncrementer");
 
-        Job job = JobFactory.createJob(batchFactory, jobId);
+        Job job = JobFactory.createJob(batchFactory, jobId, description);
+        log.debug(job.getDescription());
         job.getStepOrSplitOrFlow().add(jobstep);
         job.setIncrementer("jobParamatersIncrementer");
 
@@ -150,7 +161,27 @@ public class JobFactory {
         jaxbMarshaller.setProperty(Marshaller.JAXB_SCHEMA_LOCATION, location);
         jaxbMarshaller.marshal(beans, writer);
 
+        log.debug(writer.toString());
         // return the name of the job file generated
         return writer.toString();
+    }
+
+    /**
+     * Creates a job based on the OneStepServiceJob bean. Notice that body
+     * requires URLEncoded.
+     * 
+     * @param job
+     * @return File
+     * @throws JAXBException
+     * @throws IOException
+     */
+    public static File createOneStepServiceJobFile(OneStepServiceJob job) throws JAXBException,
+            IOException {
+        log.debug(job.toString());
+
+        File file = createOneStepServiceJobFile(job.getName(), job.getDescription(), job
+                .getService(), job.getContenttype(), job.getMethod(), URLDecoder.decode(job
+                .getBody(), "utf-8"));
+        return file;
     }
 }

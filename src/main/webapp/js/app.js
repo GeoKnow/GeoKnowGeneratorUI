@@ -23,7 +23,6 @@ var app = angular.module('app', ['ngRoute',
 
 app.config(function($routeSegmentProvider, $routeProvider)
 {
-
     $routeSegmentProvider.options.autoLoadTemplates = true;
     $routeSegmentProvider
         // TODO: these routes may have to be loaded from the configuration
@@ -32,7 +31,7 @@ app.config(function($routeSegmentProvider, $routeProvider)
         .when('/popup-triplegeo','popup-triplegeo')
         .when('/popup-geolift','popup-geolift')
 
-        .when('/home', 'default')
+        .when('/', 'default')
         .when('/workbench', 'workbench')
         .when('/account','account')
         .when('/system-setup', 'system-setup')
@@ -123,36 +122,8 @@ app.config(function($routeSegmentProvider, $routeProvider)
                     templateUrl: 'js/workbench/linking-and-fusing/limes.html' })
             .up()
 
-		.segment('settings',
-		{
-			templateUrl: 'js/settings/settings.html',
-            resolve: {
-                    settings: function (ConfigurationService) {
-                                return ConfigurationService.getSettings();
-                    },
-                    users: function(UsersService) {
-                        return UsersService.readUsers();
-                    },
-                    roles: function(UsersService) {
-                        return UsersService.readRoles();
-                    }    
-                    // init: function($q, Config, UsersService){
-                    //     console.log("init settings");
-                    //     var defer = $q.defer();
-                    //     var promise = defer.promise;
-                    //     Config.initialize(defer);
-                    //     promise
-                    //         .then(function(){
-                    //             Config.read().then(function(){
-                    //                 //why this function is required at this level? 
-                    //                 // UsersService.readRoles();
-                    //                 // UsersService.readUserNamesEmails(); 
-                    //             }); 
-                    //         });
-                            
-                    //     return promise;
-                    // }
-            }
+		.segment('settings',{
+			templateUrl: 'js/settings/settings.html'
 		})
             .within()
                 .segment('datasets', {
@@ -195,14 +166,20 @@ app.config(function($routeSegmentProvider, $routeProvider)
             .up()
         .segment('system-setup', {
             templateUrl: 'system-setup.html',
-            resolve: {
-                settings: function (ConfigurationService) {
-                    return ConfigurationService.getSettings();
-                }
-            }
+            // resolve: {
+            //     settings: function (ConfigurationService) {
+            //         return ConfigurationService.getSettings();
+            //     }
+            // }
         })
         .segment('default', {
-            templateUrl: 'default.html'})
+            templateUrl: 'default.html',
+            // resolve: {
+            //         settings: function (ConfigurationService) {
+            //             return ConfigurationService.getSettings();
+            //         }
+            // }
+        })
         .segment('access-denied', {
             templateUrl: 'access-denied.html'})
         .segment('about', {
@@ -211,8 +188,12 @@ app.config(function($routeSegmentProvider, $routeProvider)
             templateUrl:'under-construction.html' });
 
     // TODO: replace with a not found page or something like that
-    $routeProvider.otherwise({redirectTo: '/home'}); 
+    $routeProvider.otherwise({redirectTo: '/'}); 
 
+})
+.config(function($sceProvider) {
+    // this may be has to be replaced by white list and black list for accessin resources
+    $sceProvider.enabled(false);
 })
 // configuration of flashProvider module directive
 .config(function (flashProvider) {
@@ -232,6 +213,7 @@ app.config(function($routeSegmentProvider, $routeProvider)
     //redirect to system-setup page if system is not set up
     //redirect to access-denied page if user has no access to page
     $rootScope.$on("$routeChangeStart", function(event, next, current) {
+        var account = angular.copy(AccountService.getAccount());
         if ($rootScope.isSystemSetUp==undefined) {
             $http.get("rest/setup").then(function(response) {
                 $rootScope.isSystemSetUp = response.data == "true";
@@ -241,12 +223,12 @@ app.config(function($routeSegmentProvider, $routeProvider)
             });
         } else if (!$rootScope.isSystemSetUp) {
             $location.path('/system-setup');
-        } else if (AccountService.isLogged() && next.$$route) { //check route permissions
+        } else if (account.getUsername() != undefined && next.$$route) { //check route permissions
             var requiredServices = ConfigurationService.getRequiredServices(next.$$route.originalPath);
-            if (requiredServices==null) return;
-            if (AccountService.isAdmin()) return;
-            var role = AccountService.getRole();
-            if (role==null) {
+            if (requiredServices == null) return;
+            if (account.isAdmin()) return;
+            var role = account.getRole();
+            if (role==undefined) {
                 $location.path("/access-denied");
                 return;
             } else {
@@ -260,7 +242,9 @@ app.config(function($routeSegmentProvider, $routeProvider)
             }
         }
         else {
-            $location.path("/access-denied");
+            console.log("access denied? or home redirect?");
+            // $location.path("/access-denied"); ?
+            $location.path("/");
         }
     });
 });

@@ -6,6 +6,7 @@ import java.util.List;
 public class JobExecutions {
 
     private List<JobExecution> jobExecutions;
+    private Page page;
 
     public JobExecutions() {
         jobExecutions = new ArrayList<JobExecution>();
@@ -17,5 +18,13 @@ public class JobExecutions {
 
     public void setJobExecutions(List<JobExecution> jobExecutions) {
         this.jobExecutions = jobExecutions;
+    }
+
+    public Page getPage() {
+        return page;
+    }
+
+    public void setPage(Page page) {
+        this.page = page;
     }
 }

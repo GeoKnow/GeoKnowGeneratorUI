@@ -8,7 +8,9 @@
     <meta name="author" content=""/>
 
     <!-- Le styles -->
-    <link href="css/bootstrap.css" rel="stylesheet"/>
+    <link href="lib/bootstrap-3.2.0-dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="lib/bootstrap-3.2.0-dist/css/bootstrap-theme.min.css" rel="stylesheet"/>
+
     <link href="css/bootstrap-modal.css" rel="stylesheet"/>
     <link href="css/bootstrap-slider.css" rel="stylesheet"/>
     <link href="css/app.css" rel="stylesheet"/>
@@ -54,7 +56,7 @@
 	                        <ul class="nav navbar-nav navbar-right">
                                 <li>
                                 <div ng-if="isUserAuthenticated() && $root.isSystemSetUp">
-                                            <span class="strong">You are logged in as <strong>{{currentAccount.username}}</strong></span> <button class="btn-sm btn-success" ng-click="logout()">Logout</button>
+                                            <span class="strong">You are logged in as <strong>{{currentAccount.getUsername()}}</strong></span> <button class="btn-sm btn-success" ng-click="logout()">Logout</button>
                                 </div>
                                 <div ng-if="!isUserAuthenticated() && $root.isSystemSetUp">
                                             <!-- ng-disabled="loginForm.$invalid" -->
@@ -71,27 +73,26 @@
 	<div class="modal fade" id="modalLogin" modal-focus="#login">
 	<div class="modal-dialog">
     <div class="modal-content">
-	<form name="loginForm" class="form-horizontal InputForm" role="form" ng-show="currentAccount.username==null">
+	<form name="loginForm" class="form-horizontal InputForm" role="form" ng-show="!isUserAuthenticated()">
 			<div class="modal-header">
                 <button type="button" class="close" ng-click="close('#modalLogin')" aria-hidden="true">&times;</button>
                 <h5 class="modal-title green bold">Login</h5>
             </div>
             <div class="modal-body">
-
-										<div class="form-group">
-                                            <label class="sr-only" for="login">Username or e-mail</label>
-                                            <input type="text" class="form-control col-xs-3 input-sm" id="login" placeholder="Username or e-mail address" ng-model="login.username" autofillable required>
-                                            <div class="error" ng-show="loginForm.login.$dirty && loginForm.login.$invalid">
-                                                <span ng-show="loginForm.login.$error.required">Enter your username</span>
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="sr-only" for="password">Password</label>
-                                            <input type="password" class="form-control col-xs-3 input-sm" id="password" placeholder="Password" ng-model="login.password" autofillable required>
-                                        </div>
-                                        <div class="error" ng-show="loginForm.password.$dirty && loginForm.password.$invalid">
-                                            <span ng-show="loginForm.password.$error.required">Enter a password</span>
-                                        </div>
+				<div class="form-group">
+                    <label class="sr-only" for="login">Username or e-mail</label>
+                    <input type="text" class="form-control col-xs-3 input-sm" id="login" placeholder="Username or e-mail address" ng-model="login.username" autofillable required>
+                    <div class="error" ng-show="loginForm.login.$dirty && loginForm.login.$invalid">
+                        <span ng-show="loginForm.login.$error.required">Enter your username</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="sr-only" for="password">Password</label>
+                    <input type="password" class="form-control col-xs-3 input-sm" id="password" placeholder="Password" ng-model="login.password" autofillable required>
+                </div>
+                <div class="error" ng-show="loginForm.password.$dirty && loginForm.password.$invalid">
+                    <span ng-show="loginForm.password.$error.required">Enter a password</span>
+                </div>
              </div>
 
              <div class="modal-footer">
@@ -188,18 +189,28 @@
 
     <script src="lib/jquery/jquery-1.9.1.js"></script>
     <script src="lib/jquery/jquery-ui-1.10.1.custom.min.js"></script>
+    
+    <script src="lib/angular-1.2.26/angular.min.js"></script>
+    <script src="lib/angular-1.2.26/angular-cookies.min.js"></script>
+    <script src="lib/angular-1.2.26/angular-route.min.js"></script>
 
-    <script src="lib/bootstrap/bootstrap.js"></script>
-    <script src="lib/angularjs/angular.js"></script>
-    <script src="lib/angularjs/angular-cookies.js"></script>
-    <script src="lib/angularjs/angular-route.js"></script>
+    <script src="lib/bootstrap-3.2.0-dist/js/bootstrap.min.js"></script>
+
+    <script src="lib/ui-bootstrap/ui-bootstrap-tpls-0.11.2.min.js"></script>
+    
+    <script src="lib/angular-route-segment/angular-route-segment.min.js"></script>
+    <script src="lib/angular-file-upload-master/angular-file-upload.min.js"></script>
+    <script src="lib/angular-file-upload-master/FileAPI.min.js"></script>
+    <script src="lib/angular-flash.min.js"></script>
+
     <script src="lib/modal-master/bootstrap-modal.js"></script>
     <script src="lib/modal-master/bootstrap-modalmanager.js"></script>
-    <script src="js/app.js"></script>
+
     <script src="lib/slider/bootstrap-slider.js"></script>
     <script src="lib/xml2json.min.js"></script>
     
     <!-- services for the different modules/pages -->
+    <script src="js/app.js"></script>
     <script src="js/services/config.js"></script>
     <script src="js/services/services.js"></script>
     <script src="js/services/ns-service.js"></script>
@@ -235,11 +246,6 @@
 
     <!-- directives -->
     <script src="js/directives.js"></script>
-    <script src="lib/osm/OpenLayers.js"></script>
-    <script src="lib/ui-bootstrap/ui-bootstrap-tpls-0.6.0.min.js"></script>
-    <script src="lib/angular-route-segment/angular-route-segment.min.js"></script>
-    <script src="lib/angular-file-upload-master/angular-file-upload.min.js"></script>
-    <script src="lib/angular-file-upload-master/FileAPI.min.js"></script>
-    <script src="lib/angular-flash.min.js"></script>
+
   </body>
 </html>

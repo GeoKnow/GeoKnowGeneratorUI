@@ -20,44 +20,72 @@
 
 		</div>
 
-	<div class="col-xs-10 contents" app-view-segment="1" ng-controller="DashboardCtrl">
-  	<div class="col-xs-8">
- 			<h3 class="green bold">Dashboard</h3>
- 			<br>
-
- 			<table class="table table-striped">
-  		<thead>
-    	<tr>
-      <th>Name</th>
-      <th>Description</th>
-      <!-- <th>Label</th>
-      <th>Description</th>
-      <th>Created</th>
-      <th>Modified</th>
-      <th>Public Access</th>
-      <th>Read Access</th>
-      <th>Write Access</th> -->
-    	</tr>
-  		</thead>
-  		<tbody>
-     	<tr ng-repeat="job in jobs">
-      <!-- <td>
-        <button type="button" class="btn btn-default btn-xs" ng-click="delete('{{namedgraph.name}}')"><span class="glyphicon glyphicon-trash"></span></button>
-        <button type="button" class="btn btn-default btn-xs" data-toggle="modal" data-target="#modalGraph" ng-click="edit('{{namedgraph.name}}');"><span class="glyphicon glyphicon-edit"></span></button>
-      </td> -->
-      <td>{{job.name}}</td>
-      <!-- <td>{{job.label}}</td> -->
-      <td>{{job.description}}</td>
-      <!-- <td>{{job.created}}</td> -->
-      <!-- <td>{{job.modified}}</td> -->
-    	</tr>
-  		</tbody>
-  		</table>
-
-	  </div>
-
-
-
+	<div class="col-xs-10 contents" app-view-segment="1" >
+    
+		<h3 class="green bold">Dashboard</h3>
+			
+		<table class="table table-striped" ng-controller="DashboardCtrl">
+		<thead>
+  	<tr>
+    <th></th>
+    <th>Name</th>
+    <th>Description</th>
+    <th>Execution Count</th>
+    <th>Launchable</th>
+    <th>Incrementable</th>
+    </tr>
+		</thead>
+		<tbody ng-repeat="job in jobs" ng-init="jobIndex = $index">
+   	<tr data-toggle="collapse" data-target="#{{job.name}}" class="accordion-toggle" ng-click="getJobDetail(jobIndex)">
+    <td>
+      <button type="button" class="btn btn-default btn-xs">
+        <span class="glyphicon glyphicon-trash"></span></button>
+    </td>
+    <td>{{job.name}}</td>
+    <td>{{job.description}}</td>
+    <td>{{job.executionCount}}</td>
+    <td>{{job.launchable}}</td>
+    <td>{{job.incrementable}}</td>
+  	</tr>
+    <tr>
+    <td colspan="6" class="hiddenRow" >
+      <div class="accordian-body collapse" id="{{job.name}}"> 
+        <table class="table table-striped">
+        <thead>
+        <tr>
+          <td colspan="3">
+            <button type="button" class="btn btn-link btn-xs" ng-click="reload(jobIndex)">
+              <i class="glyphicon glyphicon-refresh"></i></button>
+            <button type="button" class="btn btn-link  btn-xs" ng-click="execute(jobIndex)">
+              <i class="glyphicon glyphicon-play"></i></button>
+          </td>
+        </tr>
+        <tr ng-show="job.executions.length>0">
+          <th>Id</th>
+          <th>Status</th>
+          <th>Time</th>
+          <th>Duration </th>
+          <!-- <th>Parameters</th> -->
+          <th>Exit Code</th>
+          <th>Exit Description</th>
+        </thead>
+        <tbody ng-repeat="execution in job.executions">
+        <tr>
+          <td>{{execution.id}}</td>
+          <td>{{execution.status}}</td>
+          <td>{{execution.startTime}}</td>
+          <td>{{execution.duration}}</td>
+          <!-- <td>{{execution.jobParameters}}</td> -->
+          <td>{{execution.exitCode}}</td>
+          <td>{{execution.exitDescription}}</td>
+        </tr>
+        </tbody>
+        </table>
+      </div>
+    </td>
+    </tr>
+		</tbody>
+		</table>
   </div>
 
 

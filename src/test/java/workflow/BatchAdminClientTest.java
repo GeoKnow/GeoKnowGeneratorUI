@@ -5,13 +5,13 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-import java.util.UUID;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 import org.junit.Test;
 
-import workflow.BatchAdminClient;
-import workflow.JobFactory;
 import workflow.beans.JobExecution;
+import workflow.beans.JobExecutionWraper;
 import workflow.beans.JobExecutions;
 import workflow.beans.JobsRegistered;
 import workflow.beans.Registration;
@@ -42,14 +42,19 @@ public class BatchAdminClientTest {
     @Test
     public void registeFileJobTest() throws Exception {
 
+        Calendar calendar = new GregorianCalendar();
+
         JobFactory.getInstance();
-        String id = "testFile_" + UUID.randomUUID().toString();
-        File file = JobFactory.createOneStepServiceJobFile(id, "http://...", "application/json",
-                "post", "{some:json}");
+        String id = "testFile_" + calendar.getTimeInMillis();
+        String description = "some description";
+        File file = JobFactory.createOneStepServiceJobFile(id, description, "http://...",
+                "application/json", "post", "{some:json}");
         assertTrue(file.exists());
 
         Registration response = BatchAdminClient.registerJob(id, file);
         assertEquals(id, response.getName());
+        // TODO: descriptions of job is not implemented
+        // assertEquals(description, response.getDescription());
     }
 
     @Test
@@ -72,24 +77,27 @@ public class BatchAdminClientTest {
 
     @Test
     public void getUnexistingExecution() throws Exception {
-        JobExecution execution = BatchAdminClient.getExecution("91919");
-        assertEquals(null, execution);
+        JobExecutionWraper execution = BatchAdminClient.getExecutionDetail("91919");
+        assertEquals(null, execution.getJobExecution());
     }
 
     @Test
-    public void executeJobAndGetExecutions() throws Exception {
+    public void executeJobAndGetExecutionsAndStop() throws Exception {
         JobExecution exec = BatchAdminClient.runJob("limesJobSampleJson");
         assertEquals("START", exec.getStatus().substring(0, 5));
 
-        JobExecutions executions = BatchAdminClient.getExecutions();
+        JobExecutions executions = BatchAdminClient.getAllExecutions();
         assertNotSame(0, executions.getJobExecutions().size());
-
-        JobExecution execution = BatchAdminClient.getExecution("0");
-        assertEquals("0", execution.getId());
 
         // run more times to test job parameters passing
         exec = BatchAdminClient.runJob("limesJobSampleJson");
         assertEquals("START", exec.getStatus().substring(0, 5));
+
+        JobExecutionWraper execution = BatchAdminClient.getExecutionDetail("1");
+        assertEquals("1", execution.getJobExecution().getId());
+
+        JobExecutionWraper execWr = BatchAdminClient.stopExecution("1");
+        System.out.println(execWr.toString());
 
     }
 

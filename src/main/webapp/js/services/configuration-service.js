@@ -2,12 +2,12 @@
 
 var module = angular.module('app.configuration-service', []);
 
-module.factory('ConfigurationService', function ($q, AccountService, Config, $http, $location, flash, Helpers, ServerErrorResponse, Ns) {
+module.factory('ConfigurationService', function ($q, Config, $http, $location, flash, Helpers, ServerErrorResponse, Ns) {
     
     var SettingsService = {
-        getSettings : function(){
+        getSettings : function(userAccount){
             var defer = $q.defer();
-            if(Config.getSettingsGraph() == undefined){
+            if(Config.getDefaultSettingsGraph() == undefined){
                 $http.get("rest/config").then(
                     function (response) {
                         Config.setFrameworkUri(response.data.frameworkUri);
@@ -22,11 +22,9 @@ module.factory('ConfigurationService', function ($q, AccountService, Config, $ht
                         Config.setFlagPath(response.data.flagPath);
                         Ns.getAllNamespaces                        
                         Ns.add(":", Config.getNS());
-                        Config.read().then(function(settings){
-                            var currentAccount = angular.copy(AccountService.getAccount()); 
-                            console.log("user:" +currentAccount.user);
-                            // Try to get here the user's settings graph
-                            defer.resolve(settings);
+                     
+                        Config.read().then(function(response){
+                            defer.resolve(response);    
                         });
 
                     }, function(response){
@@ -34,11 +32,9 @@ module.factory('ConfigurationService', function ($q, AccountService, Config, $ht
                         flash.error = message;
                     })
                 } else{
-                    // if( AccountService.isLogged() ){
-                    //     console.log("get the settings graph of the user");
-                    //     console.log(AccountService.getAccountURI());
-                    // }
-                    defer.resolve(Config.getSettings());
+                    Config.read().then(function(response){
+                        defer.resolve(response);    
+                    })
                 }
              return defer.promise;
         },

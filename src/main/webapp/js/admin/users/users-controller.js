@@ -1,6 +1,8 @@
 'use strict';
 
 function UsersCtrl($scope, $http, flash, Helpers, AccountService) {
+
+    var currentAccount =AccountService.getAccount();
 	var emptyUser = { profile: { accountURI:"", username:"", email:""}
 	                    , ownGraphs: []
 	                    , readableGraphs: []
@@ -13,7 +15,7 @@ function UsersCtrl($scope, $http, flash, Helpers, AccountService) {
     };
 
     $scope.notCurrent = function(user) {
-        return user.profile.accountURI != AccountService.getAccountURI();
+        return user.profile.accountURI != currentAccount.getAccountURI();
     };
 
     $scope.modaltitle = "";
@@ -22,7 +24,7 @@ function UsersCtrl($scope, $http, flash, Helpers, AccountService) {
     $scope.refreshUsersList = function() {
         var parameters = {
             mode: "getProfiles",
-            curuser: AccountService.getUsername()
+            curuser: currentAccount.getUsername()
         };
         $http({
             url: "UserManagerServlet",
@@ -38,13 +40,13 @@ function UsersCtrl($scope, $http, flash, Helpers, AccountService) {
     	        flash.error = data;
     	    });
     }
-    if (AccountService.getUsername()!=null) { $scope.refreshUsersList(); }
+    if (currentAccount.getUsername()!=null) { $scope.refreshUsersList(); }
 
     $scope.graphs = [];
     $scope.refreshGraphsList = function() {
         var parameters = {
             mode: "getAll",
-            username: AccountService.getUsername()
+            username: currentAccount.getUsername()
         };
         $http({
             url: "GraphManagerServlet",
@@ -87,7 +89,7 @@ function UsersCtrl($scope, $http, flash, Helpers, AccountService) {
 	    var parameters = {
 	        mode: newUser ? "create" : "update",
 	        user: JSON.stringify($scope.user),
-	        curuser: AccountService.getUsername()
+	        curuser: currentAccount.getUsername()
         };
         $http({
             url: "UserManagerServlet",
@@ -110,7 +112,7 @@ function UsersCtrl($scope, $http, flash, Helpers, AccountService) {
 	    var parameters = {
 	        mode: "delete",
 	        username: username,
-	        curuser: AccountService.getUsername()
+	        curuser: currentAccount.getUsername()
         };
         $http({
             url: "UserManagerServlet",

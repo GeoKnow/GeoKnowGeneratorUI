@@ -1,5 +1,6 @@
 <div class="contents" ng-controller="LimesCtrl">
-  <h3 class="green bold">{{component.label}} <span ng-show="component.offline" class="glyphicon glyphicon-warning-sign btn-sm red"></span></h3>
+
+  <h3 class="green bold">{{component.label}} <span ng-show="component.offline" class="glyphicon glyphicon-warning-sign btn-xs red"></span></h3>
   <dl class="dl-horizontal">
     <dt>Version:</dt>
     <dd>{{component.version}}</dd>
@@ -9,8 +10,8 @@
   <p>Link Discovery Framework for Metric Spaces</p>
   <p>To get started either upload a configuration file, choose an example, or fill in the options form.</p>
   <form class="form-inline InputForm col-xs-11" role="form" ng-show="inputForm">
-    <button type="button" class="btn btn-link reset" onclick="document.location.reload()">
-    <i class="glyphicon glyphicon-refresh" aria-hidden="false"></i>
+    <button type="button" class="btn btn-link reset" ng-click="clearForm()">
+      <i class="glyphicon glyphicon-refresh" aria-hidden="false"></i>
     </button>
     <div class="row">
       <div class="col-xs-12">
@@ -47,12 +48,12 @@
       <br>
       <div class="row">
         <div class="col-xs-2">
-          <label for="Example">Examples</label>
+          <label for="limesConfig">Load Existing</label>
         </div>
         <div class="col-xs-8">
-          <select id="Example" class="form-control input-sm" ng-model="Example" 
-            ng-options="example.description for example in examples" ng-change="FillForm(Example.file)">
-            <option value="">Choose an example</option>
+          <select id="limesConfig" class="form-control input-sm" ng-model="limesConfig" 
+            ng-options="example.description for example in examples" ng-change="fillForm(limesConfig.file)">
+            <option value="">Choose one</option>
           </select>
         </div>
       </div>
@@ -270,7 +271,8 @@
     <div class="row">
       <div class="col-xs-2"></div>
       <div class="col-xs-2">
-        <a class="btn btn-sm btn-success btn-block" id="startLimes" ng-click="LaunchLimes()">Start LIMES</a>
+        <!-- <a class="btn btn-sm btn-success btn-block" id="startLimes" ng-click="LaunchLimes()">Launch Limes</a> -->
+        <a class="btn btn-sm btn-success btn-block" ng-click="registerJob()">Register Job</a>
       </div>
     </div>
   </form>

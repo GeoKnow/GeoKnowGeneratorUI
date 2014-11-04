@@ -8,6 +8,7 @@ function AccountMenuCtrl($scope) {
 }
 
 function StackMenuCtrl($scope, AccountService) {
+    
 	  $scope.oneAtATime = true;
 	  // these data can be replaced later with the configuration
 	  $scope.groups = [
@@ -47,33 +48,30 @@ function StackMenuCtrl($scope, AccountService) {
 		  }
 	  ];
 
-      $scope.showItem = function(item) {
-        if (AccountService.isAdmin()) return true; //show all items to admin
-        var role = AccountService.getRole();
+    $scope.showItem = function(item) {
+      if ($scope.$parent.currentAccount.isAdmin()) return true; //show all items to admin
+      var role = $scope.$parent.currentAccount.getRole();
         if (role==null) return false; //hide all
-        var allowedServices = role.services;
-        for (var ind in item.requiredServices) {
-            if (allowedServices.indexOf(item.requiredServices[ind]) == -1) //hide item if one of required services is not allowed for current user
-                return false;
-        }
-        return true;
-      };
+      var allowedServices = role.services;
+      for (var ind in item.requiredServices) {
+          if (allowedServices.indexOf(item.requiredServices[ind]) == -1) //hide item if one of required services is not allowed for current user
+              return false;
+      }
+      return true;
+    };
 
-      $scope.showGroup = function(group) {
-        if (AccountService.isAdmin()) return true;
-        //hide group if all items are hidden
-        for (var ind in group.items) {
-            if ($scope.showItem(group.items[ind])) return true;
-        }
-        return false;
-      };
+    $scope.showGroup = function(group) {
+      if ($scope.$parent.currentAccount.isAdmin()) return true;
+      //hide group if all items are hidden
+      for (var ind in group.items) {
+          if ($scope.showItem(group.items[ind])) return true;
+      }
+      return false;
+    };
 
 	}
 
 app.controller('NavbarCtrl', function($scope, $location) {
-		//if($location.path === "/"){
-		//	$location.path('/home')
-		//}
 		$scope.getClass = function(path) {
 			if ($location.path().substr(0, path.length) === path) {
 			      return "active";
@@ -87,6 +85,22 @@ app.controller('SidebarCtrl', function($scope, $location) {
 	    $scope.isSelected = function(route) {
 	        return route === $location.path();
 	    }
+});
+
+app.controller('ModalNewJobCtrl', function ($scope, $modalInstance, sname) {
+  $scope.job = {
+    name : sname,
+    description : ""
+  };
+
+  $scope.ok = function () {
+    var input= angular.copy($scope.job)
+    $modalInstance.close(input);
+  };
+
+  $scope.cancel = function () {
+    $modalInstance.dismiss('cancel');
+  };
 });
 
 // this ModalWindow may be replaced witht the modalIframe directive

@@ -5,23 +5,39 @@
 * LIMES Controller
 ***************************************************************************************************/
 
-var LimesCtrl = function($scope, $http, ConfigurationService, flash, ServerErrorResponse, $window, GraphService, AccountService, $timeout, Ns){
+var LimesCtrl = function($scope, $http, ConfigurationService, JobService, flash, ServerErrorResponse, $window, GraphService, AccountService, Ns, $modal){
 	
-	$scope.component = ConfigurationService.getComponent(":Limes");
-	$scope.endpoints = ConfigurationService.getAllEndpoints();
-	$scope.uriBase = ConfigurationService.getUriBase();
 	$scope.configOptions = true;
 	$scope.inputForm = true;
 	$scope.deleteProp = false;
-	
-	var services = ConfigurationService.getComponentServices(":Limes");
-	var workbench = ConfigurationService.getComponent(ConfigurationService.getFrameworkUri());
-	var serviceUrl = services[0].serviceUrl;
 
+	var configFilesDir="data/limes-config-files/";
+	var services = "";
+	var serviceUrl = "";
+	var workbench = "";
 	var importing = false;
 	var uploadError = false;
 	var uploadedFiles = null;
+		
+	$scope.component = ConfigurationService.getComponent(":Limes");
+	$scope.endpoints = ConfigurationService.getAllEndpoints();
+	$scope.uriBase = ConfigurationService.getUriBase();
+
+	var services = ConfigurationService.getComponentServices(":Limes");
+	var serviceUrl = services[0].serviceUrl;
+	var workbench = ConfigurationService.getComponent(ConfigurationService.getFrameworkUri());
+
+	// check if the limes service is available
+	$scope.component.offline = false;
+	 
+	$http.get(serviceUrl).then( function(response) {
+	  	$scope.component.offline = false;
+	  }, function(response) {
+	   	$scope.component.offline = true;
+	  });
+
 	
+
 	// Arrays for comparisons
 	$scope.allItems = [];
 	$scope.storeArray = [];
@@ -44,7 +60,7 @@ var LimesCtrl = function($scope, $http, ConfigurationService, flash, ServerError
 		granularity: ["1", "2", "3", "4" ]
 	};
 	
-	$scope.limes =  {
+	var limesParams =  {
     execution : "",
     granularity : "",
     output : $scope.options.output[0],
@@ -84,15 +100,14 @@ var LimesCtrl = function($scope, $http, ConfigurationService, flash, ServerError
 	    relation : "owl:sameAs",
 	    file : ""
 		}
-	}
+	};
+	// initialise clean params
+	$scope.limes = angular.copy(limesParams);
 
-	// check if the limes service is available
-	$scope.component.offline = false;
-  $http.get(serviceUrl).then( function(response) {
-  	$scope.component.offline = false;
-  }, function(response) {
-   	$scope.component.offline = true;
-  });
+	$scope.clearForm = function(){
+		$scope.limes = angular.copy(limesParams);	
+		$scope.examples = null;
+	};
 
   $scope.updateSourceGraphs = function(){
   	if( $scope.limes.SourceServiceURI == ConfigurationService.getSPARQLEndpoint())
@@ -112,17 +127,208 @@ var LimesCtrl = function($scope, $http, ConfigurationService, flash, ServerError
 			$scope.namedTargetGraphs = {};
   };
 	
-	$scope.FillForm = function(file){
-
+	$scope.fillForm = function(file){
+		
+		if(file == null) return;
 		$scope.enterConfig = true;
 		$scope.startLimes = true;
-		var path="data/limesexamples/";
-
-		$http.get(path+file).success(function(data) { 
+		
+		$http.get(configFilesDir + file).success(function(data) { 
       fillForm(data);
     });
 	};
+
+	var fillForm = function(content){
+
+ 		var x2js = new X2JS();				
+		var conf = x2js.xml_str2json(content);
+	  $scope.limes.execution = conf.LIMES.EXECUTION;
+	  $scope.limes.granularity = conf.LIMES.GRANULARITY;
+	  $scope.limes.output = conf.LIMES.OUTPUT;
+	  $scope.limes.metric = conf.LIMES.METRIC;			
+  	$scope.limes.source.id = conf.LIMES.SOURCE.ID;
+  	$scope.limes.source.endpoint = conf.LIMES.SOURCE.ENDPOINT;
+  	$scope.limes.source.graph = conf.LIMES.SOURCE.GRAPH;
+  	$scope.limes.source.var = conf.LIMES.SOURCE.VAR;
+  	$scope.limes.source.pagesize = conf.LIMES.SOURCE.PAGESIZE;
+  	$scope.limes.source.restriction = conf.LIMES.SOURCE.RESTRICTION;
+  	$scope.limes.source.type = conf.LIMES.SOURCE.TYPE;
+  	$scope.limes.source.property = [];
+		if(typeof conf.LIMES.SOURCE.PROPERTY === 'string' ) 
+    	$scope.limes.source.property.push(conf.LIMES.SOURCE.PROPERTY);
+  	else {
+  		for(var index in conf.SOURCE.TARGET.PROPERTY){
+  			console.log(index);
+  			$scope.limes.source.property.push(conf.LIMES.SOURCE.PROPERTY[index]);
+  		}
+  	}
+  	$scope.limes.target.id = conf.LIMES.TARGET.ID;
+  	$scope.limes.target.endpoint = conf.LIMES.TARGET.ENDPOINT;
+  	$scope.limes.target.graph = conf.LIMES.TARGET.GRAPH;
+  	$scope.limes.target.var = conf.LIMES.TARGET.VAR;
+  	$scope.limes.target.pagesize = conf.LIMES.TARGET.PAGESIZE;
+  	$scope.limes.target.restriction = conf.LIMES.TARGET.RESTRICTION;
+  	$scope.limes.target.type = conf.LIMES.TARGET.TYPE;
+  	$scope.limes.target.property = [];
+  	if(typeof conf.LIMES.TARGET.PROPERTY === 'string' ) 
+  		$scope.limes.target.property.push(conf.LIMES.TARGET.PROPERTY);
+  	else {
+  		for(var index in conf.LIMES.TARGET.PROPERTY)
+  			$scope.limes.target.property.push(conf.LIMES.TARGET.PROPERTY[index]);
+  	}
+  	$scope.limes.acceptance.threshold = conf.LIMES.ACCEPTANCE.THRESHOLD;
+  	$scope.limes.acceptance.relation = conf.LIMES.ACCEPTANCE.RELATION;
+  	$scope.limes.acceptance.file = conf.LIMES.ACCEPTANCE.FILE;
+  	$scope.limes.review.threshold = conf.LIMES.REVIEW.THRESHOLD;
+  	$scope.limes.review.relation = conf.LIMES.REVIEW.RELATION;
+  	$scope.limes.review.file = conf.LIMES.REVIEW.FILE;
+  	$scope.limes.prefix = [];
+  	for(var index in conf.LIMES.PREFIX){
+  		var p = {
+  			label : conf.LIMES.PREFIX[index].LABEL,
+  			namespace : conf.LIMES.PREFIX[index].NAMESPACE
+  		};
+  		$scope.limes.prefix.push(p);
+  	}
+	}
 	
+	$scope.loadLimesXML = function($files){
+		for (var i = 0; i < $files.length; i++) {
+		  var $file = $files[i];
+	  	var reader = new FileReader();
+			reader.onloadstart = function(e) {
+	    	console.log('loading');
+	  	};
+		  reader.onloadend = function(evt) {
+	    	if (evt.target.readyState == FileReader.DONE) { 
+	     		fillForm(evt.target.result);
+	     	}
+	  	};
+	  	reader.readAsText($file, "utf-8");
+
+		}
+	};
+
+	$scope.registerJob = function(){
+
+    var now = new Date();
+
+		// ask the user for a job name and description
+    var modalInstance = $modal.open({
+    	templateUrl: 'modal-job.html',
+    	controller: 'ModalNewJobCtrl',
+    	size: 'lg',
+    	resolve: {
+        sname: function () {
+        	// proposes a unique name for the job
+	        return "LimesJob_" +now.getTime();
+  	    }
+  		}
+    });
+
+    // reads user's answer
+    modalInstance.result.then(function (jobDesc) {
+    	// if got Job info, create the graphs to store data
+    	// jobDesc contains name and description
+     	// bulild parameters
+    	var params = validateLimesParams();
+
+      var createAcceptedGraph = function(name, label, description){
+      	return GraphService.addSimpleGraph(name, label, description).then(function(response){
+      		params.acceptgraph = name;
+      	});
+      	
+      }, createReviewGraph = function(name, label, description){
+      	return GraphService.addSimpleGraph(name, label, description).then(function(response){
+      		params.reviewgraph = name;
+      	})
+      }, createAuthEndpoint = function(){
+				/** 
+				* retrieve an authenpoint as proxy for accessing private graphs (if present)
+				* and for storing results in private graphs
+				*/
+      	return AccountService.getAccount().createSession().then(function(response){
+      		var atuhEndpoint = workbench.homepage + response.data.endpoint
+      		params.saveendpoint = atuhEndpoint;
+      		// overwrite endpoints if source or target uses the private endpoint
+					if($scope.limes.source.endpoint == ConfigurationService.getSPARQLEndpoint() ||
+							$scope.limes.target.endpoint == ConfigurationService.getSPARQLEndpoint()) {
+						if($scope.limes.source.endpoint == ConfigurationService.getSPARQLEndpoint()){
+							params.source.endpoint = atuhEndpoint;
+							if($scope.limes.source.graph != null)
+								params.source.graph = $scope.limes.source.graph.replace(':', ConfigurationService.getUriBase());
+						}
+						if($scope.limes.target.endpoint == ConfigurationService.getSPARQLEndpoint()){
+							params.target.endpoint = atuhEndpoint;								
+							if($scope.limes.TargetGraph != null)
+								params.target.graph = $scope.limes.target.graph.replace(':', ConfigurationService.getUriBase());
+						}
+					};
+				});
+      };
+
+			createAcceptedGraph(jobDesc.name+"_accepted", "accepted", "Accepted links of "+jobDesc.name)
+				.then(createReviewGraph(jobDesc.name+"_review", "review", "Links for reviiew of "+jobDesc.name))
+				.then(createAuthEndpoint())
+				.then(function(){
+					params.uribase = ConfigurationService.getUriBase();
+					console.log(params);
+					JobService.addServiceJob(jobDesc.name, jobDesc.description, serviceUrl, "application/json", "POST", params).then(function(response){
+						console.log(response);
+						flash.success = "Job successfully added can be executed from the dashboard";
+					}, function(response){
+						console.log(response);						
+						flash.error = ServerErrorResponse.getMessage(response);
+					});
+
+				});
+
+    }, function () {
+      console.log('Modal dismissed at: ' + new Date());
+    });
+
+	};
+
+	var validateLimesParams = function(){
+		var params = angular.copy($scope.limes);
+		// generate required prefixes for limes
+		var requredlabel = [];
+		var re = new RegExp('[a-z]+(?=:)','gi');
+		var v;
+		// add prefixes to the labels
+		while (v = re.exec(params.metric))
+  		if (requredlabel.indexOf(v[0]) == -1) requredlabel.push(v[0]);
+  	while (v = re.exec(params.source.property))
+  		if (requredlabel.indexOf(v[0]) == -1) requredlabel.push(v[0]);
+  	while (v = re.exec(params.source.property))
+  		if (requredlabel.indexOf(v[0]) == -1) requredlabel.push(v[0]);
+  	while (v = re.exec(params.source.restriction))
+  		if (requredlabel.indexOf(v[0]) == -1) requredlabel.push(v[0]);
+  	while (v = re.exec(params.source.restriction))
+  		if (requredlabel.indexOf(v[0]) == -1) requredlabel.push(v[0]);
+  	while (v = re.exec(params.acceptance.relation))
+  		if (requredlabel.indexOf(v[0]) == -1) requredlabel.push(v[0]);
+  	while (v = re.exec(params.review.relation))
+  		if (requredlabel.indexOf(v[0]) == -1) requredlabel.push(v[0]);
+
+		// check that limes.prefix has all prequired prefixes
+		var labels = [];
+		for(var i in params.prefix)
+			labels.push(params.prefix[i].label);
+		
+		for(var i in requredlabel)
+			// if not found try to add it from the namespaces
+			if(labels.indexOf(requredlabel[i]) == -1){
+				var ns = Ns.getNamespace(requredlabel[i]);
+				if(ns != undefined)
+					params.prefix.push({label:requredlabel[i] , namespace: ns});
+				else
+					console.error("NOT FOUND "+ requredlabel[i]);
+			}
+			return params;
+	};
+
+	/*
 	$scope.LaunchLimes = function(){
 	
 		var params = angular.copy($scope.limes);
@@ -131,7 +337,7 @@ var LimesCtrl = function($scope, $http, ConfigurationService, flash, ServerError
 		if($scope.limes.source.endpoint == ConfigurationService.getSPARQLEndpoint() ||
 			 $scope.limes.target.endpoint == ConfigurationService.getSPARQLEndpoint()) {
 				// retrives a URL for a autnenticated session
-				AccountService.createSession().then(function(response){
+				AccountService.getAccount().createSession().then(function(response){
 					if($scope.limes.source.endpoint == ConfigurationService.getSPARQLEndpoint())
 						params.source.endpoint = workbench.homepage + response.data.endpoint;
 					if($scope.limes.target.endpoint == ConfigurationService.getSPARQLEndpoint())
@@ -206,7 +412,7 @@ var LimesCtrl = function($scope, $http, ConfigurationService, flash, ServerError
 				
 		// no more new window. TODO: create a service in the generator to create batch job and 
 		// launch it
-		// $timeout(function() {
+		/(function() {
 		// 	window.$windowScope = $scope;
 	 // 		var newWindow = $window.open('popup.html#/popup-limes', 'frame', 'resizeable,height=600,width=800');
 		// 	newWindow.params = params;
@@ -241,7 +447,7 @@ var LimesCtrl = function($scope, $http, ConfigurationService, flash, ServerError
 				});
 	};
 	
-	// this is to be REMOVED and added in an new page #/home/manual-revision-and-authoring/limes-review
+	// this is to be REMOVED and added in an new page /manual-revision-and-authoring/limes-review
 	$scope.ReviewLimes = function(config){
 
 		console.log(config);
@@ -346,76 +552,6 @@ var LimesCtrl = function($scope, $http, ConfigurationService, flash, ServerError
 	      
 	};
 
-	var fillForm = function(content){
- 		var x2js = new X2JS();				
-		var conf = x2js.xml_str2json(content);
-		console.log(conf.LIMES);
-	  $scope.limes.execution = conf.LIMES.EXECUTION;
-	  $scope.limes.granularity = conf.LIMES.GRANULARITY;
-	  $scope.limes.output = conf.LIMES.OUTPUT;
-	  $scope.limes.metric = conf.LIMES.METRIC;			
-  	$scope.limes.source.id = conf.LIMES.SOURCE.ID;
-  	$scope.limes.source.endpoint = conf.LIMES.SOURCE.ENDPOINT;
-  	$scope.limes.source.graph = conf.LIMES.SOURCE.GRAPH;
-  	$scope.limes.source.var = conf.LIMES.SOURCE.VAR;
-  	$scope.limes.source.pagesize = conf.LIMES.SOURCE.PAGESIZE;
-  	$scope.limes.source.restriction = conf.LIMES.SOURCE.RESTRICTION;
-  	$scope.limes.source.type = conf.LIMES.SOURCE.TYPE;
-  	$scope.limes.source.property = [];
-		if(typeof conf.LIMES.SOURCE.PROPERTY === 'string' ) 
-    	$scope.limes.source.property.push(conf.LIMES.SOURCE.PROPERTY);
-  	else {
-  		for(var index in conf.SOURCE.TARGET.PROPERTY){
-  			console.log(index);
-  			$scope.limes.source.property.push(conf.LIMES.SOURCE.PROPERTY[index]);
-  		}
-  	}
-  	$scope.limes.target.id = conf.LIMES.TARGET.ID;
-  	$scope.limes.target.endpoint = conf.LIMES.TARGET.ENDPOINT;
-  	$scope.limes.target.graph = conf.LIMES.TARGET.GRAPH;
-  	$scope.limes.target.var = conf.LIMES.TARGET.VAR;
-  	$scope.limes.target.pagesize = conf.LIMES.TARGET.PAGESIZE;
-  	$scope.limes.target.restriction = conf.LIMES.TARGET.RESTRICTION;
-  	$scope.limes.target.type = conf.LIMES.TARGET.TYPE;
-  	$scope.limes.target.property = [];
-  	if(typeof conf.LIMES.TARGET.PROPERTY === 'string' ) 
-  		$scope.limes.target.property.push(conf.LIMES.TARGET.PROPERTY);
-  	else {
-  		for(var index in conf.LIMES.TARGET.PROPERTY)
-  			$scope.limes.target.property.push(conf.LIMES.TARGET.PROPERTY[index]);
-  	}
-  	$scope.limes.acceptance.threshold = conf.LIMES.ACCEPTANCE.THRESHOLD;
-  	$scope.limes.acceptance.relation = conf.LIMES.ACCEPTANCE.RELATION;
-  	$scope.limes.acceptance.file = conf.LIMES.ACCEPTANCE.FILE;
-  	$scope.limes.review.threshold = conf.LIMES.REVIEW.THRESHOLD;
-  	$scope.limes.review.relation = conf.LIMES.REVIEW.RELATION;
-  	$scope.limes.review.file = conf.LIMES.REVIEW.FILE;
-  	$scope.limes.prefix = [];
-  	for(var index in conf.LIMES.PREFIX){
-  		var p = {
-  			label : conf.LIMES.PREFIX[index].LABEL,
-  			namespace : conf.LIMES.PREFIX[index].NAMESPACE
-  		};
-  		$scope.limes.prefix.push(p);
-  	}
-	}
-	
-	$scope.loadLimesXML = function($files){
-		for (var i = 0; i < $files.length; i++) {
-		  var $file = $files[i];
-	  	var reader = new FileReader();
-			reader.onloadstart = function(e) {
-	    	console.log('loading');
-	  	};
-		  reader.onloadend = function(evt) {
-	    	if (evt.target.readyState == FileReader.DONE) { 
-	     		fillForm(evt.target.result);
-	     	}
-	  	};
-	  	reader.readAsText($file, "utf-8");
-
-		}
-	};
 	
 	// this is also to be REMOVED and replaced by the RDFImport on the generator
 	$scope.save = function(){
@@ -461,5 +597,5 @@ var LimesCtrl = function($scope, $http, ConfigurationService, flash, ServerError
 			      .error(function(data, status, headers, config) {
 			          flash.error = data;
 			      });
-	};
+	};*/
 };

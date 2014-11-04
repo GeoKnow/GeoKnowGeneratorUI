@@ -2,7 +2,9 @@
 
 var module = angular.module('app.graph-service', []);
 
-module.factory("GraphService", function ($http, $q, Config, AccountService) {
+module.factory("GraphService", function ($http, $q, Config, AccountService, Helpers) {
+
+    var currentAccount = AccountService.getAccount();
     var accessModes = {
         ":No": "No",
         "acl:Read": "Read",
@@ -24,7 +26,6 @@ module.factory("GraphService", function ($http, $q, Config, AccountService) {
         } else {
             var requestData = {
                 format: "application/sparql-results+json",
-                username: AccountService.getUsername(),
                 mode: "getAllSparql"
             };
             return $http.post("GraphManagerServlet", $.param(requestData)).then(function (result) {
@@ -43,12 +44,12 @@ module.factory("GraphService", function ($http, $q, Config, AccountService) {
                 // be sure that is named one
                 if(namedGraph["sd:name"] == undefined) continue;
                 //skip own graphs (if needs)
-                if (skipOwn && namedGraph["acl:owner"] == AccountService.getAccountURI())
+                if (skipOwn && namedGraph["acl:owner"] == currentAccount.getAccountURI())
                     continue;
 
                 //get access mode
                 var accessMode = null;
-                if (namedGraph["acl:owner"] == AccountService.getAccountURI()) {
+                if (namedGraph["acl:owner"] == currentAccount.getAccountURI()) {
                     accessMode = "acl:Write";
                 } else {
                     var publicAccessMode = null;
@@ -58,7 +59,7 @@ module.factory("GraphService", function ($http, $q, Config, AccountService) {
                         var agentClass = access[acc]["acl:agentClass"];
                         var agent = access[acc]["acl:agent"];
                         var mode = access[acc]["acl:mode"][0];
-                        if (agentClass != undefined && agentClass[0] == "foaf:Agent" || agent != undefined && agent[0] == AccountService.getAccountURI()) {
+                        if (agentClass != undefined && agentClass[0] == "foaf:Agent" || agent != undefined && agent[0] == currentAccount.getAccountURI()) {
                             if (accessMode == null || accessMode == "acl:Read" && mode == "acl:Write")
                                 accessMode = mode;
                         }
@@ -177,7 +178,6 @@ module.factory("GraphService", function ($http, $q, Config, AccountService) {
         parNamedGraph.name = Config.getNS() + parNamedGraph.name.replace(':', '')
         var requestData = {
             format: "application/sparql-results+json",
-            username: AccountService.getUsername(),
             mode: "updateForeign",
             graph: JSON.stringify(parNamedGraph)
         };
@@ -187,7 +187,6 @@ module.factory("GraphService", function ($http, $q, Config, AccountService) {
     var deleteForeignGraph = function (parGraphName) {
         var requestData = {
             format: "application/sparql-results+json",
-            username: AccountService.getUsername(),
             mode: "dropForeign",
             graph: parGraphName.replace(':', Config.getNS())
         };
@@ -282,6 +281,26 @@ module.factory("GraphService", function ($http, $q, Config, AccountService) {
         return results;
     };
 
+
+    var addSimpleGraph = function(name, label, description){
+        var s_now = Helpers.getCurrentDate();
+        var baseGraph = {
+            name:  ":" + name,
+            graph: {
+              created: s_now,
+              endpoint: Config.getAuthEndpoint(),
+              description: description,
+              modified: s_now,
+              label: label
+              },
+              owner: currentAccount.getAccountURI(),
+              publicAccess: getNoAccessMode(),
+              usersWrite: [],
+              usersRead: []
+        };
+        return addGraph(baseGraph);
+    };
+
     // add a named graph in the store
     var addGraph = function (parNamedGraph) {
         // create the metadata for the graph
@@ -301,7 +320,7 @@ module.factory("GraphService", function ($http, $q, Config, AccountService) {
 
         var permissions = [];
         // graphs can only be created by authenticated users
-        if (AccountService.isLogged()) {
+        if (AccountService.getAccount().getUsername()!= null) {
             // TODO: to update 
             if (parNamedGraph.publicAccess == "acl:Read") {
                 namedgraph["gkg:access"] = [{
@@ -355,21 +374,18 @@ module.factory("GraphService", function ($http, $q, Config, AccountService) {
                     permissions: "w"
                 });
             }
-            namedgraph["acl:owner"] = [AccountService.getAccountURI()];
+            namedgraph["acl:owner"] = [currentAccount.getAccountURI()];
         }
-        console.log(permissions);
         // create the graph
         var requestData = {
             format: "application/sparql-results+json",
             mode: "create",
             graph: Config.getNS() + parNamedGraph.name.replace(':', ''),
             permissions: JSON.stringify(permissions),
-            username: AccountService.getUsername()
+            username: currentAccount.getUsername()
         }
 
-        console.log(requestData);
-
-        Config.request("GraphManagerServlet", requestData, function () {
+        return Config.request("GraphManagerServlet", requestData, function () {
             // if the creation succeed, then add the metadata insert the metadata of the graph
             var settings = Config.getSettings();
             settings[parNamedGraph.name] = namedgraph;
@@ -390,7 +406,7 @@ module.factory("GraphService", function ($http, $q, Config, AccountService) {
         //     settings[":default-dataset"]["sd:namedGraph"].push(parNamedGraph.name);
         //     Config.write();
         //   });
-        return true;
+        // return true;
     };
 
     // saves a named graph in the store
@@ -404,7 +420,7 @@ module.factory("GraphService", function ($http, $q, Config, AccountService) {
         graph["void:sparqlEndpoint"][0] = parNamedGraph.graph.endpoint;
 
         var permissions = null;
-        if (AccountService.isLogged()) {
+        if (AccountService.getAccount().getUsername()!= null) {
             if (parNamedGraph.publicAccess == "acl:Read") {
                 namedgraph["gkg:access"] = [{
                     "acl:mode": ["acl:Read"],
@@ -465,7 +481,7 @@ module.factory("GraphService", function ($http, $q, Config, AccountService) {
                 graph: Config.getNS() + parNamedGraph.name.replace(':', ''),
                 mode: "update",
                 permissions: JSON.stringify(permissions),
-                username: AccountService.getUsername()
+                username: currentAccount.getUsername()
             };
             return Config.request("GraphManagerServlet", requestData, function () {
                 Config.write();
@@ -496,6 +512,7 @@ module.factory("GraphService", function ($http, $q, Config, AccountService) {
         deleteGraph: deleteGraph,
         updateGraph: updateGraph,
         addGraph: addGraph,
+        addSimpleGraph :addSimpleGraph,
         getAccessModes: getAccessModes,
         getNoAccessMode: getNoAccessMode,
         // these are new duplicated

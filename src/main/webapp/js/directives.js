@@ -2,6 +2,10 @@
 
 var module = angular.module('app.directives', []);
 
+/**
+* Modal iFrame directive is to show component tools in a
+* modal window that is the size of the browser's window
+*/
 app.directive("modalIframe", function ($compile) {
   return {
     template: '<iframe  id="mod-frame" src="{{url}}"></iframe>',
@@ -196,8 +200,9 @@ app.directive("downloadResult", function ($compile) {
 	    };
 	});
 
-/****************************************************************************************************/
-
+/**
+* Form validation directives
+*/
 app.directive('regexValidate', function() {
     var expressions = [];
     expressions['url']            =  /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/;

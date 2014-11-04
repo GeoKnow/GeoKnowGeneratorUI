@@ -86,16 +86,26 @@ public class AuthorizedSessions {
     public Response create(@QueryParam("username") String username,
             @CookieParam(value = "token") String token) {
 
+        /*
+         * authenticates the user, throw exception if failed
+         */
         log.debug("user:" + username + " token:" + token);
+        boolean checkToken = false;
         try {
+            checkToken = frameworkUserManager.checkToken(username, token);
+            if (!checkToken)
+                return Response.status(Response.Status.UNAUTHORIZED).build();
             rdfStoreUser = frameworkUserManager.getRdfStoreUser(username, token);
+
         } catch (Exception e) {
             log.error(e);
             e.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage())
                     .build();
-
         }
+        /*
+         * generates a session for the user
+         */
         String sessionToken = UUID.randomUUID().toString();
         map.put(sessionToken, rdfStoreUser.getFirst() + ":" + rdfStoreUser.getSecond());
         log.debug(map.toString());
