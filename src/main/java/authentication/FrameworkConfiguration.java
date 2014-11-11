@@ -50,6 +50,7 @@ public class FrameworkConfiguration {
     private String accountsGraph = "";
     private String settingsGraph = "";
     private String jobsGraph = "";
+    private String authSessionsGraph = "";
     private String initialSettingsGraph = "";
     private String groupsGraph = "";
     private String frameworkUri;
@@ -190,6 +191,8 @@ public class FrameworkConfiguration {
                     instance.setGroupsGraph(soln.get("name").toString());
                 else if ("jobs".equals(soln.get("label").asLiteral().getString()))
                     instance.setJobsGraph(soln.get("name").toString());
+                else if ("sessions".equals(soln.get("label").asLiteral().getString()))
+                    instance.setAuthSessionsGraph(soln.get("name").toString());
             }
             qexec.close();
         }
@@ -388,6 +391,14 @@ public class FrameworkConfiguration {
 
     public void setJobsGraph(String jobsGraph) {
         this.jobsGraph = jobsGraph;
+    }
+
+    public String getAuthSessionsGraph() {
+        return authSessionsGraph;
+    }
+
+    public void setAuthSessionsGraph(String authSessionsGraph) {
+        this.authSessionsGraph = authSessionsGraph;
     }
 
 }

@@ -111,7 +111,7 @@ public class RDFStoreSetupManager {
 
         log.info("System Initialization ");
 
-        // create user
+        // create framework RDF user
         userManager.createUser(config.getAuthSparqlUser(), config.getAuthSparqlPassword());
         userManager.setDefaultRdfPermissions(config.getAuthSparqlUser(), 3);
         userManager.grantRole(config.getAuthSparqlUser(), "SPARQL_UPDATE");
@@ -137,6 +137,7 @@ public class RDFStoreSetupManager {
         frameworkRdfStoreManager.createGraph(config.getGroupsGraph());
         frameworkRdfStoreManager.createGraph(config.getInitialSettingsGraph());
         frameworkRdfStoreManager.createGraph(config.getJobsGraph());
+        frameworkRdfStoreManager.createGraph(config.getAuthSessionsGraph());
 
         // Make graphs accessible to framework user only
         userManager.setDefaultRdfPermissions("nobody", 0);
@@ -148,6 +149,8 @@ public class RDFStoreSetupManager {
         userManager.setRdfGraphPermissions(config.getAuthSparqlUser(), config
                 .getInitialSettingsGraph(), 3);
         userManager.setRdfGraphPermissions(config.getAuthSparqlUser(), config.getJobsGraph(), 3);
+        userManager.setRdfGraphPermissions(config.getAuthSparqlUser(), config
+                .getAuthSessionsGraph(), 3);
 
         // settings model
         Model settingsModel = ModelFactory.createDefaultModel();
@@ -286,6 +289,7 @@ public class RDFStoreSetupManager {
         rdfStoreManager.dropGraph(config.getGroupsGraph());
         rdfStoreManager.dropGraph(config.getInitialSettingsGraph());
         rdfStoreManager.dropGraph(config.getJobsGraph());
+        rdfStoreManager.dropGraph(config.getAuthSessionsGraph());
 
         // drop sparql user
         log.debug("Drop system SPARQL user");
@@ -293,7 +297,7 @@ public class RDFStoreSetupManager {
     }
 
     public boolean isSetUp() {
-        log.info("Checking if " + initFile.getPath() + initFile.getName() + " exists");
+        log.info("Checking if " + initFile.getPath() + " exists");
         return initFile.exists();
     }
 }

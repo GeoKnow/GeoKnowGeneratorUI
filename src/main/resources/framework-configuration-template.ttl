@@ -75,7 +75,7 @@
   rdfs:label "Default dataset";
   dcterms:description "This is the endpoint default dataset"^^xsd:string;
   sd:defaultGraph :defaultNamedGraph;
-  sd:namedGraph :settingsNamedGraph, :initialSettingsNamedGraph, :accountsNamedGraph, :groupsNamedGraph 
+  sd:namedGraph :settingsNamedGraph, :initialSettingsNamedGraph, :accountsNamedGraph, :groupsNamedGraph, :jobsNamedGraph, :sessionsNamedGraph
   .
 
 :defaultNamedGraph
@@ -132,6 +132,30 @@
     dcterms:description "A graph for groups of graphs"^^xsd:string;
     dcterms:modified "2014-04-12"^^xsd:date;
     dcterms:created "2014-04-12"^^xsd:date;
+    void:sparqlEndpoint <http://***REMOVED***:8890/sparql> ]
+  .
+
+:jobsNamedGraph
+  a sd:NamedGraph ; 
+  sd:name :jobsGraph;
+  sd:graph [
+    a sd:Graph, void:Dataset;
+    rdfs:label "jobs"^^xsd:string;
+    dcterms:description "Graph to store batch jobs owners"^^xsd:string;
+    dcterms:modified "2014-10-12"^^xsd:date;
+    dcterms:created "2014-10-12"^^xsd:date;
+    void:sparqlEndpoint <http://***REMOVED***:8890/sparql> ]
+  .
+
+:sessionsNamedGraph
+  a sd:NamedGraph ; 
+  sd:name :sessionsGraph;
+  sd:graph [
+    a sd:Graph, void:Dataset;
+    rdfs:label "sessions"^^xsd:string;
+    dcterms:description "Graph to store authorised sessions"^^xsd:string;
+    dcterms:modified "2014-11-12"^^xsd:date;
+    dcterms:created "2014-11-12"^^xsd:date;
     void:sparqlEndpoint <http://***REMOVED***:8890/sparql> ]
   .
 

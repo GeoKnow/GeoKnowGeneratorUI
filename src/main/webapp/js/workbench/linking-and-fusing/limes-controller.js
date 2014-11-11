@@ -5,7 +5,7 @@
 * LIMES Controller
 ***************************************************************************************************/
 
-var LimesCtrl = function($scope, $http, ConfigurationService, JobService, flash, ServerErrorResponse, $window, GraphService, AccountService, Ns, $modal){
+var LimesCtrl = function($scope, $http, ConfigurationService, JobService, AuthSessionService, flash, ServerErrorResponse, $window, GraphService, AccountService, Ns, $modal){
 	
 	$scope.configOptions = true;
 	$scope.inputForm = true;
@@ -247,7 +247,7 @@ var LimesCtrl = function($scope, $http, ConfigurationService, JobService, flash,
 				* retrieve an authenpoint as proxy for accessing private graphs (if present)
 				* and for storing results in private graphs
 				*/
-      	return AccountService.getAccount().createSession().then(function(response){
+      	return AuthSessionService.createSession().then(function(response){
       		var atuhEndpoint = workbench.homepage + response.data.endpoint
       		params.saveendpoint = atuhEndpoint;
       		// overwrite endpoints if source or target uses the private endpoint

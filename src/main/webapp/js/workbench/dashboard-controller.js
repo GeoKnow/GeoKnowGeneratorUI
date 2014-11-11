@@ -1,7 +1,11 @@
 'use strict';
 
 function DashboardCtrl($scope, JobService) {
-  
+ 
+  $scope.component = ConfigurationService.getComponent(":SpringBatchAdmin");
+  var services = ConfigurationService.getComponentServices(":SpringBatchAdmin");
+  var serviceUrl = services[0].serviceUrl; 
+
 	$scope.jobs = [];
  
   JobService.getAllJobs().then(function(jobs){

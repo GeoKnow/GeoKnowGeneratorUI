@@ -1,7 +1,6 @@
 package workflow.rest;
 
 import java.io.File;
-import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -109,10 +108,10 @@ public class Jobs {
          */
         UserProfile user;
         try {
-            // authenticates the user, throw exception if fail
-            user = validate(userc, token);
-        } catch (WebApplicationException e) {
-            return e.getResponse();
+            user = frameworkUserManager.validate(userc, token);
+            if (user == null)
+                return Response.status(Response.Status.UNAUTHORIZED).entity("Invalid credentials")
+                        .build();
         } catch (Exception e) {
             log.error(e);
             e.printStackTrace();
@@ -157,9 +156,11 @@ public class Jobs {
          */
         UserProfile user;
         try {
-            user = validate(userc, token);
-        } catch (WebApplicationException e) {
-            return e.getResponse();
+            // authenticates the user, throw exception if fail
+            user = frameworkUserManager.validate(userc, token);
+            if (user == null)
+                return Response.status(Response.Status.UNAUTHORIZED).entity("Invalid credentials")
+                        .build();
         } catch (Exception e) {
             log.error(e);
             e.printStackTrace();
@@ -232,9 +233,11 @@ public class Jobs {
         UserProfile user;
         try {
             // authenticates the user, throw exception if fail
-            user = validate(userc, token);
-        } catch (WebApplicationException e) {
-            return e.getResponse();
+            // authenticates the user, throw exception if fail
+            user = frameworkUserManager.validate(userc, token);
+            if (user == null)
+                return Response.status(Response.Status.UNAUTHORIZED).entity("Invalid credentials")
+                        .build();
         } catch (Exception e) {
             log.error(e);
             e.printStackTrace();
@@ -308,12 +311,14 @@ public class Jobs {
         UserProfile user;
         try {
             // authenticates the user, throw exception if fail
-            user = validate(userc, token);
+            user = frameworkUserManager.validate(userc, token);
+            if (user == null)
+                return Response.status(Response.Status.UNAUTHORIZED).entity("Invalid credentials")
+                        .build();
+
             // TODO: validate serviceJob
             log.debug(serviceJob.toString());
 
-        } catch (WebApplicationException e) {
-            return e.getResponse();
         } catch (Exception e) {
             log.error(e);
             e.printStackTrace();
@@ -354,21 +359,4 @@ public class Jobs {
 
     }
 
-    private UserProfile validate(Cookie userc, String token) throws Exception {
-
-        if (userc == null || token == null)
-            throw new WebApplicationException(Response.Status.UNAUTHORIZED);
-
-        String userstr = URLDecoder.decode(userc.getValue(), "utf-8");
-        log.debug(" userstr: " + userstr + " token:" + token);
-        Gson gson = new Gson();
-        UserProfile user = gson.fromJson(userstr, UserProfile.class);
-
-        boolean checkToken = frameworkUserManager.checkToken(user.getUsername(), token);
-
-        if (!checkToken)
-            throw new WebApplicationException(Response.Status.UNAUTHORIZED);
-
-        return user;
-    }
 }

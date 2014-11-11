@@ -9,6 +9,8 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.ws.rs.core.Cookie;
+
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.log4j.Logger;
 import org.codehaus.jackson.JsonNode;
@@ -651,8 +653,17 @@ public class FrameworkUserManager implements UserManager {
      * @return user profile object if token valid and null if the opposite
      * @throws Exception
      */
+
+    public UserProfile validate(Cookie userc, String token) throws Exception {
+        if (userc == null || token == null)
+            return null;
+        String userstr = URLDecoder.decode(userc.getValue(), "utf-8");
+        return validate(userstr, token);
+    }
+
     public UserProfile validate(String userc, String token) throws Exception {
         String userstr = URLDecoder.decode(userc, "utf-8");
+
         log.debug(" userstr: " + userstr + " token:" + token);
         Gson gson = new Gson();
         UserProfile user = gson.fromJson(userstr, UserProfile.class);
