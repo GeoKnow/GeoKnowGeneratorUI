@@ -25,8 +25,7 @@ public class WorkbenchSetup {
 
     private static final Logger log = Logger.getLogger(WorkbenchSetup.class);
 
-    private @Context
-    ServletContext context;
+    private @Context ServletContext context;
 
     /**
      * Get the status of the setup
@@ -36,10 +35,9 @@ public class WorkbenchSetup {
     @GET
     @Produces(MediaType.TEXT_PLAIN)
     public Response isSetuUp() {
-	RDFStoreSetupManager setupManager = new RDFStoreSetupManager(
-		context.getInitParameter("framework-setup-path"));
-	return Response.ok(setupManager.isSetUp(), MediaType.TEXT_PLAIN)
-		.build();
+        RDFStoreSetupManager setupManager = new RDFStoreSetupManager(context
+                .getInitParameter("framework-setup-path"));
+        return Response.ok(setupManager.isSetUp(), MediaType.TEXT_PLAIN).build();
     }
 
     /**
@@ -50,26 +48,24 @@ public class WorkbenchSetup {
      */
     @POST
     public Response reset(@Context ServletContext context) {
-	RDFStoreSetupManager setupManager = new RDFStoreSetupManager(
-		context.getInitParameter("framework-setup-path"));
-	FrameworkConfiguration frameworkConfiguration = null;
-	try {
-	    frameworkConfiguration = FrameworkConfiguration
-		    .getInstance(context);
-	    setupManager.setUp(frameworkConfiguration, true);
-	} catch (Exception e) {
-	    log.error(e);
-	    e.printStackTrace();
-	    if (e.getClass().getName()
-		    .equals("virtuoso.jdbc4.VirtuosoException"))
-		return Response.status(Response.Status.SERVICE_UNAVAILABLE)
-			.entity(e.getMessage()).build();
-	    else
-		return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-			.entity(e.getMessage()).build();
-	}
-	log.info("System was reseted successfully.");
-	return Response.ok().entity("System reseted successfully").build();
+        RDFStoreSetupManager setupManager = new RDFStoreSetupManager(context
+                .getInitParameter("framework-setup-path"));
+        FrameworkConfiguration frameworkConfiguration = null;
+        try {
+            frameworkConfiguration = FrameworkConfiguration.getInstance(context);
+            setupManager.setUp(frameworkConfiguration, true);
+        } catch (Exception e) {
+            log.error(e);
+            e.printStackTrace();
+            if (e.getClass().getName().equals("virtuoso.jdbc4.VirtuosoException"))
+                return Response.status(Response.Status.SERVICE_UNAVAILABLE).entity(e.getMessage())
+                        .build();
+            else
+                return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                        .entity(e.getMessage()).build();
+        }
+        log.info("System was reseted successfully.");
+        return Response.ok().entity("System reseted successfully").build();
     }
 
     /**
@@ -80,35 +76,33 @@ public class WorkbenchSetup {
      */
     @PUT
     public Response initialize(@Context ServletContext context) {
-	RDFStoreSetupManager setupManager = new RDFStoreSetupManager(
-		context.getInitParameter("framework-setup-path"));
+        RDFStoreSetupManager setupManager = new RDFStoreSetupManager(context
+                .getInitParameter("framework-setup-path"));
 
-	if (setupManager.isSetUp()) {
-	    log.info("System is already set up. To reset system use PUT method");
-	    return Response
-		    .status(Response.Status.CONFLICT)
-		    .entity("System is already set up. To reset system use PUT method")
-		    .build();
-	} else {
-	    FrameworkConfiguration frameworkConfiguration = null;
-	    try {
-		frameworkConfiguration = FrameworkConfiguration
-			.getInstance(context);
-	    } catch (Exception e) {
-		log.error(e);
-		return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-			.entity(e.getMessage()).build();
-	    }
-	    try {
-		setupManager.setUp(frameworkConfiguration, false);
-	    } catch (Exception e) {
-		log.error(e);
-		return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-			.entity(e.getMessage()).build();
-	    }
-	    log.info("System was set up successfully.");
-	    return Response.ok().entity("System initialized successfully")
-		    .build();
-	}
+        if (setupManager.isSetUp()) {
+            log.info("System is already set up. To reset system use PUT method");
+            return Response.status(Response.Status.CONFLICT).entity(
+                    "System is already set up. To reset system use PUT method").build();
+        } else {
+            FrameworkConfiguration frameworkConfiguration = null;
+            try {
+                frameworkConfiguration = FrameworkConfiguration.getInstance(context);
+            } catch (Exception e) {
+                log.error(e);
+                return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                        .entity(e.getMessage()).build();
+            }
+            try {
+                setupManager.setUp(frameworkConfiguration, false);
+            } catch (Exception e) {
+                log.error(e);
+                e.printStackTrace();
+                return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                        .entity(e.getMessage()).build();
+            }
+            log.info("System was set up successfully.");
+            return Response.ok().entity("System initialized successfully").build();
+        }
+
     }
 }

@@ -392,10 +392,10 @@ public class Jobs {
                     .build();
         }
 
-        JobFactory.getInstance();
         Registration job = null;
         File file;
         try {
+            JobFactory.getInstance();
             file = JobFactory.createOneStepServiceJobFile(serviceJob);
             // register job in the batch-admin
             job = BatchAdminClient.registerJob(serviceJob.getName(), file);

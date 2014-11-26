@@ -72,7 +72,7 @@
       foaf:homepage <http://aksw.org/Projects/LIMES.html> .
 :LimesService
       a       lds:InterlinkingService ;
-      lds:serviceUrl <http://localhost:8080/limes-service> .
+      lds:serviceUrl <http://generator.geoknow.eu:8080/limes-service/> .
 
 :TripleGeo
       a       lds:StackComponent ;
@@ -102,7 +102,7 @@
       foaf:homepage <http://aksw.org/Projects/OntoWiki.html> .
 :OntoWikiService
       a       lds:AuthoringService ;
-      lds:serviceUrl <http://192.168.2.18/ontowiki> .
+      lds:serviceUrl <http://generator.geoknow.eu/ontowiki> .
 
 :Mappify
       a       lds:StackComponent ;
@@ -122,7 +122,7 @@
       foaf:homepage <https://github.com/GeoKnow/spring-batch-admin> .
 :SpringBatchAdminService
 a     lds:BatchProcessingService ;
-      lds:serviceUrl <http://localhost:9999/spring-batch-admin-geoknow/> .
+      lds:serviceUrl <http://localhost:8080/spring-batch-admin-geoknow/> .
 
 :UserManager
       a       lds:StackComponent ;
@@ -177,5 +177,10 @@ a     lds:BatchProcessingService ;
       a     gkg:RouteRestriction;
       gkg:partialUrl "/workbench/classification-and-enrichment/geolift"^^xsd:string;
       gkg:requiredService :GeoLiftService .
+
+:DashboardRestriction
+      a     gkg:RouteRestriction;
+      gkg:partialUrl "/workbench"^^xsd:string;
+      gkg:requiredService :SpringBatchAdminService .
     
 

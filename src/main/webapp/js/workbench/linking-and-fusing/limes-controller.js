@@ -274,12 +274,10 @@ var LimesCtrl = function($scope, $http, ConfigurationService, JobService, AuthSe
 				.then(createAuthEndpoint())
 				.then(function(){
 					params.uribase = ConfigurationService.getUriBase();
-					console.log(JSON.stringify(params));
 					JobService.addServiceJob(jobDesc.name, jobDesc.description, serviceUrl, "application/json", "POST", JSON.stringify(params)).then(function(response){
-						console.log(response);
+						$scope.$parent.updateJobs();
 						flash.success = "Job successfully added can be executed from the dashboard";
 					}, function(response){
-						console.log(response);						
 						flash.error = ServerErrorResponse.getMessage(response);
 					});
 

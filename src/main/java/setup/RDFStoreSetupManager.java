@@ -125,7 +125,7 @@ public class RDFStoreSetupManager {
             // e.printStackTrace();
         }
 
-        log.info(" Default Graphs creation and configuration ");
+        log.info(" Default Graphs creation and configuration at " + config.getAuthSparqlEndpoint());
         SecureRdfStoreManagerImpl frameworkRdfStoreManager = new SecureRdfStoreManagerImpl(config
                 .getAuthSparqlEndpoint(), config.getAuthSparqlUser(), config
                 .getAuthSparqlPassword());

@@ -8,13 +8,9 @@
 */
 function LoginCtrl($q, $scope, $location, flash, AccountService, LoginService, ServerErrorResponse, Base64, AuthenticationErrorResponse, ConfigurationService, UsersService) {
 
-console.log("login ctrl");
-
     initialize();
 
     function initialize(){
-
-        console.log("initialise");
 
         $scope.login = {
             username : null,
@@ -35,21 +31,20 @@ console.log("login ctrl");
                     $scope.currentAccount.setRole(response);
                 });
             }
-            console.log($scope.currentAccount);
             
             $scope.isUserAuthenticated = function () {
-                return $scope.currentAccount.getUsername() != undefined;
+                return AccountService.getAccount().getUsername() != undefined;
             };
 
             $scope.isAdminLogged = function () {
-                return $scope.currentAccount.isAdmin();
+                return AccountService.getAccount().isAdmin();
             };
             
         });
     }
 
     $scope.login = function() {
-        console.log($scope.login.username);
+        
         LoginService.login(Base64.encode($scope.login.username), Base64.encode($scope.login.password))
             .then(function(data) {
                 console.log(data);

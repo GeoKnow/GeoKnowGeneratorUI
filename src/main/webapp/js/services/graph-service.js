@@ -401,7 +401,6 @@ module.factory("GraphService", function ($http, $q, Config, AccountService, Help
         return Config.request("GraphManagerServlet", requestData, function () {
             // if the creation succeed, then add the metadata insert the metadata of the graph
             var settings = Config.getSettings();
-            console.log(namedgraph);
             settings[parNamedGraph.name] = namedgraph;
             settings[parNamedGraph.name + "Graph"] = graph;
             settings[":default-dataset"]["sd:namedGraph"].push(parNamedGraph.name);

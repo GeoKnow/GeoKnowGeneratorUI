@@ -57,6 +57,7 @@ function SystemSetupCtrl($rootScope, $scope, $location, ConfigurationService, fl
           uriBase: response.data.ns,
           endpointService: response.data.authSparqlEndpoint,
           publicEndpointService : response.data.sparqlEndpoint,
+          authSparqlEndpoint : response.data.authSparqlEndpoint,
           defaultSettingsGraphUri : response.data.defaultSettingsGraphUri,
           frameworkUri : response.data.frameworkUri,
           flagPath : response.data.flagPath

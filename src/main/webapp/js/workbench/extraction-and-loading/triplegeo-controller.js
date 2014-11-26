@@ -8,8 +8,7 @@
 
 var TripleGeoCtrl = function($scope, $http, ConfigurationService, flash, ServerErrorResponse, $window, AccountService, GraphService){
 	
-	var currentAccount = AccountService.getAccount();
-	
+	$scope.component = ConfigurationService.getComponent(":TripleGeo");
 	var services = ConfigurationService.getComponentServices(":TripleGeo");
 	var serviceUrl = services[0].serviceUrl;
 	var configArray = new Array();
@@ -545,10 +544,10 @@ var TripleGeoCtrl = function($scope, $http, ConfigurationService, flash, ServerE
 		var parameters = {
 		        rdfFile: "result."+fileType,
 		        fileType: fileType,
-		        endpoint: currentAccount.getUsername()==null ? ConfigurationService.getPublicSPARQLEndpoint() : ConfigurationService.getSPARQLEndpoint(),
+		        endpoint: AccountService.getAccount().getUsername()==null ? ConfigurationService.getPublicSPARQLEndpoint() : ConfigurationService.getSPARQLEndpoint(),
 		        graph: $scope.saveDataset.replace(':', ConfigurationService.getUriBase()), 
 		        uriBase : ConfigurationService.getUriBase(),
-		        username: currentAccount.getUsername()
+		        username: AccountService.getAccount().getUsername()
 		      	};
 		console.log(parameters);
 		console.log(serviceUrl+"/ImportRDF");

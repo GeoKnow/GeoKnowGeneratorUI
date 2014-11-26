@@ -46,7 +46,7 @@ public class BatchAdminClient {
 
     private static final Logger log = Logger.getLogger(BatchAdminClient.class);
 
-    private static String serviceUrl = "http://localhost:9999/spring-batch-admin-geoknow";
+    private static String serviceUrl = "http://localhost:8080/spring-batch-admin-geoknow";
 
     /**
      * Get the service URL

@@ -8,6 +8,7 @@
 
 var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErrorResponse, $window, AccountService, GraphService){
 	
+	$scope.component = ConfigurationService.getComponent(":GeoLift");
 	var services = ConfigurationService.getComponentServices(":GeoLift");
 	var serviceUrl = services[0].serviceUrl;
 	

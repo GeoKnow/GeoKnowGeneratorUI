@@ -11,24 +11,27 @@ app.controller('FaceteFormCtrl', function($scope, ConfigurationService, GraphSer
 	$scope.namedGraphs = [];
 	$scope.component = ConfigurationService.getComponent(":Facete");
 	var services = ConfigurationService.getComponentServices(":Facete");
-
+	$scope.facete = {
+  	service   : ConfigurationService.getSPARQLEndpoint(),
+   	dataset   : "",
+  };
+  $scope.url= services[0].serviceUrl + 
+		'?service-uri='+ $scope.facete.service+
+    '&default-graph-uri=';
+  
 	$scope.refreshGraphList = function() {
-        GraphService.getAccessibleGraphs(false, false, true).then(function(graphs) {
-            $scope.namedGraphs = graphs;
-            $scope.facete = {
-            		service   : ConfigurationService.getSPARQLEndpoint(),
-            	 	dataset   : $scope.namedGraphs[0].name,
-            	};
-        });
-    };
+    GraphService.getAccessibleGraphs(false, false, true).then(function(graphs) {
+      $scope.namedGraphs = graphs;
+    });
+  };
 
-    $scope.refreshGraphList();
-	$scope.url = "";
+  $scope.refreshGraphList();
 
-	$scope.setUrl = function(){
+	$scope.updateServiceParams = function(){
 		$scope.url= services[0].serviceUrl + 
-								'?service-uri='+ $scope.facete.service+
-                '&default-graph-uri=' + $scope.facete.dataset.name.replace(':',ConfigurationService.getUriBase());
+			'?service-uri='+ $scope.facete.service+
+      '&default-graph-uri=' + $scope.facete.dataset.replace(':',ConfigurationService.getUriBase());
+    console.log($scope.url);
 	};
 
 	$scope.$watch( function () { return AccountService.getAccount().getUsername(); }, function () {

@@ -12,12 +12,16 @@ app.directive("modalIframe", function ($compile) {
     restrict: 'E',
     link: function (scope, elm, attr) {
         
+        scope.closeModal = function(){
+          $('#fullModal').modal('hide');
+        };
+        
         scope.openModal = function(){
             // $('#modal').modal({
             //     width:'100%',
             //     height : $(window).height() - 165
             // });
-            //console.log("URL:" + scope.url);
+            console.log("URL:" + scope.url);
 
             $('#fullModal').css({
                 width: $(window).width() ,

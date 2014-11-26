@@ -1,11 +1,13 @@
 <div class="contents" ng-controller="TripleGeoCtrl">
-	<!-- Subscribe to all flash messages. -->
-	<div flash-alert active-class="in alert" class="fade" duration="0">
-		<button type="button" class="close" ng-click="hide()">&times;</button>
-	  <span class="alert-message">{{flash.message}}</span>
-	</div>
+	
+	<h3 class="green bold">{{component.label}}</h3>
 
-	<h3 class="green bold">TripleGeo</h3>
+
+	<dl class="dl-horizontal">
+	  <dt>Version:</dt><dd>{{component.version}}</dd>
+	  <dt>Homepage:</dt><dd>{{component.homepage}}</dd>
+	</dl>
+    
 	<b>Utility for Converting Geospatial Data into Triples</b>
 	<br>
 	<br>

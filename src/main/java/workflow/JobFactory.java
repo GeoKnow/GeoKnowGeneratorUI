@@ -36,11 +36,11 @@ public class JobFactory {
     private static org.springframework.schema.beans.ObjectFactory beanFactory;
 
     // TODO: this directory should stay outside of the webappp
-    private static String files_dir = "batch-jobs/";
+    private static String files_dir = "/etc/generator/batch-jobs";
 
     private static JobFactory instance;
 
-    public static JobFactory getInstance() {
+    public static JobFactory getInstance() throws Exception {
 
         if (instance != null)
             return instance;
@@ -50,8 +50,11 @@ public class JobFactory {
 
         File seshdir = new File(files_dir);
         if (!seshdir.exists()) {
-            seshdir.mkdirs();
-            log.info("creating jobs directory: " + seshdir.getAbsolutePath());
+            if (!seshdir.mkdirs()) {
+                log.error("Couldnt create jobs directory: " + seshdir.getAbsolutePath());
+                throw new Exception("Couldnt create jobs directory: " + seshdir.getAbsolutePath());
+            } else
+                log.info("creating jobs directory: " + seshdir.getAbsolutePath());
         }
 
         instance = new JobFactory();
