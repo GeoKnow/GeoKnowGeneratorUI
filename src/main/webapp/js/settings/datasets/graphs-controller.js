@@ -1,11 +1,48 @@
 'use strict';
 
 
-function GraphCtrl($scope, $http, flash, ConfigurationService, Helpers, AccountService, GraphService, GraphGroupService) {
+function GraphCtrl($scope, $http, flash, ConfigurationService, Helpers, GraphService, GraphGroupService, ServerErrorResponse) {
     
     $scope.accessModes = GraphService.getAccessModes();
 
     $scope.users = [];
+
+    var emptyGraph = {
+        name: "",
+        graph: {
+            created: "now",
+            endpoint: "",
+            description: "",
+            modified: "",
+            label: ""
+        },
+        owner: "",
+        publicAccess: "",
+        usersWrite: [],
+        usersRead: []
+    };
+    var newGraph = true;
+
+    GraphService.getUserGraphs($scope.$parent.currentAccount.getAccountURI())
+        .then(function (graphs){
+        console.log(graphs);
+        $scope.namedgraphs = graphs;
+    })
+
+    GraphService.getAccessibleGraphs(false, true, false) // onlyWritable, skipOwn, reload
+        .then(function (graphs) {
+        $scope.accnamedgraphs = graphs;
+    });
+
+    $scope.allgraphs = [];
+    GraphService.getAllNamedGraphs(false) // reload
+      .then(function (graphs) {
+        $scope.allgraphs = graphs;
+    });
+
+    $scope.namedgraph = emptyGraph;
+    $scope.modaltitle = "";
+
     $scope.refreshUsersList = function () {
         var parameters = {
             mode: "getUsers"
@@ -29,38 +66,6 @@ function GraphCtrl($scope, $http, flash, ConfigurationService, Helpers, AccountS
             });
     }
 
-    var emptyGraph = {
-        name: "",
-        graph: {
-            created: "now",
-            endpoint: "",
-            description: "",
-            modified: "",
-            label: ""
-        },
-        owner: "",
-        publicAccess: "",
-        usersWrite: [],
-        usersRead: []
-    };
-    var newGraph = true;
-
-    $scope.namedgraphs = GraphService.getAllNamedGraphsSettings();
-
-    GraphService.getAccessibleGraphs(false, true, false) // onlyWritable, skipOwn, reload
-        .then(function (graphs) {
-        $scope.accnamedgraphs = graphs;
-    });
-
-    $scope.allgraphs = [];
-    GraphService.getAllNamedGraphs(false) // reload
-      .then(function (graphs) {
-        $scope.allgraphs = graphs;
-    });
-
-    $scope.namedgraph = emptyGraph;
-    $scope.modaltitle = "";
-
     $scope.isNew = function () {
         return newGraph;
     };
@@ -79,7 +84,7 @@ function GraphCtrl($scope, $http, flash, ConfigurationService, Helpers, AccountS
         $scope.namedgraph.graph.modified = s_now;
         $scope.namedgraph.graph.endpoint = ConfigurationService.getSPARQLEndpoint();
         $scope.namedgraph.publicAccess = GraphService.getNoAccessMode();
-        $scope.namedgraph.owner = AccountService.getAccountURI();
+        $scope.namedgraph.owner = $scope.$parent.currentAccount.getAccountURI();
 
         $scope.refreshUsersList();
     };
@@ -87,7 +92,7 @@ function GraphCtrl($scope, $http, flash, ConfigurationService, Helpers, AccountS
     $scope.edit = function (graphName) {
         $scope.namedgraph = angular.copy(GraphService.getNamedGraphCS(graphName));
         $scope.namedgraph.name = $scope.namedgraph.name.replace(':', '');
-        $scope.namedgraph.owner = AccountService.getAccountURI();
+        $scope.namedgraph.owner = $scope.$parent.currentAccount.getAccountURI();
         newGraph = false;
         $scope.modaltitle = "Edit Named Graph";
         $scope.refreshUsersList();
@@ -102,29 +107,30 @@ function GraphCtrl($scope, $http, flash, ConfigurationService, Helpers, AccountS
     };
 
     $scope.save = function () {
-
-        var success = false;
+        var response;
         $scope.namedgraph.name = ":" + $scope.namedgraph.name;
         if (newGraph)
-            success = GraphService.addGraph($scope.namedgraph);
+            response = GraphService.addGraph($scope.namedgraph);
         else {
-            if ($scope.namedgraph.owner == AccountService.getAccountURI())
-                success = GraphService.updateGraph($scope.namedgraph);
-            else {
-                GraphService.updateForeignGraph($scope.namedgraph).then(function (response) {
+            if ($scope.namedgraph.owner == $scope.$parent.currentAccount.getAccountURI())
+                response = GraphService.updateGraph($scope.namedgraph);
+            else 
+                response = GraphService.updateForeignGraph($scope.namedgraph).then(function (response) {
                     $scope.refreshAllGraphs();
                 });
-                success = true;
-            }
         }
+        response.then(
+            function(){
+            // success
+                $scope.close('#modalGraph');
+                $scope.refreshTable();
+                $scope.refreshAllGraphs();
+        }, function(response){
+            //error
+            var message = ServerErrorResponse.getMessage(response);
+            flash.error = message;
+        });
 
-        if (success) {
-            $scope.close('#modalGraph');
-            $scope.refreshTable();
-            $scope.refreshAllGraphs();
-        } else {
-            // TODO: check if success then close the window or where to put error messages		
-        }
     };
 
     $scope.delete = function (graphName) {
@@ -161,7 +167,7 @@ function GraphCtrl($scope, $http, flash, ConfigurationService, Helpers, AccountS
     };
 
     $scope.refreshTable = function () {
-        $scope.namedgraphs = GraphService.getAllNamedGraphsSettings();
+        $scope.namedgraphs = GraphService.getUserGraphs($scope.$parent.currentAccount.getAccountURI());
     };
 
     $scope.refreshAccessibleGraphs = function () {
@@ -171,6 +177,12 @@ function GraphCtrl($scope, $http, flash, ConfigurationService, Helpers, AccountS
     };
 
     $scope.refreshAllGraphs = function () {
+
+        GraphService.getUserGraphs($scope.$parent.currentAccount.getAccountURI())
+            .then(function (graphs){
+            $scope.namedgraphs = graphs;
+        })
+
         GraphService.getAllNamedGraphs(true).then(function (graphs) {
             $scope.allgraphs = graphs;
         });
@@ -181,7 +193,7 @@ function GraphCtrl($scope, $http, flash, ConfigurationService, Helpers, AccountS
     };
 
     $scope.graphFilter = function (namedgraph) {
-        return namedgraph.owner != AccountService.getAccountURI();
+        return namedgraph.owner != $scope.$parent.currentAccount.getAccountURI();
     };
 
     $scope.graphgroups = [];
@@ -265,15 +277,15 @@ function GraphCtrl($scope, $http, flash, ConfigurationService, Helpers, AccountS
       	$('.modal-scrollable').slideUp();
     };
 
-    //watch
-    $scope.$watch(function () {
-        return GraphService.getAllNamedGraphsSettings();
-    }, function () {
-        $scope.refreshTable();
-    }, true);
+    // watch
+    // $scope.$watch(function () {
+    //     return GraphService.getUserGraphs($scope.$parent.currentAccount.getAccountURI());
+    // }, function () {
+    //     $scope.refreshTable();
+    // }, true);
 
     $scope.$watch(function () {
-        return AccountService.getUsername();
+        return $scope.$parent.currentAccount;
     }, function () {
         $scope.refreshAccessibleGraphs();
         $scope.refreshAllGraphs();

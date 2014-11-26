@@ -15,8 +15,5 @@
 /target
 /logs
 
-# Vaadin cache dir
-/src/main/webapp/VAADIN/gwt-unitCache
-/src/main/webapp/VAADIN/widgetsets
-/target
-/bin
+# Working dirs
+/batch-jobs

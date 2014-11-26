@@ -1,6 +1,7 @@
 package accounts;
 
-import java.util.Collection;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by taleksaschina on 24.06.2014.
@@ -8,7 +9,11 @@ import java.util.Collection;
 public class UserRole {
     private String uri;
     private String name;
-    private Collection<String> services;
+    private List<String> services;
+
+    public UserRole() {
+        this.services = new ArrayList<String>();
+    }
 
     public String getUri() {
         return uri;
@@ -26,11 +31,11 @@ public class UserRole {
         this.name = name;
     }
 
-    public Collection<String> getServices() {
+    public List<String> getServices() {
         return services;
     }
 
-    public void setServices(Collection<String> services) {
+    public void setServices(List<String> services) {
         this.services = services;
     }
 }

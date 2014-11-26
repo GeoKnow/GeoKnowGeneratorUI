@@ -29,7 +29,7 @@
 "use strict";
 
 angular.module("app.configuration", [])
-.factory("Config", function($rootScope, $q, $http, flash, AccountService, ServerErrorResponse, Helpers, Ns){
+.factory("Config", function($rootScope, $q, $http, flash, ServerErrorResponse, Helpers, Ns){
     $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded; charset=UTF-8";
 
     var FRAMEWORK_URI;
@@ -50,24 +50,25 @@ angular.module("app.configuration", [])
     var request = function(url, data, callbackSuccess){
         var deferred = $q.defer();
         $http.post(url, $.param(data))
-        .success(function(data)
-        {
-            try{
-                deferred.resolve(callbackSuccess ? callbackSuccess(data) : data.results.bindings[0]["callret-0"].value);
-            }
-            catch (e){
-                // a problem with the callback
-                console.log(e);
-                flash.error = e.message;
-                deferred.reject(e);
-            }
-        })
-        .error(function(data, status){
-            var message = ServerErrorResponse.getMessage(status);
-            flash.error = message;
-            deferred.reject(message);
-        });
-
+        .then(
+            // success
+            function(response){
+                try{
+                    deferred.resolve(callbackSuccess ? callbackSuccess(response.data) : response.data.results.bindings[0]["callret-0"].value);
+                }
+                catch (e){
+                    // a problem with the callback
+                    console.log(e);
+                    flash.error = e.message;
+                    deferred.reject(e);
+                }
+            }, 
+            // error
+            function(response){
+                var message = ServerErrorResponse.getMessage(response);
+                flash.error = message;
+                deferred.reject(message);
+            });
         return deferred.promise;
     };
 
@@ -237,7 +238,7 @@ angular.module("app.configuration", [])
 
     var read = function()
     {
-        var deferred = $q.defer();
+        // var deferred = $q.defer();
         var requestData = {
             format: "application/sparql-results+json",
             query: "SELECT * FROM <" + SETTINGS_GRAPH + ">"+ EOL
@@ -246,15 +247,15 @@ angular.module("app.configuration", [])
             mode: "settings"
         };
 
-        console.log("readSettings from " + SETTINGS_GRAPH);
+        // console.log("readSettings from " + SETTINGS_GRAPH);
 
-        $http.post("RdfStoreProxy", $.param(requestData)).then(function (response) {
+        return $http.post("RdfStoreProxy", $.param(requestData)).then(function (response) {
             settings = parseSparqlResults(response.data);
-            console.log(settings);
-            deferred.resolve(settings);
+            // deferred.resolve(settings);
+            return settings;
         });
 
-        return deferred.promise;
+        // return deferred.promise;
     };
 
     var write = function()
@@ -326,7 +327,7 @@ angular.module("app.configuration", [])
             format: "application/sparql-results+json",
             mode: "drop",
             graph: name,
-            username: AccountService.getUsername()
+            // username: AccountService.getAccount().getUsername()
         }
         return request("GraphManagerServlet", requestData);
     };

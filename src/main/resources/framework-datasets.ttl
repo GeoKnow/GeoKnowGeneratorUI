@@ -51,3 +51,15 @@
       foaf:homepage <http://data.admin.ch> ;
       void:sparqlEndpoint <http://data.admin.ch/sparql> .
 
+:datasemanticweborg
+      a       void:Dataset , onots:SPARQLEndpoint , onots:DataSource ;
+      rdfs:label "data.emanticweb.org"^^xsd:string ;
+      foaf:homepage <http://data.semanticweb.org> ;
+      void:sparqlEndpoint <http://data.semanticweb.org/sparql> .
+
+:drugbank
+      a       void:Dataset , onots:SPARQLEndpoint , onots:DataSource ;
+      rdfs:label "Drug bank"^^xsd:string ;
+      foaf:homepage <http://www4.wiwiss.fu-berlin.de/drugbank> ;
+      void:sparqlEndpoint <http://www4.wiwiss.fu-berlin.de/drugbank/sparql> .
+

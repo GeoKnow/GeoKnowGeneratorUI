@@ -34,11 +34,7 @@ module.factory('Helpers', function(){
 module.factory('ServerErrorResponse', function() {
 
   var ServerErrorResponseService = {
-
    getMessage: function(response){
-   
-    console.log("ServerErrorResponse");
-    console.log(response);
     var statusText = '';
       switch (response.status) {
       case 400:

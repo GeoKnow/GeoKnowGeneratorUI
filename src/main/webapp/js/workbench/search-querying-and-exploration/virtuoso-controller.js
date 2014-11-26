@@ -9,28 +9,29 @@ app.controller('VirtuosoCtrl', function($scope, ConfigurationService, AccountSer
 
 	$scope.namedGraphs = [];
 	$scope.component = ConfigurationService.getComponent(":Virtuoso");
+	console.log($scope.component);
 	// $scope.services = ConfigurationService.getComponentServices(":Virtuoso", "lds:SPARQLEndPointService");
 	$scope.virtuoso = {
-		service   : AccountService.getUsername()==null ? ConfigurationService.getPublicSPARQLEndpoint() : ConfigurationService.getSPARQLEndpoint(),
+		service   : AccountService.getAccount().getUsername()==null ? ConfigurationService.getPublicSPARQLEndpoint() : ConfigurationService.getSPARQLEndpoint(),
 	 	dataset   : "",
 	}
 
-    $scope.refreshGraphList = function() {
-	    GraphService.getAccessibleGraphs(false, false, true).then(function(graphs) {
-       	    var ngraphs = graphs;
-       	    GraphGroupService.getAllGraphGroups(true).then(function(groups) {
-       	        ngraphs = ngraphs.concat(groups);
-       	        $scope.namedGraphs = ngraphs;
-       	        $scope.virtuoso.dataset = $scope.namedGraphs[0];
-       	    });
-       	});
+  $scope.refreshGraphList = function() {
+    GraphService.getAccessibleGraphs(false, false, true).then(function(graphs) {
+     	    var ngraphs = graphs;
+     	    GraphGroupService.getAllGraphGroups(true).then(function(groups) {
+     	        ngraphs = ngraphs.concat(groups);
+     	        $scope.namedGraphs = ngraphs;
+     	        $scope.virtuoso.dataset = $scope.namedGraphs[0];
+     	    });
+     	});
 	};
 
 	$scope.refreshGraphList();
 
 	$scope.url = "";
 	$scope.setUrl = function(){
-	    if (AccountService.getUsername()==null) { //user is not authorized
+	    if (AccountService.getAccount().getUsername()==null) { //user is not authorized
 	        $scope.url= $scope.virtuoso.service +
 	            '?default-graph-uri=' + $scope.virtuoso.dataset.replace(':',ConfigurationService.getUriBase()) +
 	            '&qtxt=select+distinct+%3FConcept+where+%7B%5B%5D+a+%3FConcept%7D+LIMIT+100'
@@ -42,12 +43,12 @@ app.controller('VirtuosoCtrl', function($scope, ConfigurationService, AccountSer
                                     '&qtxt=select+distinct+%3FConcept+where+%7B%5B%5D+a+%3FConcept%7D+LIMIT+100' +
                                     '&format=text%2Fhtml' +
                                     '&timeout=30000' +
-                                    '&username=' + AccountService.getUsername();
+                                    '&username=' + AccountService.getAccount().getUsername();
         }
 	};
 
-	$scope.$watch( function () { return AccountService.getUsername(); }, function () {
-	    $scope.refreshGraphList();
-    });
+	$scope.$watch( function () { return AccountService.getAccount().getUsername(); }, function () {
+    $scope.refreshGraphList();
+  });
 
 });

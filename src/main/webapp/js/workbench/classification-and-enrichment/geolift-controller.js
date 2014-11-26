@@ -672,10 +672,10 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErr
 		
 		var parameters = {
 	    rdfFile: "result.ttl", 
-	    endpoint: AccountService.getUsername()== null ? ConfigurationService.getPublicSPARQLEndpoint() : ConfigurationService.getSPARQLEndpoint(),
+	    endpoint: AccountService.getAccount().getUsername()== null ? ConfigurationService.getPublicSPARQLEndpoint() : ConfigurationService.getSPARQLEndpoint(),
 	    graph: $scope.saveDataset.replace(':', ConfigurationService.getUriBase()), 
 	    uriBase : ConfigurationService.getUriBase(),
-        username: AccountService.getUsername()
+        username: AccountService.getAccount().getUsername()
 	 	};
 		
 		$http({

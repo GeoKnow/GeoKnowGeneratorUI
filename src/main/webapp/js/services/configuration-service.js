@@ -2,13 +2,16 @@
 
 var module = angular.module('app.configuration-service', []);
 
-module.factory('ConfigurationService', function ($q, AccountService, Config, $http, $location, flash, Helpers, ServerErrorResponse, Ns) {
+module.factory('ConfigurationService', function ($q, Config, $http, $location, flash, Helpers, ServerErrorResponse, Ns) {
     
     var SettingsService = {
+        getConfiguration : function(){
+            return $http.get("rest/config");
+        },
+
         getSettings : function(){
-            var defer = $q.defer();
-            if(Config.getSettingsGraph() == undefined){
-                $http.get("rest/config").then(
+            if(Config.getDefaultSettingsGraph() == undefined){
+                return $http.get("rest/config").then(
                     function (response) {
                         Config.setFrameworkUri(response.data.frameworkUri);
                         Config.setNS(response.data.ns);
@@ -22,25 +25,14 @@ module.factory('ConfigurationService', function ($q, AccountService, Config, $ht
                         Config.setFlagPath(response.data.flagPath);
                         Ns.getAllNamespaces                        
                         Ns.add(":", Config.getNS());
-                        Config.read().then(function(settings){
-                            var currentAccount = angular.copy(AccountService.getAccount()); 
-                            console.log("user:" +currentAccount.user);
-                            // Try to get here the user's settings graph
-                            defer.resolve(settings);
-                        });
-
+                        return Config.read();
                     }, function(response){
                         var message = ServerErrorResponse.getMessage(response);
                         flash.error = message;
                     })
-                } else{
-                    // if( AccountService.isLogged() ){
-                    //     console.log("get the settings graph of the user");
-                    //     console.log(AccountService.getAccountURI());
-                    // }
-                    defer.resolve(Config.getSettings());
-                }
-             return defer.promise;
+            } 
+            else
+                return Config.read();
         },
         
         setup: function(reset){
@@ -326,7 +318,18 @@ module.factory('ConfigurationService', function ($q, AccountService, Config, $ht
                 if (typeof serviceType != "undefined" && element["rdf:type"].indexOf(serviceType) === -1)
                     continue; // not of the required type
 
-                results.push(this.elementToJson(res, element));
+                var service = this.elementToJson(res, element);
+                // check if the serviice is online 
+                // console.log(service);
+                // $http.get(service.serviceUrl).then( function(response) {
+                //     service.offline = false;
+                //     results.push(service);
+                // }, function(response) {
+                //     service.offline = true;
+                //     results.push(service);
+                // });
+                results.push(service);
+                
             }
             return results;
         },

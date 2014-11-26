@@ -1,9 +1,10 @@
 'use strict';
 
 function UserRolesCtrl($scope, UsersService, ConfigurationService, $q, ServerErrorResponse, flash, AccountService, $window) {
+    
     $scope.services = ConfigurationService.getAllServices();
-    $scope.users = UsersService.getAllUsers();
     $scope.roles = UsersService.getAllRoles();
+    $scope.users = UsersService.getAllUsers();
 
     $scope.roleCreating = false;
     $scope.newRole = {id:"", name:""};
@@ -212,7 +213,7 @@ function UserRolesCtrl($scope, UsersService, ConfigurationService, $q, ServerErr
     };
 
     $scope.isCurrentUser = function(user) {
-        return user.profile.username == AccountService.getUsername();
+        return user.profile.username == AccountService.getAccount().getUsername();
     };
 
     $scope.close = function(modalID) {

@@ -2,7 +2,7 @@
 
 var module = angular.module('app.login-service', []);
 
-module.factory("LoginService", function ($http, $location, $cookieStore, AccountService, ConfigurationService, Base64, flash, ServerErrorResponse) {
+module.factory("LoginService", function ($http, $cookieStore, AccountService, ConfigurationService, Base64, flash, ServerErrorResponse) {
 
     var login = function (username, password) {
 
@@ -20,27 +20,20 @@ module.factory("LoginService", function ($http, $location, $cookieStore, Account
             data: $.param(postData),
             contentType: "application/x-www-form-urlencoded"
         }).then(function (response) {
-            AccountService.setUsername(response.data.username);
-            AccountService.setAccountURI(response.data.accountURI.replace(ConfigurationService.getUriBase(), ':'));
-            AccountService.setEmail(response.data.email);
-            var roleServices = [];
-            for (var ind in response.data.role.services) {
-                roleServices.push(response.data.role.services[ind].replace(ConfigurationService.getUriBase(), ":"));
-            }
-            var role = {
-                uri: response.data.role.uri.replace(ConfigurationService.getFrameworkOntologyNS(), "gkg:"),
-                name: response.data.role.name,
-                services: roleServices
-            };
-            AccountService.setRole(role);
-            ConfigurationService.setSettingsGraph(response.data.settingsGraph);
+            
+            // var role = {
+            //     // uri: response.data.role.uri.replace(ConfigurationService.getFrameworkOntologyNS(), "gkg:"),
+            //     uri: response.data.role.uri,
+            //     name: response.data.role.name,
+            //     services: response.data.role.services
+            // };
 
-            var encodedUser = Base64.encode(username);
-            var encodedPass = Base64.encode(password);
-            $http.defaults.headers.common.Authorization = 'User ' + encodedUser + ' Pass ' + encodedPass;
-            $cookieStore.put('User', encodedUser);
-            $cookieStore.put('Pass', encodedPass);
-            //console.log($http.defaults.headers.common);
+            return AccountService.create(
+                response.data.username, 
+                response.data.accountURI,
+                response.data.email, 
+                response.data.role,
+                response.data.settingsGraph);
 
         }, function (response) {
             flash.error = ServerErrorResponse.getMessage(response);
@@ -49,7 +42,7 @@ module.factory("LoginService", function ($http, $location, $cookieStore, Account
 
     var logout = function () {
         var postData = {
-            username: AccountService.getUsername(),
+            username: AccountService.getAccount().getUsername(),
             mode: "logout"
         }
         return $http({
@@ -58,21 +51,12 @@ module.factory("LoginService", function ($http, $location, $cookieStore, Account
             data: $.param(postData),
             contentType: "application/x-www-form-urlencoded"
         }).then(function (response) {
-            AccountService.clear();
-            ConfigurationService.restoreDefaultSettingsGraph();
-            $location.path("/home");
-
             document.execCommand("ClearAuthenticationCache");
-            $cookieStore.remove('User');
-            $cookieStore.remove('Pass');
-            $http.defaults.headers.common.Authorization = 'User Pass';
-
-            console.log($http.defaults.headers.common);
-
+            ConfigurationService.restoreDefaultSettingsGraph();
+            return AccountService.clearAccount();
         }, function (response) {
-            console.log("error? esponse:")
             console.log(response);
-            // flash.error = message;
+            flash.error = ServerErrorResponse.getMessage(response);
             
         });
     };
@@ -93,7 +77,7 @@ module.factory("LoginService", function ($http, $location, $cookieStore, Account
 
     var changePassword = function (oldPassword, newPassword) {
         var postData = {
-            username: AccountService.getUsername(),
+            username: AccountService.getAccount().getUsername(),
             oldPassword: oldPassword,
             newPassword: newPassword,
             mode: "changePassword"

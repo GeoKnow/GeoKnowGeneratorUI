@@ -1,0 +1,102 @@
+  <div class="contents">
+  	<div class="col-xs-2 sidebar">
+			
+			<div class="panel-group" id="accordion" ng-controller="StackMenuCtrl">
+			  <div class="panel panel-default" ng-repeat="group in groups | filter:showGroup">
+				  <div class="panel-heading">
+					  <h5 class="panel-title">
+				        <span class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#{{group.id}}">
+				          {{group.title}}
+				        </span>
+				      </h5>
+				  </div>
+				  <div id="{{group.id}}" class="panel-collapse collapse" ng-controller="SidebarCtrl">
+					  <div class="list-item" ng-class="{selected:isSelected('{{item.url}}')}" ng-repeat="item in group.items | filter:showItem">
+							<h6><a class="list-group-item" target="{{item.target}}" href="{{item.route}}">{{item.name}}</a></h6>
+					  </div>
+				  </div>
+			  	</div>
+			</div>
+
+		</div>
+
+	<div class="col-xs-10 contents" app-view-segment="1"  ng-controller="DashboardCtrl">
+    
+	 <h3 class="green bold">{{component.label}} </h3>
+   <!-- <div ng-show="component.offline" class="alert alert-danger" role="alert">
+    <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+    <span class="sr-only">Error:</span> Resource is not available
+  </div> -->
+
+  <dl class="dl-horizontal">
+    <dt>Version:</dt>
+    <dd>{{component.version}}</dd>
+  </dl>
+			
+	<table class="table table-striped">
+		<thead>
+  	<tr>
+    <th>Name</th>
+    <th>Description</th>
+    <th>Execution Count</th>
+    <th>Launchable</th>
+    <th>Incrementable</th>
+    </tr>
+		</thead>
+		<tbody ng-repeat="job in jobs" ng-init="jobIndex = $index">
+   	<tr data-toggle="collapse" data-target="#{{job.name}}" class="accordion-toggle" ng-click="getJobDetail(jobIndex)">
+    <td>{{job.name}}</td>
+    <td>{{job.description}}</td>
+    <td>{{job.executionCount}}</td>
+    <td>{{job.launchable}}</td>
+    <td>{{job.incrementable}}</td>
+  	</tr>
+    <tr>
+    <td colspan="6" class="hiddenRow" >
+      <div class="accordian-body collapse" id="{{job.name}}"> 
+        <table class="table table-striped">
+        <thead>
+        <tr>
+          <td colspan="3">
+            <button type="button" class="btn btn-link btn-xs" ng-click="delete(jobIndex)">
+              <i class="glyphicon glyphicon-trash"></i></button>
+            <button type="button" class="btn btn-link btn-xs" ng-click="reload(jobIndex)">
+              <i class="glyphicon glyphicon-refresh"></i></button>
+            <button type="button" class="btn btn-link  btn-xs" ng-click="execute(jobIndex)">
+              <i class="glyphicon glyphicon-play"></i></button>
+          </td>
+        </tr>
+        <tr ng-show="job.executions.length>0">
+          <th>Id</th>
+          <th>Status</th>
+          <th>Time</th>
+          <th>Duration </th>
+          <!-- <th>Parameters</th> -->
+          <th>Exit Code</th>
+          <th>Exit Description</th>
+        </thead>
+        <tbody ng-repeat="execution in job.executions">
+        <tr>
+          <td>{{execution.id}}</td>
+          <td>{{execution.status}}</td>
+          <td>{{execution.startTime}}</td>
+          <td>{{execution.duration}}</td>
+          <!-- <td>{{execution.jobParameters}}</td> -->
+          <td>{{execution.exitCode}}</td>
+          <td>{{execution.exitDescription}}</td>
+        </tr>
+        </tbody>
+        </table>
+      </div>
+    </td>
+    </tr>
+		</tbody>
+	</table>
+</div>
+
+
+
+
+
+
+

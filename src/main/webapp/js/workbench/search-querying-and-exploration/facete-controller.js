@@ -31,7 +31,7 @@ app.controller('FaceteFormCtrl', function($scope, ConfigurationService, GraphSer
                 '&default-graph-uri=' + $scope.facete.dataset.name.replace(':',ConfigurationService.getUriBase());
 	};
 
-	$scope.$watch( function () { return AccountService.getUsername(); }, function () {
+	$scope.$watch( function () { return AccountService.getAccount().getUsername(); }, function () {
 	    $scope.refreshGraphList();
 	});
 });

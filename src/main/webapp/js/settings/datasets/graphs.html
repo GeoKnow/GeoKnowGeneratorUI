@@ -9,7 +9,7 @@
     <div class="modal-content">
     <form name="graphForm" class="form-horizontal InputForm" role="form" novalidate>
       <div class="modal-header">
-        <button type="button" class="close" ng-click="close('#modalLogin')" aria-hidden="true">&times;</button>
+        <button type="button" class="close" ng-click="close('#modalGraph')" aria-hidden="true">&times;</button>
         <h5 class="modal-title green bold">{{modaltitle}}</h5>
       </div>
 
@@ -92,7 +92,7 @@
       </div>
       <div class="modal-footer">
         <button type="submit" class="btn-sm btn-success" ng-click="save();" ng-disabled="graphForm.$invalid || isUnchanged(namedgraph)">Save</button>
-        <button type="button" class="btn-sm btn-default" ng-click="close('#modalLogin')">Cancel</button>
+        <button type="button" class="btn-sm btn-default" ng-click="close('#modalGraph')">Cancel</button>
       </div>      
     </form>
  	</div>
@@ -117,8 +117,8 @@
   <tbody>
      <tr ng-repeat="namedgraph in namedgraphs">
       <td>
-        <button type="button" class="btn btn-default btn-xs" ng-click="delete('{{namedgraph.name}}')"><span class="glyphicon glyphicon-trash"></span></button>
-        <button type="button" class="btn btn-default btn-xs" data-toggle="modal" data-target="#modalGraph" ng-click="edit('{{namedgraph.name}}');"><span class="glyphicon glyphicon-edit"></span></button>
+        <button type="button" class="btn btn-default btn-xs" ng-click="delete(namedgraph.name)"><span class="glyphicon glyphicon-trash"></span></button>
+        <button type="button" class="btn btn-default btn-xs" data-toggle="modal" data-target="#modalGraph" ng-click="edit(namedgraph.name);"><span class="glyphicon glyphicon-edit"></span></button>
       </td>
       <td>{{namedgraph.name}}</td>
       <td>{{namedgraph.graph.label}}</td>
@@ -142,7 +142,8 @@
 
   <br/>
 
-  <div ng-if="!isAdminLogged()">
+
+  <!-- <div ng-if="!isAdminLogged()"> -->
     <h4>
         <span class="btn-group">
             <button type="button" class="btn btn-link reset" ng-click="refreshAccessibleGraphs()">
@@ -159,6 +160,7 @@
             <th>Description</th>
             <th>Created</th>
             <th>Modified</th>
+            <th>Owner</th>
             <th>Access</th>
         </tr>
         </thead>
@@ -169,11 +171,12 @@
             <td>{{namedgraph.graph.description}}</td>
             <td>{{namedgraph.graph.created}}</td>
             <td>{{namedgraph.graph.modified}}</td>
+            <td>{{namedgraph.owner}}</td>
             <td>{{namedgraph.access}}</td>
         </tr>
         </tbody>
     </table>
-  </div>
+  <!-- </div> -->
 
     <div ng-if="isAdminLogged()">
     <h4>
@@ -200,10 +203,11 @@
         </tr>
         </thead>
         <tbody>
-        <tr ng-repeat="namedgraph in allgraphs | filter:graphFilter">
+        <!-- <tr ng-repeat="namedgraph in allgraphs | filter:graphFilter"> -->
+        <tr ng-repeat="namedgraph in allgraphs">
             <td ng-if="isUserAuthenticated()">
-                <button type="button" class="btn btn-default btn-xs" ng-click="deleteForeign('{{namedgraph.name}}')"><span class="glyphicon glyphicon-trash"></span></button>
-                <button type="button" class="btn btn-default btn-xs" data-toggle="modal" data-target="#modalGraph" ng-click="editAdmin('{{namedgraph.name}}');"><span class="glyphicon glyphicon-edit"></span></button>
+                <button type="button" class="btn btn-default btn-xs" ng-click="deleteForeign('namedgraph.name')"><span class="glyphicon glyphicon-trash"></span></button>
+                <button type="button" class="btn btn-default btn-xs" data-toggle="modal" data-target="#modalGraph" ng-click="editAdmin('namedgraph.name');"><span class="glyphicon glyphicon-edit"></span></button>
             </td>
             <td>{{namedgraph.name}}</td>
             <td>{{namedgraph.graph.label}}</td>
@@ -236,7 +240,7 @@
     <div class="modal-content">
       <form name="groupForm" class="form-horizontal InputForm" role="form" novalidate>
           <div class="modal-header">
-              <button type="button" class="close" ng-click="close('#modalLogin')" aria-hidden="true">&times;</button>
+              <button type="button" class="close" ng-click="close('#modalGroup')" aria-hidden="true">&times;</button>
               <h5 class="modal-title green bold">{{modaltitle}}</h5>
           </div>
 
@@ -292,7 +296,7 @@
           </div>
           <div class="modal-footer">
               <button type="submit" class="btn-sm btn-success" ng-click="saveGroup();" ng-disabled="groupForm.$invalid || isUnchanged(graphgroup)">Save</button>
-              <button type="button" class="btn-sm btn-default" ng-click="close('#modalLogin')">Cancel</button>
+              <button type="button" class="btn-sm btn-default" ng-click="close('#modalGroup')">Cancel</button>
           </div>
       </form>
       </div>
@@ -323,8 +327,8 @@
       <tbody>
       <tr ng-repeat="gg in graphgroups">
           <td ng-if="isUserAuthenticated()">
-              <button type="button" class="btn btn-default btn-xs" ng-click="deleteGroup('{{gg.name}}')"><span class="glyphicon glyphicon-trash"></span></button>
-              <button type="button" class="btn btn-default btn-xs" data-toggle="modal" data-target="#modalGroup" ng-click="editGroup('{{gg.name}}');"><span class="glyphicon glyphicon-edit"></span></button>
+              <button type="button" class="btn btn-default btn-xs" ng-click="deleteGroup('gg.name')"><span class="glyphicon glyphicon-trash"></span></button>
+              <button type="button" class="btn btn-default btn-xs" data-toggle="modal" data-target="#modalGroup" ng-click="editGroup('gg.name');"><span class="glyphicon glyphicon-edit"></span></button>
           </td>
           <td>{{gg.name}}</td>
           <td>{{gg.label}}</td>

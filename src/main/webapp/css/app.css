@@ -8,7 +8,10 @@ html, body{
 body{
 	overflow-y: auto;
 }
+/* http://angular-ui.github.io/bootstrap/ */
+.nav, .pagination, .carousel, .panel-title a { cursor: pointer; }
 
+/* Framework */
 #contents{
 	position:relative;
 	top:10px;

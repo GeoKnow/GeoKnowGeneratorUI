@@ -1,8 +1,8 @@
 'use strict';
 
 function AccountCtrl($scope, $http, $cookieStore, flash, AccountService, LoginService, ServerErrorResponse, Base64, AuthenticationErrorResponse) {
-    $scope.currentAccount = angular.copy(AccountService.getAccount());
 
+    $scope.account = $scope.$parent.currentAccount;
     $scope.password = {oldPassword: null, newPassword:null, confirmPassword:null};
 
     $('i').tooltip();
@@ -15,12 +15,6 @@ function AccountCtrl($scope, $http, $cookieStore, flash, AccountService, LoginSe
               	$('.modal-backdrop').slideUp();
               	$('.modal-scrollable').slideUp();
                 flash.success = response.data.message;
-                //Reset cookie
-                var encodedUser = Base64.encode(AccountService.getUsername());
-                var encodedPass = Base64.encode($scope.password.newPassword);
-                $http.defaults.headers.common.Authorization = 'User ' + encodedUser + ' Pass ' + encodedPass;
-                $cookieStore.put('User', encodedUser);
-                $cookieStore.put('Pass', encodedPass);
                 
             }, function(response) {
                 $('#modalChangePassword').modal('hide');
@@ -43,7 +37,10 @@ function AccountCtrl($scope, $http, $cookieStore, flash, AccountService, LoginSe
         $scope.password.confirmPassword = null;
     };
 
-    $scope.$watch( function() { return AccountService.getAccount(); }, function() {
-        $scope.currentAccount = angular.copy(AccountService.getAccount());
-    }, true);
+    // understand what is the point of having this...
+    // $scope.$watch( function() { 
+    //     return AccountService.getAccount(); 
+    // }, function() {
+    //     $scope.account = AccountService.getAccount().getData();
+    // }, true);
 }

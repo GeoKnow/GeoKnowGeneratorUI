@@ -25,8 +25,7 @@ import com.ontos.ldiw.vocabulary.LDIWO;
 
 public class FrameworkConfiguration {
 
-    private static final Logger log = Logger
-	    .getLogger(FrameworkConfiguration.class);
+    private static final Logger log = Logger.getLogger(FrameworkConfiguration.class);
 
     // email registration notifications
     private String smtpHost = "";
@@ -50,6 +49,8 @@ public class FrameworkConfiguration {
 
     private String accountsGraph = "";
     private String settingsGraph = "";
+    private String jobsGraph = "";
+    private String authSessionsGraph = "";
     private String initialSettingsGraph = "";
     private String groupsGraph = "";
     private String frameworkUri;
@@ -63,350 +64,341 @@ public class FrameworkConfiguration {
      * @throws IOException
      * @throws Exception
      */
-    public static synchronized FrameworkConfiguration getInstance(
-	    ServletContext context) throws Exception {
+    public static synchronized FrameworkConfiguration getInstance(ServletContext context)
+            throws Exception {
 
-	if (instance == null) {
+        if (instance == null) {
 
-	    instance = new FrameworkConfiguration();
+            instance = new FrameworkConfiguration();
 
-	    String configurationFile = "framework-configuration.ttl";
+            String configurationFile = "framework-configuration.ttl";
 
-	    instance.setFrameworkOntologyNS(LDIWO.NS);
+            instance.setFrameworkOntologyNS(LDIWO.NS);
 
-	    instance.setSmtpHost(context.getInitParameter("smtp-host"));
-	    instance.setSmtpTLSPort(context.getInitParameter("smpt-tls-port"));
-	    instance.setSmtpSSLPort(context.getInitParameter("smtp-ssl-port"));
-	    instance.setEmailAddress(context.getInitParameter("email"));
-	    instance.setEmailUsername(context.getInitParameter("user-name"));
-	    instance.setEmailPassword(context.getInitParameter("password"));
+            instance.setSmtpHost(context.getInitParameter("smtp-host"));
+            instance.setSmtpTLSPort(context.getInitParameter("smpt-tls-port"));
+            instance.setSmtpSSLPort(context.getInitParameter("smtp-ssl-port"));
+            instance.setEmailAddress(context.getInitParameter("email"));
+            instance.setEmailUsername(context.getInitParameter("user-name"));
+            instance.setEmailPassword(context.getInitParameter("password"));
 
-	    Model configurationModel = ModelFactory.createDefaultModel();
+            Model configurationModel = ModelFactory.createDefaultModel();
 
-	    // read configuration files
-	    try {
-		configurationModel.read(configurationFile);
-	    } catch (RiotException e) {
-		instance = null;
-		throw new IOException("Malformed " + configurationFile
-			+ " file");
-	    }
-	    // get the endpoint URI and endpoint to use for the framework
-	    String query = "PREFIX lds: <http://stack.linkeddata.org/ldis-schema/> "
-		    + "PREFIX rdfs: <"
-		    + RDFS.getURI()
-		    + ">"
-		    + " SELECT ?uri ?endpoint WHERE {"
-		    + " ?uri rdfs:label ?label . "
-		    + " ?uri lds:integrates ?component ."
-		    + " ?component lds:providesService ?service ."
-		    + " ?service a lds:SPARQLEndPointService ."
-		    + " ?service lds:serviceUrl ?endpoint ."
-		    + " FILTER regex(?label, \"LDWorkbench\", \"i\" )}";
+            // read configuration files
+            try {
+                configurationModel.read(configurationFile);
+            } catch (RiotException e) {
+                instance = null;
+                throw new IOException("Malformed " + configurationFile + " file");
+            }
+            // get the endpoint URI and endpoint to use for the framework
+            String query = "PREFIX lds: <http://stack.linkeddata.org/ldis-schema/> "
+                    + "PREFIX rdfs: <" + RDFS.getURI() + ">" + " SELECT ?uri ?endpoint WHERE {"
+                    + " ?uri rdfs:label ?label . " + " ?uri lds:integrates ?component ."
+                    + " ?component lds:providesService ?service ."
+                    + " ?service a lds:SPARQLEndPointService ."
+                    + " ?service lds:serviceUrl ?endpoint ."
+                    + " FILTER regex(?label, \"LDWorkbench\", \"i\" )}";
 
-	    QueryExecution qexec = QueryExecutionFactory.create(query,
-		    configurationModel);
-	    ResultSet results = qexec.execSelect();
-	    if (!results.hasNext()) {
-		instance = null;
-		throw new NullPointerException(
-			"Invalid initial parameter required at:\n" + query);
-	    }
-	    for (; results.hasNext();) {
-		QuerySolution soln = results.next();
-		instance.setFrameworkUri(soln.get("uri").toString());
-		instance.setPublicSparqlEndpoint(soln.get("endpoint")
-			.toString());
-		instance.setResourceNamespace(instance
-			.getFrameworkUri()
-			.substring(0,
-				instance.getFrameworkUri().lastIndexOf("/") + 1));
-	    }
-	    qexec.close();
+            QueryExecution qexec = QueryExecutionFactory.create(query, configurationModel);
+            ResultSet results = qexec.execSelect();
+            if (!results.hasNext()) {
+                instance = null;
+                throw new NullPointerException("Invalid initial parameter required at:\n" + query);
+            }
+            for (; results.hasNext();) {
+                QuerySolution soln = results.next();
+                instance.setFrameworkUri(soln.get("uri").toString());
+                instance.setPublicSparqlEndpoint(soln.get("endpoint").toString());
+                instance.setResourceNamespace(instance.getFrameworkUri().substring(0,
+                        instance.getFrameworkUri().lastIndexOf("/") + 1));
+            }
+            qexec.close();
 
-	    log.info("Framework URI:" + instance.getFrameworkUri());
-	    log.info("Framework endpoint:" + instance.getPublicSparqlEndpoint());
-	    log.info("Framework ResourceNamespace:"
-		    + instance.getResourceNamespace());
-	    log.info("Framework Ontology:" + instance.getFrameworkOntologyNS());
-	    // get the endpoint for authenticated users, and user and password
-	    // of the system framework
-	    query = "PREFIX lds: <http://stack.linkeddata.org/ldis-schema/>"
-		    + " SELECT ?endpoint ?user ?password WHERE {" + " <"
-		    + instance.getFrameworkUri()
-		    + ">  lds:integrates ?component ."
-		    + " ?component lds:providesService ?service ."
-		    + " ?service a lds:SecuredSPARQLEndPointService ."
-		    + " ?service lds:serviceUrl ?endpoint ."
-		    + " ?service lds:user ?user ."
-		    + " ?service lds:password ?password }";
+            log.info("Framework URI:" + instance.getFrameworkUri());
+            log.info("Framework endpoint:" + instance.getPublicSparqlEndpoint());
+            log.info("Framework ResourceNamespace:" + instance.getResourceNamespace());
+            log.info("Framework Ontology:" + instance.getFrameworkOntologyNS());
+            // get the endpoint for authenticated users, and user and password
+            // of the system framework
+            query = "PREFIX lds: <http://stack.linkeddata.org/ldis-schema/>"
+                    + " SELECT ?endpoint ?user ?password WHERE {" + " <"
+                    + instance.getFrameworkUri() + ">  lds:integrates ?component ."
+                    + " ?component lds:providesService ?service ."
+                    + " ?service a lds:SecuredSPARQLEndPointService ."
+                    + " ?service lds:serviceUrl ?endpoint ." + " ?service lds:user ?user ."
+                    + " ?service lds:password ?password }";
 
-	    qexec = QueryExecutionFactory.create(query, configurationModel);
-	    results = qexec.execSelect();
-	    if (!results.hasNext()) {
-		instance = null;
-		throw new NullPointerException(
-			"Invalid initial parameter required");
-	    }
-	    for (; results.hasNext();) {
-		QuerySolution soln = results.next();
-		instance.setAuthSparqlEndpoint(soln.get("endpoint").toString());
-		instance.setAuthSparqlUser(soln.get("user").asLiteral()
-			.getString());
-		instance.setAuthSparqlPassword(soln.get("password").asLiteral()
-			.getString());
-	    }
-	    qexec.close();
+            qexec = QueryExecutionFactory.create(query, configurationModel);
+            results = qexec.execSelect();
+            if (!results.hasNext()) {
+                instance = null;
+                throw new NullPointerException("Invalid initial parameter required");
+            }
+            for (; results.hasNext();) {
+                QuerySolution soln = results.next();
+                instance.setAuthSparqlEndpoint(soln.get("endpoint").toString());
+                instance.setAuthSparqlUser(soln.get("user").asLiteral().getString());
+                instance.setAuthSparqlPassword(soln.get("password").asLiteral().getString());
+            }
+            qexec.close();
 
-	    // get and set the database configuration (Virtuoso)
-	    query = "PREFIX lds: <http://stack.linkeddata.org/ldis-schema/>"
-		    + " SELECT ?connectionString ?user ?password WHERE {"
-		    + " <" + instance.getFrameworkUri()
-		    + ">  lds:integrates ?component ."
-		    + " ?component lds:providesService ?service ."
-		    + " ?service a lds:StorageService ."
-		    + " ?service lds:connectionString ?connectionString ."
-		    + " ?service lds:user ?user ."
-		    + " ?service lds:password ?password }";
-	    qexec = QueryExecutionFactory.create(query, configurationModel);
-	    results = qexec.execSelect();
-	    if (!results.hasNext()) {
-		instance = null;
-		throw new NullPointerException(
-			"Invalid initial parameter required");
-	    }
-	    for (; results.hasNext();) {
-		QuerySolution soln = results.next();
-		instance.setVirtuosoJdbcConnString(soln.get("connectionString")
-			.asLiteral().getString());
-		instance.setVirtuosoDbaUser(soln.get("user").asLiteral()
-			.getString());
-		instance.setVirtuosoDbaPassword(soln.get("password")
-			.asLiteral().getString());
-	    }
-	    qexec.close();
+            // get and set the database configuration (Virtuoso)
+            query = "PREFIX lds: <http://stack.linkeddata.org/ldis-schema/>"
+                    + " SELECT ?connectionString ?user ?password WHERE {" + " <"
+                    + instance.getFrameworkUri() + ">  lds:integrates ?component ."
+                    + " ?component lds:providesService ?service ."
+                    + " ?service a lds:StorageService ."
+                    + " ?service lds:connectionString ?connectionString ."
+                    + " ?service lds:user ?user ." + " ?service lds:password ?password }";
+            qexec = QueryExecutionFactory.create(query, configurationModel);
+            results = qexec.execSelect();
+            if (!results.hasNext()) {
+                instance = null;
+                throw new NullPointerException("Invalid initial parameter required");
+            }
+            for (; results.hasNext();) {
+                QuerySolution soln = results.next();
+                instance.setVirtuosoJdbcConnString(soln.get("connectionString").asLiteral()
+                        .getString());
+                instance.setVirtuosoDbaUser(soln.get("user").asLiteral().getString());
+                instance.setVirtuosoDbaPassword(soln.get("password").asLiteral().getString());
+            }
+            qexec.close();
 
-	    // get and set the system named graphs
-	    query = "PREFIX  sd:    <http://www.w3.org/ns/sparql-service-description#> "
-		    + "PREFIX  rdfs:  <http://www.w3.org/2000/01/rdf-schema#> "
-		    + "SELECT ?name ?label  "
-		    + "WHERE "
-		    + "{ ?s sd:namedGraph  ?o .  ?o sd:name ?name . ?o sd:graph ?g . ?g rdfs:label ?label } ";
-	    qexec = QueryExecutionFactory.create(query, configurationModel);
-	    results = qexec.execSelect();
-	    if (!results.hasNext()) {
-		instance = null;
-		throw new NullPointerException(
-			"Invalid initial parameter required");
-	    }
-	    for (; results.hasNext();) {
-		QuerySolution soln = results.next();
+            // get and set the system named graphs
+            query = "PREFIX  sd:    <http://www.w3.org/ns/sparql-service-description#> "
+                    + "PREFIX  rdfs:  <http://www.w3.org/2000/01/rdf-schema#> "
+                    + "SELECT ?name ?label  "
+                    + "WHERE "
+                    + "{ ?s sd:namedGraph  ?o .  ?o sd:name ?name . ?o sd:graph ?g . ?g rdfs:label ?label } ";
+            qexec = QueryExecutionFactory.create(query, configurationModel);
+            results = qexec.execSelect();
+            if (!results.hasNext()) {
+                instance = null;
+                throw new NullPointerException("Invalid initial parameter required");
+            }
+            for (; results.hasNext();) {
+                QuerySolution soln = results.next();
 
-		if ("settings"
-			.equals(soln.get("label").asLiteral().getString()))
-		    instance.setSettingsGraph(soln.get("name").toString());
-		else if ("initialSettings".equals(soln.get("label").asLiteral()
-			.getString()))
-		    instance.setInitialSettingsGraph(soln.get("name")
-			    .toString());
-		else if ("accounts".equals(soln.get("label").asLiteral()
-			.getString()))
-		    instance.setAccountsGraph(soln.get("name").toString());
-		else if ("groups".equals(soln.get("label").asLiteral()
-			.getString()))
-		    instance.setGroupsGraph(soln.get("name").toString());
-	    }
-	    qexec.close();
-	}
+                if ("settings".equals(soln.get("label").asLiteral().getString()))
+                    instance.setSettingsGraph(soln.get("name").toString());
+                else if ("initialSettings".equals(soln.get("label").asLiteral().getString()))
+                    instance.setInitialSettingsGraph(soln.get("name").toString());
+                else if ("accounts".equals(soln.get("label").asLiteral().getString()))
+                    instance.setAccountsGraph(soln.get("name").toString());
+                else if ("groups".equals(soln.get("label").asLiteral().getString()))
+                    instance.setGroupsGraph(soln.get("name").toString());
+                else if ("jobs".equals(soln.get("label").asLiteral().getString()))
+                    instance.setJobsGraph(soln.get("name").toString());
+                else if ("sessions".equals(soln.get("label").asLiteral().getString()))
+                    instance.setAuthSessionsGraph(soln.get("name").toString());
+            }
+            qexec.close();
+        }
 
-	return instance;
+        return instance;
     }
 
     public FrameworkUserManager getFrameworkUserManager() {
-	return new FrameworkUserManager(new VirtuosoUserManager(
-		this.virtuosoJdbcConnString, this.virtuosoDbaUser,
-		this.virtuosoDbaPassword), new SecureRdfStoreManagerImpl(
-		this.authSparqlEndpoint, this.AuthSparqlUser,
-		this.AuthSparqlPassword), instance);
+        return new FrameworkUserManager(new VirtuosoUserManager(this.virtuosoJdbcConnString,
+                this.virtuosoDbaUser, this.virtuosoDbaPassword), new SecureRdfStoreManagerImpl(
+                this.authSparqlEndpoint, this.AuthSparqlUser, this.AuthSparqlPassword), instance);
     }
 
     public VirtuosoUserManager getVirtuosoUserManager() {
-	return new VirtuosoUserManager(this.virtuosoJdbcConnString,
-		this.virtuosoDbaUser, this.virtuosoDbaPassword);
+        return new VirtuosoUserManager(this.virtuosoJdbcConnString, this.virtuosoDbaUser,
+                this.virtuosoDbaPassword);
     }
 
     public EmailSender getDefaultEmailSender() {
-	return getTLSEmailSender();
+        return getTLSEmailSender();
     }
 
     public EmailSender getTLSEmailSender() {
-	return new TLSEmailSender(this.smtpHost, this.smtpTLSPort,
-		this.emailAddress, this.emailUsername, this.emailPassword);
+        return new TLSEmailSender(this.smtpHost, this.smtpTLSPort, this.emailAddress,
+                this.emailUsername, this.emailPassword);
     }
 
     public EmailSender getSSLEmailSender() {
-	return new SSLEmailSender(this.smtpHost, this.smtpSSLPort,
-		this.emailAddress, this.emailUsername, this.emailPassword);
+        return new SSLEmailSender(this.smtpHost, this.smtpSSLPort, this.emailAddress,
+                this.emailUsername, this.emailPassword);
     }
 
     public String getSmtpHost() {
-	return smtpHost;
+        return smtpHost;
     }
 
     public void setSmtpHost(String smtpHost) {
-	this.smtpHost = smtpHost;
+        this.smtpHost = smtpHost;
     }
 
     public String getSmtpTLSPort() {
-	return smtpTLSPort;
+        return smtpTLSPort;
     }
 
     public void setSmtpTLSPort(String smtpTLSPort) {
-	this.smtpTLSPort = smtpTLSPort;
+        this.smtpTLSPort = smtpTLSPort;
     }
 
     public String getSmtpSSLPort() {
-	return smtpSSLPort;
+        return smtpSSLPort;
     }
 
     public void setSmtpSSLPort(String smtpSSLPort) {
-	this.smtpSSLPort = smtpSSLPort;
+        this.smtpSSLPort = smtpSSLPort;
     }
 
     public String getEmailAddress() {
-	return emailAddress;
+        return emailAddress;
     }
 
     public void setEmailAddress(String emailAddress) {
-	this.emailAddress = emailAddress;
+        this.emailAddress = emailAddress;
     }
 
     public String getEmailUsername() {
-	return emailUsername;
+        return emailUsername;
     }
 
     public void setEmailUsername(String emailUsername) {
-	this.emailUsername = emailUsername;
+        this.emailUsername = emailUsername;
     }
 
     public String getEmailPassword() {
-	return emailPassword;
+        return emailPassword;
     }
 
     public void setEmailPassword(String emailPassword) {
-	this.emailPassword = emailPassword;
+        this.emailPassword = emailPassword;
     }
 
     public String getVirtuosoDbaUser() {
-	return virtuosoDbaUser;
+        return virtuosoDbaUser;
     }
 
     public void setVirtuosoDbaUser(String virtuosoDbaUser) {
-	this.virtuosoDbaUser = virtuosoDbaUser;
+        this.virtuosoDbaUser = virtuosoDbaUser;
     }
 
     public String getVirtuosoDbaPassword() {
-	return virtuosoDbaPassword;
+        return virtuosoDbaPassword;
     }
 
     public void setVirtuosoDbaPassword(String virtuosoDbaPassword) {
-	this.virtuosoDbaPassword = virtuosoDbaPassword;
+        this.virtuosoDbaPassword = virtuosoDbaPassword;
     }
 
     public String getAuthSparqlEndpoint() {
-	return authSparqlEndpoint;
+        return authSparqlEndpoint;
     }
 
     public void setAuthSparqlEndpoint(String authSparqlEndpoint) {
-	this.authSparqlEndpoint = authSparqlEndpoint;
+        this.authSparqlEndpoint = authSparqlEndpoint;
     }
 
     public String getAuthSparqlUser() {
-	return AuthSparqlUser;
+        return AuthSparqlUser;
     }
 
     public void setAuthSparqlUser(String authSparqlUser) {
-	this.AuthSparqlUser = authSparqlUser;
+        this.AuthSparqlUser = authSparqlUser;
     }
 
     public String getAuthSparqlPassword() {
-	return AuthSparqlPassword;
+        return AuthSparqlPassword;
     }
 
     public void setAuthSparqlPassword(String authSparqlPassword) {
-	this.AuthSparqlPassword = authSparqlPassword;
+        this.AuthSparqlPassword = authSparqlPassword;
     }
 
     public String getAccountsGraph() {
-	return accountsGraph;
+        return accountsGraph;
     }
 
     public void setAccountsGraph(String accountsGraph) {
-	this.accountsGraph = accountsGraph;
+        this.accountsGraph = accountsGraph;
     }
 
     public String getSettingsGraph() {
-	return settingsGraph;
+        return settingsGraph;
     }
 
     public void setSettingsGraph(String settingsGraph) {
-	this.settingsGraph = settingsGraph;
+        this.settingsGraph = settingsGraph;
     }
 
     public String getInitialSettingsGraph() {
-	return initialSettingsGraph;
+        return initialSettingsGraph;
     }
 
     public void setInitialSettingsGraph(String initialSettingsGraph) {
-	this.initialSettingsGraph = initialSettingsGraph;
+        this.initialSettingsGraph = initialSettingsGraph;
     }
 
     public String getResourceNamespace() {
-	return resourceNS;
+        return resourceNS;
     }
 
     public void setResourceNamespace(String resourceNamespace) {
-	this.resourceNS = resourceNamespace;
+        this.resourceNS = resourceNamespace;
     }
 
     public String getPublicSparqlEndpoint() {
-	return publicSparqlEndpoint;
+        return publicSparqlEndpoint;
     }
 
     public void setPublicSparqlEndpoint(String publicSparqlEndpoint) {
-	this.publicSparqlEndpoint = publicSparqlEndpoint;
+        this.publicSparqlEndpoint = publicSparqlEndpoint;
     }
 
     public String getGroupsGraph() {
-	return groupsGraph;
+        return groupsGraph;
     }
 
     public void setGroupsGraph(String groupsGraph) {
-	this.groupsGraph = groupsGraph;
+        this.groupsGraph = groupsGraph;
     }
 
     public String getVirtuosoJdbcConnString() {
-	return virtuosoJdbcConnString;
+        return virtuosoJdbcConnString;
     }
 
     public void setVirtuosoJdbcConnString(String virtuosoJdbcConnString) {
-	this.virtuosoJdbcConnString = virtuosoJdbcConnString;
+        this.virtuosoJdbcConnString = virtuosoJdbcConnString;
     }
 
     public String getFrameworkOntologyNS() {
-	return frameworkOntologyNS;
+        return frameworkOntologyNS;
     }
 
     public void setFrameworkOntologyNS(String frameworkOntologyNS) {
-	this.frameworkOntologyNS = frameworkOntologyNS;
+        this.frameworkOntologyNS = frameworkOntologyNS;
     }
 
     public String getFrameworkUri() {
-	return frameworkUri;
+        return frameworkUri;
     }
 
     public void setFrameworkUri(String frameworkUri) {
-	this.frameworkUri = frameworkUri;
+        this.frameworkUri = frameworkUri;
+    }
+
+    public String getJobsGraph() {
+        return jobsGraph;
+    }
+
+    public void setJobsGraph(String jobsGraph) {
+        this.jobsGraph = jobsGraph;
+    }
+
+    public String getAuthSessionsGraph() {
+        return authSessionsGraph;
+    }
+
+    public void setAuthSessionsGraph(String authSessionsGraph) {
+        this.authSessionsGraph = authSessionsGraph;
     }
 
 }

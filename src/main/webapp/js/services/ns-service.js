@@ -31,7 +31,10 @@ module.factory('Ns', function (Helpers) {
 		"sd"			: "http://www.w3.org/ns/sparql-service-description#",
 		"skos"		: "http://www.w3.org/2004/02/skos/core#",
 		"void"		: "http://rdfs.org/ns/void#",
-		"wktrm"		: "http://wiktionary.dbpedia.org/terms/"                
+		"wktrm"		: "http://wiktionary.dbpedia.org/terms/",
+		"drugbank": "http://www4.wiwiss.fu-berlin.de/drugbank/resource/drugbank/",
+		"sider"		: "http://www4.wiwiss.fu-berlin.de/sider/resource/sider/",
+		"diseasome" : "http://www4.wiwiss.fu-berlin.de/diseasome/resource/diseasome/" 
 	};
 	
 	var buildNamespaces = function(){
@@ -54,6 +57,8 @@ module.factory('Ns', function (Helpers) {
 		},
 
 		getNamespace : function(prefix){
+			console.log(prefix);
+			console.log(prefixes);
 			return prefixes[prefix];
 		},
 
@@ -96,7 +101,7 @@ module.factory('Ns', function (Helpers) {
 				buildNamespaces();
 			}
 			else
-				console.log("WARNING: prefix already exist for " + prefixes[prefix]);
+				console.log("WARNING: not added "  + prefix + "  for " + namespace + "  already has : "+ prefixes[prefix]);
 		},
 
 		// return an array of prefix, namespace of the provided arr prefixes list
