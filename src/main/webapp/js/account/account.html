@@ -26,10 +26,14 @@
         <td>E-mail address:</td>
         <td>{{account.getEmail()}}</td>
       </tr>
-        <tr>
-            <td>Role:</td>
-            <td>{{account.getRole().name}}</td>
-        </tr>
+      <tr>
+        <td>Role:</td>
+        <td>{{account.getRole().name}}</td>
+      </tr>
+      <tr>
+        <td>Settings Graph:</td>
+        <td>{{account.getSettingsGraph()}}</td>
+      </tr>
     </table>
 
     <button type="button" class="btn-sm btn-success" data-toggle="modal" data-target="#modalChangePassword" ng-click="clearChangePasswordForm()">Change password</button>
@@ -39,7 +43,7 @@
       <div class="modal-content">
         <form name="changePasswordForm" class="form-horizontal InputForm" role="form">
           <div class="modal-header">
-            <button type="button" class="close" ng-click="close('#modalLogin')" aria-hidden="true">&times;</button>
+            <button type="button" class="close" ng-click="close('#modalChangePassword')" aria-hidden="true">&times;</button>
             <h5 class="modal-title green bold">Change password</h5>
           </div>
           <div class="modal-body">
@@ -82,7 +86,7 @@
           </div>
           <div class="modal-footer">
             <button type="submit" class="btn-sm btn-success" ng-click="changePassword();" ng-disabled="changePasswordForm.$invalid">Change</button>
-            <button type="button" class="btn-sm btn-default" ng-click="close('#modalLogin')">Cancel</button>
+            <button type="button" class="btn-sm btn-default" ng-click="close('#modalChangePassword')">Cancel</button>
           </div>
         </form>
       </div>

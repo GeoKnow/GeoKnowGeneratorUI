@@ -4,10 +4,23 @@ var module = angular.module('app.authsession-service', []);
 
 module.factory("AuthSessionService", function ($http) {
 
-    var createSession = function() {
-        return $http({
-            url: "rest/session",
-            method: "PUT"
-        });
-    };
+	var service = {
+
+		createSession : function() {
+      return $http({
+        url: "rest/session",
+        method: "PUT"
+      });
+		},
+
+		deleteSession : function(id) {
+      return $http({
+        url: "rest/session/"+id,
+        method: "DELETE"
+      });
+		}
+	};
+
+	return service;
+
 });

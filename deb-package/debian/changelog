@@ -1,5 +1,8 @@
 geoknow-generator-ui (1.0.2) ldstack-nightly; urgency=low
 
-  * Initial Release.
+  * Intermediate release of GeoKnow Generatro Workbench
+  * Includes user authentication and users and role management
+  * Implements graph level access control
+  * Requires spring batch admin generator for running batch processes
 
- -- Vadim Zaslawski <vadim.zaslawski@ontos.com>  Wed, 21 Aug 2013 15:01:15 +0200
+ -- Alejandra Garcia Rojas <alejandra.garciarojas@ontos.com>  Tue, 25 Nov 2014 17:11:12 +0200

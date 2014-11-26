@@ -124,8 +124,7 @@ app.config(function($routeSegmentProvider, $routeProvider)
             .up()
 
 		.segment('settings',{
-			templateUrl: 'js/settings/settings.html'
-		})
+			templateUrl: 'js/settings/settings.html'})
             .within()
                 .segment('datasets', {
                     templateUrl: 'js/settings/datasets/graphs.html'})
@@ -166,13 +165,7 @@ app.config(function($routeSegmentProvider, $routeProvider)
                 })
             .up()
         .segment('system-setup', {
-            templateUrl: 'system-setup.html',
-            // resolve: {
-            //     settings: function (ConfigurationService) {
-            //         return ConfigurationService.getSettings();
-            //     }
-            // }
-        })
+            templateUrl: 'system-setup.html'})
         .segment('default', {
             templateUrl: 'default.html',
             // resolve: {
@@ -214,7 +207,7 @@ app.config(function($routeSegmentProvider, $routeProvider)
     //redirect to system-setup page if system is not set up
     //redirect to access-denied page if user has no access to page
     $rootScope.$on("$routeChangeStart", function(event, next, current) {
-        var account = angular.copy(AccountService.getAccount());
+        var account = AccountService.getAccount();
         if ($rootScope.isSystemSetUp==undefined) {
             $http.get("rest/setup").then(function(response) {
                 $rootScope.isSystemSetUp = response.data == "true";

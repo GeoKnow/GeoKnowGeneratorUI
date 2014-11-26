@@ -50,24 +50,25 @@ angular.module("app.configuration", [])
     var request = function(url, data, callbackSuccess){
         var deferred = $q.defer();
         $http.post(url, $.param(data))
-        .success(function(data)
-        {
-            try{
-                deferred.resolve(callbackSuccess ? callbackSuccess(data) : data.results.bindings[0]["callret-0"].value);
-            }
-            catch (e){
-                // a problem with the callback
-                console.log(e);
-                flash.error = e.message;
-                deferred.reject(e);
-            }
-        })
-        .error(function(data, status){
-            var message = ServerErrorResponse.getMessage(status);
-            flash.error = message;
-            deferred.reject(message);
-        });
-
+        .then(
+            // success
+            function(response){
+                try{
+                    deferred.resolve(callbackSuccess ? callbackSuccess(response.data) : response.data.results.bindings[0]["callret-0"].value);
+                }
+                catch (e){
+                    // a problem with the callback
+                    console.log(e);
+                    flash.error = e.message;
+                    deferred.reject(e);
+                }
+            }, 
+            // error
+            function(response){
+                var message = ServerErrorResponse.getMessage(response);
+                flash.error = message;
+                deferred.reject(message);
+            });
         return deferred.promise;
     };
 

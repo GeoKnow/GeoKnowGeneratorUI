@@ -7,10 +7,15 @@
 * $scope.$parent.currentAccount and $scope.$parent.settings
 */
 function LoginCtrl($q, $scope, $location, flash, AccountService, LoginService, ServerErrorResponse, Base64, AuthenticationErrorResponse, ConfigurationService, UsersService) {
-    
+
+console.log("login ctrl");
+
     initialize();
 
     function initialize(){
+
+        console.log("initialise");
+
         $scope.login = {
             username : null,
             password : null 
@@ -21,7 +26,7 @@ function LoginCtrl($q, $scope, $location, flash, AccountService, LoginService, S
 
         // get the application settings and initalize scope variables
         ConfigurationService.getSettings().then(function(settings){
-            console.log(settings);
+
             $scope.currentAccount = AccountService.getAccount();
             // retrive default role if no user logged in
             if($scope.currentAccount.getRole() == undefined){

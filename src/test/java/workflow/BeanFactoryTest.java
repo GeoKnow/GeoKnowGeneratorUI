@@ -13,8 +13,6 @@ import org.springframework.schema.beans.Bean;
 import org.springframework.schema.beans.Beans;
 import org.springframework.schema.beans.ObjectFactory;
 
-import workflow.BeanFactory;
-
 public class BeanFactoryTest {
 
     @Test
@@ -35,6 +33,6 @@ public class BeanFactoryTest {
         jaxbMarshaller.marshal(beans, os);
         String res = new String(os.toByteArray());
         assertTrue(res
-                .contains("<beans xmlns=\"http://www.springframework.org/schema/beans\"><bean class=\"org.geoknow.batch.ServiceTasklet\""));
+                .contains("<beans xmlns=\"http://www.springframework.org/schema/beans\"><bean class=\"eu.geoknow.batch.ServiceTasklet\""));
     }
 }

@@ -47,7 +47,7 @@ public class BeanFactory {
 
         Bean bean = factory.createBean();
         bean.setId(id);
-        bean.setClazz("org.geoknow.batch.ServiceTasklet");
+        bean.setClazz("eu.geoknow.batch.ServiceTasklet");
         QName.valueOf("property");
 
         PropertyType pservice = factory.createPropertyType();

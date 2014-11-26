@@ -5,10 +5,13 @@ var module = angular.module('app.configuration-service', []);
 module.factory('ConfigurationService', function ($q, Config, $http, $location, flash, Helpers, ServerErrorResponse, Ns) {
     
     var SettingsService = {
-        getSettings : function(userAccount){
-            var defer = $q.defer();
+        getConfiguration : function(){
+            return $http.get("rest/config");
+        },
+
+        getSettings : function(){
             if(Config.getDefaultSettingsGraph() == undefined){
-                $http.get("rest/config").then(
+                return $http.get("rest/config").then(
                     function (response) {
                         Config.setFrameworkUri(response.data.frameworkUri);
                         Config.setNS(response.data.ns);
@@ -22,21 +25,14 @@ module.factory('ConfigurationService', function ($q, Config, $http, $location, f
                         Config.setFlagPath(response.data.flagPath);
                         Ns.getAllNamespaces                        
                         Ns.add(":", Config.getNS());
-                     
-                        Config.read().then(function(response){
-                            defer.resolve(response);    
-                        });
-
+                        return Config.read();
                     }, function(response){
                         var message = ServerErrorResponse.getMessage(response);
                         flash.error = message;
                     })
-                } else{
-                    Config.read().then(function(response){
-                        defer.resolve(response);    
-                    })
-                }
-             return defer.promise;
+            } 
+            else
+                return Config.read();
         },
         
         setup: function(reset){
@@ -322,7 +318,18 @@ module.factory('ConfigurationService', function ($q, Config, $http, $location, f
                 if (typeof serviceType != "undefined" && element["rdf:type"].indexOf(serviceType) === -1)
                     continue; // not of the required type
 
-                results.push(this.elementToJson(res, element));
+                var service = this.elementToJson(res, element);
+                // check if the serviice is online 
+                // console.log(service);
+                // $http.get(service.serviceUrl).then( function(response) {
+                //     service.offline = false;
+                //     results.push(service);
+                // }, function(response) {
+                //     service.offline = true;
+                //     results.push(service);
+                // });
+                results.push(service);
+                
             }
             return results;
         },

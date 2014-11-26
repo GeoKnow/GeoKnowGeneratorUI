@@ -31,22 +31,23 @@ module.factory('JobService', function ($http, $q) {
 	    	});
 		},
 
+		deleteJob : function(jobName){
+			return $http.delete("rest/jobs/"+jobName);
+		},
+
 		/**
 		* body is encoced to avoid confusion with the job object in the case
 		* where the body content for the service is also json
 		*/
 		addServiceJob : function(id, pdescription, pservice, pcontenttype, pmethod, pbody){
-			console.log(pbody);
-			
 			var data = { 
 				name : id,
 				description : pdescription,
 				service : pservice,
 				contenttype : pcontenttype,
 				method : pmethod,
-				body : JSON.stringify(pbody)
+				body : pbody
 			};
-			console.log(data);
 			return $http.put("rest/jobs", data).then( function (response){
 					return response.data;
 	    });

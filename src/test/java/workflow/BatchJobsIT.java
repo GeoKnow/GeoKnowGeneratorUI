@@ -1,5 +1,6 @@
 package workflow;
 
+import static com.jayway.restassured.RestAssured.delete;
 import static com.jayway.restassured.RestAssured.expect;
 import static com.jayway.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
@@ -62,8 +63,8 @@ public class BatchJobsIT {
                 equalTo(jobId));
 
         // check job description
-        given().cookies(cookies).when().get("/rest/jobs/" + jobId + "").then().body(
-                "job.description", equalTo("a job from admin"));
+        given().cookies(cookies).when().get("/rest/jobs/" + jobId).then().body("job.description",
+                equalTo("a job from admin"));
 
         // get the user's jobs
         given().cookies(cookies).when().get("/rest/jobs").then().body("jobs.name", hasItem(jobId));
@@ -75,6 +76,17 @@ public class BatchJobsIT {
         // stops a job
         given().cookies(cookies).when().delete("/rest/jobs/" + jobId + "/run").then().body(
                 "execution.status", not("STARTED"));
+
+        // deletes a job with no credentials
+        delete("/rest/jobs/" + jobId).then().assertThat().statusCode(401);
+
+        // delete unexisitng job
+        given().cookies(cookies).when().delete("/rest/jobs/22222").then().assertThat().statusCode(
+                404);
+
+        // delete a job
+        given().cookies(cookies).when().delete("/rest/jobs/" + jobId).then().assertThat()
+                .statusCode(204);
 
     }
 }

@@ -11,6 +11,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.CookieParam;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -86,6 +87,71 @@ public class Jobs {
             e.printStackTrace();
             throw new WebApplicationException(e);
         }
+    }
+
+    @DELETE
+    @Path("/{jobName}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response deleteJob(@CookieParam(value = "user") Cookie userc,
+            @CookieParam(value = "token") String token, @PathParam("jobName") String jobName) {
+        UserProfile user;
+        try {
+            user = frameworkUserManager.validate(userc, token);
+            if (user == null)
+                return Response.status(Response.Status.UNAUTHORIZED).entity("Invalid credentials")
+                        .build();
+        } catch (Exception e) {
+            log.error(e);
+            e.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage())
+                    .build();
+        }
+        try {
+            // ask if ther resource exists
+            String query = "ASK { GRAPH <" + jobsGraph + "> {<" + uriBase + jobName + "> <"
+                    + DC.creator.getURI() + "> <" + user.getAccountURI() + "> }}";
+            log.debug(query);
+            String result = frameworkRdfStoreManager.execute(query, "json");
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode rootNode = mapper.readTree(result);
+            if (rootNode.path("boolean").getBooleanValue()) {
+
+                // stop the execution if running
+                JobExecutions executions = BatchAdminClient.getAllExecutions();
+                JobExecution lastExec = executions.getJobExecutions().get(0);
+                if (lastExec.getStatus().contains("START")) {
+                    log.info("stopping " + lastExec.getId());
+                    BatchAdminClient.stopExecution(lastExec.getId());
+                }
+
+                query = "DELETE FROM <" + jobsGraph + "> { <" + uriBase + jobName + "> ?p ?o} "
+                        + " WHERE { <" + uriBase + jobName + "> ?p ?o ;  <" + DC.creator.getURI()
+                        + "> <" + user.getAccountURI() + "> } ";
+                log.debug(query);
+
+                result = frameworkRdfStoreManager.execute(query, "json");
+                log.debug(result);
+                mapper = new ObjectMapper();
+                rootNode = mapper.readTree(result);
+                Iterator<JsonNode> bindingsIter = rootNode.path("results").path("bindings")
+                        .getElements();
+                if (bindingsIter.hasNext()) {
+                    JsonNode bindingNode = bindingsIter.next();
+                    if (bindingNode.get("callret-0").path("value").getTextValue().contains("done"))
+                        return Response.status(Response.Status.NO_CONTENT).build();
+                }
+                return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(
+                        "For some reason, the record was not deleted").build();
+
+            } else
+                return Response.status(Response.Status.NOT_FOUND).build();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage())
+                    .build();
+        }
+
     }
 
     /**

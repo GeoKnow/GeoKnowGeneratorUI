@@ -1,6 +1,10 @@
 <div class="contents" ng-controller="LimesCtrl">
 
-  <h3 class="green bold">{{component.label}} <span ng-show="component.offline" class="glyphicon glyphicon-warning-sign btn-xs red"></span></h3>
+  <h3 class="green bold">{{component.label}} </h3>
+  <div ng-show="component.offline" class="alert alert-danger" role="alert">
+    <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+    <span class="sr-only">Error:</span> Resource is not available
+  </div>
   <dl class="dl-horizontal">
     <dt>Version:</dt>
     <dd>{{component.version}}</dd>

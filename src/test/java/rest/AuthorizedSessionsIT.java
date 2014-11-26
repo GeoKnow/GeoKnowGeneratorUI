@@ -1,5 +1,7 @@
 package rest;
 
+import static com.jayway.restassured.RestAssured.delete;
+import static com.jayway.restassured.RestAssured.get;
 import static com.jayway.restassured.RestAssured.given;
 import static com.jayway.restassured.path.json.JsonPath.from;
 import static org.hamcrest.Matchers.containsString;
@@ -51,7 +53,7 @@ public class AuthorizedSessionsIT {
     @Test
     public void testCreateAndDeleteSession() throws Exception {
 
-        // check job description
+        // creates a auth session with registered user (cookies)
         String body = given().cookies(cookies).when().put("/rest/session/").then().assertThat()
                 .statusCode(201).body("endpoint", containsString("rest/session")).extract().body()
                 .asString();
@@ -59,17 +61,16 @@ public class AuthorizedSessionsIT {
         // verify the session is available
         String session = from(body).get("endpoint");
         log.info(session);
-        log.info(given().when().get(session).then().extract().statusLine());
+        get(session).then().assertThat().statusCode(200);
 
-        // try to delete session
-        log.info(given().when().delete(session).then().assertThat().statusCode(401).extract()
-                .statusLine());
+        // try to delete session with no credentials
+        delete(session).then().assertThat().statusCode(401);
 
         // try to delete with credentials
-        given().when().cookies(cookies).delete(session).then().assertThat().statusCode(200);
+        given().when().cookies(cookies).delete(session).then().assertThat().statusCode(204);
 
         // test that deleted session is not found
         given().when().get(session).then().assertThat().statusCode(404);
-    }
 
+    }
 }

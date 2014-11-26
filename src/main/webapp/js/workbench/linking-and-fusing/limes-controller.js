@@ -234,13 +234,15 @@ var LimesCtrl = function($scope, $http, ConfigurationService, JobService, AuthSe
     	var params = validateLimesParams();
 
       var createAcceptedGraph = function(name, label, description){
+      	console.log("create " + name);
       	return GraphService.addSimpleGraph(name, label, description).then(function(response){
-      		params.acceptgraph = name;
+      		params.acceptgraph = ConfigurationService.getUriBase() + name;
       	});
       	
       }, createReviewGraph = function(name, label, description){
+      	console.log("create " + name);
       	return GraphService.addSimpleGraph(name, label, description).then(function(response){
-      		params.reviewgraph = name;
+      		params.reviewgraph = ConfigurationService.getUriBase() + name;
       	})
       }, createAuthEndpoint = function(){
 				/** 
@@ -268,12 +270,12 @@ var LimesCtrl = function($scope, $http, ConfigurationService, JobService, AuthSe
       };
 
 			createAcceptedGraph(jobDesc.name+"_accepted", "accepted", "Accepted links of "+jobDesc.name)
-				.then(createReviewGraph(jobDesc.name+"_review", "review", "Links for reviiew of "+jobDesc.name))
+				.then(createReviewGraph(jobDesc.name+"_review", "review", "Links to reviiew of "+jobDesc.name))
 				.then(createAuthEndpoint())
 				.then(function(){
 					params.uribase = ConfigurationService.getUriBase();
-					console.log(params);
-					JobService.addServiceJob(jobDesc.name, jobDesc.description, serviceUrl, "application/json", "POST", params).then(function(response){
+					console.log(JSON.stringify(params));
+					JobService.addServiceJob(jobDesc.name, jobDesc.description, serviceUrl, "application/json", "POST", JSON.stringify(params)).then(function(response){
 						console.log(response);
 						flash.success = "Job successfully added can be executed from the dashboard";
 					}, function(response){

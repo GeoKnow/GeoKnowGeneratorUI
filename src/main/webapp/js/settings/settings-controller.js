@@ -26,35 +26,52 @@ function SettingsMenuCtrl($scope) {
   };
 }
 
+function GeneralSettingsCtrl($scope, ConfigurationService, flash) {
 
-function GeneralSettingsCtrl($rootScope, $scope, $location, ConfigurationService, flash, $timeout) {
-
-    ConfigurationService.getSettings().then(function(){
-
-      $scope.endpointServices = ConfigurationService.getResourcesType("lds:SPARQLEndPointService");
-
-      $scope.settings = {
-          uriBase: ConfigurationService.getUriBase(),
+    ConfigurationService.getSettings().then(
+      //success
+      function(response){
+        
+        $scope.settings = {
+          uriBase: ConfigurationService.getUriBase() ,
           endpointService: ConfigurationService.getSPARQLEndpoint(),
-          settingsGraph: ConfigurationService.getSettingsGraph(),
-          publicEndpointService : ConfigurationService.getPublicSPARQLEndpoint(),
-          defaultSettingsGraphUri : ConfigurationService.getDefaultSettingsGraph(),
-          frameworkUri : ConfigurationService.getFrameworkUri(),
-          flagPath : ConfigurationService.getFlagPath()
+          settingsGraph : ConfigurationService.getSettingsGraph()
+        }; 
 
-      };  
-
-      // $scope.$watch(function () {
-      //   return ConfigurationService.getSettingsGraph();
-      // }, function () {
-      //   $scope.settings.settingsGraph = ConfigurationService.getSettingsGraph();
-      // });
-
+      },
+      // error 
+      function(response){
+        var message = ServerErrorResponse.getMessage(response);
+        flash.error = message;
     });
-    
-    // checkbox to initialize or reset the system
-    $scope.reset=true;
-    
+
+}
+
+function SystemSetupCtrl($rootScope, $scope, $location, ConfigurationService, flash, $timeout) {
+
+    ConfigurationService.getConfiguration().then(
+      //success
+      function(response){
+        
+        $scope.settings = {
+          uriBase: response.data.ns,
+          endpointService: response.data.authSparqlEndpoint,
+          publicEndpointService : response.data.sparqlEndpoint,
+          defaultSettingsGraphUri : response.data.defaultSettingsGraphUri,
+          frameworkUri : response.data.frameworkUri,
+          flagPath : response.data.flagPath
+        }; 
+         // checkbox to initialize or reset the system
+        $scope.reset=false;
+
+        console.log($scope.settings );
+      },
+      // error 
+      function(response){
+        var message = ServerErrorResponse.getMessage(response);
+        flash.error = message;
+    });
+
     $scope.setup = function(){
       return ConfigurationService.setup($scope.reset).then(function(response) {        
         $rootScope.isSystemSetUp =true;

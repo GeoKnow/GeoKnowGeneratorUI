@@ -1,12 +1,10 @@
 'use strict';
 
-function DashboardCtrl($scope, JobService) {
+function DashboardCtrl($scope, JobService, ConfigurationService, $http) {
  
   $scope.component = ConfigurationService.getComponent(":SpringBatchAdmin");
-  var services = ConfigurationService.getComponentServices(":SpringBatchAdmin");
-  var serviceUrl = services[0].serviceUrl; 
-
-	$scope.jobs = [];
+  
+  $scope.jobs = [];
  
   JobService.getAllJobs().then(function(jobs){
   	$scope.jobs = jobs;
@@ -32,6 +30,16 @@ function DashboardCtrl($scope, JobService) {
   $scope.reload = function(index){
     $scope.jobs[index].executions = undefined;
     $scope.getJobDetail(index);
+  },
+
+  $scope.delete = function(index){
+     JobService.deleteJob($scope.jobs[index].name).then(
+      function(response){
+        //refresh the table
+        JobService.getAllJobs().then(function(jobs){
+          $scope.jobs = jobs;
+        });
+    });
   },
 
   $scope.stopExecution = function(id){

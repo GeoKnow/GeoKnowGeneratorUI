@@ -118,11 +118,11 @@
       a       lds:StackComponent ;
       rdfs:label "Dashboard"^^xsd:string ;
       lds:providesService :SpringBatchAdminService ;
-      lds:version "0.1.0"^^xsd:string ;
+      lds:version "0.0.1"^^xsd:string ;
       foaf:homepage <https://github.com/GeoKnow/spring-batch-admin> .
 :SpringBatchAdminService
 a     lds:BatchProcessingService ;
-      lds:serviceUrl <http://localhost:9999/spring-batch-admin-sample/> .
+      lds:serviceUrl <http://localhost:9999/spring-batch-admin-geoknow/> .
 
 :UserManager
       a       lds:StackComponent ;

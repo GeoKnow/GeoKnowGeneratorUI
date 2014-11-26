@@ -150,6 +150,7 @@ public class GraphManagerServlet extends HttpServlet {
                     // and
                     // write
                     // graph
+                    log.info(permissions);
                     setGraphPermissions(graph, permissions);
                 }
 
@@ -368,6 +369,7 @@ public class GraphManagerServlet extends HttpServlet {
         if (permissionsString == null || permissionsString.isEmpty())
             return;
         // set public graph permissions
+        log.info(permissionsString);
         GraphPermissions graphPermissions = parsePermissions(permissionsString);
         virtuosoUserManager.setDefaultGraphPermissions(graph, graphPermissions
                 .getDefaultPermissions());

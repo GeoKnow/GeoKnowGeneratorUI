@@ -26,6 +26,8 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedHashMap;
+import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
 import javax.ws.rs.core.UriInfo;
@@ -139,15 +141,15 @@ public class AuthorizedSessions {
     @Path("{sessionToken}")
     public Response get(@PathParam("sessionToken") String sessionToken, @Context UriInfo uriInfo)
             throws Exception {
-        return post(sessionToken, uriInfo);
+        MultivaluedMap<String, String> formParams = new MultivaluedHashMap<String, String>();
+        return post(sessionToken, uriInfo, formParams);
     }
 
     @POST
     @Path("{sessionToken}")
-    public Response post(@PathParam("sessionToken") String sessionToken, @Context UriInfo uriInfo)
-            throws Exception {
+    public Response post(@PathParam("sessionToken") String sessionToken, @Context UriInfo uriInfo,
+            MultivaluedMap<String, String> formParams) throws Exception {
 
-        log.info(sessionToken);
         String username = "";
         /*
          * retrieves form user that created that session and the rdfUser and
@@ -156,10 +158,9 @@ public class AuthorizedSessions {
         try {
             String query = "SELECT ?user FROM <" + sessionsGraph + "> WHERE { ?user " + " <"
                     + LDIWO.sessionToken + "> \"" + sessionToken + "\"^^xsd:string .}";
-            log.debug(query);
 
             String result = frameworkRdfStoreManager.execute(query, "json");
-            log.debug(result);
+
             ObjectMapper mapper = new ObjectMapper();
             JsonNode rootNode = mapper.readTree(result);
             Iterator<JsonNode> bindingsIter = rootNode.path("results").path("bindings")
@@ -192,10 +193,13 @@ public class AuthorizedSessions {
         // create post method and set parameters
         HttpPost proxyMethod = new HttpPost(endpoint);
         ArrayList<NameValuePair> postParameters = new ArrayList<NameValuePair>();
-        for (Entry<String, List<String>> entity : uriInfo.getQueryParameters().entrySet()) {
+        // when is GET we extract query params using uriInfo
+        for (Entry<String, List<String>> entity : uriInfo.getQueryParameters().entrySet())
             postParameters.add(new BasicNameValuePair(entity.getKey(), entity.getValue().get(0)));
+        // when is POST we extract using formParams
+        for (String key : formParams.keySet())
+            postParameters.add(new BasicNameValuePair(key, formParams.getFirst(key)));
 
-        }
         proxyMethod.setEntity(new UrlEncodedFormEntity(postParameters));
         // create the httpclient and reads/wirtes repsponse
         CloseableHttpClient httpClient = HttpClients.createDefault();
@@ -240,7 +244,7 @@ public class AuthorizedSessions {
                     .build();
         }
 
-        String query = "DELETE FROM <http://generator.geoknow.eu/resource/sessionsGraph> {?s ?p ?o} "
+        String query = "DELETE FROM <" + sessionsGraph + "> {?s ?p ?o} "
                 + "WHERE { ?s ?p ?o . FILTER(str(?o) = \"" + sessionToken + "\") } ";
         log.debug(query);
 
@@ -251,6 +255,6 @@ public class AuthorizedSessions {
                     .build();
         }
 
-        return Response.ok().build();
+        return Response.status(Response.Status.NO_CONTENT).build();
     }
 }

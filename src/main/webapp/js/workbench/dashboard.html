@@ -20,18 +20,22 @@
 
 		</div>
 
-	<div class="col-xs-10 contents" app-view-segment="1" >
+	<div class="col-xs-10 contents" app-view-segment="1"  ng-controller="DashboardCtrl">
     
 	 <h3 class="green bold">{{component.label}} </h3>
-    <dl class="dl-horizontal">
+   <!-- <div ng-show="component.offline" class="alert alert-danger" role="alert">
+    <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+    <span class="sr-only">Error:</span> Resource is not available
+  </div> -->
+
+  <dl class="dl-horizontal">
     <dt>Version:</dt>
     <dd>{{component.version}}</dd>
-    </dl>
+  </dl>
 			
-		<table class="table table-striped" ng-controller="DashboardCtrl">
+	<table class="table table-striped">
 		<thead>
   	<tr>
-    <th></th>
     <th>Name</th>
     <th>Description</th>
     <th>Execution Count</th>
@@ -41,10 +45,6 @@
 		</thead>
 		<tbody ng-repeat="job in jobs" ng-init="jobIndex = $index">
    	<tr data-toggle="collapse" data-target="#{{job.name}}" class="accordion-toggle" ng-click="getJobDetail(jobIndex)">
-    <td>
-      <button type="button" class="btn btn-default btn-xs">
-        <span class="glyphicon glyphicon-trash"></span></button>
-    </td>
     <td>{{job.name}}</td>
     <td>{{job.description}}</td>
     <td>{{job.executionCount}}</td>
@@ -58,6 +58,8 @@
         <thead>
         <tr>
           <td colspan="3">
+            <button type="button" class="btn btn-link btn-xs" ng-click="delete(jobIndex)">
+              <i class="glyphicon glyphicon-trash"></i></button>
             <button type="button" class="btn btn-link btn-xs" ng-click="reload(jobIndex)">
               <i class="glyphicon glyphicon-refresh"></i></button>
             <button type="button" class="btn btn-link  btn-xs" ng-click="execute(jobIndex)">
@@ -89,8 +91,8 @@
     </td>
     </tr>
 		</tbody>
-		</table>
-  </div>
+	</table>
+</div>
 
 
 
