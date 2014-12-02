@@ -55,11 +55,16 @@ import com.ontos.ldiw.vocabulary.LDIWO;
  * 
  * @author alejandragarciarojas
  *
+ *         Jobs that are registered in the Store but not in spring-batch-admin,
+ *         are automatically registered in the GET method
+ * 
  *         TODO: add pagination to responses
  * 
- *         TODO: jobs are deleted each time the spring-batch-admin is
- *         reinitialized, we need to register them again if the jobGraph has
- *         them
+ *         TODO: use the ResourceNotFoundException to return more meaningful
+ *         errors
+ * 
+ *         TODO: define a job access control (the user may decide who can
+ *         read/write/execute jobs he has created)
  * 
  */
 
