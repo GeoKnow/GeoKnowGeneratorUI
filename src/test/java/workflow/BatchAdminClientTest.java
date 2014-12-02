@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 
-import java.io.File;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
@@ -15,6 +14,7 @@ import workflow.beans.JobExecutionWraper;
 import workflow.beans.JobExecutions;
 import workflow.beans.JobsRegistered;
 import workflow.beans.Registration;
+import ApplicationExceptions.ResourceNotFoundException;
 
 /**
  * To run these tests we assume that spring-batch-admin-xxxxx is running
@@ -25,36 +25,21 @@ import workflow.beans.Registration;
  */
 public class BatchAdminClientTest {
 
-    //
-    // @Test
-    // public void registerXmlJobTest() throws Exception {
-    // JobFactory.getInstance();
-    // String id = "testXml_" + UUID.randomUUID().toString();
-    // String xml = JobFactory.createOneStepServiceJobXml(id, "http:/ddd/...",
-    // "application/json",
-    // "post", "{some:json}");
-    //
-    // assertTrue(xml.contains(id));
-    // String response = BatchAdminClient.registerJob(xml);
-    //
-    // }
-
     @Test
-    public void registeFileJobTest() throws Exception {
+    public void registeXmlJobTest() throws Exception {
 
         Calendar calendar = new GregorianCalendar();
 
         JobFactory.getInstance();
-        String id = "testFile_" + calendar.getTimeInMillis();
+        String id = "testXml_" + calendar.getTimeInMillis();
         String description = "some description";
-        File file = JobFactory.createOneStepServiceJobFile(id, description, "http://...",
+        String xml = JobFactory.createOneStepServiceJobXml(id, description, "http://...",
                 "application/json", "post", "{some:json}");
-        assertTrue(file.exists());
+        assertTrue(xml.startsWith("<?xml version="));
 
-        Registration response = BatchAdminClient.registerJob(id, file);
+        Registration response = BatchAdminClient.registerJob(id, xml);
         assertEquals(id, response.getName());
-        // TODO: descriptions of job is not implemented
-        // assertEquals(description, response.getDescription());
+
     }
 
     @Test
@@ -69,16 +54,10 @@ public class BatchAdminClientTest {
         assertEquals("job1", job.getName());
     }
 
-    // @Test
-    // public void getNoExecutions() throws Exception {
-    // JobExecutions executions = BatchAdminClient.getExecutions();
-    // assertEquals(0, executions.getJobExecutions().size());
-    // }
-
-    @Test
+    @Test(expected = ResourceNotFoundException.class)
     public void getUnexistingExecution() throws Exception {
         JobExecutionWraper execution = BatchAdminClient.getExecutionDetail("91919");
-        assertEquals(null, execution.getJobExecution());
+        execution.getJobExecution();
     }
 
     @Test
@@ -93,11 +72,11 @@ public class BatchAdminClientTest {
         exec = BatchAdminClient.runJob("limesJobSampleJson");
         assertEquals("START", exec.getStatus().substring(0, 5));
 
-        JobExecutionWraper execution = BatchAdminClient.getExecutionDetail("1");
-        assertEquals("1", execution.getJobExecution().getId());
+        JobExecutionWraper execution = BatchAdminClient.getExecutionDetail(exec.getId());
+        assertEquals(exec.getId(), execution.getJobExecution().getId());
 
-        JobExecutionWraper execWr = BatchAdminClient.stopExecution("1");
-        System.out.println(execWr.toString());
+        JobExecutionWraper execWr = BatchAdminClient.stopExecution(exec.getId());
+        assertEquals("STOPPING", execWr.getJobExecution().getStatus());
 
     }
 

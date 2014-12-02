@@ -1,7 +1,9 @@
 package workflow.rest;
 
-import java.io.File;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -42,7 +44,11 @@ import accounts.UserProfile;
 import authentication.FrameworkConfiguration;
 
 import com.google.gson.Gson;
-import com.hp.hpl.jena.vocabulary.DC;
+import com.hp.hpl.jena.datatypes.xsd.XSDDateTime;
+import com.hp.hpl.jena.rdf.model.ResourceFactory;
+import com.hp.hpl.jena.vocabulary.DCTerms;
+import com.hp.hpl.jena.vocabulary.XSD;
+import com.ontos.ldiw.vocabulary.LDIWO;
 
 /**
  * Rest API for Batch Job processing
@@ -109,7 +115,7 @@ public class Jobs {
         try {
             // ask if ther resource exists
             String query = "ASK { GRAPH <" + jobsGraph + "> {<" + uriBase + jobName + "> <"
-                    + DC.creator.getURI() + "> <" + user.getAccountURI() + "> }}";
+                    + DCTerms.creator.getURI() + "> <" + user.getAccountURI() + "> }}";
             log.debug(query);
             String result = frameworkRdfStoreManager.execute(query, "json");
             ObjectMapper mapper = new ObjectMapper();
@@ -125,8 +131,8 @@ public class Jobs {
                 }
 
                 query = "DELETE FROM <" + jobsGraph + "> { <" + uriBase + jobName + "> ?p ?o} "
-                        + " WHERE { <" + uriBase + jobName + "> ?p ?o ;  <" + DC.creator.getURI()
-                        + "> <" + user.getAccountURI() + "> } ";
+                        + " WHERE { <" + uriBase + jobName + "> ?p ?o ;  <"
+                        + DCTerms.creator.getURI() + "> <" + user.getAccountURI() + "> } ";
                 log.debug(query);
 
                 result = frameworkRdfStoreManager.execute(query, "json");
@@ -185,6 +191,7 @@ public class Jobs {
                     .build();
         }
         JobExecution execution;
+        log.debug("Executes job: " + jobName);
         try {
             execution = BatchAdminClient.runJob(jobName);
         } catch (Exception e) {
@@ -235,9 +242,10 @@ public class Jobs {
         }
 
         try {
-            String query = "SELECT ?desc FROM <" + jobsGraph + "> WHERE { <" + uriBase + jobName
-                    + "> <" + DC.creator.getURI() + "> <" + user.getAccountURI() + "> . <"
-                    + uriBase + jobName + "> <" + DC.description.getURI() + "> ?desc}";
+            String query = "SELECT ?desc ?created FROM <" + jobsGraph + "> WHERE { <" + uriBase
+                    + jobName + "> <" + DCTerms.creator.getURI() + "> <" + user.getAccountURI()
+                    + ">; <" + DCTerms.description.getURI() + "> ?desc ; <"
+                    + DCTerms.created.getURI() + "> ?created }";
             log.debug(query);
 
             String result = frameworkRdfStoreManager.execute(query, "json");
@@ -250,11 +258,12 @@ public class Jobs {
             if (bindingsIter.hasNext()) {
                 JsonNode bindingNode = bindingsIter.next();
                 String jobDesc = bindingNode.get("desc").path("value").getTextValue();
-                log.debug(jobName + " description:" + jobDesc);
+                String created = bindingNode.get("created").path("value").getTextValue();
                 JobExecutions executions = new JobExecutions();
 
                 Registration job = BatchAdminClient.getJob(jobName);
                 job.setDescription(jobDesc);
+                job.setCereated(created);
                 // complete with execution information
 
                 Set<Integer> instances = job.getJobInstances().keySet();
@@ -318,9 +327,11 @@ public class Jobs {
 
             List<Registration> userRegistrations = new ArrayList<Registration>();
 
-            String query = "SELECT ?job ?desc FROM <" + jobsGraph + "> WHERE { ?job <"
-                    + DC.creator.getURI() + "> <" + user.getAccountURI() + "> . ?job <"
-                    + DC.description.getURI() + "> ?desc}";
+            String query = "SELECT ?job ?desc ?created ?xml FROM <" + jobsGraph
+                    + "> WHERE { ?job <" + DCTerms.creator.getURI() + "> <" + user.getAccountURI()
+                    + "> ; <" + DCTerms.description.getURI() + "> ?desc ; <"
+                    + DCTerms.created.getURI() + "> ?created ; <" + LDIWO.xmlDefinition.getURI()
+                    + "> ?xml }";
             log.debug(query);
 
             String result = frameworkRdfStoreManager.execute(query, "json");
@@ -333,8 +344,20 @@ public class Jobs {
                 JsonNode bindingNode = bindingsIter.next();
                 String jobId = bindingNode.get("job").path("value").getTextValue();
                 String jobDesc = bindingNode.get("desc").path("value").getTextValue();
+                String created = bindingNode.get("created").path("value").asText();
+                String xml = URLDecoder.decode(bindingNode.get("xml").path("value").asText(),
+                        "UTF-8");
+                log.debug(xml);
                 Registration registration = registrations.get(jobId.replace(uriBase, ""));
-                registration.setDescription(jobDesc);
+
+                if (registration == null) {
+                    log.warn("registering not registered job: " + jobId);
+                    registration = BatchAdminClient.registerJob(jobId.replace(uriBase, ""), xml);
+                } else {
+                    registration.setDescription(jobDesc);
+                    registration.setCereated(created);
+                }
+
                 userRegistrations.add(registration);
             }
             Gson gson = new Gson();
@@ -393,18 +416,26 @@ public class Jobs {
         }
 
         Registration job = null;
-        File file;
+        String xml;
         try {
             JobFactory.getInstance();
-            file = JobFactory.createOneStepServiceJobFile(serviceJob);
+            xml = JobFactory.createOneStepServiceJobXml(serviceJob);
             // register job in the batch-admin
-            job = BatchAdminClient.registerJob(serviceJob.getName(), file);
+            job = BatchAdminClient.registerJob(serviceJob.getName(), xml);
             job.setDescription(serviceJob.getDescription());
 
-            String query = "INSERT INTO <" + jobsGraph + "> { <" + uriBase + job.getName() + "> <"
-                    + DC.creator.getURI() + "> <" + user.getAccountURI() + "> . " + "<" + uriBase
-                    + job.getName() + "> <" + DC.description.getURI() + "> \""
-                    + job.getDescription() + "\"^^xsd:string}";
+            XSDDateTime xsdDate = new XSDDateTime(GregorianCalendar.getInstance());
+
+            // TODO: currently using URLencoder to save the XML, but there
+            // should be used another encoder for unicode/turtle
+            String query = "INSERT INTO <" + jobsGraph + "> { " + "<" + uriBase + job.getName()
+                    + "> a <" + LDIWO.Job.getURI() + "> ;" + "<" + DCTerms.creator.getURI() + "> <"
+                    + user.getAccountURI() + "> ; " + "<" + DCTerms.created.getURI() + "> \""
+                    + ResourceFactory.createTypedLiteral(xsdDate).getString() + "\"^^<"
+                    + XSD.dateTime.getURI() + "> ; " + "<" + DCTerms.description.getURI() + "> \""
+                    + job.getDescription() + "\"^^<" + XSD.xstring.getURI() + "> ; " + "<"
+                    + LDIWO.xmlDefinition.getURI() + "> \"" + URLEncoder.encode(xml, "utf-8")
+                    + "\"^^<" + XSD.xstring.getURI() + "> }";
             log.debug(query);
 
             frameworkRdfStoreManager.execute(query, "json");
@@ -424,5 +455,4 @@ public class Jobs {
         }
 
     }
-
 }

@@ -1,12 +1,8 @@
 package workflow;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.net.URLDecoder;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -36,7 +32,6 @@ public class JobFactory {
     private static org.springframework.schema.beans.ObjectFactory beanFactory;
 
     // TODO: this directory should stay outside of the webappp
-    private static String files_dir = "/etc/generator/batch-jobs";
 
     private static JobFactory instance;
 
@@ -47,15 +42,6 @@ public class JobFactory {
 
         batchFactory = new org.springframework.schema.batch.ObjectFactory();
         beanFactory = new org.springframework.schema.beans.ObjectFactory();
-
-        File seshdir = new File(files_dir);
-        if (!seshdir.exists()) {
-            if (!seshdir.mkdirs()) {
-                log.error("Couldnt create jobs directory: " + seshdir.getAbsolutePath());
-                throw new Exception("Couldnt create jobs directory: " + seshdir.getAbsolutePath());
-            } else
-                log.info("creating jobs directory: " + seshdir.getAbsolutePath());
-        }
 
         instance = new JobFactory();
         return instance;
@@ -70,33 +56,6 @@ public class JobFactory {
         job.setRestartable("true");
 
         return job;
-    }
-
-    /**
-     * Creates One-Step REST Service Job file the job and writes a xml file with
-     * the same name as the jobIds
-     * 
-     * @param jobId
-     * @param service
-     * @param contenttype
-     * @param method
-     * @param body
-     * @return
-     * @throws JAXBException
-     * @throws IOException
-     */
-    public static File createOneStepServiceJobFile(String jobId, String description,
-            String service, String contenttype, String method, String body) throws JAXBException,
-            IOException {
-
-        log.debug(service);
-        log.debug(body);
-        String xml = createOneStepServiceJobXml(jobId, description, service, contenttype, method,
-                body);
-        Path file = Files.write(Paths.get(files_dir, jobId + ".xml"), xml.getBytes());
-
-        log.debug(file.toAbsolutePath());
-        return file.toFile();
     }
 
     /**
@@ -174,17 +133,19 @@ public class JobFactory {
      * requires URLEncoded.
      * 
      * @param job
-     * @return File
+     * @return xml string
      * @throws JAXBException
      * @throws IOException
      */
-    public static File createOneStepServiceJobFile(OneStepServiceJob job) throws JAXBException,
+
+    public static String createOneStepServiceJobXml(OneStepServiceJob job) throws JAXBException,
             IOException {
         log.debug(job.toString());
 
-        File file = createOneStepServiceJobFile(job.getName(), job.getDescription(), job
+        String xml = createOneStepServiceJobXml(job.getName(), job.getDescription(), job
                 .getService(), job.getContenttype(), job.getMethod(), URLDecoder.decode(job
                 .getBody(), "utf-8"));
-        return file;
+        return xml;
     }
+
 }

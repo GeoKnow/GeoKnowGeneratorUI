@@ -1,87 +1,26 @@
-# baseURI: http://generator.geoknow.eu/ontology/
+# baseURI: http://ldiw.ontos.com/ontology/
 
 @prefix :        <http://ldiw.ontos.com/ontology/> .
+@prefix dcterms:  <http://purl.org/dc/terms/> .
+@prefix foaf:    <http://xmlns.com/foaf/0.1/> .
+@prefix lds:     <http://stack.linkeddata.org/ldis-schema/> .
 @prefix owl:     <http://www.w3.org/2002/07/owl#> .
 @prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
-@prefix dcterms:  <http://purl.org/dc/terms/> .
 @prefix sd:      <http://www.w3.org/ns/sparql-service-description#> .
 @prefix void:    <http://rdfs.org/ns/void#> .
-@prefix foaf:    <http://xmlns.com/foaf/0.1/> .
-@prefix lds:     <http://stack.linkeddata.org/ldis-schema/> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
 
 :     rdf:type owl:Ontology ;
-      owl:versionInfo "Created with TopBraid Composer"^^xsd:string .
+	  dcterms:contributor "Alejandra Garcia Rojas"^^xsd:string ;
+      dcterms:descripton "Schema the Linked Data Integration Workbench"^^xsd:string ;
+      owl:versionInfo "0.1.1"^^xsd:string .
 
 :Account
       rdf:type owl:Class ;
       rdfs:comment "Account for the workbench"@en ;
-      rdfs:label "Account"^^xsd:string ;
+      rdfs:label "Account"@en ;
       rdfs:subClassOf foaf:OnlineAccount .
-
-:rdfStorePassword
-      rdf:type owl:DatatypeProperty ;
-      rdfs:domain :Account ;
-      rdfs:label "RDF Store Password"@en ;
-      rdfs:range xsd:string .
-
-:rdfStoreUsername
-      rdf:type owl:DatatypeProperty ;
-      rdfs:domain :Account ;
-      rdfs:label "RDF store username"@en ;
-      rdfs:range xsd:string .
-
-:role
-      rdf:type owl:ObjectProperty ;
-      rdfs:domain :Account ;
-      rdfs:label "role"@en ;
-      rdfs:range :Role .
-
-:sessionToken
-      rdf:type owl:DatatypeProperty ;
-      rdfs:domain :Account ;
-      rdfs:label "session token"@en ;
-      rdfs:range xsd:string .
-
-:settingsGraph
-      rdf:type owl:DatatypeProperty ;
-      rdfs:domain :Account ;
-      rdfs:label "settings graph"@en ;
-      rdfs:range xsd:anyURI .
-
-:passwordSha1Hash
-      rdf:type owl:DatatypeProperty ;
-      rdfs:domain :Account ;
-      rdfs:comment "Workbench account password hash"@en ;
-      rdfs:label "password sha1 hash"@en ;
-      rdfs:range xsd:string .
-
-:Role
-      rdf:type owl:Class ;
-      rdfs:comment "Class associate with rights to use service which could be assigned to users."@en ;
-      rdfs:label "Role"@en ;
-      rdfs:subClassOf owl:Thing .
-
-:isAllowedToUseService
-      rdf:type owl:ObjectProperty ;
-      rdfs:domain :Role;
-      rdfs:label "is allowed to use service"^^xsd:string ;
-      rdfs:range lds:ComponentService .
-
-:isNotLoggedIn
-      rdf:type owl:DatatypeProperty ;
-      rdfs:domain :Role ;
-      rdfs:comment "Role is used as default for not logged in user" ;
-      rdfs:label "isNotLoggedIn"@en ;
-      rdfs:range xsd:boolean .
-
-:isDefault
-      rdf:type owl:DatatypeProperty ;
-      rdfs:domain :Role ;
-      rdfs:comment "Role is used as default for newly registered user" ;
-      rdfs:label "isDefault"@en ;
-      rdfs:range xsd:boolean .
 
 :Administrator
       rdf:type :Role ;
@@ -95,7 +34,7 @@
 
 :DataSource
       rdf:type owl:Class ;
-      rdfs:label "Data Source"^^xsd:string ;
+      rdfs:label "Data Source"@en ;
       rdfs:subClassOf owl:Thing .
 
 :Database
@@ -103,15 +42,49 @@
       rdfs:label "Database"^^xsd:string ;
       rdfs:subClassOf :DataSource .
 
+:DatabaseType
+      rdf:type owl:Class ;
+      rdfs:label "Database Type"@en ;
+      rdfs:subClassOf owl:Thing .
+
+:IBM_DB2
+      rdf:type :DatabaseType ;
+      rdfs:label "IBM DB2"^^xsd:string .
+
+:Job  rdf:type owl:Class ;
+      rdfs:label "Job"@en ;
+      rdfs:subClassOf owl:Thing .
+
+:MicrosoftSQLServer
+      rdf:type :DatabaseType ;
+      rdfs:label "MicrosoftSQLServer"^^xsd:string .
+
+:MySQL
+      rdf:type :DatabaseType ;
+      rdfs:label "MySQL"^^xsd:string .
+
+:OracleSpatial
+      rdf:type :DatabaseType ;
+      rdfs:label "Oracle Spatial"^^xsd:string .
+
+:PostGIS
+      rdf:type :DatabaseType ;
+      rdfs:label "PostGIS"^^xsd:string .
+
+:Role
+      rdf:type owl:Class ;
+      rdfs:comment "Class associate with rights to use service which could be assigned to users."@en ;
+      rdfs:label "Role"@en ;
+      rdfs:subClassOf owl:Thing .
+
+:RouteRestriction
+      rdf:type owl:Class ;
+      rdfs:label "Route Restriction"@en .
+
 :SPARQLEndpoint
       rdf:type owl:Class ;
       rdfs:label "SPARQL endpoint"^^xsd:string ;
       rdfs:subClassOf :DataSource .
-
-:DatabaseType
-      rdf:type owl:Class ;
-      rdfs:label "Database types"@en ;
-      rdfs:subClassOf owl:Thing .
 
 :dbHost
       rdf:type owl:DatatypeProperty ;
@@ -155,6 +128,25 @@
       rdfs:domain :SPARQLEndpoint ;
       rdfs:label "endpoint"^^xsd:string .
 
+:isAllowedToUseService
+      rdf:type owl:ObjectProperty ;
+      rdfs:domain :Role ;
+      rdfs:label "is allowed to use service"^^xsd:string ;
+      rdfs:range lds:ComponentService .
+
+:isDefault
+      rdf:type owl:DatatypeProperty ;
+      rdfs:comment "Role is used as default for newly registered user" ;
+      rdfs:domain :Role ;
+      rdfs:label "isDefault"@en ;
+      rdfs:range xsd:boolean .
+
+:isNotLoggedIn
+      rdf:type owl:DatatypeProperty ;
+      rdfs:comment "Role is used as default for not logged in user" ;
+      rdfs:domain :Role ;
+      rdfs:label "isNotLoggedIn"@en ;
+      rdfs:range xsd:boolean .
 
 :jdbcDSN
       rdf:type owl:DatatypeProperty ;
@@ -170,25 +162,60 @@
       rdfs:comment "ODBC DSN" ;
       rdfs:label "ODBC data source name. Deprecated, use JDBC instead (with ODBC-JDBC bridge if necessary)." .
 
-:IBM_DB2
-      rdf:type :DatabaseType ;
-      rdfs:label "IBM DB2"^^xsd:string .
+:partialUrl
+      rdf:type owl:DatatypeProperty ;
+      rdfs:domain :RouteRestriction ;
+      rdfs:label "partial url"^^xsd:string ;
+      rdfs:range xsd:string .
 
-:MySQL
-      rdf:type :DatabaseType ;
-      rdfs:label "MySQL"^^xsd:string .
+:passwordSha1Hash
+      rdf:type owl:DatatypeProperty ;
+      rdfs:comment "Workbench account password hash"@en ;
+      rdfs:domain :Account ;
+      rdfs:label "password sha1 hash"@en ;
+      rdfs:range xsd:string .
 
-:OracleSpatial
-      rdf:type :DatabaseType ;
-      rdfs:label "Oracle Spatial"^^xsd:string .
+:rdfStorePassword
+      rdf:type owl:DatatypeProperty ;
+      rdfs:domain :Account ;
+      rdfs:label "RDF Store Password"@en ;
+      rdfs:range xsd:string .
 
-:PostGIS
-      rdf:type :DatabaseType ;
-      rdfs:label "PostGIS"^^xsd:string .
-      
-:MicrosoftSQLServer
-      rdf:type :DatabaseType ;
-      rdfs:label "MicrosoftSQLServer"^^xsd:string .
+:rdfStoreUsername
+      rdf:type owl:DatatypeProperty ;
+      rdfs:domain :Account ;
+      rdfs:label "RDF store username"@en ;
+      rdfs:range xsd:string .
+
+:requiredService
+      rdf:type owl:ObjectProperty ;
+      rdfs:domain :RouteRestriction ;
+      rdfs:label "required service"^^xsd:string ;
+      rdfs:range lds:ComponentService .
+
+:role
+      rdf:type owl:ObjectProperty ;
+      rdfs:domain :Account ;
+      rdfs:label "role"@en ;
+      rdfs:range :Role .
+
+:sessionToken
+      rdf:type owl:DatatypeProperty ;
+      rdfs:domain :Account ;
+      rdfs:label "session token"@en ;
+      rdfs:range xsd:string .
+
+:settingsGraph
+      rdf:type owl:DatatypeProperty ;
+      rdfs:domain :Account ;
+      rdfs:label "settings graph"@en ;
+      rdfs:range xsd:anyURI .
+
+:xmlDefinition
+      rdf:type rdf:Property ;
+      rdfs:domain :Job ;
+      rdfs:label "Xml Definition"^^xsd:string ;
+      rdfs:range xsd:string .
 
 dcterms:creator
       rdf:type owl:DatatypeProperty ;
@@ -213,12 +240,12 @@ dcterms:title
 
 void:Dataset
       rdf:type owl:Class ;
-      rdfs:label "Dataset"^^xsd:string ;
+      rdfs:label "Dataset"@en ;
       rdfs:subClassOf owl:Thing .
 
 void:Linkset
       rdf:type owl:Class ;
-      rdfs:label "Linkset"^^xsd:string ;
+      rdfs:label "Linkset"@en ;
       rdfs:subClassOf void:Dataset .
 
 sd:NamedGraph
@@ -233,21 +260,3 @@ foaf:homepage
       rdf:type rdf:Property ;
       rdfs:domain :SoftwareComponent ;
       rdfs:label "homepage"^^xsd:string .
-
-:RouteRestriction
-      rdf:type owl:Class ;
-      rdfs:label "route restriction"^^xsd:string .
-
-:partialUrl
-      rdf:type owl:DatatypeProperty ;
-      rdfs:label "partial url"^^xsd:string ;
-      rdfs:domain :RouteRestriction ;
-      rdfs:range xsd:string .
-
-:requiredService
-      rdf:type owl:ObjectProperty ;
-      rdfs:label "required service"^^xsd:string ;
-      rdfs:domain :RouteRestriction ;
-      rdfs:range lds:ComponentService .
- 
- 

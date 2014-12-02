@@ -238,7 +238,6 @@ angular.module("app.configuration", [])
 
     var read = function()
     {
-        // var deferred = $q.defer();
         var requestData = {
             format: "application/sparql-results+json",
             query: "SELECT * FROM <" + SETTINGS_GRAPH + ">"+ EOL
@@ -247,15 +246,12 @@ angular.module("app.configuration", [])
             mode: "settings"
         };
 
-        // console.log("readSettings from " + SETTINGS_GRAPH);
-
         return $http.post("RdfStoreProxy", $.param(requestData)).then(function (response) {
             settings = parseSparqlResults(response.data);
-            // deferred.resolve(settings);
+            console.log(settings);
             return settings;
         });
 
-        // return deferred.promise;
     };
 
     var write = function()
@@ -318,18 +314,11 @@ angular.module("app.configuration", [])
                     + "}",
             mode: "settings"
         };
-        return request("RdfStoreProxy", requestData);
-    };
 
-    var dropGraph = function(name)
-    {
-        var requestData = {
-            format: "application/sparql-results+json",
-            mode: "drop",
-            graph: name,
-            // username: AccountService.getAccount().getUsername()
-        }
-        return request("GraphManagerServlet", requestData);
+        return $http.post("RdfStoreProxy", $.param(requestData)).then(function (response) {
+            return response;
+        });
+
     };
 
     var getGroupsGraph = function() {
@@ -387,7 +376,6 @@ angular.module("app.configuration", [])
         write                   : write,
         read                    : read,
         request                 : request,
-        dropGraph               : dropGraph,
         parseSparqlResults      : parseSparqlResults
     };
 });

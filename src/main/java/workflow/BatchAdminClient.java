@@ -1,6 +1,6 @@
 package workflow;
 
-import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
@@ -9,22 +9,22 @@ import javax.ws.rs.core.MediaType;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
-import org.apache.http.entity.mime.HttpMultipartMode;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.entity.mime.MIME;
-import org.apache.http.entity.mime.MultipartEntityBuilder;
-import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.log4j.Logger;
+import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.map.ObjectMapper;
 
 import workflow.beans.JobExecution;
 import workflow.beans.JobExecutionWraper;
@@ -32,6 +32,8 @@ import workflow.beans.JobExecutions;
 import workflow.beans.JobWraper;
 import workflow.beans.JobsRegistered;
 import workflow.beans.Registration;
+import ApplicationExceptions.ResourceNotFoundException;
+import ApplicationExceptions.UnknownException;
 
 import com.google.gson.Gson;
 
@@ -71,9 +73,13 @@ public class BatchAdminClient {
      * 
      * @param executionId
      * @return JobExecution
+     * @throws IOException
+     * @throws UnknownException
+     * @throws ResourceNotFoundException
      * @throws Exception
      */
-    public static JobExecutionWraper getExecutionDetail(String executionId) throws Exception {
+    public static JobExecutionWraper getExecutionDetail(String executionId)
+            throws ResourceNotFoundException, UnknownException, IOException {
         HttpGet JobExecution = new HttpGet(serviceUrl + "/jobs/executions/" + executionId + ".json");
         String jsonString = apiRequest(JobExecution);
         Gson gson = new Gson();
@@ -87,7 +93,8 @@ public class BatchAdminClient {
      * @return JobExecutions
      * @throws Exception
      */
-    public static JobExecutions getAllExecutions() throws Exception {
+    public static JobExecutions getAllExecutions() throws ResourceNotFoundException,
+            UnknownException, IOException {
         HttpGet getExecutions = new HttpGet(serviceUrl + "/jobs/executions.json");
         String jsonString = apiRequest(getExecutions);
         Gson gson = new Gson();
@@ -106,7 +113,7 @@ public class BatchAdminClient {
      * @throws Exception
      */
     public static JobExecutions getJobInstanceExecutions(String jobName, int instanceId)
-            throws Exception {
+            throws ResourceNotFoundException, UnknownException, IOException {
         HttpGet getExecutions = new HttpGet(serviceUrl + "/jobs/" + jobName + "/" + instanceId
                 + "/executions.json");
         String jsonString = apiRequest(getExecutions);
@@ -123,7 +130,8 @@ public class BatchAdminClient {
      * @return JobExecution execution object
      * @throws Exception
      */
-    public static JobExecution runJob(String jobName) throws Exception {
+    public static JobExecution runJob(String jobName) throws ResourceNotFoundException,
+            UnknownException, IOException {
         String params = getLastJobExecutionParameters(jobName);
         return runJob(jobName, params);
     }
@@ -138,7 +146,8 @@ public class BatchAdminClient {
      * @return JobExecution
      * @throws Exception
      */
-    public static JobExecution runJob(String jobName, String jobParameters) throws Exception {
+    public static JobExecution runJob(String jobName, String jobParameters)
+            throws ResourceNotFoundException, UnknownException, IOException {
         HttpPost postJob = new HttpPost(serviceUrl + "/jobs/" + jobName + ".json");
         postJob.addHeader(MIME.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
 
@@ -160,7 +169,8 @@ public class BatchAdminClient {
      * @return JobExecution
      * @throws Exception
      */
-    public static JobExecutionWraper stopExecution(String execId) throws Exception {
+    public static JobExecutionWraper stopExecution(String execId) throws ResourceNotFoundException,
+            UnknownException, IOException {
         HttpDelete deleteJob = new HttpDelete(serviceUrl + "/jobs/executions/" + execId + ".json");
         String jsonString = apiRequest(deleteJob);
         log.debug(jsonString);
@@ -177,7 +187,8 @@ public class BatchAdminClient {
      * @return Registration
      * @throws Exception
      */
-    public static Registration getJob(String jobName) throws Exception {
+    public static Registration getJob(String jobName) throws ResourceNotFoundException,
+            UnknownException, IOException {
         HttpGet getJob = new HttpGet(serviceUrl + "/jobs/" + jobName + ".json");
         String jsonString = apiRequest(getJob);
         Gson gson = new Gson();
@@ -191,7 +202,8 @@ public class BatchAdminClient {
      * @return JobsRegistered
      * @throws Exception
      */
-    public static JobsRegistered getRegistedJobs() throws Exception {
+    public static JobsRegistered getRegistedJobs() throws ResourceNotFoundException,
+            UnknownException, IOException {
         HttpGet getJobs = new HttpGet(serviceUrl + "/jobs.json");
         String jsonString = apiRequest(getJobs);
         Gson gson = new Gson();
@@ -202,36 +214,22 @@ public class BatchAdminClient {
     /**
      * Registers a job in the batch admin service
      * 
-     * @param File
-     *            configuration file
+     * @param id
+     * @param xml
      * @return
      * @throws Exception
      */
-    public static Registration registerJob(String id, File file) throws Exception {
+    public static Registration registerJob(String id, String xml) throws ResourceNotFoundException,
+            UnknownException, IOException {
 
-        HttpPost uploadFile = new HttpPost(serviceUrl + "/job-configuration");
-        MultipartEntityBuilder builder = MultipartEntityBuilder.create();
-        builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
-        FileBody fb = new FileBody(file);
-        builder.addPart("file", fb);
-        HttpEntity multipart = builder.build();
-        uploadFile.setEntity(multipart);
-        // simulate registerJob(String configuration)
-        apiRequest(uploadFile);
+        HttpPost postConfig = new HttpPost(serviceUrl + "/job-configuration.json");
+        postConfig.addHeader(MIME.CONTENT_TYPE, MediaType.APPLICATION_JSON);
+        StringEntity entity = new StringEntity(xml);
+        postConfig.setEntity(entity);
+        String response = apiRequest(postConfig);
+        log.debug(response);
         return getJob(id);
-
     }
-
-    /*
-     * public static String registerJob(String configuration) throws Exception {
-     * 
-     * HttpPost postConfig = new HttpPost(serviceUrl +
-     * "/job-configuration.json"); // postConfig.addHeader(MIME.CONTENT_TYPE,
-     * MediaType.APPLICATION_JSON); StringEntity entity = new
-     * StringEntity(configuration); postConfig.setEntity(entity);
-     * 
-     * String response = apiRequest(postConfig); return response; }
-     */
 
     /**
      * Retrieves the last execution parameter that can be used to execute the
@@ -241,7 +239,8 @@ public class BatchAdminClient {
      * @return jobParameters as a string of key=value separated by comma
      * @throws Exception
      */
-    private static String getLastJobExecutionParameters(String jobName) throws Exception {
+    private static String getLastJobExecutionParameters(String jobName)
+            throws ResourceNotFoundException, UnknownException, IOException {
         String params = "";
         Registration job = getJob(jobName);
         if (!job.getJobInstances().isEmpty()) {
@@ -266,25 +265,44 @@ public class BatchAdminClient {
      * 
      * @param method
      * @return json string
+     * @throws ResourceNotFoundException
+     * @throws UnknownException
+     * @throws IOException
      * @throws Exception
      */
-    private static String apiRequest(HttpRequestBase method) throws Exception {
+    private static String apiRequest(HttpRequestBase method) throws ResourceNotFoundException,
+            UnknownException, IOException {
 
+        String jsonString = "";
         CloseableHttpClient httpClient = HttpClients.createDefault();
         try {
-            log.debug(method.getURI().toString());
+            log.debug(method.getMethod() + ": " + method.getURI().toString());
             CloseableHttpResponse response = httpClient.execute(method);
-            String jsonString = IOUtils.toString(response.getEntity().getContent());
-            return jsonString;
-        } catch (Exception e) {
-            log.error(e);
+            jsonString = IOUtils.toString(response.getEntity().getContent());
+            // catch errors
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode rootNode = mapper.readTree(jsonString);
+            if (rootNode.get("errors") != null) {
+                log.error(jsonString);
+                if (rootNode.get("errors").get("no.such.job.execution") != null)
+                    throw new ResourceNotFoundException(rootNode.get("errors").get(
+                            "no.such.job.execution").asText());
+                else
+                    throw new UnknownException(rootNode.get("errors").asText());
+            }
+
+        } catch (ClientProtocolException e) {
             e.printStackTrace();
-            throw new Exception(e);
+            throw new IOException(e);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new IOException(e);
         } finally {
             // Release the connection.
             method.releaseConnection();
             httpClient.close();
         }
-    }
 
+        return jsonString;
+    }
 }

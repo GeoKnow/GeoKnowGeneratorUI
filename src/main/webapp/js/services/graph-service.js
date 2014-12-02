@@ -202,9 +202,8 @@ module.factory("GraphService", function ($http, $q, Config, AccountService, Help
     };
 
     // this fuincrtion reads from client settins the graphs
-    var getUserGraphs = function (userUri) {
-        console.log("Get graphs for " + userUri);
-        return readNamedGraphs(true).then(function (data) {
+    var getUserGraphs = function (userUri, reload) {
+        return readNamedGraphs(reload).then(function (data) {
             var results = [];
             for (var resource in data) {
                 var graph = data[resource];
@@ -398,28 +397,24 @@ module.factory("GraphService", function ($http, $q, Config, AccountService, Help
             username: AccountService.getAccount().getUsername()
         }
 
-        return Config.request("GraphManagerServlet", requestData, function () {
-            // if the creation succeed, then add the metadata insert the metadata of the graph
-            var settings = Config.getSettings();
-            settings[parNamedGraph.name] = namedgraph;
-            settings[parNamedGraph.name + "Graph"] = graph;
-            settings[":default-dataset"]["sd:namedGraph"].push(parNamedGraph.name);
-            Config.write();
+        var deferred = $q.defer();
+        $http.post("GraphManagerServlet", $.param(requestData)).then(
+            // success
+            function(response) {
+                var settings = Config.getSettings();
+                settings[parNamedGraph.name] = namedgraph;
+                settings[parNamedGraph.name + "Graph"] = graph;
+                settings[":default-dataset"]["sd:namedGraph"].push(parNamedGraph.name);
+                Config.write().then(function(){
+                    deferred.resolve(response);    
+                });
+            },
+            // error
+            function(response) {
+                deferred.reject(response)
+            });
+        return deferred.promise;
 
-        });
-
-        // Config.createGraph(Config.getNS() + parNamedGraph.name.replace(':', ''), 
-        //   JSON.stringify(permissions), 
-        //   function(){ 
-        //     // if the creation succeed, then add the metadata insert the metadata of the graph
-        //     var settings = Config.getSettings();
-        //     settings[parNamedGraph.name] = namedgraph;
-        //     settings[parNamedGraph.name+"Graph"] = graph;
-        //     settings[parNamedGraph.name+"GraphAccess"] = graphAccess;
-        //     settings[":default-dataset"]["sd:namedGraph"].push(parNamedGraph.name);
-        //     Config.write();
-        //   });
-        // return true;
     };
 
     // saves a named graph in the store
@@ -488,31 +483,64 @@ module.factory("GraphService", function ($http, $q, Config, AccountService, Help
                 });
             }
         }
-        if (permissions != null) {
-            var requestData = {
-                format: "application/sparql-results+json",
-                graph: Config.getNS() + parNamedGraph.name.replace(':', ''),
-                mode: "update",
-                permissions: JSON.stringify(permissions),
-                username: AccountService.getAccount().getUsername()
-            };
-            return Config.request("GraphManagerServlet", requestData, function () {
-                Config.write();
+        
+        var requestData = {
+            format: "application/sparql-results+json",
+            graph: Config.getNS() + parNamedGraph.name.replace(':', ''),
+            mode: "update",
+            permissions: JSON.stringify(permissions),
+            username: AccountService.getAccount().getUsername()
+        };
+
+        var deferred = $q.defer();
+        
+        $http.post("GraphManagerServlet", $.param(requestData)).then(
+            // success
+            function(response) {
+                Config.write().then(function(){
+                    deferred.resolve(response);    
+                });
+            },
+            // error
+            function(response) {
+                // reset
+                Config.read();
+                deferred.reject(response);
             });
-            // Config.setGraphPermissions(Config.getNS() + parNamedGraph.name.replace(':', ''), JSON.stringify(permissions));
-        }
+
+        return deferred.promise;
     };
 
     // saves a named graph in the store
     var deleteGraph = function (parGraphName) {
-        Config.dropGraph(parGraphName.replace(':', Config.getNS()));
-        // if the creation succeed, then delete the metadata
-        var settings = Config.getSettings();
-        settings[":default-dataset"]["sd:namedGraph"].pop(parGraphName);
-        delete settings[parGraphName];
-        Config.write();
-        return true;
+
+        var requestData = {
+            format: "application/sparql-results+json",
+            mode: "drop",
+            graph: parGraphName.replace(':', Config.getNS()),
+            // username: AccountService.getAccount().getUsername()
+        }
+        var deferred = $q.defer();
+        $http.post("GraphManagerServlet", $.param(requestData)).then(
+            // success
+            function(response) {
+                var settings = Config.getSettings();
+                settings[":default-dataset"]["sd:namedGraph"].pop(parGraphName);
+                delete settings[parGraphName];
+                Config.write().then(function(){
+                    deferred.resolve(response);    
+                });
+                
+            },
+            // error
+            function(response) {
+                deferred.reject(response);
+                // flash.error = ServerErrorResponse.getMessage(response);
+            });
+        return deferred.promise;
+
     };
+            
 
     return {
         readNamedGraphs: readNamedGraphs,

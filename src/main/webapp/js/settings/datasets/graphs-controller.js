@@ -23,23 +23,6 @@ function GraphCtrl($scope, $http, flash, ConfigurationService, Helpers, GraphSer
     };
     var newGraph = true;
 
-    GraphService.getUserGraphs($scope.$parent.currentAccount.getAccountURI())
-        .then(function (graphs){
-        console.log(graphs);
-        $scope.namedgraphs = graphs;
-    })
-
-    GraphService.getAccessibleGraphs(false, true, false) // onlyWritable, skipOwn, reload
-        .then(function (graphs) {
-        $scope.accnamedgraphs = graphs;
-    });
-
-    $scope.allgraphs = [];
-    GraphService.getAllNamedGraphs(false) // reload
-      .then(function (graphs) {
-        $scope.allgraphs = graphs;
-    });
-
     $scope.namedgraph = emptyGraph;
     $scope.modaltitle = "";
 
@@ -107,42 +90,52 @@ function GraphCtrl($scope, $http, flash, ConfigurationService, Helpers, GraphSer
     };
 
     $scope.save = function () {
-        var response;
+        var promise;
         $scope.namedgraph.name = ":" + $scope.namedgraph.name;
         if (newGraph)
-            response = GraphService.addGraph($scope.namedgraph);
+            promise = GraphService.addGraph($scope.namedgraph);
         else {
             if ($scope.namedgraph.owner == $scope.$parent.currentAccount.getAccountURI())
-                response = GraphService.updateGraph($scope.namedgraph);
+                promise = GraphService.updateGraph($scope.namedgraph);
             else 
-                response = GraphService.updateForeignGraph($scope.namedgraph).then(function (response) {
-                    $scope.refreshAllGraphs();
-                });
+                promise = GraphService.updateForeignGraph($scope.namedgraph);
         }
-        response.then(
-            function(){
+
+        console.log(promise);
+        promise.then(function (response){
+            console.log(response);
             // success
-                $scope.close('#modalGraph');
-                $scope.refreshTable();
-                $scope.refreshAllGraphs();
+            $scope.close('#modalGraph');
+            $scope.refreshAllGraphs();
+            $scope.refreshUserGraphs();
+            $scope.refreshGraphGroups();
         }, function(response){
-            //error
-            var message = ServerErrorResponse.getMessage(response);
-            flash.error = message;
+
+            flash.error = ServerErrorResponse.getMessage(response);
+            // else {
+            //     //error
+            //     var message = ServerErrorResponse.getMessage(response);
+            //     flash.error = message;
         });
 
     };
 
     $scope.delete = function (graphName) {
-        GraphService.deleteGraph(graphName);
-        $scope.refreshTable();
-        $scope.refreshAllGraphs();
-        $scope.refreshGraphGroups();
-    };
+        GraphService.deleteGraph(graphName).then(
+            function(response){
+                $scope.refreshUserGraphs();
+                $scope.refreshAllGraphs();
+                $scope.refreshGraphGroups();
+            },
+            function(response){    
+                flash.error = ServerErrorResponse.getMessage(response);
+            });
+    }
+        
 
     $scope.deleteForeign = function (graphName) {
         GraphService.deleteForeignGraph(graphName).then(function (response) {
-            $scope.refreshTable();
+            $scope.refreshUserGraphs();
             $scope.refreshAllGraphs();
             $scope.refreshGraphGroups();
         });
@@ -166,8 +159,11 @@ function GraphCtrl($scope, $http, flash, ConfigurationService, Helpers, GraphSer
         }
     };
 
-    $scope.refreshTable = function () {
-        $scope.namedgraphs = GraphService.getUserGraphs($scope.$parent.currentAccount.getAccountURI());
+    $scope.refreshUserGraphs = function () {
+        GraphService.getUserGraphs($scope.$parent.currentAccount.getAccountURI(), true)
+            .then(function (graphs){
+            $scope.namedgraphs = graphs;
+        });
     };
 
     $scope.refreshAccessibleGraphs = function () {
@@ -177,12 +173,6 @@ function GraphCtrl($scope, $http, flash, ConfigurationService, Helpers, GraphSer
     };
 
     $scope.refreshAllGraphs = function () {
-
-        GraphService.getUserGraphs($scope.$parent.currentAccount.getAccountURI())
-            .then(function (graphs){
-            $scope.namedgraphs = graphs;
-        })
-
         GraphService.getAllNamedGraphs(true).then(function (graphs) {
             $scope.allgraphs = graphs;
         });
@@ -277,6 +267,10 @@ function GraphCtrl($scope, $http, flash, ConfigurationService, Helpers, GraphSer
       	$('.modal-scrollable').slideUp();
     };
 
+    $scope.refreshAllGraphs();
+    $scope.refreshUserGraphs();
+    $scope.refreshGraphGroups();
+
     // watch
     // $scope.$watch(function () {
     //     return GraphService.getUserGraphs($scope.$parent.currentAccount.getAccountURI());
@@ -284,10 +278,10 @@ function GraphCtrl($scope, $http, flash, ConfigurationService, Helpers, GraphSer
     //     $scope.refreshTable();
     // }, true);
 
-    $scope.$watch(function () {
-        return $scope.$parent.currentAccount;
-    }, function () {
-        $scope.refreshAccessibleGraphs();
-        $scope.refreshAllGraphs();
-    });
+    // $scope.$watch(function () {
+    //     return $scope.$parent.currentAccount;
+    // }, function () {
+    //     $scope.refreshAccessibleGraphs();
+    //     $scope.refreshAllGraphs();
+    // });
 }

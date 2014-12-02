@@ -42,21 +42,22 @@ public class BatchJobsIT {
 
         Calendar calendar = new GregorianCalendar();
 
-        ValidatableResponse auth = given().param("mode", "login").param("username", "admin").param(
-                "password", "admin").when().post("/AuthenticationServlet").then();
+        ValidatableResponse auth = given().param("mode", "login").param("username", "test").param(
+                "password", "test").when().post("/AuthenticationServlet").then();
 
         auth.assertThat().statusCode(200);
 
         Map<String, String> cookies = new HashMap<String, String>(auth.extract().cookies());
 
-        String jobId = "LimesJob_" + calendar.getTimeInMillis();
+        String jobId = "TestJob_" + calendar.getTimeInMillis();
 
         String jobService = "{ \"name\": \"" + jobId + "\",\n"
                 + " \"service\": \"http://localhost:8080/limes-service/\",\n"
-                + " \"description\": \"a job from admin\",\n"
+                + " \"description\": \"a job from test\",\n"
                 + " \"contenttype\": \"application/json\",\n" + " \"method\": \"post\",\n"
                 + " \"body\": \"" + URLEncoder.encode(limesConfig, "utf-8") + "\" } ";
 
+        log.info("job test: " + jobId);
         // creates a job
         given().cookies(cookies).contentType("application/json").body(jobService).when().put(
                 "/rest/jobs").then().assertThat().statusCode(201).and().body("job.name",
@@ -64,7 +65,7 @@ public class BatchJobsIT {
 
         // check job description
         given().cookies(cookies).when().get("/rest/jobs/" + jobId).then().body("job.description",
-                equalTo("a job from admin"));
+                equalTo("a job from test"));
 
         // get the user's jobs
         given().cookies(cookies).when().get("/rest/jobs").then().body("jobs.name", hasItem(jobId));

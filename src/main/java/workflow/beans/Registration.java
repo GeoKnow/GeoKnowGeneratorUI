@@ -8,6 +8,7 @@ public class Registration {
     private String name;
     private String resource;
     private String description;
+    private String cereated;
     private int executionCount;
     private boolean launchable;
     private boolean incrementable;
@@ -72,6 +73,14 @@ public class Registration {
 
     public void setJobInstances(NavigableMap<Integer, JobInstance> jobInstances) {
         this.jobInstances = jobInstances;
+    }
+
+    public String getCereated() {
+        return cereated;
+    }
+
+    public void setCereated(String cereated) {
+        this.cereated = cereated;
     }
 
 }
