@@ -31,8 +31,13 @@ function DatabaseCtrl($scope, ConfigurationService){
 	};
 
 	$scope.delete = function(uri){
-		ConfigurationService.deleteResource(uri);
-		$scope.refreshTable();
+		ConfigurationService.deleteResource(uri).then(
+			function(response){
+				$scope.refreshTable();	
+			},
+			function(response){
+				flash.error = ServerErrorResponse.getMessage(response);
+			});
 	};
 
 	$scope.refreshTable = function(){
@@ -40,20 +45,20 @@ function DatabaseCtrl($scope, ConfigurationService){
 	};
 
 	$scope.save = function(){
-		var success =  false;
+		var promise;
 		$scope.database.uri =  ":" + $scope.database.uri;
 		if(newDatabase)
-			success = ConfigurationService.addDatabase($scope.database);
+			promise = ConfigurationService.addDatabase($scope.database);
 		else
-			success = ConfigurationService.updateDatabase($scope.database);
-		
-		if(success){
-			$scope.close('#modalDatabase');
-			$scope.refreshTable();
-		}
-		else{
-		// TODO: check if success then close the window or where to put error messages		
-		}
+			promise = ConfigurationService.updateDatabase($scope.database);
+		promise.then(
+			function(response){
+				$scope.close('#modalDatabase');
+				$scope.refreshTable();}, 
+			function(response){
+				flash.error = ServerErrorResponse.getMessage(response);
+			});
+
 	};
 
     $scope.close = function(modalID) {

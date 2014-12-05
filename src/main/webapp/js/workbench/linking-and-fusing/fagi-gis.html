@@ -1,0 +1,127 @@
+
+<div class="col-xs-12" ng-controller="FagiGisCtrl">
+  
+  <h3 class="green bold">{{component.label}}</h3>
+
+  <dl class="dl-horizontal">
+    <dt>Version:</dt><dd>{{component.version}}</dd>
+    <dt>Homepage:</dt><dd>{{component.homepage}}</dd>
+  </dl>
+
+  <form class="form-horizontal InputForm" role="form" name="fagiForm"  novalidate>
+
+    <div class="row">
+      <div class="col-xs-6">
+        <h5 class="green bold">Dataset A</h5>
+      </div>
+      <div class="col-xs-6">
+        <h5 class="green bold">Dataset B</h5>
+      </div>
+    </div>
+    <br/>
+    <div class="row">
+      <div class="col-xs-2">
+        <label for="SourceServiceURI">Endpoint URL</label>
+      </div>
+      <div class="col-xs-4">
+        <select id="SourceServiceURI" class="form-control" ng-model="fagi.endpointA" 
+          ng-change="updateGraphsA()" ng-options="c.endpoint as c.label for c in endpoints" required >
+        </select>
+      </div>
+      <div class="col-xs-2">
+        <label for="TargetServiceURI">Endpoint URL</label>
+      </div>
+      <div class="col-xs-4">
+        <select id="TargetServiceURI" class="form-control" ng-model="fagi.endpointB" 
+          ng-change="updateGraphsB()" ng-options="c.endpoint as c.label for c in endpoints" required >
+        </select>
+      </div>
+    </div>
+    <br/>
+
+    <div class="row">
+      <div class="col-xs-2">
+        <label for="DatasetA">Graph</label>
+      </div>
+      <div class="col-xs-4">
+        <select id="DatasetA" class="form-control" ng-model="fagi.datasetA" ng-options="namedgraph.name as namedgraph.name for namedgraph in namedGraphsA" ng-change="updateServiceParams();">
+        </select>
+      </div>
+      <div class="col-xs-2">
+        <label for="DatasetB">Graph</label>
+      </div>
+      <div class="col-xs-4">
+        <select id="DatasetB" class="form-control" ng-model="fagi.datasetB" ng-options="namedgraph.name as namedgraph.name for namedgraph in namedGraphsB" ng-change="updateServiceParams();">
+        </select>
+      </div>
+    </div>
+    <br/>
+
+    <div class="row">
+      <div class="col-xs-2">
+        <label for="Database">Database</label>
+      </div>
+      <div class="col-xs-8">
+        <select id="Database" class="form-control input-sm" ng-model="fagi.database" ng-options="database.label for database in databases" required ng-change="updateServiceParams();"> 
+          <option value="">Choose a database</option>
+        </select>
+      </div>
+    </div>
+    <br/>
+
+    <div class="row">
+      <div class="col-xs-2">
+        <label for="Endpoint">Target Endpoint</label>  
+      </div>
+      <div class="col-xs-8">
+        <input type="url" class="form-control" id="Endpoint" disabled="disabled" ng-model="endpoint" required></input>
+      </div>
+    </div>
+    <br/>
+
+    <div class="row">
+      <div class="col-xs-2">
+        <label for="DataSet">Target DataSet</label>
+      </div>
+      <div class="col-xs-8">
+        <select id="DataSet" class="form-control" ng-model="fagi.targetGraph" ng-options="namedgraph.name as namedgraph.name for namedgraph in namedGraphs" required ng-change="updateServiceParams();">
+        </select>
+      </div>
+      <div class="col-xs-2">
+        <a class="btn btn-default btn-large" ng-click="createTargetGraph();" >Create New Dataset</a>
+        <!-- <span class="input-group-btn">
+          <button type="button" class="btn btn-link reset" ng-click="refreshGraphList()">
+             <i class="glyphicon glyphicon-refresh" aria-hidden="false"></i>
+          </button>
+        </span> -->
+      </div>
+    </div>
+    <br/>
+    
+    <div class="row">
+      <div class="col-xs-2"></div>
+      <div class="col-xs-2">
+        <a class="btn btn-success btn-large" data-toggle="modal" ng-click="openModal()" ng-model="fagi.vaild"
+           ng-disabled="fagiForm.$invalid" >Launch</a>
+      </div>      
+    </div>
+    <br/>
+
+    
+
+  </form>
+
+  <!-- Modal -->
+  <div class="modal fade" id="fullModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <button type="button" class="close" ng-click="closeModal()" aria-hidden="true">&times;</button>
+      <h5 class="modal-title green bold">{{component.label}}</h5>
+    </div>
+    <div class="modal-body">
+      <modal-iframe></modal-iframe>
+    </div>
+ </div>  
+ </div>
+</div>
+

@@ -268,7 +268,7 @@ public class Jobs {
 
                 Registration job = BatchAdminClient.getJob(jobName);
                 job.setDescription(jobDesc);
-                job.setCereated(created);
+                job.setCreated(created);
                 // complete with execution information
 
                 Set<Integer> instances = job.getJobInstances().keySet();
@@ -360,7 +360,7 @@ public class Jobs {
                     registration = BatchAdminClient.registerJob(jobId.replace(uriBase, ""), xml);
                 } else {
                     registration.setDescription(jobDesc);
-                    registration.setCereated(created);
+                    registration.setCreated(created);
                 }
 
                 userRegistrations.add(registration);

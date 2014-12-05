@@ -212,7 +212,7 @@ app.directive('regexValidate', function() {
     expressions['url']            =  /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/;
     expressions['uri']            =  /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/;
     expressions['identifier']     =  /^[a-zA-Z0-9_]*$/ ;
-    expressions['sparqlEndpoint'] =  /^https?:\/\/.+\/sparql\/?$/; // /^https?:\/\/[^\/]+\/sparql\/?$/
+    expressions['sparqlEndpoint'] =  /^https?:\/\/.*\/?$/; // /^https?:\/\/[^\/]+\/sparql\/?$/
     expressions['basicPassword']  = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}$/;
     return {
         restrict: 'A',

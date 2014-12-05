@@ -96,10 +96,10 @@ module.factory('ConfigurationService', function ($q, Config, $http, $location, f
         },
 
         deleteResource: function (uri) {
+            console.log("delete " + uri);
             var settings = Config.getSettings();
             delete settings[uri];
-            Config.write();
-            return true;
+            return Config.write();
         },
 
         getResourcesType: function (type) {
@@ -184,8 +184,7 @@ module.factory('ConfigurationService', function ($q, Config, $http, $location, f
                 "rdf:type": ["void:Dataset", "gkg:SPARQLEndpoint", "gkg:DataSource"],
                 "void:sparqlEndpoint": [endpoint.endpoint]
             };
-            Config.write();
-            return true;
+            return Config.write();
         },
 
         updateEndpoint: function (pEndpoint) {
@@ -193,8 +192,7 @@ module.factory('ConfigurationService', function ($q, Config, $http, $location, f
             endpoint["rdfs:label"][0] = pEndpoint.label;
             endpoint["void:sparqlEndpoint"][0] = pEndpoint.endpoint;
             endpoint["foaf:homepage"][0] = pEndpoint.homepage;
-            Config.write();
-            return true;
+            return Config.write();
         },
 
         /**
@@ -251,8 +249,7 @@ module.factory('ConfigurationService', function ($q, Config, $http, $location, f
                 "gkg:dbUser": [database.dbUser],
                 "gkg:dbPassword": [database.dbPassword]
             };
-            Config.write();
-            return true;
+            return Config.write();
         },
 
         updateDatabase: function (pDatabase) {
@@ -264,8 +261,7 @@ module.factory('ConfigurationService', function ($q, Config, $http, $location, f
             database["gkg:dbName"][0] = pDatabase.dbName;
             database["gkg:dbUser"][0] = pDatabase.dbUser;
             database["gkg:dbPassword"][0] = pDatabase.dbPassword;
-            Config.write();
-            return true;
+            return Config.write();
         },
 
         /**

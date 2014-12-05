@@ -63,3 +63,13 @@
       foaf:homepage <http://www4.wiwiss.fu-berlin.de/drugbank> ;
       void:sparqlEndpoint <http://www4.wiwiss.fu-berlin.de/drugbank/sparql> .
 
+:fagi
+      a onots:Database , onots:DataSource ;
+      rdfs:label "Fagi Data"^^xsd:string ;
+      onots:dbHost "127.0.0.1"^^xsd:string ;
+      onots:dbName "fagi"^^xsd:string ;
+      onots:dbPassword "postgres"^^xsd:string ;
+      onots:dbPort "5432"^^xsd:string ;
+      onots:dbType onots:PostGIS ;
+      onots:dbUser "postgres"^^xsd:string .
+

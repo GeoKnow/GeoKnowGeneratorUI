@@ -1,7 +1,7 @@
 Source: geoknow-generator-ui
 Section: web
 Priority: extra
-Maintainer: Vadim Zaslawski <vadim.zaslawski@ontos.com>
+Maintainer: Alejandra Garcia Rojas M <alejandra.garciarojas@ontos.com>
 Build-Depends: debhelper (>= 8.0.0)
 Standards-Version: 3.9.4
 Homepage: http://stack.linkeddata.org/

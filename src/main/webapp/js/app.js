@@ -55,6 +55,7 @@ app.config(function($routeSegmentProvider, $routeProvider)
         .when('/workbench/search-querying-and-exploration/mappify', 'workbench.mappify')
         .when('/workbench/manual-revision-and-authoring/ontowiki', 'workbench.ontowiki')
         .when('/workbench/linking-and-fusing/limes', 'workbench.limes')
+        .when('/workbench/linking-and-fusing/fagi-gis', 'workbench.fagi-gis')
         .when('/workbench/classification-and-enrichment/geolift', 'workbench.geolift')
 
         .segment('popup-limes', {
@@ -121,6 +122,8 @@ app.config(function($routeSegmentProvider, $routeProvider)
                     templateUrl: 'js/workbench/classification-and-enrichment/geolift.html' })
                 .segment('limes', {
                     templateUrl: 'js/workbench/linking-and-fusing/limes.html' })
+                .segment('fagi-gis', {
+                    templateUrl: 'js/workbench/linking-and-fusing/fagi-gis.html' })
             .up()
 
 		.segment('settings',{

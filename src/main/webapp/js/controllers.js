@@ -38,7 +38,9 @@ function StackMenuCtrl($scope, AccountService) {
 		    title: "Linking and Fusing",
 		    id:"linking-and-fusing",
 		    items: [
-		     {name: 'LIMES', route:'#/workbench/linking-and-fusing/limes', url:'/workbench/linking-and-fusing/limes', requiredServices:[] }]
+		     {name: 'LIMES', route:'#/workbench/linking-and-fusing/limes', url:'/workbench/linking-and-fusing/limes', requiredServices:[] }, 
+         {name: 'FAGI-gis', route:'#/workbench/linking-and-fusing/fagi-gis', url:'/workbench/linking-and-fusing/fagi-gis', requiredServices:[] }
+         ]
 		  },
 		{
 			 title: "Classification and Enrichment",

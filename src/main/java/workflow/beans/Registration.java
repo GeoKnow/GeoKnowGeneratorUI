@@ -8,7 +8,7 @@ public class Registration {
     private String name;
     private String resource;
     private String description;
-    private String cereated;
+    private String created;
     private int executionCount;
     private boolean launchable;
     private boolean incrementable;
@@ -75,12 +75,12 @@ public class Registration {
         this.jobInstances = jobInstances;
     }
 
-    public String getCereated() {
-        return cereated;
+    public String getCreated() {
+        return created;
     }
 
-    public void setCereated(String cereated) {
-        this.cereated = cereated;
+    public void setCreated(String created) {
+        this.created = created;
     }
 
 }

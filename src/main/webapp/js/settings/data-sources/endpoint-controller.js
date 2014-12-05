@@ -37,8 +37,13 @@ function EndpointCtrl($scope, ConfigurationService){
 	};
 
 	$scope.delete = function(uri){
-		ConfigurationService.deleteResource(uri);
-		$scope.refreshTable();
+		ConfigurationService.deleteResource(uri).then(
+			function(response){
+				$scope.refreshTable();	
+			},
+			function(response){
+				flash.error = ServerErrorResponse.getMessage(response);
+			});
 	};
 
 	$scope.refreshTable = function(){
@@ -46,23 +51,24 @@ function EndpointCtrl($scope, ConfigurationService){
 	};
 
 	$scope.save = function(){
-		var success =  false;
+		var promise;
 		$scope.endpoint.uri =  ":" + $scope.endpoint.uri;
 		if(newEndpoint)
-			success = ConfigurationService.addEndpoint($scope.endpoint);
+			promise = ConfigurationService.addEndpoint($scope.endpoint);
 		else
-			success = ConfigurationService.updateEndpoint($scope.endpoint);
+			promise = ConfigurationService.updateEndpoint($scope.endpoint);
 
-		if(success){
-			$scope.close('#modalEndpoint');
-			$scope.refreshTable();
-		}
-		else{
-			// TODO: check if success then close the window or where to put error messages		
-		}
+		promise.then(
+			function(response){
+				$scope.close('#modalEndpoint');
+				$scope.refreshTable();}, 
+			function(response){
+				flash.error = ServerErrorResponse.getMessage(response);
+			});
+		
 	};
 
-    $scope.close = function(modalID) {
+  $scope.close = function(modalID) {
     	$(modalID).modal('hide');
         $('body').removeClass('modal-open');
       	$('.modal-backdrop').slideUp();

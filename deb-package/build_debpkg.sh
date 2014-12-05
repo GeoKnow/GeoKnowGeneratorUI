@@ -1,6 +1,6 @@
 #!/bin/sh
 
-MODULE_NAME=geoknow-generator-ui_1.0.1
+MODULE_NAME=geoknow-generator-ui_1.1.0
 
 echo "Building Debian package for ${MODULE_NAME}"
 rm -rf ../target/debian

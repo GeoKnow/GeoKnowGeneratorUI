@@ -29,25 +29,24 @@ function GraphCtrl($scope, $http, flash, ConfigurationService, Helpers, GraphSer
     $scope.refreshUsersList = function () {
         var parameters = {
             mode: "getUsers"
-        }
+            };
         $http({
             url: "AuthenticationServlet",
             method: "POST",
             dataType: "json",
             params: parameters,
-            contentType: "application/json; charset=utf-8"
-        })
-            .success(function (data, status, headers, config) {
-                $scope.users = [];
-                var ns = ConfigurationService.getUriBase();
-                for (var ind in data) {
-                    $scope.users.push(data[ind].replace(ns, ":"));
-                }
-            })
-            .error(function (data, status, headers, config) {
-                flash.error = data;
-            });
-    }
+            contentType: "application/json; charset=utf-8"}).then(
+                function (response) {
+                    $scope.users = [];
+                    var ns = ConfigurationService.getUriBase();
+                    for (var ind in response.data) {
+                        $scope.users.push(response.data[ind].replace(ns, ":"));
+                    }
+                },
+                function(response){
+                    flash.error = ServerErrorResponse.getMessage(response);
+                });
+    };
 
     $scope.isNew = function () {
         return newGraph;
@@ -110,12 +109,7 @@ function GraphCtrl($scope, $http, flash, ConfigurationService, Helpers, GraphSer
             $scope.refreshUserGraphs();
             $scope.refreshGraphGroups();
         }, function(response){
-
             flash.error = ServerErrorResponse.getMessage(response);
-            // else {
-            //     //error
-            //     var message = ServerErrorResponse.getMessage(response);
-            //     flash.error = message;
         });
 
     };

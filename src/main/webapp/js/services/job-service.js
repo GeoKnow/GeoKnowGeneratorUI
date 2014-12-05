@@ -54,9 +54,5 @@ module.factory('JobService', function ($http, $q) {
 		}
 
 	};
-
-	
-
 	return jobService;
-
 });

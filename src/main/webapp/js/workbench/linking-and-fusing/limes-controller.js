@@ -110,7 +110,7 @@ var LimesCtrl = function($scope, $http, ConfigurationService, JobService, AuthSe
 	};
 
   $scope.updateSourceGraphs = function(){
-  	if( $scope.limes.SourceServiceURI == ConfigurationService.getSPARQLEndpoint())
+  	if( $scope.limes.source.endpoint == ConfigurationService.getSPARQLEndpoint())
 				GraphService.getAccessibleGraphs(false, false, true).then(function(graphs) {
     			$scope.namedSourceGraphs = graphs;
     		});
@@ -119,7 +119,7 @@ var LimesCtrl = function($scope, $http, ConfigurationService, JobService, AuthSe
   };
 
   $scope.updateTargetGraphs = function(){
-  	if( $scope.limes.TargetServiceURI == ConfigurationService.getSPARQLEndpoint())
+  	if( $scope.llimes.target.endpoint == ConfigurationService.getSPARQLEndpoint())
 			GraphService.getAccessibleGraphs(false, false, true).then(function(graphs) {
     		$scope.namedTargetGraphs = graphs;
     	});

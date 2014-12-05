@@ -47,7 +47,7 @@
         <div class="form-group">
           <label for="homepage" class="col-lg-2 control-label">Homepage</label>
           <div class="col-lg-10">
-            <input type="text" class="form-control" name="homepage" id="homepage" placeholder="Homepage" ng-model="endpoint.homepage" required regex-validate="url">
+            <input type="text" class="form-control" name="homepage" id="homepage" placeholder="Homepage" ng-model="endpoint.homepage" required >
              <div class="error" ng-show="endpointForm.homepage.$dirty && endpointForm.homepage.$invalid">Invalid:
               <span ng-show="endpointForm.homepage.$error.required || endpointForm.homepage.$error.regexValidate ">Specify a valid homepage</span>
             </div>
@@ -76,8 +76,8 @@
   <tbody>
     <tr ng-repeat="endpoint in endpoints">
       <td ng-if="isUserAuthenticated()">
-        <button ng-disabled="!isEditable(endpoint.endpoint)" type="button" class="btn btn-default btn-xs" ng-click="delete('{{endpoint.uri}}')"><span class="glyphicon glyphicon-trash"></span></button>
-        <button ng-disabled="!isEditable(endpoint.endpoint)"  type="button" class="btn btn-default btn-xs" ng-click="edit('{{endpoint.uri}}');" data-toggle="modal" data-target="#modalEndpoint"><span class="glyphicon glyphicon-edit"></span></button>
+        <button ng-disabled="!isEditable(endpoint.endpoint)" type="button" class="btn btn-default btn-xs" ng-click="delete(endpoint.uri)"><span class="glyphicon glyphicon-trash"></span></button>
+        <button ng-disabled="!isEditable(endpoint.endpoint)"  type="button" class="btn btn-default btn-xs" ng-click="edit(endpoint.uri);" data-toggle="modal" data-target="#modalEndpoint"><span class="glyphicon glyphicon-edit"></span></button>
       </td>
       <td>{{endpoint.uri}}</td>
       <td>{{endpoint.label}}</td>
@@ -204,8 +204,8 @@
   <tbody>
     <tr ng-repeat="database in databases">
       <td ng-if="isUserAuthenticated()">
-        <button type="button" class="btn btn-default btn-xs" ng-click="delete('{{database.uri}}')"><span class="glyphicon glyphicon-trash"></span></button>
-        <button type="button" class="btn btn-default btn-xs" data-toggle="modal" data-target="#modalDatabase" ng-click="edit('{{database.uri}}'); "><span class="glyphicon glyphicon-edit"></span></button>
+        <button type="button" class="btn btn-default btn-xs" ng-click="delete(database.uri)"><span class="glyphicon glyphicon-trash"></span></button>
+        <button type="button" class="btn btn-default btn-xs" data-toggle="modal" data-target="#modalDatabase" ng-click="edit(database.uri); "><span class="glyphicon glyphicon-edit"></span></button>
       </td>
       <td>{{database.uri}}</td>
       <td>{{database.label}}</td>

@@ -43,6 +43,18 @@
 # Following triples  describes the configured components in the framework
 # #######################################################################################
 
+
+:FagiGis
+      a       lds:StackComponent ;
+      rdfs:label "FAGI-gis"^^xsd:string ;
+      lds:providesService :FagiGisService ;
+      lds:version "1.1+rev0"^^xsd:string ;
+      foaf:homepage <https://github.com/GeoKnow/FAGI-gis> .
+
+:FagiGisService
+      a       lds:ExplorationService ;
+      lds:serviceUrl <http://localhost:8080/FAGI-WebInterface/> .
+
 :Sparqlify
       a       lds:StackComponent ;
       rdfs:label "Sparqlify"^^xsd:string ;
@@ -52,7 +64,7 @@
 
 :SparqlifyService
       a       lds:ExplorationService ;
-      lds:serviceUrl <http://localhost:8080/sparqlify/> .
+      lds:serviceUrl <http://192.168.2.18:8080/sparqlify/> .
 
 :Facete
       a       lds:StackComponent ;
@@ -62,7 +74,7 @@
       foaf:homepage <http://aksw.org/Projects/Facete.html> .
 :FaceteService
       a       lds:ExplorationService ;
-      lds:serviceUrl <http://cstadler.aksw.org/facete2/> .
+      lds:serviceUrl <http://192.168.2.18:8080/facete2/> .
 
 :Limes
       a       lds:StackComponent ;
@@ -72,7 +84,7 @@
       foaf:homepage <http://aksw.org/Projects/LIMES.html> .
 :LimesService
       a       lds:InterlinkingService ;
-      lds:serviceUrl <http://generator.geoknow.eu:8080/limes-service/> .
+      lds:serviceUrl <http://localhost:8080/limes-service/> .
 
 :TripleGeo
       a       lds:StackComponent ;
@@ -102,7 +114,7 @@
       foaf:homepage <http://aksw.org/Projects/OntoWiki.html> .
 :OntoWikiService
       a       lds:AuthoringService ;
-      lds:serviceUrl <http://generator.geoknow.eu/ontowiki> .
+      lds:serviceUrl <http://192.168.2.18/OntoWiki> .
 
 :Mappify
       a       lds:StackComponent ;
@@ -172,6 +184,11 @@ a     lds:BatchProcessingService ;
       a     gkg:RouteRestriction;
       gkg:partialUrl "/workbench/linking-and-fusing/limes"^^xsd:string;
       gkg:requiredService :LimesService .
+
+:FAGIgisRouteRestriction
+      a     gkg:RouteRestriction;
+      gkg:partialUrl "/workbench/linking-and-fusing/fagi-gis"^^xsd:string;
+      gkg:requiredService :FagiGisService .
     
 :GeoLiftRouteRestriction
       a     gkg:RouteRestriction;
