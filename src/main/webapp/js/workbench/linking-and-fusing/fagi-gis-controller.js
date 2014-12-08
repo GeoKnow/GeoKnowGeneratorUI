@@ -63,7 +63,7 @@ app.controller('FagiGisCtrl', function($q, $scope, ConfigurationService, GraphSe
 					'&postgis-port='+ encodeURIComponent($scope.fagi.database.dbPort) +
 					'&target-endpoint='+ encodeURIComponent(authEndpoint) +
 					'&target-dataset='+ encodeURIComponent($scope.fagi.targetGraph.replace(':',ConfigurationService.getUriBase())) ;
-			alert($scope.url);
+			console.log($scope.url);
 		});
 	};
 

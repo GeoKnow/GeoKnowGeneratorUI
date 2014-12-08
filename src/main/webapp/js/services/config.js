@@ -245,6 +245,7 @@ angular.module("app.configuration", [])
                     + "ORDER BY ?s ?p ?o",
             mode: "settings"
         };
+        console.log(SETTINGS_GRAPH);
 
         return $http.post("RdfStoreProxy", $.param(requestData)).then(function (response) {
             settings = parseSparqlResults(response.data);
