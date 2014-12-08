@@ -21,26 +21,29 @@ function LoginCtrl($q, $scope, $location, flash, AccountService, LoginService, S
         $scope.isRegistering = false;
 
         // get the application settings and initalize scope variables
-        ConfigurationService.getSettings().then(function(settings){
+        ConfigurationService.getSettings().then(
+            //success
+            function(settings){
+                $scope.currentAccount = AccountService.getAccount();
+                // retrive default role if no user logged in
+                if($scope.currentAccount.getRole() == undefined){
+                    console.log("assign readNotLoggedInRole");
+                    UsersService.readNotLoggedInRole().then(function(response) {
+                        $scope.currentAccount.setRole(response);
+                    });
+                }
+                
+                $scope.isUserAuthenticated = function () {
+                    return AccountService.getAccount().getUsername() != undefined;
+                };
 
-            $scope.currentAccount = AccountService.getAccount();
-            // retrive default role if no user logged in
-            if($scope.currentAccount.getRole() == undefined){
-                console.log("assign readNotLoggedInRole");
-                UsersService.readNotLoggedInRole().then(function(response) {
-                    $scope.currentAccount.setRole(response);
-                });
-            }
-            
-            $scope.isUserAuthenticated = function () {
-                return AccountService.getAccount().getUsername() != undefined;
-            };
-
-            $scope.isAdminLogged = function () {
-                return AccountService.getAccount().isAdmin();
-            };
-            
-        });
+                $scope.isAdminLogged = function () {
+                    return AccountService.getAccount().isAdmin();
+                };
+            // error 
+            },function(response){
+                flash.error = ServerErrorResponse.getMessage(response);
+            });
     }
 
     $scope.login = function() {

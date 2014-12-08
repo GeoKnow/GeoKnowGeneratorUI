@@ -245,7 +245,7 @@ angular.module("app.configuration", [])
                     + "ORDER BY ?s ?p ?o",
             mode: "settings"
         };
-        console.log(SETTINGS_GRAPH);
+        console.log("reading settings from " + SETTINGS_GRAPH);
 
         return $http.post("RdfStoreProxy", $.param(requestData)).then(function (response) {
             settings = parseSparqlResults(response.data);
@@ -315,6 +315,8 @@ angular.module("app.configuration", [])
                     + "}",
             mode: "settings"
         };
+
+        console.log("writting settings to " + SETTINGS_GRAPH);
 
         return $http.post("RdfStoreProxy", $.param(requestData)).then(function (response) {
             return response;

@@ -29,7 +29,7 @@
   gkg:publicEndpoint :VirtuosoEndpoint ;
   gkg:authEndpoint :VirtuosoAuthSPARQLEndpoint ;
   lds:integrates :Virtuoso ;
-  foaf:homepage <http://** GENERATOR ***:8080/generator> .
+  foaf:homepage <http://localhost:8080/generator> . # require IP for external access
 
 :Virtuoso
   a       lds:StackComponent ;
@@ -40,24 +40,24 @@
 
 :VirtuosoConductor 
   a  lds:StorageService ;
-  lds:password "***Virtuoso Endpoint***"^^xsd:string ;
-  lds:serviceUrl <http://***Virtuoso Endpoint***:8890/conductor> ;
-  lds:connectionString "jdbc:virtuoso://***Virtuoso Endpoint***:1111/"^^xsd:string;
-  lds:user   "***Virtuoso Endpoint***"^^xsd:string .
+  lds:password "***REMOVED***"^^xsd:string ;
+  lds:serviceUrl <http://***REMOVED***:8890/conductor> ;
+  lds:connectionString "jdbc:virtuoso://***REMOVED***:1111/"^^xsd:string;
+  lds:user   "***REMOVED***"^^xsd:string .
 
 :VirtuosoAuthSPARQLEndpoint
   a       lds:SecuredSPARQLEndPointService, void:Dataset , gkg:SPARQLEndpoint , gkg:DataSource ;
   rdfs:label  "Workbench Authenticated Endpoint" ;
   lds:password "***REMOVED***"^^xsd:string ;
-  void:sparqlEndpoint <http://***Virtuoso Endpoint***:8890/sparql-auth> ;
-  lds:serviceUrl <http://***Virtuoso Endpoint***:8890/sparql-auth> ;
+  void:sparqlEndpoint <http://***REMOVED***:8890/sparql-auth> ;
+  lds:serviceUrl <http://***REMOVED***:8890/sparql-auth> ;
   lds:user   "***REMOVED***"^^xsd:string .
 
 :VirtuosoEndpoint
   a       lds:SPARQLEndPointService, void:Dataset , gkg:SPARQLEndpoint , gkg:DataSource ;
   rdfs:label  "Workbench public Endpoint" ;
-  lds:serviceUrl <http://***Virtuoso Endpoint***:8890/sparql> ;
-  void:sparqlEndpoint <http://***Virtuoso Endpoint***:8890/sparql> .
+  lds:serviceUrl <http://***REMOVED***:8890/sparql> ;
+  void:sparqlEndpoint <http://***REMOVED***:8890/sparql> .
 
 
 # #######################################################################################

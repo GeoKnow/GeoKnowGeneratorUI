@@ -1,16 +1,15 @@
 'use strict';
 
 function ComponentCtrl($scope, ConfigurationService){
-	$scope.components = ConfigurationService.getAllComponents();
-}
 
+	ConfigurationService.getSettings().then(function(settings){
+		$scope.components = ConfigurationService.getAllComponents();
 
-function ComponentServicesCtrl($scope, ConfigurationService){
-	
-	$scope.services = [];
+		$scope.getServices = function(uri){
+			$scope.services = ConfigurationService.getComponentServices(uri);
+		};
 
-	$scope.getServices = function(uri){
-		$scope.services = ConfigurationService.getComponentServices(uri);
-	};
+	});
 
 }
+

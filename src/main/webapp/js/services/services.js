@@ -52,6 +52,9 @@ module.factory('ServerErrorResponse', function() {
       case 500:
         statusText = 'Internal Server Error' + ( response.data =! ''? ': ' + response.data : '') ;
         break;
+      case 503:
+        statusText = 'Service Unavailable' + ( response.data =! ''? ': ' + response.data : '') ;
+        break;
       default:
         statusText = 'An '+ response.status +' error occurred ' +( response.data =! ''? ': ' + response.data : '') ;
       };
