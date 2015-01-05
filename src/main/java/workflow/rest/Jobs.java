@@ -128,12 +128,15 @@ public class Jobs {
             if (rootNode.path("boolean").getBooleanValue()) {
 
                 // stop the execution if running
-                JobExecutions executions = BatchAdminClient.getAllExecutions();
-                JobExecution lastExec = executions.getJobExecutions().get(0);
-                if (lastExec.getStatus().contains("START")) {
-                    log.info("stopping " + lastExec.getId());
-                    BatchAdminClient.stopExecution(lastExec.getId());
-                }
+                // JobExecutions executions =
+                // BatchAdminClient.getAllExecutions();
+                // if (executions.getJobExecutions().size() > 0) {
+                // JobExecution lastExec = executions.getJobExecutions().get(0);
+                // if (lastExec.getStatus().contains("START")) {
+                // log.info("stopping " + lastExec.getId());
+                // BatchAdminClient.stopExecution(lastExec.getId());
+                // }
+                // }
 
                 query = "DELETE FROM <" + jobsGraph + "> { <" + uriBase + jobName + "> ?p ?o} "
                         + " WHERE { <" + uriBase + jobName + "> ?p ?o ;  <"

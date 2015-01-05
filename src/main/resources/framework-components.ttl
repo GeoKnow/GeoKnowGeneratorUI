@@ -64,7 +64,7 @@
 
 :SparqlifyService
       a       lds:ExplorationService ;
-      lds:serviceUrl <http://192.168.2.18:8080/sparqlify/> .
+      lds:serviceUrl <http://localhost:8080/sparqlify/> .
 
 :Facete
       a       lds:StackComponent ;
@@ -74,7 +74,7 @@
       foaf:homepage <http://aksw.org/Projects/Facete.html> .
 :FaceteService
       a       lds:ExplorationService ;
-      lds:serviceUrl <http://192.168.2.18:8080/facete2/> .
+      lds:serviceUrl <http://localhost:8080/facete2/> .
 
 :Limes
       a       lds:StackComponent ;
@@ -114,7 +114,7 @@
       foaf:homepage <http://aksw.org/Projects/OntoWiki.html> .
 :OntoWikiService
       a       lds:AuthoringService ;
-      lds:serviceUrl <http://192.168.2.18/OntoWiki> .
+      lds:serviceUrl <http://localhost/OntoWiki> .
 
 :Mappify
       a       lds:StackComponent ;
