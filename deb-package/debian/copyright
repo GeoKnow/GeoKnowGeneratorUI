@@ -1,15 +1,14 @@
 Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: geoknow-generator-ui
-Source: http://github.com/GeoKnow/GeoKnowGeneratorUI/
+Source: <url://example.com>
 
 Files: *
-Copyright: 2013 Alejandra Garcia Rojas Martinez <alejandra.garciarojas@ontos.com>
-           2013 Jon Jay Le Grange <jonjay.legrange@ontos.com>
-		   2013 Vadim Zaslawski <vadim.zaslawski@ontos.com>
+Copyright: <years> <put author's name and email here>
+           <years> <likewise for another author>
 License: Apache-2.0
 
 Files: debian/*
-Copyright: 2013 Vadim Zaslawski <vadim.zaslawski@ontos.com>
+Copyright: 2015 Alejandra Garcia-Rojas M <alejandra.garciarojas@ontos.com>
 License: Apache-2.0
 
 License: Apache-2.0
@@ -27,3 +26,8 @@ License: Apache-2.0
  .
  On Debian systems, the complete text of the Apache version 2.0 license
  can be found in "/usr/share/common-licenses/Apache-2.0".
+
+# Please also look if there are files or directories which have a
+# different copyright/license attached and list them here.
+# Please avoid to pick license terms that are more restrictive than the
+# packaged work, as it may make Debian's contributions unacceptable upstream.

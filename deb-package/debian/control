@@ -1,16 +1,16 @@
 Source: geoknow-generator-ui
 Section: web
 Priority: extra
-Maintainer: Alejandra Garcia Rojas M <alejandra.garciarojas@ontos.com>
+Maintainer: Alejandra Garcia-Rojas M <alejandra.garciarojas@ontos.com>
 Build-Depends: debhelper (>= 8.0.0)
 Standards-Version: 3.9.4
-Homepage: http://stack.linkeddata.org/
+Homepage: http://stack.linkeddata.org/documentation/users-guide/geoknow-generator/
 #Vcs-Git: git://git.debian.org/collab-maint/geoknow-generator-ui.git
 #Vcs-Browser: http://git.debian.org/?p=collab-maint/geoknow-generator-ui.git;a=summary
 
 Package: geoknow-generator-ui
 Architecture: all
-Depends: tomcat7, ${misc:Depends}
+Depends: tomcat7, spring-batch-admin-geoknow, ${misc:Depends}
 Description: Workbench to integrate tools of project GeoKnow.
  The GeoKnow Generator provides workbench that integrates of tools
  developed within [GeoKnow project](http://geoknow.eu/),

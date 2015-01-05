@@ -1,8 +1,8 @@
 #!/bin/sh
 ### BEGIN INIT INFO
 # Provides:          geoknow-generator-ui
-# Required-Start:    $network $local_fs
-# Required-Stop:
+# Required-Start:    $local_fs $network $remote_fs $syslog
+# Required-Stop:     $local_fs $network $remote_fs $syslog
 # Default-Start:     2 3 4 5
 # Default-Stop:      0 1 6
 # Short-Description: <Enter a short description of the software>
@@ -11,19 +11,21 @@
 #                    <...>
 ### END INIT INFO
 
-# Author: Vadim Zaslawski <vadim.zaslawski@ontos.com>
+# Author: Alejandra Garcia-Rojas M <alejandra.garciarojas@ontos.com>
+
+# Do NOT "set -e"
 
 # PATH should only include /usr/* if it runs after the mountnfs.sh script
 PATH=/sbin:/usr/sbin:/bin:/usr/bin
-DESC=geoknow-generator-ui             # Introduce a short description here
-NAME=geoknow-generator-ui             # Introduce the short server's name here
-DAEMON=/usr/sbin/geoknow-generator-ui # Introduce the server's location here
-DAEMON_ARGS=""             # Arguments to run the daemon with
+DESC="geoknow-generator-ui"
+NAME=geoknow-generator-ui
+DAEMON=/usr/sbin/geoknow-generator-ui
+DAEMON_ARGS=""
 PIDFILE=/var/run/$NAME.pid
 SCRIPTNAME=/etc/init.d/$NAME
 
 # Exit if the package is not installed
-[ -x $DAEMON ] || exit 0
+[ -x "$DAEMON" ] || exit 0
 
 # Read configuration variable file if it is present
 [ -r /etc/default/$NAME ] && . /etc/default/$NAME
@@ -32,7 +34,8 @@ SCRIPTNAME=/etc/init.d/$NAME
 . /lib/init/vars.sh
 
 # Define LSB log_* functions.
-# Depend on lsb-base (>= 3.0-6) to ensure that this file is present.
+# Depend on lsb-base (>= 3.2-14) to ensure that this file is present
+# and status_of_proc is working.
 . /lib/lsb/init-functions
 
 #
@@ -104,13 +107,13 @@ do_reload() {
 
 case "$1" in
   start)
-    [ "$VERBOSE" != no ] && log_daemon_msg "Starting $DESC " "$NAME"
-    do_start
-    case "$?" in
+	[ "$VERBOSE" != no ] && log_daemon_msg "Starting $DESC" "$NAME"
+	do_start
+	case "$?" in
 		0|1) [ "$VERBOSE" != no ] && log_end_msg 0 ;;
 		2) [ "$VERBOSE" != no ] && log_end_msg 1 ;;
 	esac
-  ;;
+	;;
   stop)
 	[ "$VERBOSE" != no ] && log_daemon_msg "Stopping $DESC" "$NAME"
 	do_stop
@@ -120,8 +123,8 @@ case "$1" in
 	esac
 	;;
   status)
-       status_of_proc "$DAEMON" "$NAME" && exit 0 || exit $?
-       ;;
+	status_of_proc "$DAEMON" "$NAME" && exit 0 || exit $?
+	;;
   #reload|force-reload)
 	#
 	# If do_reload() is not implemented then leave this commented out
@@ -148,7 +151,7 @@ case "$1" in
 		esac
 		;;
 	  *)
-	  	# Failed to stop
+		# Failed to stop
 		log_end_msg 1
 		;;
 	esac

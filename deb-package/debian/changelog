@@ -5,4 +5,4 @@ geoknow-generator-ui (1.1.0) ldstack-nightly; urgency=low
   * Implements graph level access control
   * Requires spring batch admin generator for running batch processes
 
- -- Alejandra Garcia Rojas M <alejandra.garciarojas@ontos.com>  Tue, 25 Nov 2014 17:11:12 +0200
+ -- Alejandra Garcia-Rojas M <alejandra.garciarojas@ontos.com>  Mon, 05 Jan 2015 22:50:23 +0100

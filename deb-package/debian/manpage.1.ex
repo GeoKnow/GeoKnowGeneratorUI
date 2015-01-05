@@ -1,10 +1,10 @@
 .\"                                      Hey, EMACS: -*- nroff -*-
-.\" (C) Copyright 2013 Vadim Zaslawski <vadim.zaslawski@ontos.com>,
+.\" (C) Copyright 2015 Alejandra Garcia-Rojas M <alejandra.garciarojas@ontos.com>,
 .\"
 .\" First parameter, NAME, should be all caps
 .\" Second parameter, SECTION, should be 1-8, maybe w/ subsection
 .\" other parameters are allowed: see man(7), man(1)
-.TH GEOKNOW-GENERATOR-UI SECTION "August 21, 2013"
+.TH GEOKNOW-GENERATOR-UI SECTION "January  5, 2015"
 .\" Please adjust this date whenever revising the manpage.
 .\"
 .\" Some roff macros, for reference:

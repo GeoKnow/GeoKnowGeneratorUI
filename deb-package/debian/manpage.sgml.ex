@@ -20,12 +20,12 @@ manpage.1: manpage.sgml
   <!ENTITY dhfirstname "<firstname>FIRSTNAME</firstname>">
   <!ENTITY dhsurname   "<surname>SURNAME</surname>">
   <!-- Please adjust the date whenever revising the manpage. -->
-  <!ENTITY dhdate      "<date>August 21, 2013</date>">
+  <!ENTITY dhdate      "<date>January  5, 2015</date>">
   <!-- SECTION should be 1-8, maybe w/ subsection other parameters are
        allowed: see man(7), man(1). -->
   <!ENTITY dhsection   "<manvolnum>SECTION</manvolnum>">
-  <!ENTITY dhemail     "<email>vadim.zaslawski@ontos.com</email>">
-  <!ENTITY dhusername  "Vadim Zaslawski">
+  <!ENTITY dhemail     "<email>alejandra.garciarojas@ontos.com</email>">
+  <!ENTITY dhusername  "Alejandra Garcia-Rojas M">
   <!ENTITY dhucpackage "<refentrytitle>GEOKNOW-GENERATOR-UI</refentrytitle>">
   <!ENTITY dhpackage   "geoknow-generator-ui">
 
