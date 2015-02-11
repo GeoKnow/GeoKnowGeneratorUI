@@ -5,7 +5,7 @@
 * LIMES Controller
 ***************************************************************************************************/
 
-var LimesCtrl = function($scope, $http, ConfigurationService, JobService, AuthSessionService, flash, ServerErrorResponse, $window, GraphService, AccountService, Ns, $modal){
+var LimesCtrl = function($scope, $http, ConfigurationService, JobService, AuthSessionService, flash, ServerErrorResponse, $window, GraphService, AccountService, Ns, $modal, $timeout){
 	
 	$scope.configOptions = true;
 	$scope.inputForm = true;
@@ -110,19 +110,31 @@ var LimesCtrl = function($scope, $http, ConfigurationService, JobService, AuthSe
 	};
 
   $scope.updateSourceGraphs = function(){
-  	if( $scope.limes.source.endpoint == ConfigurationService.getSPARQLEndpoint())
+  	console.log($scope.limes.target.endpoint + "==" + ConfigurationService.getSPARQLEndpoint());
+  	// wait for model to update
+  	$timeout(function () {
+  		console.log($scope.limes.target.endpoint + "==" + ConfigurationService.getSPARQLEndpoint());
+  		if( $scope.limes.source.endpoint == ConfigurationService.getSPARQLEndpoint()){
+  			console.log("get gtraphs");
 				GraphService.getAccessibleGraphs(false, false, true).then(function(graphs) {
     			$scope.namedSourceGraphs = graphs;
     		});
-		else
-			$scope.namedSourceGraphs = {};
+			}
+			else
+				$scope.namedSourceGraphs = {};
+    }, 500);
+
+  	
   };
 
   $scope.updateTargetGraphs = function(){
-  	if( $scope.llimes.target.endpoint == ConfigurationService.getSPARQLEndpoint())
+  	console.log($scope.limes.target.endpoint + "==" + ConfigurationService.getSPARQLEndpoint());
+  	if( $scope.limes.target.endpoint == ConfigurationService.getSPARQLEndpoint()){
+  		console.log("get gtraphs");
 			GraphService.getAccessibleGraphs(false, false, true).then(function(graphs) {
     		$scope.namedTargetGraphs = graphs;
     	});
+		}
 		else
 			$scope.namedTargetGraphs = {};
   };

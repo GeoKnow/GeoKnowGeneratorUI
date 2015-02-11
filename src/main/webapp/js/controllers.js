@@ -46,7 +46,7 @@ function StackMenuCtrl($scope, AccountService) {
 			 title: "Classification and Enrichment",
 			 id:"classification-and-enrichment",
 			 items: [
-			   {name: 'GeoLift', route:'#/workbench/classification-and-enrichment/geolift', url:'/workbench/classification-and-enrichment/geolift', requiredServices:[] }]
+			   {name: 'Deer', route:'#/workbench/classification-and-enrichment/deer', url:'/workbench/classification-and-enrichment/deer', requiredServices:[] }]
 		  }
 	  ];
 
@@ -160,59 +160,4 @@ var DataSourceTabCtrl = function($scope, $window, $location) {
   
 };
 
-
-
-/*
-app.controller('OpenMap', function OpenMap($scope, $timeout, $log){
-
-  var map = new OpenLayers.Map( 'map', {controls:[
-         new OpenLayers.Control.Navigation(),
-         new OpenLayers.Control.PanZoomBar(),
-         //new OpenLayers.Control.LayerSwitcher(),
-         new OpenLayers.Control.Attribution()],
-         units: 'm',
-     });
-  var layer = new OpenLayers.Layer.OSM( "Biel/Bienne Map");
-  map.addLayer(layer);
-  map.setCenter(
-      new OpenLayers.LonLat(7.25 , 47.133333).transform(
-          new OpenLayers.Projection("EPSG:4326"),
-          map.getProjectionObject()
-      ), 13 
-  );
-});
-
-var OpenMapWindow = function ($scope, $timeout, $log) {
-	
-	var map = new OpenLayers.Map( 'map', {controls:[
-         new OpenLayers.Control.Navigation(),
-         new OpenLayers.Control.PanZoomBar(),
-         //new OpenLayers.Control.LayerSwitcher(),
-         new OpenLayers.Control.Attribution()],
-         units: 'm',
-     });
-  var layer = new OpenLayers.Layer.OSM( "Biel/Bienne Map");
-  map.addLayer(layer);
-  map.setCenter(
-      new OpenLayers.LonLat(7.25 , 47.133333).transform(
-          new OpenLayers.Projection("EPSG:4326"),
-          map.getProjectionObject()
-      ), 13 
-  );
-};
-	
-var GoogleMapWindow = function ($scope, $timeout, $log) {
-	var map;
-
-  var mapOptions = {
-    zoom: 14,
-    center: new google.maps.LatLng(47.126776, 7.24),
-    mapTypeId: google.maps.MapTypeId.ROADMAP
-  };
-  
-  map = new google.maps.Map(document.getElementById('map'),
-      mapOptions);
-
-};
-*/
 

@@ -16,7 +16,7 @@ app.controller('FaceteFormCtrl', function($scope, ConfigurationService, GraphSer
    	dataset   : "",
   };
   $scope.url= services[0].serviceUrl + 
-		'?service-uri='+ $scope.facete.service+
+		'?service-uri='+ encodeURIComponent($scope.facete.service) +
     '&default-graph-uri=';
   
 	$scope.refreshGraphList = function() {
@@ -29,8 +29,8 @@ app.controller('FaceteFormCtrl', function($scope, ConfigurationService, GraphSer
 
 	$scope.updateServiceParams = function(){
 		$scope.url= services[0].serviceUrl + 
-			'?service-uri='+ $scope.facete.service+
-      '&default-graph-uri=' + $scope.facete.dataset.replace(':',ConfigurationService.getUriBase());
+			'?service-uri='				+ encodeURIComponent($scope.facete.service) +
+      '&default-graph-uri=' + encodeURIComponent($scope.facete.dataset.replace(':',ConfigurationService.getUriBase()));
     console.log($scope.url);
 	};
 

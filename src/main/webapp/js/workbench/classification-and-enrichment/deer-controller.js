@@ -6,7 +6,7 @@
 *
 ***************************************************************************************************/
 
-var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErrorResponse, $window, AccountService, GraphService){
+var DeerCtrl = function($scope, $http, ConfigurationService, flash, ServerErrorResponse, $window, AccountService, GraphService){
 	
 	$scope.component = ConfigurationService.getComponent(":Deer");
 	var services = ConfigurationService.getComponentServices(":Deer");
@@ -34,11 +34,10 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErr
 	var isCompletePath = 0;
 	
 	$scope.modOptions = [
-	                      { label: "Choose a module"},
-	                      { label: "nlp"},
-	 			          { label: "dereferencing"}
-	                     ],
-	
+    { label: "Choose a module"},
+    { label: "nlp"},
+		{ label: "dereferencing"}
+   ],
 	
 	
 	$scope.options = {
@@ -619,7 +618,7 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErr
 		}
 			
 		window.$windowScope = $scope;
-	 	var newWindow = $window.open('popup.html#/popup-deer', 'frame', 'resizeable,height=600,width=800');
+	 	var newWindow = $window.open('popup.html#/popup-geolift', 'frame', 'resizeable,height=600,width=800');
 		newWindow.params = params;
 		
 	};
