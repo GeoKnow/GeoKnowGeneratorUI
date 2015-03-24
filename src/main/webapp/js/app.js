@@ -30,7 +30,7 @@ app.config(function($routeSegmentProvider, $routeProvider)
         
         .when('/popup-limes','popup-limes')
         .when('/popup-triplegeo','popup-triplegeo')
-        .when('/popup-geolift','popup-geolift')
+        .when('/popup-deer','popup-deer')
 
         .when('/', 'default')
         .when('/workbench', 'workbench')
@@ -56,7 +56,7 @@ app.config(function($routeSegmentProvider, $routeProvider)
         .when('/workbench/manual-revision-and-authoring/ontowiki', 'workbench.ontowiki')
         .when('/workbench/linking-and-fusing/limes', 'workbench.limes')
         .when('/workbench/linking-and-fusing/fagi-gis', 'workbench.fagi-gis')
-        .when('/workbench/classification-and-enrichment/geolift', 'workbench.geolift')
+        .when('/workbench/classification-and-enrichment/deer', 'workbench.deer')
 
         .segment('popup-limes', {
             templateUrl: 'js/workbench/linking-and-fusing/limes-result.html',
@@ -76,8 +76,8 @@ app.config(function($routeSegmentProvider, $routeProvider)
                 }
             })
             
-        .segment('popup-geolift', {
-            templateUrl: 'js/workbench/classification-and-enrichment/geolift-result.html',
+        .segment('popup-deer', {
+            templateUrl: 'js/workbench/classification-and-enrichment/deer-result.html',
             resolve: {
                       settings: function (ConfigurationService) {
                         return ConfigurationService.getSettings();
@@ -118,8 +118,8 @@ app.config(function($routeSegmentProvider, $routeProvider)
                     templateUrl: 'js/workbench/search-querying-and-exploration/virtuoso.html'})
                 .segment('ontowiki', {
                     templateUrl: 'js/workbench/manual-revision-and-authoring/ontowiki.html' })
-                .segment('geolift', {
-                    templateUrl: 'js/workbench/classification-and-enrichment/geolift.html' })
+                .segment('deer', {
+                    templateUrl: 'js/workbench/classification-and-enrichment/deer.html' })
                 .segment('limes', {
                     templateUrl: 'js/workbench/linking-and-fusing/limes.html' })
                 .segment('fagi-gis', {

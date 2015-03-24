@@ -18,11 +18,11 @@
   	<td>{{component.uri}}</td>
     <td><a href="{{component.homepage}}" target="_blanc">{{component.label}}</a></td>
     <td>
-      <div ng-init="getServices(component.uri)">
-        <ul ng-repeat="service in services">
-          <li>{{service.type}}</li>
-          <li tooltip="service.description">{{service.serviceUrl}}</li>
-        </ul>
+      <div ng-repeat="(key, value) in services[component.uri]">
+        <dt>{{value.uri}}</dt>
+          <dd>{{value.type}}</dd>
+          <dd><a href="{{value.serviceUrl}}" target="_blanc">{{value.serviceUrl}}</a></dd>
+        </dl>
       </div>
     </td>
     <td>{{component.version}}</td>

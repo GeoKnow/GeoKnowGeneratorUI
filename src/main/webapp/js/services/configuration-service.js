@@ -155,10 +155,16 @@ module.factory('ConfigurationService', function ($q, Config, $http, $location, f
             for (var resource in elements) {
                 var element = elements[resource];
                 if(element["rdfs:label"]== undefined) continue;
+
+                var lendpoint = element["void:sparqlEndpoint"][0]
+                if(resource==":VirtuosoAuthSPARQLEndpoint")
+                    lendpoint = Config.getAuthEndpoint();
+                else if(resource==":VirtuosoEndpoint")
+                    lendpoint = Config.getEndpoint();
                 results.push({
                     uri: resource,
                     label: element["rdfs:label"][0],
-                    endpoint: element["void:sparqlEndpoint"][0],
+                    endpoint: lendpoint,
                     homepage: element["foaf:homepage"] == undefined ? "" : element["foaf:homepage"][0]
                 });
             }

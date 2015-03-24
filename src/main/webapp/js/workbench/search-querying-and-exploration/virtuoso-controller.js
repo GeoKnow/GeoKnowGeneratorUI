@@ -32,17 +32,17 @@ app.controller('VirtuosoCtrl', function($scope, ConfigurationService, AccountSer
 	$scope.updateServiceParams = function(){
 	    if (AccountService.getAccount().getUsername()==null) { //user is not authorized
 	      $scope.url= $scope.virtuoso.service +
-	            '?default-graph-uri=' + $scope.virtuoso.dataset.replace(':',ConfigurationService.getUriBase()) +
+	            '?default-graph-uri=' + encodeURIComponent( $scope.virtuoso.dataset.replace(':',ConfigurationService.getUriBase()))+
 	            '&qtxt=select+distinct+%3FConcept+where+%7B%5B%5D+a+%3FConcept%7D+LIMIT+100'
 	            '&format=text%2Fhtml' +
 	            '&timeout=30000';
 	    } else {
         $scope.url= 'VirtuosoProxy' +
-                    '?default-graph-uri=' + $scope.virtuoso.dataset.replace(':',ConfigurationService.getUriBase()) +
+                    '?default-graph-uri=' + encodeURIComponent($scope.virtuoso.dataset.replace(':',ConfigurationService.getUriBase())) +
                     '&qtxt=select+distinct+%3FConcept+where+%7B%5B%5D+a+%3FConcept%7D+LIMIT+100' +
                     '&format=text%2Fhtml' +
                     '&timeout=30000' +
-                    '&username=' + AccountService.getAccount().getUsername();
+                    '&username=' + encodeURIComponent(AccountService.getAccount().getUsername());
       }
       console.log($scope.url);
 	};

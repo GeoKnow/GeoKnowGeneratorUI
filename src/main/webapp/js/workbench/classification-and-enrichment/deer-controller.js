@@ -6,10 +6,10 @@
 *
 ***************************************************************************************************/
 
-var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErrorResponse, $window, AccountService, GraphService){
+var DeerCtrl = function($scope, $http, ConfigurationService, flash, ServerErrorResponse, $window, AccountService, GraphService){
 	
-	$scope.component = ConfigurationService.getComponent(":GeoLift");
-	var services = ConfigurationService.getComponentServices(":GeoLift");
+	$scope.component = ConfigurationService.getComponent(":Deer");
+	var services = ConfigurationService.getComponentServices(":Deer");
 	var serviceUrl = services[0].serviceUrl;
 	
 	$scope.endpoints = ConfigurationService.getAllEndpoints();
@@ -34,11 +34,10 @@ var GeoliftCtrl = function($scope, $http, ConfigurationService, flash, ServerErr
 	var isCompletePath = 0;
 	
 	$scope.modOptions = [
-	                      { label: "Choose a module"},
-	                      { label: "nlp"},
-	 			          { label: "dereferencing"}
-	                     ],
-	
+    { label: "Choose a module"},
+    { label: "nlp"},
+		{ label: "dereferencing"}
+   ],
 	
 	
 	$scope.options = {

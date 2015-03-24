@@ -106,6 +106,18 @@
       a       lds:EnrichmentService ;
       lds:serviceUrl <http://localhost:8080/GeoLift-Service> .
 
+
+:Deer
+      a       lds:StackComponent ;
+      rdfs:label "Deer"^^xsd:string ;
+      lds:providesService :DeerService ;
+      lds:version "0.6.4"^^xsd:string ;
+      foaf:homepage <http://aksw.org/Projects/DEER.html> .
+:DeerService
+      a       lds:EnrichmentService ;
+      lds:serviceUrl <http://localhost:8080/Deer-Service> .
+
+
 :OntoWiki
       a       lds:StackComponent ;
       rdfs:label "OntoWiki"^^xsd:string ;
@@ -194,6 +206,11 @@ a     lds:BatchProcessingService ;
       a     gkg:RouteRestriction;
       gkg:partialUrl "/workbench/classification-and-enrichment/geolift"^^xsd:string;
       gkg:requiredService :GeoLiftService .
+
+:DeerRouteRestriction
+      a     gkg:RouteRestriction;
+      gkg:partialUrl "/workbench/classification-and-enrichment/deer"^^xsd:string;
+      gkg:requiredService :DeerService .
 
 :DashboardRestriction
       a     gkg:RouteRestriction;
