@@ -45,11 +45,10 @@ function UsersCtrl($scope, $http, flash, Helpers, AccountService) {
     $scope.graphs = [];
     $scope.refreshGraphsList = function() {
         var parameters = {
-            mode: "getAll",
             username: currentAccount.getUsername()
         };
         $http({
-            url: "GraphManagerServlet",
+            url: "rest/graphs/getAll",
     	    method: "POST",
     	    dataType: "json",
     	    params: parameters,

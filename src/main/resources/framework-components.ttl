@@ -1,65 +1,27 @@
 @prefix :        <http://generator.geoknow.eu/resource/> .
-@prefix d2rq:    <http://www.wiwiss.fu-berlin.de/suhl/bizer/D2RQ/0.1#> .
-@prefix dcmit:   <http://purl.org/dc/dcmitype/> .
-@prefix dcterms:  <http://purl.org/dc/terms/> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
 @prefix lds:     <http://stack.linkeddata.org/ldis-schema/> .
-@prefix owl:     <http://www.w3.org/2002/07/owl#> .
 @prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix schema:  <http://schema.org/> .
 @prefix sd:      <http://www.w3.org/ns/sparql-service-description#> .
 @prefix void:    <http://rdfs.org/ns/void#> .
 @prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
 @prefix foaf:    <http://xmlns.com/foaf/0.1/> .
-@prefix gkg:     <http://ldiw.ontos.com/ontology/> .
-@prefix acl:     <http://www.w3.org/ns/auth/acl#> .
+@prefix ontos:   <http://ldiw.ontos.com/ontology/> .
 
-########### ABOUT THIS FILE #############################################################
-# This file contains the default set-up of components in the framework; 
-# this file is to be loaded initially on the settigns Graph of the default user, 
-# and for each new user.
-# NOTE: avoid using blank nodes may cause problems loading the file:
-#    - https://www.mail-archive.com/virtuoso-users@lists.sourceforge.net/msg05138.html
-# #######################################################################################
-
-:GeoKnowGeneratorService a sd:Service;
-    sd:endpoint <http://localhost:8890/sparql>;
-    sd:supportedLanguage sd:SPARQL11Query ;
-    sd:defaultDataset :default-dataset;
-    .
-
-:default-dataset a sd:Dataset;
-    rdfs:label "GeoKnow Generator";
-    dcterms:description "The GeoKnow Generator Service"^^xsd:string;
-    sd:defaultGraph <http://localhost:8890/DAV>;
-    sd:namedGraph :settingsGraph;
-    .
-<http://localhost:8890/DAV> a sd:Graph, void:Dataset;
-    rdfs:label "Default Graph";
-    dcterms:description "Default graph"^^xsd:string;
-    .
 
 ########### COMPONENT DESCRIPTION #######################################################
 # Following triples  describes the configured components in the framework
 # #######################################################################################
 
-
-:FagiGis
-      a       lds:StackComponent ;
-      rdfs:label "FAGI-gis"^^xsd:string ;
-      lds:providesService :FagiGisService ;
-      lds:version "1.1+rev0"^^xsd:string ;
-      foaf:homepage <https://github.com/GeoKnow/FAGI-gis> .
-
-:FagiGisService
-      a       lds:ExplorationService ;
-      lds:serviceUrl <http://localhost:8080/FAGI-WebInterface/> .
-
+:LDWorkbench
+  lds:integrates :Facete, :Limes, :Sparqlify, :TripleGeo, :GeoLift, :OntoWiki, :Mappify, :CSV2RDF, :DataPublisher .
+  
 :Sparqlify
       a       lds:StackComponent ;
       rdfs:label "Sparqlify"^^xsd:string ;
       lds:providesService :SparqlifyService ;
-      lds:version "0.1-SNAPSHOT"^^xsd:string ;
+      dcterms:hasVersion "0.1-SNAPSHOT"^^xsd:string ;
       foaf:homepage <http://aksw.org/Projects/Sparqlify.html> .
 
 :SparqlifyService
@@ -70,151 +32,116 @@
       a       lds:StackComponent ;
       rdfs:label "Facete"^^xsd:string ;
       lds:providesService :FaceteService ;
-      lds:version "0.1-SNAPSHOT"^^xsd:string ;
+      dcterms:hasVersion "0.1-SNAPSHOT"^^xsd:string ;
       foaf:homepage <http://aksw.org/Projects/Facete.html> .
 :FaceteService
       a       lds:ExplorationService ;
-      lds:serviceUrl <http://localhost:8080/facete2/> .
+      lds:serviceUrl <http://cstadler.aksw.org/facete2/> .
 
 :Limes
       a       lds:StackComponent ;
       rdfs:label "Limes Linking Service"^^xsd:string ;
       lds:providesService :LimesService;
-      lds:version "0.6.4"^^xsd:string ;
+      dcterms:hasVersion "0.6.4"^^xsd:string ;
       foaf:homepage <http://aksw.org/Projects/LIMES.html> .
 :LimesService
       a       lds:InterlinkingService ;
-      lds:serviceUrl <http://localhost:8080/limes-service/> .
+      lds:serviceUrl <http://localhost:8080/limes-service> .
 
 :TripleGeo
       a       lds:StackComponent ;
       rdfs:label "TripleGeo"^^xsd:string ;
       lds:providesService :TripleGeoService ;
-      lds:version "1.0"^^xsd:string ;
+      dcterms:hasVersion "1.0"^^xsd:string ;
       foaf:homepage <https://web.imis.athena-innovation.gr/redmine/projects/geoknow_public/wiki/TripleGeo> .
 :TripleGeoService
       a       lds:ExtractionService ;
       lds:serviceUrl <http://localhost:8080/TripleGeo-Service> .
 
-:GeoLift
+:DEER
       a       lds:StackComponent ;
-      rdfs:label "GeoLift"^^xsd:string ;
-      lds:providesService :GeoLiftService ;
-      lds:version "0.6.4"^^xsd:string ;
-      foaf:homepage <https://github.com/AKSW/GeoLift> .
-:GeoLiftService
+      rdfs:label "DEER"^^xsd:string ;
+      lds:providesService :DEERService ;
+      dcterms:hasVersion "0.6.4"^^xsd:string ;
+      foaf:homepage <https://github.com/AKSW/DEER> .
+:DEERService
       a       lds:EnrichmentService ;
-      lds:serviceUrl <http://localhost:8080/GeoLift-Service> .
-
-
-:Deer
-      a       lds:StackComponent ;
-      rdfs:label "Deer"^^xsd:string ;
-      lds:providesService :DeerService ;
-      lds:version "0.6.4"^^xsd:string ;
-      foaf:homepage <http://aksw.org/Projects/DEER.html> .
-:DeerService
-      a       lds:EnrichmentService ;
-      lds:serviceUrl <http://localhost:8080/Deer-Service> .
-
+      lds:serviceUrl <http://localhost:8080/deer-Service> .
 
 :OntoWiki
       a       lds:StackComponent ;
       rdfs:label "OntoWiki"^^xsd:string ;
       lds:providesService :OntoWikiService ;
-      lds:version "0.9.10-1"^^xsd:string ;
+      dcterms:hasVersion "0.9.10-1"^^xsd:string ;
       foaf:homepage <http://aksw.org/Projects/OntoWiki.html> .
 :OntoWikiService
       a       lds:AuthoringService ;
-      lds:serviceUrl <http://localhost/OntoWiki> .
+      lds:serviceUrl <http://localhost/ontowiki> .
 
 :Mappify
       a       lds:StackComponent ;
       rdfs:label "Mappify"^^xsd:string ;
       lds:providesService :MappifyService ;
-      lds:version "0.9.10-1"^^xsd:string ;
+      dcterms:hasVersion "0.9.10-1"^^xsd:string ;
       foaf:homepage <https://github.com/GeoKnow/Mappify> .
 :MappifyService
       a       lds:ExplorationService ;
       lds:serviceUrl <http://cstadler.aksw.org/mappify2/> .
+	  
 
-:SpringBatchAdmin
-      a       lds:StackComponent ;
-      rdfs:label "Dashboard"^^xsd:string ;
-      lds:providesService :SpringBatchAdminService ;
-      lds:version "0.0.1"^^xsd:string ;
-      foaf:homepage <https://github.com/GeoKnow/spring-batch-admin> .
-:SpringBatchAdminService
-a     lds:BatchProcessingService ;
-      lds:serviceUrl <http://localhost:8080/spring-batch-admin-geoknow/> .
-
-:UserManager
-      a       lds:StackComponent ;
-      rdfs:label "Users Manager"^^xsd:string ;
-      lds:providesService :UserManagerService ;
-      lds:version "0.1-SNAPSHOT"^^xsd:string .
-:UserManagerService
-      a       lds:ComponentService ;
-      dcterms:description "Provides create/update functionality for accounts and roles."^^xsd:string ;
-      lds:serviceUrl <http://localhost:8080/generator/UserManagerServlet> .
       
 ########### ROUTES RESTRICTIONS DESCRIPTION #######################################################
 # Following triples describe required services for routes. It is used in conditional routing.
 # #######################################################################################
 
+
 :RolesRouteRestriction
-      a     gkg:RouteRestriction;
-      gkg:partialUrl "/settings/roles"^^xsd:string;
-      gkg:requiredService :UserManagerService .
-    
+      a     ontos:RouteRestriction;
+      ontos:partialUrl "/settings/roles"^^xsd:string;
+      ontos:requiredService :UserManagerService .
+	  
 :SparqlifyRouteRestriction
-      a     gkg:RouteRestriction;
-      gkg:partialUrl "/workbench/extraction-and-loading/sparqlify"^^xsd:string;
-      gkg:requiredService :SparqlifyService .
+      a     ontos:RouteRestriction;
+      ontos:partialUrl "/workbench/extraction-and-loading/sparqlify"^^xsd:string;
+      ontos:requiredService :SparqlifyService .
 
 :TripleGeoRouteRestriction
-      a     gkg:RouteRestriction;
-      gkg:partialUrl "/workbench/extraction-and-loading/triplegeo"^^xsd:string;
-      gkg:requiredService :TripleGeoService .
+      a     ontos:RouteRestriction;
+      ontos:partialUrl "/workbench/extraction-and-loading/triplegeo"^^xsd:string;
+      ontos:requiredService :TripleGeoService .
+
+:D2RQGeoRouteRestriction
+      a     ontos:RouteRestriction;
+      ontos:partialUrl "/workbench/extraction-and-loading/d2rq"^^xsd:string;
+      ontos:requiredService :D2RQService .
 
 :FaceteRouteRestriction
-      a     gkg:RouteRestriction;
-      gkg:partialUrl "/workbench/search-querying-and-exploration/facete"^^xsd:string;
-      gkg:requiredService :FaceteService .
-    
+      a     ontos:RouteRestriction;
+      ontos:partialUrl "/workbench/search-querying-and-exploration/facete"^^xsd:string;
+      ontos:requiredService :FaceteService .
+	  
 :MappifyRouteRestriction
-      a     gkg:RouteRestriction;
-      gkg:partialUrl "/workbench/search-querying-and-exploration/mappify"^^xsd:string;
-      gkg:requiredService :MappifyService .
-    
+      a     ontos:RouteRestriction;
+      ontos:partialUrl "/workbench/search-querying-and-exploration/mappify"^^xsd:string;
+      ontos:requiredService :MappifyService .
+	  
 :OntoWikiRouteRestriction
-      a     gkg:RouteRestriction;
-      gkg:partialUrl "/workbench/manual-revision-and-authoring/ontowiki"^^xsd:string;
-      gkg:requiredService :OntoWikiService .
-    
+      a     ontos:RouteRestriction;
+      ontos:partialUrl "/workbench/manual-revision-and-authoring/ontowiki"^^xsd:string;
+      ontos:requiredService :OntoWikiService .
+	  
 :LIMESRouteRestriction
-      a     gkg:RouteRestriction;
-      gkg:partialUrl "/workbench/linking-and-fusing/limes"^^xsd:string;
-      gkg:requiredService :LimesService .
-
-:FAGIgisRouteRestriction
-      a     gkg:RouteRestriction;
-      gkg:partialUrl "/workbench/linking-and-fusing/fagi-gis"^^xsd:string;
-      gkg:requiredService :FagiGisService .
-    
-:GeoLiftRouteRestriction
-      a     gkg:RouteRestriction;
-      gkg:partialUrl "/workbench/classification-and-enrichment/geolift"^^xsd:string;
-      gkg:requiredService :GeoLiftService .
-
-:DeerRouteRestriction
-      a     gkg:RouteRestriction;
-      gkg:partialUrl "/workbench/classification-and-enrichment/deer"^^xsd:string;
-      gkg:requiredService :DeerService .
+      a     ontos:RouteRestriction;
+      ontos:partialUrl "/workbench/linking-and-fusing/limes"^^xsd:string;
+      ontos:requiredService :LimesService .
+	  
+:DEERRouteRestriction
+      a     ontos:RouteRestriction;
+      ontos:partialUrl "/workbench/classification-and-enrichment/deer"^^xsd:string;
+      ontos:requiredService :DEERService .
 
 :DashboardRestriction
-      a     gkg:RouteRestriction;
-      gkg:partialUrl "/workbench"^^xsd:string;
-      gkg:requiredService :SpringBatchAdminService .
-    
-
+      a     ontos:RouteRestriction;
+      ontos:partialUrl "/workbench"^^xsd:string;
+      ontos:requiredService :SpringBatchAdminService .
+	

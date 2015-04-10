@@ -20,7 +20,7 @@ module.factory("GraphGroupService", function ($http, $q, Config, AccountService)
                 query: "SELECT * FROM " + GRAPH + " WHERE { ?s ?p ?o } ORDER BY ?s ?p ?o",
                 mode: "settings"
             };
-            return $http.post("RdfStoreProxy", $.param(requestData)).then(function (response) {
+            return $http.post("rest/RdfStoreProxy", $.param(requestData)).then(function (response) {
                 graphGroups = Config.parseSparqlResults(response.data);
                 graphGroupsLoaded = true;
                 return graphGroups;
@@ -62,7 +62,6 @@ module.factory("GraphGroupService", function ($http, $q, Config, AccountService)
     var addGraphGroup = function (graphGroup) {
         var uri = Config.getNS() + graphGroup.name.replace(':', '');
         var request = {
-            mode: "createGroup",
             group: uri,
             graphs: [],
             username: AccountService.getAccount().getUsername()
@@ -70,7 +69,7 @@ module.factory("GraphGroupService", function ($http, $q, Config, AccountService)
         for (var ind in graphGroup.namedGraphs) {
             request.graphs.push(Config.getNS() + graphGroup.namedGraphs[ind].replace(':', ''));
         }
-        return $http.post("GraphManagerServlet", $.param(request, true))
+        return $http.post("rest/graphs/createGroup", $.param(request, true))
             .then(function (response) {
                 var data = " <" + uri + "> rdf:type sd:GraphCollection ; " + " rdfs:label \"" + graphGroup.label + "\" ; " + " dcterms:description \"" + graphGroup.description + "\" ; " + " dcterms:modified \"" + graphGroup.modified + "\" ; " + " dcterms:created \"" + graphGroup.created + "\" . "
                 for (var ind in graphGroup.namedGraphs) {
@@ -82,14 +81,13 @@ module.factory("GraphGroupService", function ($http, $q, Config, AccountService)
                     query: query,
                     mode: "settings"
                 };
-                return $http.post("RdfStoreProxy", $.param(requestData));
+                return $http.post("rest/RdfStoreProxy", $.param(requestData));
             });
     };
 
     var updateGraphGroup = function (graphGroup) {
         var uri = Config.getNS() + graphGroup.name.replace(':', '');
         var request = {
-            mode: "updateGroup",
             group: uri,
             graphs: [],
             username: AccountService.getAccount().getUsername()
@@ -97,7 +95,7 @@ module.factory("GraphGroupService", function ($http, $q, Config, AccountService)
         for (var ind in graphGroup.namedGraphs) {
             request.graphs.push(Config.getNS() + graphGroup.namedGraphs[ind].replace(':', ''));
         }
-        return $http.post("GraphManagerServlet", $.param(request, true))
+        return $http.post("rest/graphs/updateGroup", $.param(request, true))
             .then(function (response) {
                 var ngs = "";
                 for (var ind in graphGroup.namedGraphs)
@@ -108,18 +106,17 @@ module.factory("GraphGroupService", function ($http, $q, Config, AccountService)
                     query: query,
                     mode: "settings"
                 };
-                return $http.post("RdfStoreProxy", $.param(requestData));
+                return $http.post("rest/RdfStoreProxy", $.param(requestData));
             });
     };
 
     var deleteGraphGroup = function (name) {
         var uri = name.replace(':', Config.getNS());
         var request = {
-            mode: "dropGroup",
             group: uri,
             username: AccountService.getAccount().getUsername()
         };
-        return $http.post("GraphManagerServlet", $.param(request))
+        return $http.post("rest/graphs/dropGroup", $.param(request))
             .then(function (response) {
                 var query = "WITH " + GRAPH + " DELETE {?s ?p ?o} WHERE {?s ?p ?o . FILTER (?s = <" + uri + ">) }";
                 var requestData = {
@@ -127,7 +124,7 @@ module.factory("GraphGroupService", function ($http, $q, Config, AccountService)
                     query: query,
                     mode: "settings"
                 };
-                return $http.post("RdfStoreProxy", $.param(requestData));
+                return $http.post("rest/RdfStoreProxy", $.param(requestData));
             });
     };
 

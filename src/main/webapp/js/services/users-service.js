@@ -20,7 +20,7 @@ module.factory("UsersService", function($http, Config, flash, ServerErrorRespons
                     + " ORDER BY ?s ?p ?o",
             mode: "settings"
         };
-        return $http.post("RdfStoreProxy", $.param(requestData)).then(
+        return $http.post("rest/RdfStoreProxy", $.param(requestData)).then(
             // success
             function(response) {
                 var parsedResult = Config.parseSparqlResults(response.data);
@@ -95,7 +95,7 @@ module.factory("UsersService", function($http, Config, flash, ServerErrorRespons
                     + " WHERE {" + accountURI + " gkg:role ?r . } ",
             mode: "settings"
         };
-        return $http.post("RdfStoreProxy", $.param(requestData));
+        return $http.post("rest/RdfStoreProxy", $.param(requestData));
     };
 
     var readRoles = function() {
@@ -108,7 +108,7 @@ module.factory("UsersService", function($http, Config, flash, ServerErrorRespons
                     + " ORDER BY ?s ?p ?o",
             mode: "settings"
         };
-        return $http.post("RdfStoreProxy", $.param(requestData)).then(
+        return $http.post("rest/RdfStoreProxy", $.param(requestData)).then(
             // success
             function(response) {
                 roles = Config.parseSparqlResults(response.data);
@@ -160,7 +160,7 @@ module.factory("UsersService", function($http, Config, flash, ServerErrorRespons
                     + "}}",
             mode: "settings"
         };
-        return $http.post("RdfStoreProxy", $.param(requestData));
+        return $http.post("rest/RdfStoreProxy", $.param(requestData));
     };
 
     var setDefaultRole = function(roleURI) {
@@ -174,7 +174,7 @@ module.factory("UsersService", function($http, Config, flash, ServerErrorRespons
                     + " WHERE { optional {?role gkg:isDefault ?o .} } ",
             mode: "settings"
         };
-        return $http.post("RdfStoreProxy", $.param(requestData));
+        return $http.post("rest/RdfStoreProxy", $.param(requestData));
     };
 
     var setNotLoggedInRole = function(roleURI) {
@@ -188,7 +188,7 @@ module.factory("UsersService", function($http, Config, flash, ServerErrorRespons
                     + " WHERE { optional {?role gkg:isNotLoggedIn ?o .} } ",
             mode: "settings"
         };
-        return $http.post("RdfStoreProxy", $.param(requestData));
+        return $http.post("rest/RdfStoreProxy", $.param(requestData));
     };
 
     var readNotLoggedInRole = function() {
@@ -216,7 +216,7 @@ module.factory("UsersService", function($http, Config, flash, ServerErrorRespons
                     + " WHERE { optional {" + roleURI + " gkg:isAllowedToUseService ?service . } }",
             mode: "settings"
         };
-        return $http.post("RdfStoreProxy", $.param(requestData));
+        return $http.post("rest/RdfStoreProxy", $.param(requestData));
     };
 
     var createUser = function(user) {

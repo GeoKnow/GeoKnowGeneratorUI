@@ -24,10 +24,9 @@ module.factory("GraphService", function ($http, $q, Config, AccountService, Help
             return deferred.promise;
         } else {
             var requestData = {
-                format: "application/sparql-results+json",
-                mode: "getAllSparql"
+                format: "application/sparql-results+json"
             };
-            return $http.post("GraphManagerServlet", $.param(requestData)).then(function (result) {
+            return $http.post("rest/graphs/getAllGraphsSparql", $.param(requestData)).then(function (result) {
                 namedGraphs = Config.parseSparqlResults(result.data);
                 namedGraphsLoaded = true;
                 return namedGraphs;
@@ -178,19 +177,17 @@ module.factory("GraphService", function ($http, $q, Config, AccountService, Help
         parNamedGraph.name = Config.getNS() + parNamedGraph.name.replace(':', '')
         var requestData = {
             format: "application/sparql-results+json",
-            mode: "updateForeign",
             graph: JSON.stringify(parNamedGraph)
         };
-        return $http.post("GraphManagerServlet", $.param(requestData));
+        return $http.post("rest/graphs/updateForeign", $.param(requestData));
     };
 
     var deleteForeignGraph = function (parGraphName) {
         var requestData = {
             format: "application/sparql-results+json",
-            mode: "dropForeign",
             graph: parGraphName.replace(':', Config.getNS())
         };
-        return $http.post("GraphManagerServlet", $.param(requestData));
+        return $http.post("rest/graphs/dropForeign", $.param(requestData));
     };
 
     /**
@@ -391,14 +388,13 @@ module.factory("GraphService", function ($http, $q, Config, AccountService, Help
         
         var requestData = {
             format: "application/sparql-results+json",
-            mode: "create",
             graph: Config.getNS() + parNamedGraph.name.replace(':', ''),
             permissions: JSON.stringify(permissions),
             username: AccountService.getAccount().getUsername()
         }
 
         var deferred = $q.defer();
-        $http.post("GraphManagerServlet", $.param(requestData)).then(
+        $http.post("rest/graphs/create", $.param(requestData)).then(
             // success
             function(response) {
                 var settings = Config.getSettings();
@@ -487,14 +483,13 @@ module.factory("GraphService", function ($http, $q, Config, AccountService, Help
         var requestData = {
             format: "application/sparql-results+json",
             graph: Config.getNS() + parNamedGraph.name.replace(':', ''),
-            mode: "update",
             permissions: JSON.stringify(permissions),
             username: AccountService.getAccount().getUsername()
         };
 
         var deferred = $q.defer();
         
-        $http.post("GraphManagerServlet", $.param(requestData)).then(
+        $http.post("rest/graphs/update", $.param(requestData)).then(
             // success
             function(response) {
                 Config.write().then(function(){
@@ -516,12 +511,11 @@ module.factory("GraphService", function ($http, $q, Config, AccountService, Help
 
         var requestData = {
             format: "application/sparql-results+json",
-            mode: "drop",
             graph: parGraphName.replace(':', Config.getNS()),
             // username: AccountService.getAccount().getUsername()
         }
         var deferred = $q.defer();
-        $http.post("GraphManagerServlet", $.param(requestData)).then(
+        $http.post("rest/graphs/drop", $.param(requestData)).then(
             // success
             function(response) {
                 var settings = Config.getSettings();
