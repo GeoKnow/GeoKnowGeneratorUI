@@ -26,6 +26,7 @@ import com.ontos.ldiw.vocabulary.SD;
 
 import eu.geoknow.generator.configuration.APP_CONSTANTS;
 import eu.geoknow.generator.configuration.FrameworkConfiguration;
+import eu.geoknow.generator.exceptions.InformationMissingException;
 import eu.geoknow.generator.exceptions.ResourceNotFoundException;
 import eu.geoknow.generator.exceptions.ServiceInternalServerError;
 import eu.geoknow.generator.exceptions.ServiceNotAvailableException;
@@ -38,6 +39,7 @@ import eu.geoknow.generator.workflow.beans.JobExecutionWrapper;
 import eu.geoknow.generator.workflow.beans.JobExecutions;
 import eu.geoknow.generator.workflow.beans.MultiStepJob;
 import eu.geoknow.generator.workflow.beans.Registration;
+
 
 
 /**
@@ -67,9 +69,10 @@ public class JobsManager {
    * 
    * @param context
    * @throws IOException
+   * @throws InformationMissingException
    * @throws ServletException
    */
-  public static JobsManager getInstance() throws IOException {
+  public static JobsManager getInstance() throws IOException, InformationMissingException {
 
     if (manager == null) {
       manager = new JobsManager();

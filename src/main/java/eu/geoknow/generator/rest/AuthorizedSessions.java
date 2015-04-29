@@ -50,6 +50,7 @@ import com.google.gson.JsonObject;
 import com.ontos.ldiw.vocabulary.LDIWO;
 
 import eu.geoknow.generator.configuration.FrameworkConfiguration;
+import eu.geoknow.generator.exceptions.InformationMissingException;
 import eu.geoknow.generator.rdf.SecureRdfStoreManagerImpl;
 import eu.geoknow.generator.users.FrameworkUserManager;
 import eu.geoknow.generator.users.UserProfile;
@@ -71,7 +72,8 @@ public class AuthorizedSessions {
 
   private SecureRdfStoreManagerImpl frameworkRdfStoreManager;
 
-  public AuthorizedSessions(@Context ServletContext context) throws ServletException {
+  public AuthorizedSessions(@Context ServletContext context) throws ServletException,
+      InformationMissingException {
 
     try {
       frameworkUserManager = FrameworkConfiguration.getInstance().getFrameworkUserManager();

@@ -17,11 +17,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.util.ISO8601Utils;
 import com.google.gson.Gson;
+import com.ontos.ldiw.vocabulary.LDIWO;
 
 import eu.geoknow.generator.configuration.FrameworkConfiguration;
 import eu.geoknow.generator.rdf.RdfStoreManager;
-import eu.geoknow.generator.utils.ObjectPair;
-
 
 
 /**
@@ -90,20 +89,16 @@ public class FrameworkUserManager implements UserManager {
     rdfStoreUserManager.setRdfGraphPermissions(name, userSettingsGraphURI, GraphPermissions.WRITE);
 
     // copy data from initial settings graph
-    String query =
-        "INSERT { GRAPH <" + userSettingsGraphURI + "> {?s ?p ?o} } " + "WHERE {GRAPH <"
-            + frameworkConfig.getInitialSettingsGraph() + "> {?s ?p ?o} }";
-    try {
-      rdfStoreManager.execute(query, jsonResponseFormat);
-    } catch (IOException e) { // failed to write user graph
-                              // rollback actions:
-      rdfStoreUserManager.dropUser(name);
-      throw e;
-    }
+    /*
+     * String query = "INSERT { GRAPH <" + userSettingsGraphURI + "> {?s ?p ?o} } " +
+     * "WHERE {GRAPH <" + frameworkConfig.getInitialSettingsGraph() + "> {?s ?p ?o} }"; try {
+     * rdfStoreManager.execute(query, jsonResponseFormat); } catch (IOException e) { // failed to
+     * write user graph // rollback actions: rdfStoreUserManager.dropUser(name); throw e; }
+     */
     // get default role uri
     String role = getDefaultRoleURI();
     // write user account to accounts graph
-    query =
+    String query =
         getPrefixes() + "\n" + "INSERT DATA { GRAPH <" + frameworkConfig.getAccountsGraph()
             + "> {\n" + " :" + name + " rdf:type gkg:Account .\n" + " :" + name
             + " foaf:accountName \"" + name + "\" .\n" + " :" + name + " gkg:passwordSha1Hash \""
@@ -483,7 +478,7 @@ public class FrameworkUserManager implements UserManager {
       else if (predicate.equals("http://xmlns.com/foaf/0.1/mbox")) {
         String mbox = bindingNode.path("o").path("value").textValue();
         userProfile.setEmail(mbox.substring("mailto:".length()));
-      } else if (predicate.equals(frameworkConfig.getFrameworkOntologyNS() + "role")) {
+      } else if (predicate.equals(LDIWO.role.getURI())) {
         String roleURI = bindingNode.path("o").path("value").textValue();
         UserRole role = getRole(roleURI);
         userProfile.setRole(role);
@@ -520,32 +515,23 @@ public class FrameworkUserManager implements UserManager {
     return frameworkConfig.getUserRdfStoreManager(username, password);
   }
 
-  // todo username must be not null (may be null now - for VirtuosoProxy)
-  public ObjectPair<String, String> getRdfStoreUser(String frameworkUsername, String token)
-      throws Exception {
-    String query =
-        getPrefixes()
-            + "\n"
-            + "SELECT ?rdfStoreUsername, ?rdfStorePassword FROM <"
-            + frameworkConfig.getAccountsGraph()
-            + "> "
-            + "WHERE { "
-            + (frameworkUsername == null || frameworkUsername.isEmpty() ? ""
-                : "?account foaf:accountName \"" + frameworkUsername + "\" . ")
-            + "?account gkg:sessionToken \"" + token + "\" . "
-            + "?account gkg:rdfStoreUsername ?rdfStoreUsername . "
-            + "?account gkg:rdfStorePassword ?rdfStorePassword . " + "}";
-    String result = rdfStoreManager.execute(query, jsonResponseFormat);
-    ObjectMapper mapper = new ObjectMapper();
-    JsonNode rootNode = mapper.readTree(result);
-    Iterator<JsonNode> bindingsIter = rootNode.path("results").path("bindings").elements();
-    if (!bindingsIter.hasNext())
-      throw new Exception("Invalid user credentials.");
-    JsonNode bindingNode = bindingsIter.next();
-    String rdfStoreUsername = bindingNode.path("rdfStoreUsername").path("value").textValue();
-    String rdfStorePassword = bindingNode.path("rdfStorePassword").path("value").textValue();
-    return new ObjectPair<String, String>(rdfStoreUsername, rdfStorePassword);
-  }
+  /*
+   * // todo username must be not null (may be null now - for VirtuosoProxy) public
+   * ObjectPair<String, String> getRdfStoreUser(String frameworkUsername, String token) throws
+   * Exception { String query = getPrefixes() + "\n" +
+   * "SELECT ?rdfStoreUsername, ?rdfStorePassword FROM <" + frameworkConfig.getAccountsGraph() +
+   * "> " + "WHERE { " + (frameworkUsername == null || frameworkUsername.isEmpty() ? "" :
+   * "?account foaf:accountName \"" + frameworkUsername + "\" . ") + "?account gkg:sessionToken \""
+   * + token + "\" . " + "?account gkg:rdfStoreUsername ?rdfStoreUsername . " +
+   * "?account gkg:rdfStorePassword ?rdfStorePassword . " + "}"; String result =
+   * rdfStoreManager.execute(query, jsonResponseFormat); ObjectMapper mapper = new ObjectMapper();
+   * JsonNode rootNode = mapper.readTree(result); Iterator<JsonNode> bindingsIter =
+   * rootNode.path("results").path("bindings").elements(); if (!bindingsIter.hasNext()) throw new
+   * Exception("Invalid user credentials."); JsonNode bindingNode = bindingsIter.next(); String
+   * rdfStoreUsername = bindingNode.path("rdfStoreUsername").path("value").textValue(); String
+   * rdfStorePassword = bindingNode.path("rdfStorePassword").path("value").textValue(); return new
+   * ObjectPair<String, String>(rdfStoreUsername, rdfStorePassword); }
+   */
 
   /**
    * Returns list of readable graphs URIs for given user.
@@ -668,6 +654,7 @@ public class FrameworkUserManager implements UserManager {
             + " { ?s rdf:type sd:NamedGraph . ?s ?p ?o . } " + " UNION "
             + " { ?ng rdf:type sd:NamedGraph . ?ng sd:graph ?s . ?s ?p ?o . } " + " UNION "
             + " { ?ng rdf:type sd:NamedGraph . ?ng gkg:access ?s . ?s ?p ?o . } " + "}";
+    log.debug(query);
     return rdfStoreManager.execute(query, jsonResponseFormat);
   }
 
@@ -735,8 +722,7 @@ public class FrameworkUserManager implements UserManager {
     if (prefixes == null) {
       prefixes =
           "PREFIX : <" + frameworkConfig.getResourceNamespace() + ">\n" + "PREFIX gkg: <"
-              + frameworkConfig.getFrameworkOntologyNS() + ">\n"
-              + "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n"
+              + LDIWO.NS + ">\n" + "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n"
               + "PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>\n"
               + "PREFIX acl: <http://www.w3.org/ns/auth/acl#>\n"
               + "PREFIX foaf: <http://xmlns.com/foaf/0.1/>\n"
@@ -796,9 +782,13 @@ public class FrameworkUserManager implements UserManager {
   }
 
   public UserProfile validate(String userc, String token) throws Exception {
-    String userstr = URLDecoder.decode(userc, "utf-8");
 
+    String userstr = URLDecoder.decode(userc, "utf-8");
     log.debug(" userstr: " + userstr + " token:" + token);
+
+    if (userc == null || token == null)
+      return null;
+
     Gson gson = new Gson();
     UserProfile user = gson.fromJson(userstr, UserProfile.class);
 
@@ -886,7 +876,7 @@ public class FrameworkUserManager implements UserManager {
       return false;
     JsonNode binding = bindingsIter.next();
     String role = binding.path("role").path("value").textValue();
-    return role.equals(frameworkConfig.getFrameworkOntologyNS() + "Administrator");
+    return role.equals(LDIWO.Administrator.getURI());
   }
 
   /**
@@ -938,7 +928,7 @@ public class FrameworkUserManager implements UserManager {
       String predicate = bindingNode.path("p").path("value").textValue();
       if (predicate.equals("http://xmlns.com/foaf/0.1/name"))
         role.setName(bindingNode.path("o").path("value").textValue());
-      else if (predicate.equals(frameworkConfig.getFrameworkOntologyNS() + "isAllowedToUseService"))
+      else if (predicate.equals(LDIWO.isAllowedToUseService.getURI()))
         roleServices.add(bindingNode.path("o").path("value").textValue());
     }
     role.setServices(roleServices);
@@ -955,7 +945,7 @@ public class FrameworkUserManager implements UserManager {
     Iterator<JsonNode> bindingsIter = rootNode.path("results").path("bindings").elements();
     String role;
     if (!bindingsIter.hasNext()) {
-      role = frameworkConfig.getFrameworkOntologyNS() + "BasicUser";
+      role = LDIWO.BasicUser.getURI();
     } else {
       JsonNode binding = bindingsIter.next();
       role = binding.path("role").path("value").textValue();

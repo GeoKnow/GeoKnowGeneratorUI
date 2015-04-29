@@ -51,8 +51,8 @@ function StackMenuCtrl($scope, AccountService) {
 	  ];
 
     $scope.showItem = function(item) {
-      if ($scope.$parent.currentAccount.isAdmin()) return true; //show all items to admin
-      var role = $scope.$parent.currentAccount.getRole();
+      if (AccountService.getAccount().isAdmin()) return true; //show all items to admin
+      var role = AccountService.getAccount().getRole();
         if (role==null) return false; //hide all
       var allowedServices = role.services;
       for (var ind in item.requiredServices) {
@@ -63,7 +63,7 @@ function StackMenuCtrl($scope, AccountService) {
     };
 
     $scope.showGroup = function(group) {
-      if ($scope.$parent.currentAccount.isAdmin()) return true;
+      if (AccountService.getAccount().isAdmin()) return true;
       //hide group if all items are hidden
       for (var ind in group.items) {
           if ($scope.showItem(group.items[ind])) return true;
@@ -88,7 +88,7 @@ app.controller('SidebarCtrl', function($scope, $location) {
 	        return route === $location.path();
 	    }
 });
-
+/*
 app.controller('ModalNewJobCtrl', function ($scope, $modalInstance, sname) {
   $scope.job = {
     name : sname,
@@ -123,14 +123,6 @@ app.controller('ModalWindow', function ($scope) {
     });
   }; 
  
-  /*
-  $scope.close = function (id) {
-	  $("#" + id).modal('hide');
-	  $('body').removeClass('modal-open');
-	  $('.modal-backdrop').slideUp();
-	  $('.modal-scrollable').slideUp();
-  };
-  */
   
   $scope.del = function (index) {
 	  
@@ -148,16 +140,6 @@ app.controller('ModalWindow', function ($scope) {
   });        
   
 });
-
-var DataSourceTabCtrl = function($scope, $window, $location) {
-
-  // The tab directive will use this data
-  $scope.tabs = ['SPARQL Endpoint', 'Relational Database'];
-  $scope.tabs.index = 0;
-  $scope.tabs.active = function() { 
-    return $scope.tabs[$scope.tabs.index]; 
-    };
-  
-};
+*/
 
 

@@ -69,13 +69,21 @@ module.factory("GraphGroupService", function ($http, $q, Config, AccountService)
         for (var ind in graphGroup.namedGraphs) {
             request.graphs.push(Config.getNS() + graphGroup.namedGraphs[ind].replace(':', ''));
         }
-        return $http.post("rest/graphs/createGroup", $.param(request, true))
+        return $http.post("rest/GraphManagerServlet/createGroup", $.param(request, true))
             .then(function (response) {
-                var data = " <" + uri + "> rdf:type sd:GraphCollection ; " + " rdfs:label \"" + graphGroup.label + "\" ; " + " dcterms:description \"" + graphGroup.description + "\" ; " + " dcterms:modified \"" + graphGroup.modified + "\" ; " + " dcterms:created \"" + graphGroup.created + "\" . "
+                var data = " <" + uri + "> rdf:type sd:GraphCollection ; "
+                                       + " rdfs:label \"" + graphGroup.label + "\" ; "
+                                       + " dcterms:description \"" + graphGroup.description + "\" ; "
+                                       + " dcterms:modified \"" + graphGroup.modified + "\" ; "
+                                       + " dcterms:created \"" + graphGroup.created + "\" . "
                 for (var ind in graphGroup.namedGraphs) {
                     data = data + " <" + uri + "> sd:namedGraph <" + Config.getNS() + graphGroup.namedGraphs[ind].replace(':', '') + "> . ";
                 }
-                var query = "PREFIX dcterms: <http://purl.org/dc/terms/> " + " PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> " + " PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> " + " PREFIX sd: <http://www.w3.org/ns/sparql-service-description#> " + "INSERT INTO " + GRAPH + " { " + data + " } ";
+                var query = "PREFIX dcterms: <http://purl.org/dc/terms/> "
+                            + " PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> "
+                            + " PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> "
+                            + " PREFIX sd: <http://www.w3.org/ns/sparql-service-description#> "
+                            + "INSERT DATA {GRAPH " + GRAPH + " { " + data + " } } ";
                 var requestData = {
                     format: "application/sparql-results+json",
                     query: query,
@@ -95,7 +103,7 @@ module.factory("GraphGroupService", function ($http, $q, Config, AccountService)
         for (var ind in graphGroup.namedGraphs) {
             request.graphs.push(Config.getNS() + graphGroup.namedGraphs[ind].replace(':', ''));
         }
-        return $http.post("rest/graphs/updateGroup", $.param(request, true))
+        return $http.post("rest/GraphManagerServlet/updateGroup", $.param(request, true))
             .then(function (response) {
                 var ngs = "";
                 for (var ind in graphGroup.namedGraphs)
@@ -116,7 +124,7 @@ module.factory("GraphGroupService", function ($http, $q, Config, AccountService)
             group: uri,
             username: AccountService.getAccount().getUsername()
         };
-        return $http.post("rest/graphs/dropGroup", $.param(request))
+        return $http.post("rest/GraphManagerServlet/dropGroup", $.param(request))
             .then(function (response) {
                 var query = "WITH " + GRAPH + " DELETE {?s ?p ?o} WHERE {?s ?p ?o . FILTER (?s = <" + uri + ">) }";
                 var requestData = {

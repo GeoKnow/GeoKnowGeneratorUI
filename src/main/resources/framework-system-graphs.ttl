@@ -1,0 +1,88 @@
+@prefix :        <http://generator.geoknow.eu/resource/> .
+@prefix dcterms:  <http://purl.org/dc/terms/> .
+@prefix lds:     <http://stack.linkeddata.org/ldis-schema/> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sd:      <http://www.w3.org/ns/sparql-service-description#> .
+@prefix void:    <http://rdfs.org/ns/void#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix foaf:    <http://xmlns.com/foaf/0.1/> .
+@prefix ontos:     <http://ldiw.ontos.com/ontology/> .
+
+# #######################################################################################
+# Following triples simulates implementation of the Service Descrioption recommendation
+# in order to describe named graphs (Datasets)
+# The named graphs described in this file have to be created in the famework endpoint
+# and loaded with their corresponding data
+# This file has to be added to the :settingsGraph
+# NOTE: avoid using blank nodes may cause problems loading the file:
+#    - https://www.mail-archive.com/virtuoso-users@lists.sourceforge.net/msg05138.html
+# #######################################################################################
+
+:default-dataset 
+  a sd:Dataset;
+  rdfs:label "Default dataset";
+  dcterms:description "This is the endpoint default dataset"^^xsd:string;
+  sd:defaultGraph :defaultNamedGraph;
+  sd:namedGraph :settingsNamedGraph, :accountsNamedGraph, :groupsNamedGraph , :jobsNamedGraph, :sessionsNamedGraph
+  .
+
+:defaultNamedGraph
+  sd:name <http://localhost:8890/DAV>;
+  sd:graph :default .
+:default
+  a sd:Graph, void:Dataset;
+  rdfs:label "default"^^xsd:string;
+  dcterms:title "default"^^xsd:string;
+  dcterms:description "Default graph"^^xsd:string 
+  .
+
+:settingsNamedGraph
+  a sd:NamedGraph ;
+  sd:name :settingsGraph;
+  sd:graph :settingsGraph .
+:settingsGraph 
+  a sd:Graph, void:Dataset;
+  rdfs:label "settings"^^xsd:string;
+  dcterms:description "GeoKnow Generator settings and configurations"^^xsd:string 
+  .
+
+:accountsNamedGraph
+  a sd:NamedGraph ; 
+  sd:name :accountsGraph;
+  sd:graph :accountsGraph .
+:accountsGraph
+    a sd:Graph, void:Dataset;
+    rdfs:label "accounts"^^xsd:string;
+    dcterms:description "A graph to store the users accounts"^^xsd:string
+  .
+
+:groupsNamedGraph
+  a sd:NamedGraph ;
+  sd:name :groupsGraph;
+  sd:graph :groupsGraph .
+:groupsGraph
+    a sd:Graph, void:Dataset;
+    rdfs:label "groups"^^xsd:string;
+    dcterms:description "A graph for groups of graphs"^^xsd:string
+  .
+
+:jobsNamedGraph
+  a sd:NamedGraph ;
+  sd:name :jobsGraph;
+  sd:graph :jobsGraph .
+:jobsGraph
+    a sd:Graph, void:Dataset;
+    rdfs:label "jobs"^^xsd:string;
+    dcterms:description "A graph for batch jobs."^^xsd:string
+  .
+  
+:sessionsNamedGraph
+  a sd:NamedGraph ;
+  sd:name :sessionsGraph;
+  sd:graph :sessionsGraph .
+:sessionsGraph
+    a sd:Graph, void:Dataset;
+    rdfs:label "sessions"^^xsd:string;
+    dcterms:description "A graph for sessions for external REST services."^^xsd:string
+  .

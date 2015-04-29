@@ -168,8 +168,8 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>2.3.2</version>
 				<configuration>
-					<source>1.7</source>
-					<target>1.7</target>
+					<source>1.8</source>
+					<target>1.8</target>
 					<compilerArguments>
 						<endorseddirs>${endorsed.dir}</endorseddirs>
 					</compilerArguments>
@@ -213,6 +213,50 @@
 				</configuration>
 			</plugin>
 
+			<!-- To generate JAVA classes of the ontology models
+			I tried to use this plugin to automatoicalluy create java clasess, but I didnt
+			succeed in reading the configuration file 
+			<plugin>
+				<groupId>org.apache.jena</groupId>
+				<artifactId>jena-maven-tools</artifactId>
+				<version>0.8</version>
+				<configuration>
+					<includes>
+						<include>src/main/vocabs/framework-ontology_0.1.2.ttl</include>
+						<include>src/main/vocabs/ldsi-schema_0.1.1.ttl</include>
+						<include>src/main/vocabs/sparql-service-description.ttl</include>
+					</includes>
+					<fileOptions>
+						<source>
+							<input>src/main/vocabs/framework-ontology_0.1.2.ttl</input>
+							<class-name>LDIWO</class-name>
+							<config-file>src/main/vocabs/schemagen-config.xml</config-file>
+							<output>src/main/java/com/ontos/ldiw/vocabulary</output>
+						</source>
+						<source>
+							<input>src/main/vocabs/ldsi-schema_0.1.1.ttl</input>
+              <class-name>LDIS</class-name>
+              <package-name>com.ontos.ldiw.vocabulary</package-name>
+              <output>src/main/java/com/ontos/ldiw/vocabulary</output>
+              <ontology>true</ontology>
+						</source>
+						<source>
+              <input>src/main/vocabs/sparql-service-description.ttl</input>
+              <class-name>SD</class-name>
+              <package-name>com.ontos.ldiw.vocabulary</package-name>
+              <output>src/main/java/com/ontos/ldiw/vocabulary</output>
+            </source>
+					</fileOptions>
+				</configuration>
+				<executions>
+					<execution>
+						<id>schemagen</id>
+						<goals>
+							<goal>translate</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin> -->
 		</plugins>
 	</build>
 

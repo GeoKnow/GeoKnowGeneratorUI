@@ -13,7 +13,7 @@ import javax.ws.rs.core.Response;
 import org.apache.log4j.Logger;
 
 import eu.geoknow.generator.configuration.FrameworkConfiguration;
-import eu.geoknow.generator.configuration.RDFStoreSetupManager;
+import eu.geoknow.generator.configuration.FrameworkSetup;
 
 /**
  * TODO: documentation using something like https://github.com/kongchen/swagger-maven-plugin
@@ -55,7 +55,7 @@ public class Setup {
   public Response reset(@Context ServletContext context) {
 
     try {
-      RDFStoreSetupManager setupManager = new RDFStoreSetupManager();
+      FrameworkSetup setupManager = new FrameworkSetup();
       setupManager.setUp(true);
     } catch (Exception e) {
       log.error(e);
@@ -84,7 +84,7 @@ public class Setup {
     // try to get the framework config, if not existing, create it
     // setup the system by pushing the config data also to the triple store
     try {
-      RDFStoreSetupManager setupManager = new RDFStoreSetupManager();
+      FrameworkSetup setupManager = new FrameworkSetup();
       setupManager.setUp(false);
     } catch (Exception e) {
       log.error(e);

@@ -16,9 +16,9 @@
 <tbody>
   <tr ng-repeat="component in components">
   	<td>{{component.uri}}</td>
-    <td><a href="{{component.homepage}}" target="_blanc">{{component.label}}</a></td>
+    <td><a href="{{component.website}}" target="_blanc">{{component.label}}</a></td>
     <td>
-      <div ng-repeat="(key, value) in services[component.uri]">
+      <div ng-repeat="(key, value) in component.services">
         <dt>{{value.uri}}</dt>
           <dd>{{value.type}}</dd>
           <dd><a href="{{value.serviceUrl}}" target="_blanc">{{value.serviceUrl}}</a></dd>

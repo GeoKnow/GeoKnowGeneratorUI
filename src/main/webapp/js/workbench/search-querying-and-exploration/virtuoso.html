@@ -1,13 +1,8 @@
+<div  class="contents" ng-controller="VirtuosoCtrl">
 
-<div ng-controller="VirtuosoCtrl">
+  <component-header></component-header>
+
   <div class="col-lg-8">
-  	<h3 class="green bold">{{component.label}}</h3>
-
-
-    <dl class="dl-horizontal">
-      <dt>Version:</dt><dd>{{component.version}}</dd>
-      <dt>Homepage:</dt><dd>{{component.homepage}}</dd>
-    </dl>
 
     <h4>Launch SPARQLEndPoint Services</h4>
 
@@ -29,24 +24,13 @@
         </div>
       </div>
       <div class="form-group">
-        <a class="btn btn-success btn-large" data-toggle="modal" ng-click="openModal();">Launch</a>
+        <a class="btn btn-success btn-large" target="_blanc" href="{{url}}">Launch</a>
       </div>
    
       <!-- <a class="btn btn-success btn-large" data-toggle="modal" ng-click="openModal();">Launch</a> -->
     </form>
 
   </div>
-  <!-- Modal -->
-  <div class="modal fade" id="fullModal">
-    <div class="modal-content">
-    <div class="modal-header">
-      <button type="button" class="close" ng-click="closeModal()" aria-hidden="true">&times;</button>
-      <h5 class="modal-title green bold">Virtuoso SPARQLEndpoint</h5>
-    </div>
-    <div class="modal-body">
-      <modal-iframe></modal-iframe>
-    </div>
-    </div>
-  </div><!-- /.modal -->  
+   
 </div>
 

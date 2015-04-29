@@ -1,0 +1,29 @@
+@prefix :        <http://generator.geoknow.eu/resource/> .
+@prefix dcterms:  <http://purl.org/dc/terms/> .
+@prefix lds:     <http://stack.linkeddata.org/ldis-schema/> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sd:      <http://www.w3.org/ns/sparql-service-description#> .
+@prefix void:    <http://rdfs.org/ns/void#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix foaf:    <http://xmlns.com/foaf/0.1/> .
+@prefix ontos:     <http://ldiw.ontos.com/ontology/> .
+
+# #######################################################################################
+# USER ACCOUNTS TO BE CREATED AT SETUP
+# #######################################################################################
+
+:admin
+  a ontos:Account;
+  foaf:accountName "admin"^^xsd:string;
+  lds:password "admin"^^xsd:string;
+  foaf:mbox <mailto:admin@geoknow.eu>;
+  ontos:role ontos:Administrator.
+
+# do not modify this user, is for integration testing, and can be deleted if the Workbench installation succeed
+:testUser
+  a ontos:Account;
+  foaf:accountName "testing"^^xsd:string;
+  lds:password "integration-testing"^^xsd:string;
+  foaf:mbox <mailto:testing@geoknow.eu>;
+  ontos:role ontos:Administrator.

@@ -1,12 +1,10 @@
 'use strict';
 
 
-function EndpointCtrl($scope, ConfigurationService){
+function EndpointCtrl($scope, $modal, ConfigurationService,  AccountService){
 	
-	var emptyEndpoint = { uri: "", label:"", endpoint: "", homepage: ""};
-	var newEndpoint=true;
+	
 	$scope.endpoints = ConfigurationService.getAllEndpoints();
-	$scope.endpoint = emptyEndpoint;
 	$scope.uribase = ConfigurationService.getUriBase();
 	$scope.modaltitle = "";
 
@@ -17,62 +15,64 @@ function EndpointCtrl($scope, ConfigurationService){
 			return true;
 	};
 
-  $scope.isNew = function(){
-		return newEndpoint;
-	};
+ 
 
 	$scope.new = function(){
-		// default values
-		newEndpoint=true;
-		$scope.modaltitle = "New Endpoint";
-		$scope.endpoint = angular.copy(emptyEndpoint);
-		$scope.endpointForm.$setPristine();
+		var modalInstance = $modal.open({
+        	templateUrl: 'modal-forms/settings/datasource/modal-endpoint.html',
+        	controller: 'ModalEndpointCtrl',
+        	size: 'lg',
+        	backdrop: 'static',
+        	resolve: {
+        	currentEndpoint: function () {
+            	return null;
+      	    }
+      		}
+        });
+    	
+    	
+    	modalInstance.result.then(function (endpoint) { 
+    		ConfigurationService.addEndpoint(endpoint);
+    		$scope.refreshTable();
+    	});
+    	
+    	
+		
 	};
 
 	$scope.edit = function(uri){
-		$scope.endpoint = angular.copy(ConfigurationService.getEndpoint(uri));
-		$scope.endpoint.uri = $scope.endpoint.uri.replace(':',''); //for the validation to be accepted
-		newEndpoint=false;
-		$scope.modaltitle = "Edit Endopoint";
+		
+		var modalInstance = $modal.open({
+        	templateUrl: 'modal-forms/settings/datasource/modal-endpoint.html',
+        	controller: 'ModalEndpointCtrl',
+        	size: 'lg',
+        	backdrop: 'static',
+        	resolve: {
+        	currentEndpoint: function () {
+            	return ConfigurationService.getEndpoint(uri);
+      	    }
+      		}
+        });
+    	
+    	
+    	modalInstance.result.then(function (endpoint) { 
+    		ConfigurationService.updateEndpoint(endpoint);
+    		$scope.refreshTable();
+    	});
+		
 	};
 
+	
 	$scope.delete = function(uri){
-		ConfigurationService.deleteResource(uri).then(
-			function(response){
-				$scope.refreshTable();	
-			},
-			function(response){
-				flash.error = ServerErrorResponse.getMessage(response);
-			});
+		ConfigurationService.deleteResource(uri);
+		$scope.refreshTable();
 	};
 
 	$scope.refreshTable = function(){
 		$scope.endpoints = ConfigurationService.getAllEndpoints();
 	};
 
-	$scope.save = function(){
-		var promise;
-		$scope.endpoint.uri =  ":" + $scope.endpoint.uri;
-		if(newEndpoint)
-			promise = ConfigurationService.addEndpoint($scope.endpoint);
-		else
-			promise = ConfigurationService.updateEndpoint($scope.endpoint);
+	
 
-		promise.then(
-			function(response){
-				$scope.close('#modalEndpoint');
-				$scope.refreshTable();}, 
-			function(response){
-				flash.error = ServerErrorResponse.getMessage(response);
-			});
-		
-	};
-
-  $scope.close = function(modalID) {
-    	$(modalID).modal('hide');
-        $('body').removeClass('modal-open');
-      	$('.modal-backdrop').slideUp();
-      	$('.modal-scrollable').slideUp();
-    };
 
 }

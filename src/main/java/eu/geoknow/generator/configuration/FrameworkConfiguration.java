@@ -2,13 +2,10 @@ package eu.geoknow.generator.configuration;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Locale;
 import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.jena.riot.RiotException;
 import org.apache.log4j.Logger;
-import org.glassfish.jersey.internal.l10n.Localizer;
 
 import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.QueryExecutionFactory;
@@ -16,9 +13,13 @@ import com.hp.hpl.jena.query.QuerySolution;
 import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.sparql.vocabulary.FOAF;
 import com.hp.hpl.jena.vocabulary.RDFS;
+import com.ontos.ldiw.vocabulary.LDIS;
 import com.ontos.ldiw.vocabulary.LDIWO;
+import com.ontos.ldiw.vocabulary.SD;
 
+import eu.geoknow.generator.exceptions.InformationMissingException;
 import eu.geoknow.generator.rdf.GraphGroupManager;
 import eu.geoknow.generator.rdf.RdfStoreManager;
 import eu.geoknow.generator.rdf.RdfStoreManagerImpl;
@@ -32,6 +33,13 @@ import eu.geoknow.generator.utils.SSLEmailSender;
 import eu.geoknow.generator.utils.TLSEmailSender;
 import eu.geoknow.generator.utils.Utils;
 
+/**
+ * This class will read the framework configuration file and make content available in its
+ * properties.
+ * 
+ * @author alejandragarciarojas
+ *
+ */
 public class FrameworkConfiguration {
 
   private static final Logger log = Logger.getLogger(FrameworkConfiguration.class);
@@ -45,22 +53,19 @@ public class FrameworkConfiguration {
   private String emailPassword = "";
 
   private String resourceNS = "";
-  private String frameworkOntologyNS = "";
 
   // in this file all main configs are stored
-  final static String configurationFile = "framework-configuration.ttl";
-  final static String datasetsFile = "framework-datasets.ttl";
-  final static String componentsFile = "framework-components.ttl";
-  final static String ontologyFile = "framework-ontology.ttl";
-  final static String ldisSchemaFile = "ldsi-schema.ttl";
-  final static String accountsOntologyFile = "framework-ontology.ttl";
+  private final static String configurationFile = "framework-configuration.ttl";
+  private final static String datasourcesFile = "framework-datasources.ttl";
+  private final static String componentsFile = "framework-components.ttl";
+  private final static String usersFile = "framework-users.ttl";
+  private final static String sysgraphsFile = "framework-system-graphs.ttl";
 
   private static Model configurationModel = null;
-  private static Model datasetModel = null;
+  private static Model datasourceModel = null;
   private static Model componentsModel = null;
-  private static Model ontologyModel = null;
-  private static Model ontologyAccountsModel = null;
-  private static Model ldisModel = null;
+  private static Model usersModel = null;
+  private static Model sysgraphsModel = null;
 
   // RDF store admin, who has rights to manage RDF store users (create,
   // delete, grant permissions, etc.).
@@ -69,7 +74,6 @@ public class FrameworkConfiguration {
   // Configuration details depends on concrete RDF store.
   private String rdfStoreAdmin = "";
   private String rdfStoreAdminPassword = "";
-
   private String virtuosoJdbcConnString = "";
 
   // admin service for user management (is used for OntoQuad only)
@@ -84,14 +88,15 @@ public class FrameworkConfiguration {
   private String workbenchSystemAdmin = "";
   private String workbenchSystemAdminPassword = "";
 
+  // system graphs
   private String componentsGraph = "";
   private String accountsGraph = "";
   private String settingsGraph = "";
   private String jobsGraph = "";
   private String authSessionsGraph = "";
-  private String initialSettingsGraph = "";
   private String groupsGraph = "";
   private String frameworkUri;
+  private String homepage;
 
   private String springBatchUri = "";
   private String springBatchJobsDir = "";
@@ -103,8 +108,6 @@ public class FrameworkConfiguration {
 
   private final ReentrantLock dataMappingLock = new ReentrantLock();
 
-  private HashMap<Locale, Localizer> localizers = new HashMap<Locale, Localizer>();
-
   /**
    * This class provides access to properties form the framework configuration file. And also it
    * loads to Jena Models the other configuration files, so they can be reused in the application.
@@ -112,35 +115,41 @@ public class FrameworkConfiguration {
    * @param context
    * @return
    * @throws IOException
+   * @throws InformationMissingException
    * @throws Exception
    */
-  public static synchronized FrameworkConfiguration getInstance() throws IOException {
+  public static synchronized FrameworkConfiguration getInstance() throws IOException,
+      InformationMissingException {
 
     if (instance == null) {
 
       instance = new FrameworkConfiguration();
 
-      instance.setFrameworkOntologyNS(LDIWO.NS);
+      // get uri endpoint and dir framework
+      // the dir to store workbench specific data that should not
+      // be deleted and where the init.txt will be created
+      // join the configuration and components models to get the endpoing information
+      Model allModels = ModelFactory.createDefaultModel();
+      allModels.add(getConfigurationModel());
+      allModels.add(getComponentsModel());
+      allModels.add(getSystemGraphsModel());
 
-      // get the endpoint URI and endpoint to use for the framework
-      // get also the dir to store workbench specific data that should not
-      // be delete
       String query =
-          "PREFIX lds: <http://stack.linkeddata.org/ldis-schema/> "
-              + "PREFIX ontos: <http://ldiw.ontos.com/ontology/> " + "PREFIX rdfs: <"
-              + RDFS.getURI() + ">" + " SELECT ?uri ?endpoint ?dir WHERE {"
-              + " ?uri rdfs:label ?label . " + " ?uri lds:integrates ?component ."
-              + " ?component lds:providesService ?service ."
-              + " ?uri ontos:frameworkDataDir ?dir ."
-              + " optional { ?service a lds:SPARQLEndPointService ."
-              + " ?service lds:serviceUrl ?endpoint . }"
+          "SELECT ?uri ?endpoint ?dir ?homepage WHERE { ?uri <" + RDFS.label.getURI()
+              + "> ?label . " + " ?uri <" + LDIS.integrates.getURI() + ">  ?component ."
+              + " ?component <" + LDIS.providesService.getURI() + "> ?service ." + " ?uri <"
+              + LDIWO.frameworkDataDir.getURI() + "> ?dir . ?uri <" + FOAF.homepage.getURI()
+              + "> ?homepage . optional { ?service a <" + LDIS.SPARQLEndPointService.getURI()
+              + "> ." + " ?service <" + LDIS.serviceUrl.getURI() + ">?endpoint . }"
               + " FILTER regex(?label, \"LDWorkbench\", \"i\" )}";
-
-      QueryExecution qexec = QueryExecutionFactory.create(query, getConfigurationModel());
+      log.debug("get uri endpoint and dir framework");
+      log.debug(query);
+      QueryExecution qexec = QueryExecutionFactory.create(query, allModels);
       ResultSet results = qexec.execSelect();
       if (!results.hasNext()) {
         instance = null;
-        throw new NullPointerException("Invalid initial parameter required at:\n" + query);
+        throw new InformationMissingException(
+            "Invalid initialization parameter in the framework-configratio file");
       }
       for (; results.hasNext();) {
         QuerySolution soln = results.next();
@@ -155,61 +164,63 @@ public class FrameworkConfiguration {
         instance.setResourceNamespace(instance.getFrameworkUri().substring(0,
             instance.getFrameworkUri().lastIndexOf("/") + 1));
         instance.setFrameworkDataDir(soln.getLiteral("dir").getString());
+        instance.setHomepage(soln.getResource("homepage").getURI());
       }
       qexec.close();
 
       log.info("Framework URI: " + instance.getFrameworkUri());
       log.info("Framework endpoint: " + instance.getPublicSparqlEndpoint());
       log.info("Framework ResourceNamespace: " + instance.getResourceNamespace());
-      log.info("Framework Ontology: " + instance.getFrameworkOntologyNS());
       log.info("Framework Data Directory: " + instance.getFrameworkDataDir());
+      log.info("Framework Homepage: " + instance.getHomepage());
 
       // get the email specific information
       query =
-          "PREFIX lds: <http://stack.linkeddata.org/ldis-schema/> "
-              + "PREFIX ontos: <http://ldiw.ontos.com/ontology/> "
-              + "PREFIX schema: <http://schema.org/> " + "PREFIX rdfs: <" + RDFS.getURI() + ">  "
-              + " SELECT ?user ?pass ?mail ?host ?tls ?ssl WHERE {" + " ?uri rdfs:label ?label . "
-              + " ?uri lds:integrates ?component ." + " ?component lds:providesService ?service ."
-              + " ?service a lds:EmailService ;" + "   lds:password ?pass ;"
-              + "   lds:user ?user ;" + "   schema:email ?mail ;" + "   ontos:smtpHost ?host ;"
-              + "   ontos:smtpTlsPort ?tls ;" + "   ontos:smtpSslPort ?ssl ."
-              + " FILTER regex(?label, \"LDWorkbench\", \"i\" )}";
-
-      qexec = QueryExecutionFactory.create(query, getConfigurationModel());
+          " SELECT ?user ?pass ?mail ?host ?tls ?ssl WHERE {  <" + instance.getFrameworkUri()
+              + "> <" + LDIS.providesService.getURI() + "> ?service ." + " ?service a <"
+              + LDIS.EmailService.getURI() + "> ;" + " <" + LDIS.password.getURI() + "> ?pass ;"
+              + " <" + LDIS.user.getURI() + "> ?user ;" + " <" + FOAF.mbox.getURI() + "> ?mail ;"
+              + " <" + LDIWO.smtpHost.getURI() + "> ?host ;" + " <" + LDIWO.smtpTlsPort.getURI()
+              + "> ?tls ;" + " <" + LDIWO.smtpSslPort.getURI() + "> ?ssl }";
+      log.debug("get system registration email");
+      log.debug(query);
+      qexec = QueryExecutionFactory.create(query, allModels);
       results = qexec.execSelect();
       if (!results.hasNext()) {
         instance = null;
-        throw new NullPointerException("Invalid initial parameter required at:\n" + query);
+        throw new InformationMissingException(
+            "Invalid initialization of the email registration service configuration");
       }
       for (; results.hasNext();) {
         QuerySolution soln = results.next();
         instance.setSmtpHost(soln.getLiteral("host").getString());
         instance.setSmtpTLSPort(soln.getLiteral("tls").getString());
         instance.setSmtpSSLPort(soln.getLiteral("ssl").getString());
-        instance.setEmailAddress(soln.getLiteral("mail").getString());
+        instance.setEmailAddress(soln.getResource("mail").getURI().replace("mailto:", ""));
         instance.setEmailUsername(soln.getLiteral("user").getString());
         instance.setEmailPassword(soln.getLiteral("pass").getString());
       }
       qexec.close();
-      log.info("Read email config for host " + instance.getSmtpHost() + " and account "
+      log.info("Read email config for host:" + instance.getSmtpHost() + " and account:"
           + instance.getEmailUsername());
 
       // get the endpoint for authenticated users, and user and password
       // of the system framework
       query =
-          "PREFIX lds: <http://stack.linkeddata.org/ldis-schema/>"
-              + " SELECT ?endpoint ?user ?password WHERE {" + " <" + instance.getFrameworkUri()
-              + ">  lds:integrates ?component ." + " ?component lds:providesService ?service ."
-              + " ?service a lds:SecuredSPARQLEndPointService ."
-              + " ?service lds:serviceUrl ?endpoint ." + " ?service lds:user ?user ."
-              + " ?service lds:password ?password }";
-
-      qexec = QueryExecutionFactory.create(query, getConfigurationModel());
+          " SELECT ?endpoint ?user ?password WHERE { <" + instance.getFrameworkUri() + "> <"
+              + LDIS.integrates.getURI() + ">  ?component ." + " ?component <"
+              + LDIS.providesService.getURI() + "> ?service ." + " ?service a <"
+              + LDIS.SecuredSPARQLEndPointService.getURI() + "> ." + " ?service <"
+              + LDIS.serviceUrl.getURI() + "> ?endpoint ." + " ?service <" + LDIS.user.getURI()
+              + "> ?user ." + " ?service <" + LDIS.password.getURI() + "> ?password }";
+      log.debug("RDFStore user");
+      log.debug(query);
+      qexec = QueryExecutionFactory.create(query, allModels);
       results = qexec.execSelect();
       if (!results.hasNext()) {
         instance = null;
-        throw new NullPointerException("Invalid initial parameter required");
+        throw new InformationMissingException(
+            "Invalid initialization of RDFStore user configuration ");
       }
       for (; results.hasNext();) {
         QuerySolution soln = results.next();
@@ -221,19 +232,22 @@ public class FrameworkConfiguration {
 
       // get and set the database configuration (Virtuoso)
       query =
-          "PREFIX lds: <http://stack.linkeddata.org/ldis-schema/> "
-              + " PREFIX void: <http://rdfs.org/ns/void#> "
-              + " SELECT ?connectionString ?serviceUrl ?user ?password ?endpoint ?graph WHERE {"
-              + " <" + instance.getFrameworkUri() + ">  lds:integrates ?component ."
-              + " ?component lds:providesService ?service ." + " ?service a lds:StorageService ."
-              + " optional {?service lds:connectionString ?connectionString} ."
-              + " optional {?service lds:serviceUrl ?serviceUrl .} " + " ?service lds:user ?user ."
-              + " ?service lds:password ?password }";
-      qexec = QueryExecutionFactory.create(query, getConfigurationModel());
+          " SELECT ?connectionString ?serviceUrl ?user ?password ?endpoint ?graph WHERE {<"
+              + instance.getFrameworkUri() + "> <" + LDIS.integrates.getURI() + ">  ?component ."
+              + " ?component <" + LDIS.providesService.getURI() + "> ?service ." + " ?service a <"
+              + LDIS.StorageService.getURI() + "> ." + " optional {?service <"
+              + LDIS.connectionString.getURI() + ">  ?connectionString} ."
+              + " optional {?service <" + LDIS.serviceUrl.getURI() + "> ?serviceUrl .} "
+              + " ?service <" + LDIS.user.getURI() + "> ?user ." + " ?service <"
+              + LDIS.password.getURI() + "> ?password }";
+      log.debug("RDFStore DB connection");
+      log.debug(query);
+
+      qexec = QueryExecutionFactory.create(query, allModels);
       results = qexec.execSelect();
       if (!results.hasNext()) {
         instance = null;
-        throw new NullPointerException("Invalid initial parameter required");
+        throw new InformationMissingException("Invalid initialization of RDF Store service ");
       }
       for (; results.hasNext();) {
         QuerySolution soln = results.next();
@@ -250,12 +264,10 @@ public class FrameworkConfiguration {
 
       // get and set the system named graphs
       query =
-          "PREFIX  sd:    <http://www.w3.org/ns/sparql-service-description#> "
-              + "PREFIX  rdfs:  <http://www.w3.org/2000/01/rdf-schema#> "
-              + "SELECT ?name ?label  "
-              + "WHERE "
-              + "{ ?s sd:namedGraph  ?o .  ?o sd:name ?name . ?o sd:graph ?g . ?g rdfs:label ?label } ";
-      qexec = QueryExecutionFactory.create(query, getConfigurationModel());
+          "SELECT ?name ?label  " + "WHERE { ?s <" + SD.namedGraph.getURI() + "> ?o .  ?o  <"
+              + SD.name.getURI() + "> ?name . ?o <" + SD.graph.getURI() + "> ?g . ?g <"
+              + RDFS.label.getURI() + "> ?label } ";
+      qexec = QueryExecutionFactory.create(query, allModels);
       results = qexec.execSelect();
       if (!results.hasNext()) {
         instance = null;
@@ -266,8 +278,6 @@ public class FrameworkConfiguration {
 
         if ("settings".equals(soln.get("label").asLiteral().getString()))
           instance.setSettingsGraph(soln.get("name").toString());
-        else if ("initialSettings".equals(soln.get("label").asLiteral().getString()))
-          instance.setInitialSettingsGraph(soln.get("name").toString());
         else if ("accounts".equals(soln.get("label").asLiteral().getString()))
           instance.setAccountsGraph(soln.get("name").toString());
         else if ("groups".equals(soln.get("label").asLiteral().getString()))
@@ -277,26 +287,24 @@ public class FrameworkConfiguration {
         else if ("sessions".equals(soln.get("label").asLiteral().getString()))
           instance.setAuthSessionsGraph(soln.get("name").toString());
       }
-
-      instance.setComponentsGraph(instance.getResourceNamespace() + "system/components");
-
       qexec.close();
+
+      instance.setComponentsGraph(instance.getResourceNamespace() + "components");
 
       // get the path to the workflow engine
       query =
-          "PREFIX lds: <http://stack.linkeddata.org/ldis-schema/> "
-              + "PREFIX ontos:   <http://ldiw.ontos.com/ontology/> " + "PREFIX rdfs: <"
-              + RDFS.getURI() + ">" + " SELECT ?endpoint ?dir WHERE {"
-              + " ?uri rdfs:label ?label . " + " ?uri lds:integrates ?component ."
-              + " ?component lds:providesService ?service ." + " ?service a lds:WorkflowService ; "
-              + " ontos:springBatchAdminJobsDir  ?dir ; " + " lds:serviceUrl ?endpoint . "
-              + " FILTER regex(?label, \"LDWorkbench\", \"i\" )}";
-
-      qexec = QueryExecutionFactory.create(query, getConfigurationModel());
+          " SELECT ?endpoint ?dir WHERE {<" + instance.getFrameworkUri() + "> <"
+              + LDIS.integrates.getURI() + ">  ?component . ?component <"
+              + LDIS.providesService.getURI() + "> ?service . ?service a <"
+              + LDIS.WorkflowService.getURI() + "> ; <" + LDIWO.springBatchAdminJobsDir.getURI()
+              + ">  ?dir ;  <" + LDIS.serviceUrl.getURI() + "> ?endpoint .}";
+      log.debug("Workflow service");
+      log.debug(query);
+      qexec = QueryExecutionFactory.create(query, allModels);
       results = qexec.execSelect();
       if (!results.hasNext()) {
         instance = null;
-        throw new NullPointerException("Invalid initial parameter required at:\n" + query);
+        throw new NullPointerException("Invalid initialization parameter for the Workflow Service");
       }
       for (; results.hasNext();) {
         QuerySolution soln = results.next();
@@ -507,14 +515,6 @@ public class FrameworkConfiguration {
     this.settingsGraph = settingsGraph;
   }
 
-  public String getInitialSettingsGraph() {
-    return initialSettingsGraph;
-  }
-
-  public void setInitialSettingsGraph(String initialSettingsGraph) {
-    this.initialSettingsGraph = initialSettingsGraph;
-  }
-
   public String getResourceNamespace() {
     return resourceNS;
   }
@@ -555,20 +555,20 @@ public class FrameworkConfiguration {
     this.adminServiceUrl = adminServiceUrl;
   }
 
-  public String getFrameworkOntologyNS() {
-    return frameworkOntologyNS;
-  }
-
-  public void setFrameworkOntologyNS(String frameworkOntologyNS) {
-    this.frameworkOntologyNS = frameworkOntologyNS;
-  }
-
   public String getFrameworkUri() {
     return frameworkUri;
   }
 
   public void setFrameworkUri(String frameworkUri) {
     this.frameworkUri = frameworkUri;
+  }
+
+  public String getHomepage() {
+    return homepage;
+  }
+
+  public void setHomepage(String homepage) {
+    this.homepage = homepage;
   }
 
   public GraphGroupManager getGraphGroupManager() {
@@ -664,17 +664,17 @@ public class FrameworkConfiguration {
    * @return Model
    * @throws IOException in case the file cannot be loaded or a parsing error is presented
    */
-  public static Model getDatasetModel() throws IOException {
+  public static Model getDatasourceModel() throws IOException {
     try {
-      if (datasetModel == null) {
-        datasetModel = ModelFactory.createDefaultModel();
-        datasetModel.read(datasetsFile);
+      if (datasourceModel == null) {
+        datasourceModel = ModelFactory.createDefaultModel();
+        datasourceModel.read(datasourcesFile);
       }
     } catch (RiotException e) {
       e.printStackTrace();
-      throw new IOException("Couldn't read " + datasetsFile + " file: " + e.getMessage());
+      throw new IOException("Couldn't read " + datasourcesFile + " file: " + e.getMessage());
     }
-    return datasetModel;
+    return datasourceModel;
   }
 
   /**
@@ -699,64 +699,41 @@ public class FrameworkConfiguration {
   }
 
   /**
-   * Returns a Jena Model with the framework ontology file loaded
+   * Returns a Jena Model with the users configuration file loaded
    * 
    * @return Model
    * @throws IOException in case the file cannot be loaded or a parsing error is presented
    */
-  public static Model getOntologyModel() throws IOException {
-
+  public static Model getUsersModel() throws IOException {
     try {
-      if (ontologyModel == null) {
-        ontologyModel = ModelFactory.createDefaultModel();
-        ontologyModel.read(ontologyFile);
+      if (usersModel == null) {
+        usersModel = ModelFactory.createDefaultModel();
+        usersModel.read(usersFile);
       }
     } catch (RiotException e) {
       e.printStackTrace();
-      throw new IOException("Couldn't read " + ontologyFile + " file: " + e.getMessage());
+      throw new IOException("Couldn't read " + usersFile + " file: " + e.getMessage());
     }
-    return ontologyModel;
+    return usersModel;
   }
 
   /**
-   * Returns a Jena Model with the accoutns ontology file loaded
+   * Returns a Jena Model with the system graphs configuration file loaded
    * 
    * @return Model
    * @throws IOException in case the file cannot be loaded or a parsing error is presented
    */
-  public static Model getOntologyAccountsModel() throws IOException {
-
+  public static Model getSystemGraphsModel() throws IOException {
     try {
-      if (ontologyAccountsModel == null) {
-        ontologyAccountsModel = ModelFactory.createDefaultModel();
-        ontologyAccountsModel.read(accountsOntologyFile);
+      if (sysgraphsModel == null) {
+        sysgraphsModel = ModelFactory.createDefaultModel();
+        sysgraphsModel.read(sysgraphsFile);
       }
     } catch (RiotException e) {
       e.printStackTrace();
-      throw new IOException("Couldn't read " + accountsOntologyFile + " file: " + e.getMessage());
+      throw new IOException("Couldn't read " + sysgraphsFile + " file: " + e.getMessage());
     }
-
-    return ontologyAccountsModel;
-  }
-
-  /**
-   * Returns a Jena Model with the Linked Data Integration Schema file loaded
-   * 
-   * @return Model
-   * @throws IOException in case the file cannot be loaded or a parsing error is presented
-   */
-  public static Model getLdisModel() throws IOException {
-    try {
-      if (ldisModel == null) {
-        ldisModel = ModelFactory.createDefaultModel();
-        ldisModel.read(ldisSchemaFile);
-      }
-    } catch (RiotException e) {
-      e.printStackTrace();
-      throw new IOException("Couldn't read " + ldisSchemaFile + " file: " + e.getMessage());
-    }
-
-    return ldisModel;
+    return sysgraphsModel;
   }
 
 }

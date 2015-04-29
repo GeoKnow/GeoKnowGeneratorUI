@@ -1,5 +1,6 @@
 package eu.geoknow.generator.rest;
 
+import static com.jayway.restassured.RestAssured.delete;
 import static com.jayway.restassured.RestAssured.expect;
 import static com.jayway.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
@@ -108,10 +109,8 @@ public class EasyWorkflowIT {
 
   private String workflow =
       "{\"name\" : \"JOB_ID\",\"label\" : \"label\",\"description\" : \"desc\",\"steps\" : [ { \"service\": \"http://google.com\", \"contenttype\": \"\", \"method\": \"GET\", \"body\": \"\", \"numberOfOrder\": 1 }, { \"service\": \"http://google.com\", \"contenttype\": \"\", \"method\": \"GET\", \"body\": \"\", \"numberOfOrder\": 2 }, { \"service\": \"http://google.com\", \"contenttype\": \"\", \"method\": \"GET\", \"body\": \"\", \"numberOfOrder\": 3 }]}";
-  private String scheduled_workflow =
-      "{\"name\":\"JOB_ID\",\"label\":\"myshceduledjob\",\"description\":\"myshceduledjob\",\"steps\":[{\"service\":\"http://test.lindas-data.ch/rest/publish/createTempGraph\",\"contenttype\":\"application/x-www-form-urlencoded\",\"method\":\"POST\",\"body\":\"endpointUri=http://test....\",\"numberOfOrder\":1},{\"service\":\"http://test...\",\"contenttype\":\"application/json\",\"method\":\"GET\",\"body\":\"{}\",\"numberOfOrder\":2},{\"service\":\"http://test.lindas-data.ch/rest/publish\",\"contenttype\":\"application/x-www-form-urlencoded\",\"method\":\"POST\",\"body\":\"endpointUri=\",\"numberOfOrder\":3}],\"schedule\":{\"start\":\"2016-02-05T05:20:00.000Z\",\"end\":\"2016-10-01T05:30:00.000Z\",\"intervalDay\":true,\"intervalWeek\":false,\"intervalMonth\":false},\"targetGraph\":\"http://test.lindas-data.ch/resource/test01\"}";
   private static Map<String, String> cookies;
-  private static String jobId, scheduledJobId;
+  private static String jobId;
 
 
   @BeforeClass
@@ -120,7 +119,7 @@ public class EasyWorkflowIT {
     RestAssured.baseURI = "http://localhost";
     RestAssured.port = 8080;
     // TODO: find a way to parametrise this basePath
-    RestAssured.basePath = "/ldiw";
+    RestAssured.basePath = "/generator";
 
     ValidatableResponse auth =
         given().param("mode", "login").param("username", "testing")
@@ -129,7 +128,7 @@ public class EasyWorkflowIT {
     cookies = new HashMap<String, String>(auth.extract().cookies());
     Calendar calendar = new GregorianCalendar();
     jobId = "TestJob_" + calendar.getTimeInMillis();
-    scheduledJobId = "ScheduledTestJob_" + calendar.getTimeInMillis();
+
   }
 
   @Test
@@ -146,20 +145,6 @@ public class EasyWorkflowIT {
     given().cookies(cookies).contentType("application/json")
         .body(workflow.replace("JOB_ID", jobId)).when().put("/rest/jobs").then().assertThat()
         .statusCode(201).and().body("job.name", equalTo(jobId));
-  }
-
-  @Test
-  public void testCreateJobWithSchedule() throws Exception {
-    log.info("add job: " + scheduledJobId);
-    // creates a job
-    given().cookies(cookies).contentType("application/json")
-        .body(scheduled_workflow.replace("JOB_ID", scheduledJobId)).when().put("/rest/jobs").then()
-        .assertThat().statusCode(201).and().body("job.name", equalTo(scheduledJobId));
-  }
-
-
-  @Test
-  public void testGet() throws Exception {
 
     // check job description
     log.info("get job: " + jobId);
@@ -213,34 +198,41 @@ public class EasyWorkflowIT {
     // assertEquals("STOPPING", jp.get("execution.status").toString());
 
   }
-  /*
-   * @Test public void testStopUnexisting() throws Exception { // stops a job log.info("stops job "
-   * + jobId); Response res = given().cookies(cookies).when().delete("/rest/jobs/" + jobId +
-   * "/run"); String json = res.getBody().asString(); assertEquals(404, res.getStatusCode());
-   * log.info( res.getStatusLine()); log.info(json); }
-   */
+
+  @Test
+  public void testStopUnexisting() throws Exception { // stops a job
+    log.info("stops job " + jobId);
+    Response res = given().cookies(cookies).when().delete("/rest/jobs/" + jobId + "/run");
+    String json = res.getBody().asString();
+    assertEquals(404, res.getStatusCode());
+    log.info(res.getStatusLine());
+    log.info(json);
+  }
 
 
-  /*
-   * @Test public void testDeleteFails() throws Exception { // deletes a job with no credentials
-   * log.info("deletes with no credentials job " + jobId); delete("/rest/jobs/" +
-   * jobId).then().assertThat().statusCode(401);
-   * 
-   * // delete unexisitng job log.info("deletes unexisting job ");
-   * given().cookies(cookies).when().delete("/rest/jobs/22222").then().assertThat().statusCode(404);
-   * 
-   * }
-   */
 
-  /*
-   * @Test public void testDelete() throws Exception {
-   * 
-   * // delete a job log.info("deletes job " + jobId);
-   * given().cookies(cookies).when().delete("/rest/jobs/" + jobId).then().assertThat()
-   * .statusCode(204); }
-   * 
-   * @Test public void verifyDelete() throws Exception { // check job does not exist anymore
-   * log.info("check job doesnt exist: " + jobId); given().cookies(cookies).when().get("/rest/jobs/"
-   * + jobId).then().assertThat().statusCode(204); }
-   */
+  @Test
+  public void testDeleteFails() throws Exception { // deletes a job with no credentials
+    log.info("deletes with no credentials job " + jobId);
+    delete("/rest/jobs/" + jobId).then().assertThat().statusCode(401);
+    // delete unexisitng job log.info("deletes unexisting job ");
+    given().cookies(cookies).when().delete("/rest/jobs/22222").then().assertThat().statusCode(404);
+
+  }
+
+
+  @Test
+  public void testDelete() throws Exception {
+
+    // delete a job log.info("deletes job " + jobId);
+    given().cookies(cookies).when().delete("/rest/jobs/" + jobId).then().assertThat()
+        .statusCode(204);
+  }
+
+  @Test
+  public void verifyDelete() throws Exception { // check job does not exist anymore
+    log.info("check job doesnt exist: " + jobId);
+    given().cookies(cookies).when().get("/rest/jobs/" + jobId).then().assertThat().statusCode(204);
+  }
+
 }

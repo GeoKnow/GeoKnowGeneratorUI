@@ -1,0 +1,168 @@
+# baseURI: http://stack.linkeddata.org/ldis-schema/
+
+@prefix :        <http://stack.linkeddata.org/ldis-schema/> .
+@prefix d2rq:    <http://www.wiwiss.fu-berlin.de/suhl/bizer/D2RQ/0.1#> .
+@prefix dcmit:   <http://purl.org/dc/dcmitype/> .
+@prefix dcterms:  <http://purl.org/dc/terms/> .
+@prefix foaf:    <http://xmlns.com/foaf/> .
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix prov:    <http://www.w3.org/ns/prov#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix schema:  <http://schema.org/> .
+@prefix sd:      <http://www.w3.org/ns/sparql-service-description#> .
+@prefix void:    <http://rdfs.org/ns/void#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+
+:     rdf:type owl:Ontology ;
+      dcterms:contributor "Alejandra Garcia Rojas"^^xsd:string ;
+      dcterms:descripton "Schema for integrating Software components from the Linked Data Stack"@en ;
+      owl:versionInfo "0.1.1"^^xsd:string .
+
+:AnalysisService
+      rdf:type owl:Class ;
+      rdfs:comment "Represents the agent responsible for analysis."@en ;
+      rdfs:label "Analysis Service"@en ;
+      rdfs:subClassOf :ComponentService .
+
+:AuthoringService
+      rdf:type owl:Class ;
+      rdfs:comment "Represents the agent responsible for authoring."@en ;
+      rdfs:label "Component Service"@en ;
+      rdfs:subClassOf :ComponentService .
+
+:CleaningService
+      rdf:type owl:Class ;
+      rdfs:comment "Represents the agent responsible for storage."@en ;
+      rdfs:label "Cleaning Service"@en ;
+      rdfs:subClassOf :ComponentService .
+
+:ComponentService
+      rdf:type owl:Class ;
+      rdfs:label "Component Service"@en ;
+      rdfs:subClassOf owl:Thing .
+
+:EnrichmentService
+      rdf:type owl:Class ;
+      rdfs:label "Enrichment Service"@en ;
+      rdfs:subClassOf :ComponentService .
+
+:ExplorationService
+      rdf:type owl:Class ;
+      rdfs:comment "Represents the agent responsible for exploration."@en ;
+      rdfs:label "Exploration Service"@en ;
+      rdfs:subClassOf :ComponentService .
+
+:ExtractionService
+      rdf:type owl:Class ;
+      rdfs:comment "Represents the agent responsible for extraction."@en ;
+      rdfs:label "Extraction Service"@en ;
+      rdfs:subClassOf :ComponentService .
+
+:InterlinkingService
+      rdf:type owl:Class ;
+      rdfs:comment "Represents the agent responsible for interlinking."@en ;
+      rdfs:label "Interlinking Service"@en ;
+      rdfs:subClassOf :ComponentService .
+
+:PublicationService
+      rdf:type owl:Class ;
+      rdfs:comment "Represents the agent responsible for quality analysis."@en ;
+      rdfs:label "Publication Service"@en ;
+      rdfs:subClassOf :ComponentService .
+
+:QualityAnalysisService
+      rdf:type owl:Class ;
+      rdfs:comment "Represents the agent responsible for quality analysis."@en ;
+      rdfs:label "Quality Analysis Service"@en ;
+      rdfs:subClassOf :ComponentService .
+
+:QueryEndPointService
+      rdf:type owl:Class ;
+      rdfs:comment "Represents a query end point"@en ;
+      rdfs:label "Query endpoint Service"@en ;
+      rdfs:subClassOf :ComponentService , :ExplorationService .
+
+:SPARQLEndPointService
+      rdf:type owl:Class ;
+      rdfs:comment "Represents a Sparql query end point"@en ;
+      rdfs:label "SPARQL endpoint Service"@en ;
+      rdfs:subClassOf :ComponentService , :QueryEndPointService .
+
+:SecuredSPARQLEndPointService
+      rdf:type owl:Class ;
+      rdfs:label "Secured SPARQL Endpoint Service"@en ;
+      rdfs:subClassOf :ComponentService , :SPARQLEndPointService .
+
+:StackComponent
+      rdf:type owl:Class ;
+      rdfs:label "Stack Component"@en ;
+      rdfs:subClassOf owl:Thing .
+
+:StorageService
+      rdf:type owl:Class ;
+      rdfs:comment "Represents the agent responsible for storage."@en ;
+      rdfs:label "Storage Service"@en ;
+      rdfs:subClassOf :ComponentService .
+
+:TransformationService
+      rdf:type owl:Class ;
+      rdfs:comment "Represents the agent responsible for transformation."@en ;
+      rdfs:label "Transformation Service"@en ;
+      rdfs:subClassOf :ComponentService .
+
+:VisualizationService
+      rdf:type owl:Class ;
+      rdfs:label "Visualization Service"@en ;
+      rdfs:subClassOf :ComponentService .
+
+:apiKey
+      rdf:type rdf:Property ;
+      rdfs:label "Enrichment Service"@en .
+
+:connectionString
+      rdf:type rdf:Property ;
+      rdfs:label "connection string"@en .
+
+:integrates
+      rdf:type owl:ObjectProperty ;
+      rdfs:label "integrates"@en .
+
+:password
+      rdf:type rdf:Property ;
+      rdfs:label "password"@en .
+
+:providesService
+      rdf:type owl:ObjectProperty ;
+      rdfs:comment "A component in the stack provides a service of a givent type"@en ;
+      rdfs:domain :StackComponent ;
+      rdfs:label "Provides Service"@en ;
+      rdfs:range :ComponentService .
+
+:serviceUrl
+      rdf:type rdf:Property ;
+      rdfs:domain :ComponentService ;
+      rdfs:label "Service URL"@en ;
+      rdfs:range xsd:string .
+
+:user
+      rdf:type rdf:Property ;
+      rdfs:label "user"@en .
+
+sd:NamedGraph
+      rdf:type rdfs:Class ;
+      rdfs:label "Service URL"@en .
+
+sd:Service
+      rdf:type rdfs:Class ;
+      rdfs:label "Service URL"@en .
+
+foaf:homepage
+      rdf:type rdf:Property ;
+      rdfs:label "homepage"@en ;
+      rdfs:domain :StackComponent .
+
+dcterms:hasVersion
+      rdf:type rdf:Property ;
+      rdfs:label "has version"@en ;
+      rdfs:domain :StackComponent .

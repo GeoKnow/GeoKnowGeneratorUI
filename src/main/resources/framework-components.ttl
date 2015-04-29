@@ -11,12 +11,59 @@
 
 
 ########### COMPONENT DESCRIPTION #######################################################
-# Following triples  describes the configured components in the framework
+# Following triples  describes the configuration of components in the framework
 # #######################################################################################
 
-:LDWorkbench
-  lds:integrates :Facete, :Limes, :Sparqlify, :TripleGeo, :GeoLift, :OntoWiki, :Mappify, :CSV2RDF, :DataPublisher .
-  
+:Virtuoso
+  a       lds:StackComponent ;
+  rdfs:label "Virtuoso"^^xsd:string ;
+  dcterms:hasVersion "7.0"^^xsd:string ;
+  lds:providesService :VirtuosoConductor , :VirtuosoAuthSPARQLEndpoint, :VirtuosoEndpoint;
+  foaf:homepage <http://virtuoso.openlinksw.com/> .
+
+
+# #######################################################################################
+# the user and password provided here should exixt
+# #######################################################################################
+
+:VirtuosoConductor 
+  a  lds:StorageService ;
+  lds:password "dba"^^xsd:string ;
+  lds:serviceUrl <http://192.168.2.29:8890/conductor> ;
+  lds:connectionString "jdbc:virtuoso://192.168.2.29:1111/"^^xsd:string;
+  lds:user   "dba"^^xsd:string .
+
+# #######################################################################################
+# the user and password provided here will be created at setup
+# #######################################################################################
+
+:VirtuosoAuthSPARQLEndpoint
+  a       lds:SecuredSPARQLEndPointService;
+  rdfs:label "Workbench Auth" ;
+  lds:password "generator"^^xsd:string ;
+  lds:serviceUrl <http://192.168.2.29:8890/sparql-auth> ;
+  void:sparqlEndpoint <http://192.168.2.29:8890/sparql-auth> ;
+  lds:user   "generator"^^xsd:string .
+
+:VirtuosoEndpoint
+  a       lds:SPARQLEndPointService;
+  rdfs:label "Workbench Pub" ;
+  void:sparqlEndpoint <http://192.168.2.29:8890/sparql-auth> ;
+  lds:serviceUrl <http://192.168.2.29:8890/sparql> .
+
+:SpringBatch
+      a       lds:StackComponent ;
+      rdfs:label "Spring Batch Admin"^^xsd:string ;
+      lds:providesService :SpringBatchService ;
+      foaf:homepage <http://localhost:8080/spring-batch-admin-geoknow/> ;
+      dcterms:hasVersion "1.0"^^xsd:string .
+
+:SpringBatchService
+      a       lds:WorkflowService ;
+      dcterms:description "Provides functionality to create scheduled jobs and workflows."^^xsd:string ;
+      lds:serviceUrl <http://localhost:8080/spring-batch-admin-geoknow/> ;
+      ontos:springBatchAdminJobsDir "/Users/alejandragarciarojas/Services/tomcat/webapps/spring-batch-admin-geoknow/WEB-INF/classes/META-INF/batch-jobs/"^^xsd:string .
+
 :Sparqlify
       a       lds:StackComponent ;
       rdfs:label "Sparqlify"^^xsd:string ;
@@ -88,6 +135,16 @@
       a       lds:ExplorationService ;
       lds:serviceUrl <http://cstadler.aksw.org/mappify2/> .
 	  
+:FagiGis
+      a       lds:StackComponent ;
+      rdfs:label "FAGI-gis"^^xsd:string ;
+      lds:providesService :FagiGisService ;
+      dcterms:hasVersion "1.1+rev0"^^xsd:string ;
+      foaf:homepage <https://github.com/GeoKnow/FAGI-gis> .
+
+:FagiGisService
+      a       lds:ExplorationService ;
+      lds:serviceUrl <http://localhost:8080/FAGI-WebInterface/> .
 
       
 ########### ROUTES RESTRICTIONS DESCRIPTION #######################################################

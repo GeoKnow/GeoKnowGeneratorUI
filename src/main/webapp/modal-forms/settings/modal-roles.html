@@ -1,0 +1,36 @@
+
+<div class="modal-content">
+<form name="roleForm" class="form-horizontal InputForm" role="form" novalidate>
+  <div class="modal-header">
+      <h3 class="modal-title">{{modaltitle}}</h3>
+  </div>
+  <div class="modal-body">
+  
+  		
+       <div class="form-group">
+            <label class="col-xs-2 control-label">Identifier</label>
+            <div class="col-xs-10">
+                <input type="text" class="form-control" id="id" name="id" ng-model="newRole.id" required regex-validate="identifier"/>
+                <div class="error" ng-show="roleForm.id.$dirty && roleForm.id.$invalid">Invalid field:
+                    <span ng-show="roleForm.id.$error.required || roleForm.id.$error.regexValidate">Malformed, only letters and numbers allowed</span>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="name" class="col-xs-2 control-label">Name</label>
+            <div class="col-xs-10">
+                <input type="text" class="form-control" id="name" name="name" ng-model="newRole.name" required />
+                <div class="error" ng-show="roleForm.name.$dirty && roleForm.name.$invalid">Invalid field:
+                    <span ng-show="roleForm.name.$error.required" >Name</span>
+                </div>
+            </div>
+        </div>
+  
+    
+  </div>
+  <div class="modal-footer">
+      <button class="btn btn-success" ng-click="ok()" ng-disabled="roleForm.$invalid" >OK</button>
+     				<button class="btn btn-default" ng-click="cancel()" >Cancel</button>
+  </div>
+</form>
+</div>

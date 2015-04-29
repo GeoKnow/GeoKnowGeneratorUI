@@ -1,0 +1,53 @@
+
+<div class="modal-content">
+<form name="changePwForm" class="form-horizontal InputForm" role="form" novalidate>
+  <div class="modal-header">
+      <h3 class="modal-title">{{modaltitle}}</h3>
+  </div>
+  <div class="modal-body">
+  
+  		<div class="form-group">
+              <label for="oldPassword" class="col-xs-2 control-label">Old password</label>
+              <div class="col-xs-9">
+                <input type="password" id="oldPassword" name="oldPassword" class="form-control" ng-model="password.oldPassword" required/>
+                <div class="error" ng-show="changePwForm.oldPassword.$dirty && changePwForm.oldPassword.$invalid">Invalid field:
+                  <span ng-show="changePwForm.oldPassword.$error.required">Old password missing</span>
+                </div>
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label for="newPassword" class="col-xs-2 control-label">New password</label>
+              <div class="col-xs-9"> 
+              	<input type="password" id="newPassword" name="newPassword" class="form-control" ng-model="password.newPassword" regex-validate="basicPassword" required/>
+	              	<div class="error" ng-show="changePwForm.newPassword.$dirty && changePwForm.newPassword.$invalid">Invalid field:
+	                  <span ng-show="changePwForm.newPassword.$error.required"> New password missing</span>
+	                  <span ng-show="changePwForm.newPassword.$error.regexValidate && !changePasswordForm.newPassword.$error.required">weak password</span>
+	                </div>              
+              </div> 
+                    <div class="col-xs-1">
+                        <i class="glyphicon glyphicon-question-sign" popover="min. 6 symbols, min. 1 digit, min. 1 lower case, min. 1 upper case" popover-trigger="mouseenter"></i>
+                    </div>
+              </div>
+            
+              <div class="form-group">
+                  <label for="confirmPassword" class="col-xs-2 control-label">Confirm password</label>
+                  <div class="col-xs-9">
+                      <input type="password" id="confirmPassword" name="confirmPassword" class="form-control" ng-model="password.confirmPassword" confirm-field="newPassword" required/>
+                      <div class="error" ng-show="changePwForm.confirmPassword.$dirty && changePwForm.confirmPassword.$invalid">Invalid field:
+                          <span ng-show="changePwForm.confirmPassword.$error.required">Password confirmation missing</span>
+                          <span ng-show="changePwForm.confirmPassword.$error.confirmField && !changePasswordForm.confirmPassword.$error.required">Passwords do not match</span>
+                      </div>
+                  </div>
+              </div>
+        
+       
+  
+    
+  </div>
+  <div class="modal-footer">
+      <button class="btn btn-success" ng-click="ok()" ng-disabled="changePwForm.$invalid" >OK</button>
+     				<button class="btn btn-default" ng-click="cancel()" >Cancel</button>
+  </div>
+</form>
+</div>

@@ -1,0 +1,86 @@
+
+<div class="modal-content">
+<form name="databaseForm" class="form-horizontal InputForm" role="form" novalidate>
+  <div class="modal-header">
+      <h3 class="modal-title">{{modaltitle}}</h3>
+  </div>
+  <div class="modal-body">
+  
+  		
+       <div class="form-group">
+          <label for="identifier" class="col-xs-2 control-label">Identifier</label>
+          <div class="col-xs-10">
+            <input type="text" class="form-control" id="identifier" name="identifier" ng-model="database.uri" ng-disabled="!isNew" required regex-validate="identifier" unique-identifier >
+            <div class="error" ng-show="databaseForm.identifier.$dirty && databaseForm.identifier.$invalid">Invalid field:
+              <span ng-show="databaseForm.identifier.$error.required || databaseForm.identifier.$error.regexValidate">Malformed, only letters and numbers allowed</span>
+              <span ng-show="databaseForm.identifier.$error.uniqueIdentifier">Id already exists</span>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="label" class="col-xs-2 control-label">Label</label>
+          <div class="col-xs-10">
+            <input type="text" class="form-control" name="label" id="label" ng-model="database.label" required>
+            <div class="error" ng-show="databaseForm.label.$dirty && databaseForm.label.$invalid">Invalid field:
+              <span ng-show="databaseForm.label.$error.required">Label required</span>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="dbType" class="col-xs-2 control-label">Type</label>
+          <div class="col-xs-10">
+            <select id="dbType" name= "dbType" class="form-control" ng-model="database.dbType"
+                ng-options="c.uri as c.label for c in databaseTypes" required>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="dbHost" class="col-xs-2 control-label">Connection string</label>
+          <div class="col-xs-5">
+            <input type="text" class="form-control" id="dbHost" name="dbHost" ng-model="database.dbHost" required>
+            <div class="error" ng-show="databaseForm.dbHost.$dirty && databaseForm.dbHost.$invalid">Invalid field:
+              <span ng-show="databaseForm.dbHost.$error.required">Invalid host</span>
+            </div>
+          </div>          
+          <div class="col-xs-5">
+            <input type="text" class="form-control" id="dbPort" name="dbPort" ng-model="database.dbPort" required>
+            <div class="error" ng-show="databaseForm.dbPort.$dirty && databaseForm.dbPort.$invalid">Invalid field:
+              <span ng-show="databaseForm.dbPort.$error.required">Missing port number</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="dbName" class="col-xs-2 control-label">DB name</label>
+          <div class="col-xs-10">
+            <input type="text" class="form-control" id="dbName" name="dbName"ng-model="database.dbName" required>
+            <div class="error" ng-show="databaseForm.dbName.$dirty && databaseForm.dbName.$invalid">Invalid field:
+              <span ng-show="databaseForm.dbName.$error.required">Database name missing</span>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="dbUser" class="col-xs-2 control-label">Credentials</label>
+          <div class="col-xs-5">
+            <input type="text" class="form-control" id="dbUser" name="dbUser" ng-model="database.dbUser" required>
+            <div class="error" ng-show="databaseForm.dbUser.$dirty && databaseForm.dbUser.$invalid">Invalid field:
+              <span ng-show="databaseForm.dbUser.$error.required">User name missing</span>
+            </div>
+          </div>
+          <div class="col-xs-5">
+            <input type="text" class="form-control" id="dbPassword" name="dbPassword" ng-model="database.dbPassword" required>
+            <div class="error" ng-show="databaseForm.dbPassword.$dirty && databaseForm.dbPassword.$invalid">Invalid field:
+              <span ng-show="databaseForm.dbPassword.$error.required">Password missing</span>
+            </div>
+          </div>
+        </div>
+              
+  
+    
+  </div>
+  <div class="modal-footer">
+      <button class="btn btn-success" ng-click="ok()" ng-disabled="databaseForm.$invalid" >OK</button>
+     				<button class="btn btn-default" ng-click="cancel()" >Cancel</button>
+  </div>
+</form>
+</div>

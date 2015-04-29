@@ -1,0 +1,59 @@
+
+<div class="modal-content">
+<form name="endpointForm" class="form-horizontal InputForm" role="form" novalidate>
+  <div class="modal-header">
+      <h3 class="modal-title">{{modaltitle}}</h3>
+  </div>
+  <div class="modal-body">
+  
+  		<div class="form-group">
+          <label class="col-xs-2 control-label">Identifier</label>
+          <div class="col-xs-10">
+            <input type="text" class="form-control" name="identifier" id="identifier" ng-model="endpoint.uri" ng-if="isNew" required regex-validate="identifier" unique-identifier>
+            <input type="text" class="form-control" name="identifier" id="identifier" ng-model="endpoint.uri" ng-if="!isNew" ng-disabled="!isNew">
+            <div class="error" ng-show="endpointForm.identifier.$dirty && endpointForm.identifier.$invalid">Invalid field:
+              <span ng-show="endpointForm.identifier.$error.required || endpointForm.identifier.$error.regexValidate">Malformed, only letters and numbers allowed</span>
+              <span ng-show="endpointForm.identifier.$error.uniqueIdentifier">Id already exists</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="label" class="col-xs-2 control-label">Label</label>
+          <div class="col-xs-10">
+            <input type="text" class="form-control" name="label" id="label" ng-model="endpoint.label" required>
+            <div class="error" ng-show="endpointForm.label.$dirty && endpointForm.label.$invalid">Invalid field:
+              <span ng-show="endpointForm.label.$error.required">Label required</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="endpoint" class="col-xs-2 control-label">Endpoint</label>
+          <div class="col-xs-10">
+            <input type="text" class="form-control" name="endpoint" id="endpoint" ng-model="endpoint.endpoint" required regex-validate="sparqlEndpoint">
+             <div class="error" ng-show="endpointForm.endpoint.$dirty && endpointForm.endpoint.$invalid">Invalid field:
+              <span ng-show="endpointForm.endpoint.$error.required || endpointForm.endpoint.$error.regexValidate">Malformed endpoint</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="homepage" class="col-xs-2 control-label">Homepage</label>
+          <div class="col-xs-10">
+            <input type="text" class="form-control" name="homepage" id="homepage" ng-model="endpoint.homepage" required regex-validate="url">
+             <div class="error" ng-show="endpointForm.homepage.$dirty && endpointForm.homepage.$invalid">Invalid field:
+              <span ng-show="endpointForm.homepage.$error.required || endpointForm.homepage.$error.regexValidate"Malformed Url</span>
+            </div>
+          </div>
+        </div>
+       
+  
+    
+  </div>
+  <div class="modal-footer">
+      <button class="btn btn-success" ng-click="ok()" ng-disabled="endpointForm.$invalid">OK</button>
+     				<button class="btn btn-default" ng-click="cancel()">Cancel</button>
+  </div>
+</form>
+</div>

@@ -4,14 +4,15 @@ var module = angular.module('app.configuration-service', []);
 
 module.factory('ConfigurationService', function ($q, Config, $http, $location, flash, Helpers, ServerErrorResponse, Ns) {
     
+    var FRAMEWORK_HOMEPAGE;
     var SettingsService = {
         getConfiguration : function(){
             return $http.get("rest/config");
         },
-
-        getSettings : function(){
-            if(Config.getDefaultSettingsGraph() == undefined){
-                return $http.get("rest/config").then(
+        getSettings : function(userAccount){
+            var defer = $q.defer();
+            if(Config.getSettingsGraph() == undefined){
+                $http.get("rest/config").then(
                     function (response) {
                         Config.setFrameworkUri(response.data.frameworkUri);
                         Config.setNS(response.data.ns);
@@ -23,16 +24,26 @@ module.factory('ConfigurationService', function ($q, Config, $http, $location, f
                         Config.setEndpoint(response.data.sparqlEndpoint);
                         Config.setAuthEndpoint(response.data.authSparqlEndpoint);
                         Config.setFlagPath(response.data.flagPath);
+                        Config.setSpringBatchUri(response.data.springBatchUri);
+                        FRAMEWORK_HOMEPAGE = response.data.homepage;
                         Ns.getAllNamespaces                        
                         Ns.add(":", Config.getNS());
-                        return Config.read();
+                        Config.read().then(function(settings){
+                            // Try to get here the user's settings graph
+                            defer.resolve(settings);
+                        });
+
                     }, function(response){
                         var message = ServerErrorResponse.getMessage(response);
                         flash.error = message;
-                    })
-            } 
-            else
-                return Config.read();
+                    	})
+                }else{
+                	
+                	Config.read().then(function(response){
+                        defer.resolve(response);    
+                    });
+                }
+             return defer.promise;
         },
         
         setup: function(reset){
@@ -62,9 +73,17 @@ module.factory('ConfigurationService', function ($q, Config, $http, $location, f
         getFrameworkUri: function () {
             return Config.getFrameworkUri();
         },
+
+        getFrameworkHomepage: function () {
+            return FRAMEWORK_HOMEPAGE;
+        },
         
         getFlagPath: function () {
             return Config.getFlagPath();
+        },
+        
+        getSpringBatchUri: function () {
+            return Config.getSpringBatchUri();
         },
 
         setUriBase: function (uri) {
@@ -96,12 +115,25 @@ module.factory('ConfigurationService', function ($q, Config, $http, $location, f
         },
 
         deleteResource: function (uri) {
-            console.log("delete " + uri);
             var settings = Config.getSettings();
             delete settings[uri];
-            return Config.write();
+            Config.write();
+            return true;
         },
-
+        getWorkbenchServices : function(){
+            return $http.get("rest/config/services").then( 
+                // success
+                function (response){
+                    return response.data.services;
+            }); 
+        },
+        getWorkbenchService : function(uri){
+            return $http.get("rest/config/services/"+uri).then( 
+                // success
+                function (response){
+                    return response.data.services;
+            }); 
+        },
         getResourcesType: function (type) {
             var results = [];
             var elements = Config.select("rdf:type", type);
@@ -155,16 +187,10 @@ module.factory('ConfigurationService', function ($q, Config, $http, $location, f
             for (var resource in elements) {
                 var element = elements[resource];
                 if(element["rdfs:label"]== undefined) continue;
-
-                var lendpoint = element["void:sparqlEndpoint"][0]
-                if(resource==":VirtuosoAuthSPARQLEndpoint")
-                    lendpoint = Config.getAuthEndpoint();
-                else if(resource==":VirtuosoEndpoint")
-                    lendpoint = Config.getEndpoint();
                 results.push({
                     uri: resource,
                     label: element["rdfs:label"][0],
-                    endpoint: lendpoint,
+                    endpoint: element["void:sparqlEndpoint"][0],
                     homepage: element["foaf:homepage"] == undefined ? "" : element["foaf:homepage"][0]
                 });
             }
@@ -190,7 +216,8 @@ module.factory('ConfigurationService', function ($q, Config, $http, $location, f
                 "rdf:type": ["void:Dataset", "gkg:SPARQLEndpoint", "gkg:DataSource"],
                 "void:sparqlEndpoint": [endpoint.endpoint]
             };
-            return Config.write();
+            Config.write();
+            return true;
         },
 
         updateEndpoint: function (pEndpoint) {
@@ -198,7 +225,8 @@ module.factory('ConfigurationService', function ($q, Config, $http, $location, f
             endpoint["rdfs:label"][0] = pEndpoint.label;
             endpoint["void:sparqlEndpoint"][0] = pEndpoint.endpoint;
             endpoint["foaf:homepage"][0] = pEndpoint.homepage;
-            return Config.write();
+            Config.write();
+            return true;
         },
 
         /**
@@ -255,7 +283,8 @@ module.factory('ConfigurationService', function ($q, Config, $http, $location, f
                 "gkg:dbUser": [database.dbUser],
                 "gkg:dbPassword": [database.dbPassword]
             };
-            return Config.write();
+            Config.write();
+            return true;
         },
 
         updateDatabase: function (pDatabase) {
@@ -267,9 +296,110 @@ module.factory('ConfigurationService', function ($q, Config, $http, $location, f
             database["gkg:dbName"][0] = pDatabase.dbName;
             database["gkg:dbUser"][0] = pDatabase.dbUser;
             database["gkg:dbPassword"][0] = pDatabase.dbPassword;
-            return Config.write();
+            Config.write();
+            return true;
         },
 
+        /**
+         * functions for managing csv data sources
+         */
+        getAllCsvSources: function () {
+            var results = [];
+            var elements = Config.select("rdf:type", "gkg:CsvFile");
+            for (var resource in elements) {
+                var element = elements[resource];
+               
+                results.push({
+                    uri: resource,
+                    label: element["rdfs:label"][0],
+                    url: element["gkg:csvUrl"][0]
+                });
+            }
+            return results;
+        },
+        getCsvSource: function (uri) {
+            var settings = Config.getSettings();
+            var results = {
+                uri: uri,
+                label: settings[uri]["rdfs:label"][0],
+                url: settings[uri]["gkg:csvUrl"][0]
+            };
+            return results;
+        },
+        addCsvSource: function(csv){
+        	
+        	var settings = Config.getSettings();
+        	settings[csv.uri]={
+        			"rdfs:label": [csv.label],
+        			"rdf:type": ["gkg:CsvFile", "gkg:DataSource"],
+        			"gkg:csvUrl": [csv.url]
+        			
+        	},
+        	Config.write();
+            return true;
+        	
+        },
+        
+        updateCsvSource: function(csv){
+        	
+        	var csvsource = Config.getSettings()[csv.uri];
+        	csvsource["rdfs:label"][0]=csv.label;
+        	csvsource["gkg:csvUrl"][0]=csv.url;
+        	 Config.write();
+             return true;
+        },
+        
+        
+        /**
+         * functions for managing license sources
+         */
+        getAllLicenseSources: function () {
+            var results = [];
+            var elements = Config.select("rdf:type", "dcterms:LicenseDocument");
+            for (var resource in elements) {
+                var element = elements[resource];
+               
+                results.push({
+                    uri: resource,
+                    label: element["rdfs:label"][0],
+                    url: element["gkg:licenseUrl"][0]
+                });
+            }
+            return results;
+        },
+        getLicenseSource: function (uri) {
+            var settings = Config.getSettings();
+            var results = {
+                uri: uri,
+                label: settings[uri]["rdfs:label"][0],
+                url: settings[uri]["gkg:licenseUrl"][0]
+            };
+            return results;
+        },
+        addLicenseSource: function(license){
+        	
+        	var settings = Config.getSettings();
+        	settings[license.uri]={
+        			"rdfs:label": [license.label],
+        			"rdf:type": ["dcterms:LicenseDocument"],
+        			"gkg:licenseUrl": [license.url]
+        			
+        	},
+        	Config.write();
+            return true;
+        	
+        },
+        
+        updateLicenseSource: function(license){
+        	
+        	var licenseSource = Config.getSettings()[license.uri];
+        	licenseSource["rdfs:label"][0]=license.label;
+        	licenseSource["gkg:licenseUrl"][0]=license.url;
+        	 Config.write();
+             return true;
+        },
+        
+        
         /**
          * COMPONENTS functions
          */
@@ -293,75 +423,6 @@ module.factory('ConfigurationService', function ($q, Config, $http, $location, f
                     id: "enriching-and-cleaning"
                 }]
             };
-        },
-
-        getComponent: function (uri) {
-            var component = Config.getSettings()[uri];
-            var results = this.elementToJson(uri, component);
-            return results;
-        },
-
-        getComponentServices: function (uri, serviceType) {
-            var settings = Config.getSettings();
-            var elements = settings[uri]["lds:providesService"];
-
-            var results = [];
-            for (var resource in elements) {
-                var element = elements[resource];
-                var res = resource;
-
-                // TODO: get a new version of config.js to provide also blanc nodes as URIS
-                // if element is an string is an URI, otherwise is a nested node (blanc)
-                if (typeof element == "string") {
-                    res = element;
-                    element = settings[element];
-                }
-
-                if (typeof serviceType != "undefined" && element["rdf:type"].indexOf(serviceType) === -1)
-                    continue; // not of the required type
-
-                var service = this.elementToJson(res, element);
-                // check if the serviice is online 
-                // console.log(service);
-                // $http.get(service.serviceUrl).then( function(response) {
-                //     service.offline = false;
-                //     results.push(service);
-                // }, function(response) {
-                //     service.offline = true;
-                //     results.push(service);
-                // });
-                results.push(service);
-                
-            }
-            return results;
-        },
-
-        getAllComponents: function () {
-            var results = [];
-            var elements = Config.select("rdf:type", "lds:StackComponent");
-            for (var resource in elements) {
-                var element = elements[resource];
-                results.push(this.elementToJson(resource, element));
-            }
-            return results;
-        },
-
-        getAllServices: function() {
-            var results = [];
-            var components = this.getAllComponents();
-            for (var ind in components) {
-                var services = this.getComponentServices(components[ind].uri);
-                for (var sind in services) {
-                    results.push(services[sind]);
-                }
-            }
-            return results;
-        },
-
-        getService: function (uri) {
-            var service = Config.getSettings()[uri];
-            var results = this.elementToJson(uri, service);
-            return results;
         },
 
         getRequiredServices: function(url) {

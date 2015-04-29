@@ -53,7 +53,7 @@ public class Jobs {
   private static JobsManager jmanager;
 
   /**
-   * Jobs constructor, to init the servet with the configuration information.
+   * Jobs constructor, to initialize the api with the configuration information.
    * 
    * @param context
    * @throws ServletException
@@ -248,7 +248,8 @@ public class Jobs {
         return Response.status(Response.Status.OK).entity(json).type(MediaType.APPLICATION_JSON)
             .build();
       } else
-        return Response.status(Response.Status.NO_CONTENT).entity("User do not have job").build();
+        return Response.status(Response.Status.NO_CONTENT).entity("User do not have job")
+            .type(MediaType.APPLICATION_JSON).build();
 
     } catch (Exception e) {
       log.error(e);

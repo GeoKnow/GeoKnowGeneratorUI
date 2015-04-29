@@ -2,14 +2,15 @@
 
 var app = angular.module('app', ['ngRoute',
                                  'ngCookies',
-                                 'app.job-service',
                                  'app.services', 
+                                 'app.job-service',
                                  'app.ns-service',
                                  'app.configuration-service',
                                  'app.graph-service',
                                  'app.account-service',
                                  'app.graph-group-service',
                                  'app.authsession-service',
+                                 'app.components-service',
                                  'app.login-service',
                                  'app.users-service',
                                  'app.directives', 
@@ -19,29 +20,27 @@ var app = angular.module('app', ['ngRoute',
                                  'view-segment', 
                                  'angularFileUpload',
                                  'angular-flash.service', 
-                                 'angular-flash.flash-alert-directive']);
+                                 'angular-flash.flash-alert-directive',
+                                 'angular-loading-bar']);
 
 
 app.config(function($routeSegmentProvider, $routeProvider)
 {
+
     $routeSegmentProvider.options.autoLoadTemplates = true;
     $routeSegmentProvider
         // TODO: these routes may have to be loaded from the configuration
-        
-        .when('/popup-limes','popup-limes')
-        .when('/popup-triplegeo','popup-triplegeo')
-        .when('/popup-deer','popup-deer')
-
+        // main routes   
         .when('/', 'default')
         .when('/workbench', 'workbench')
         .when('/account','account')
         .when('/system-setup', 'system-setup')
         .when('/access-denied', 'access-denied')
-        // .when('/account/preferences', 'account.preferences')
         .when('/settings', 'settings')
+        // secondary routes 
         .when('/settings/data-sources', 'settings.data-sources')
         .when('/settings/datasets', 'settings.datasets')
-        .when('/settings/namespaces', 'settings.namespaces')
+        //.when('/settings/namespaces', 'settings.namespaces')
         .when('/settings/components', 'settings.components')
         .when('/settings/roles', 'settings.roles')
         .when('/workbench/extraction-and-loading/import-rdf', 'workbench.import-rdf')
@@ -49,8 +48,6 @@ app.config(function($routeSegmentProvider, $routeProvider)
         .when('/workbench/extraction-and-loading/triplegeo', 'workbench.triplegeo')
         .when('/workbench/extraction-and-loading/triplegeo-result', 'workbench.triplegeo-result')
         .when('/workbench/search-querying-and-exploration/virtuoso', 'workbench.virtuoso')
-        .when('/workbench/search-querying-and-exploration/geospatial', 'workbench.geospatial')
-     /*   .when('/workbench/search-querying-and-exploration/googlemap', 'workbench.googlemap') */
         .when('/workbench/search-querying-and-exploration/facete', 'workbench.facete')
         .when('/workbench/search-querying-and-exploration/mappify', 'workbench.mappify')
         .when('/workbench/manual-revision-and-authoring/ontowiki', 'workbench.ontowiki')
@@ -58,26 +55,17 @@ app.config(function($routeSegmentProvider, $routeProvider)
         .when('/workbench/linking-and-fusing/fagi-gis', 'workbench.fagi-gis')
         .when('/workbench/classification-and-enrichment/deer', 'workbench.deer')
 
-        .segment('popup-limes', {
-            templateUrl: 'js/workbench/linking-and-fusing/limes-result.html',
+        .segment('default', {
+            templateUrl: 'default.html',
             resolve: {
-                      settings: function (ConfigurationService) {
-                        return ConfigurationService.getSettings();
-                      }
+                    roles: function(UsersService) {
+                        return UsersService.readRoles();
+                    }                        
                 }
-            })
+                })
             
         .segment('popup-triplegeo', {
             templateUrl: 'js/workbench/extraction-and-loading/triplegeo-result.html',
-            resolve: {
-                      settings: function (ConfigurationService) {
-                        return ConfigurationService.getSettings();
-                      }
-                }
-            })
-            
-        .segment('popup-deer', {
-            templateUrl: 'js/workbench/classification-and-enrichment/deer-result.html',
             resolve: {
                       settings: function (ConfigurationService) {
                         return ConfigurationService.getSettings();
@@ -106,10 +94,6 @@ app.config(function($routeSegmentProvider, $routeProvider)
                     templateUrl: 'js/workbench/extraction-and-loading/triplegeo.html' })
                 .segment('triplegeo-result', {
                     templateUrl: 'js/workbench/extraction-and-loading/triplegeo-result.html' })
-                .segment('geospatial', {
-                    templateUrl: 'js/workbench/search-querying-and-exploration/geospatial.html'})
-     /*           .segment('googlemap', {
-                    templateUrl: 'js/workbench/search-querying-and-exploration/googlemap.html'}) */
                 .segment('facete', {
                     templateUrl: 'js/workbench/search-querying-and-exploration/facete.html'})
                 .segment('mappify', {
@@ -126,8 +110,8 @@ app.config(function($routeSegmentProvider, $routeProvider)
                     templateUrl: 'js/workbench/linking-and-fusing/fagi-gis.html' })
             .up()
 
-		.segment('settings',{
-			templateUrl: 'js/settings/settings.html'})
+        .segment('settings',{
+            templateUrl: 'js/settings/settings.html'})
             .within()
                 .segment('datasets', {
                     templateUrl: 'js/settings/datasets/graphs.html'})
@@ -153,8 +137,7 @@ app.config(function($routeSegmentProvider, $routeProvider)
                             }                        
                         }
                     })
-            .up()
-           
+            .up() 
         .segment('account', {
             templateUrl:'js/account/account.html',
             resolve: {
@@ -168,27 +151,16 @@ app.config(function($routeSegmentProvider, $routeProvider)
                 })
             .up()
         .segment('system-setup', {
-            templateUrl: 'system-setup.html'})
-        .segment('default', {
-            templateUrl: 'default.html',
-            // resolve: {
-            //         settings: function (ConfigurationService) {
-            //             return ConfigurationService.getSettings();
-            //         }
-            // }
+            templateUrl: 'system-setup.html',
         })
         .segment('access-denied', {
-            templateUrl: 'access-denied.html'})
-        .segment('about', {
-            templateUrl:'about.html' })
-        .segment('under-construction', {
-            templateUrl:'under-construction.html' });
+            templateUrl: 'access-denied.html'
+        });
 
     // TODO: replace with a not found page or something like that
     $routeProvider.otherwise({redirectTo: '/'}); 
 
-})
-.config(function($sceProvider) {
+}).config(function($sceProvider) {
     // this may be has to be replaced by white list and black list for accessin resources
     $sceProvider.enabled(false);
 })
@@ -206,41 +178,52 @@ app.config(function($routeSegmentProvider, $routeProvider)
 .config(function($sceDelegateProvider) {
     $sceDelegateProvider.resourceUrlWhitelist(['.*']);
 })
-.run(function($rootScope, $location, $http, AccountService, ConfigurationService) {
+
+.config(function($httpProvider){
+    
+    if (!$httpProvider.defaults.headers.get) {
+        $httpProvider.defaults.headers.get = {};    
+    }
+    //disable IE ajax request caching
+    $httpProvider.defaults.headers.get['If-Modified-Since'] = '0';
+    $httpProvider.defaults.headers.get['Cache-Control'] = 'no-cache'; 
+    $httpProvider.defaults.headers.get['Pragma'] = 'no-cache';
+    
+    
+})
+.run(function($rootScope, $location, $http, AccountService, ConfigurationService, flash, ServerErrorResponse) {
+    
     //redirect to system-setup page if system is not set up
     //redirect to access-denied page if user has no access to page
     $rootScope.$on("$routeChangeStart", function(event, next, current) {
-        var account = AccountService.getAccount();
         if ($rootScope.isSystemSetUp==undefined) {
             $http.get("rest/setup").then(function(response) {
                 $rootScope.isSystemSetUp = response.data == "true";
                 if (!$rootScope.isSystemSetUp) {
                     $location.path('/system-setup');
                 }
+            }, function(response) {
+                flash.error = ServerErrorResponse.getMessage(response);
             });
         } else if (!$rootScope.isSystemSetUp) {
             $location.path('/system-setup');
-        } else if (account.getUsername() != undefined && next.$$route) { //check route permissions
+        } else if (AccountService.getAccount().getAccountURI() != undefined && next.$$route) { //check route permissions
             var requiredServices = ConfigurationService.getRequiredServices(next.$$route.originalPath);
-            if (requiredServices == null) return;
-            if (account.isAdmin()) return;
-            var role = account.getRole();
+            if (requiredServices==null) return;
+            if (AccountService.getAccount().isAdmin()) return;
+            var role = AccountService.getAccount().getRole();
             if (role==undefined) {
                 $location.path("/access-denied");
-                return;
             } else {
                 var allowedServices = role.services;
                 for (var ind in requiredServices) {
-                    if (allowedServices.indexOf(requiredServices[ind]==-1)) {
+                    if (allowedServices.indexOf(requiredServices[ind])==-1) {
                         $location.path("/access-denied");
                         return;
                     }
                 }
             }
-        }
-        else {
-            console.log("access denied? or home redirect?");
-            // $location.path("/access-denied"); ?
+        }else {
             $location.path("/");
         }
     });

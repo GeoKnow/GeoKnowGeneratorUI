@@ -1,0 +1,97 @@
+
+<div class="modal-content">
+    <form name="graphForm" class="form-horizontal InputForm" role="form" novalidate>
+      <div class="modal-header">
+         <h3 class="modal-title">{{modaltitle}}<span ng-if="isLoading()"> Loading...</span></h3>
+      </div>
+
+      <div class="modal-body" ng-if="!isLoading()">
+         <div class="form-group">
+          <label class="col-xs-2 control-label"> Name </label>
+          <div class="col-xs-10">
+            <input type="text" class="form-control" id="name" name="name" ng-model="namedgraph.name" ng-disabled="!isNew()" required regex-validate="identifier" unique-identifier/>
+            <div class="error"  ng-show="graphForm.name.$dirty && graphForm.name.$invalid"> Invalid field:
+              <span ng-show="graphForm.name.$error.required || graphForm.name.$error.regexValidate">Malformed, only letters or numbers</span>
+              <span ng-show="graphForm.name.$error.uniqueIdentifier"> Id already exist</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="name" class="col-xs-2 control-label">Label</label>
+          <div class="col-xs-10">
+            <input type="text" class="form-control" id="label" name="label" ng-model="namedgraph.graph.label" required />
+            <div class="error"  ng-show="graphForm.label.$dirty && graphForm.label.$invalid"> Invalid field:
+              <span ng-show="graphForm.label.$error.required"> Label missing </span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="description" class="col-xs-2 control-label">Description</label>
+          <div class="col-xs-10">
+            <input type="text" class="form-control" name="description" id="description" ng-model="namedgraph.graph.description" required />
+            <div class="error"  ng-show="graphForm.description.$dirty && graphForm.description.$invalid">Invalid field:
+              <span ng-show="graphForm.description.$error.required"> Missing description</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label class="col-xs-2 control-label">Date created</label>
+          <div class="col-xs-10">
+            <p class="form-control-static">{{namedgraph.graph.created}}</p>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label class="col-xs-2 control-label">Date modified</label>
+          <div class="col-xs-10">
+            <p class="form-control-static">{{namedgraph.graph.modified}}</p>
+          </div>
+        </div>
+        
+        <div class="form-group" ng-if="namedgraph.owner != null">
+          <label class="col-xs-2 control-label">Owner</label>
+          <div class="col-xs-10">
+              <p class="form-control-static">{{namedgraph.owner}}</p>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label class="col-xs-2 control-label">Sparql-endpoint</label>
+          <div class="col-xs-10">
+            <p class="form-control-static">{{namedgraph.graph.endpoint}}</p>
+          </div>
+        </div>
+        
+          <div class="form-group" >
+              <label class="col-xs-2 control-label">Access</label>
+              <div class="col-xs-10">
+                  <select id="access" chosen class="form-control" ng-model="namedgraph.publicAccess" ng-options="uri as title for (uri, title) in accessModes"></select>
+              </div>
+          </div>
+          <div class="row" >
+              <label class="col-xs-2 control-label">Users</label>
+              <div class="col-xs-10">
+                  <table class="table table-striped toowide">
+                      <tr>
+                          <th>user</th>
+                          <th>read</th>
+                          <th>write</th>
+                      </tr>
+                      <tr ng-repeat="user in users | filter:userFilter">
+                          <td>{{user}}</td>
+                          <td><input type="checkbox" ng-checked="namedgraph.usersRead.indexOf(user) > -1" ng-click="toggleUserRead(user)"/></td>
+                          <td><input type="checkbox" ng-checked="namedgraph.usersWrite.indexOf(user) > -1" ng-click="toggleUserWrite(user)"/></td>
+                      </tr>
+                  </table>
+              </div>
+          </div>
+      </div>
+  <div class="modal-footer">
+      <button class="btn btn-success" ng-click="ok()" ng-disabled="graphForm.$invalid">Save</button>
+      <button class="btn btn-default" ng-click="cancel()">Cancel</button>
+  </div>
+</form>
+</div>

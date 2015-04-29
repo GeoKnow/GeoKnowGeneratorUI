@@ -8,12 +8,48 @@ module.factory('Helpers', function(){
       //"YYYY-MM-DDThh:mm:ss"^^xsd:date;
       var month = now.getMonth() + 1; // getMonth returns values from 0 to 11
       var s_now = now.getFullYear() + "-" 
-              + (month.toString().length==1 ? "0"+ month : month + "-") 
-              + (now.getDate().toString().length==1 ? "0"+now.getDate() : now.getDate())
-              + "T" + now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds();
-      return s_now;
+      + (month.toString().length==1 ? "0"+ month : month) + "-" 
+      + (now.getDate().toString().length==1 ? "0"+now.getDate() : now.getDate())
+      + "T" + (now.getHours().toString().length==1 ? "0" + now.getHours() : now.getHours()) + ":" 
+      + (now.getMinutes().toString().length==1 ? "0" + now.getMinutes() : now.getMinutes()) + ":" 
+      + (now.getSeconds().toString().length==1 ? "0" + now.getSeconds() : now.getSeconds());
+     
+     return s_now;
   };
 
+  var convertDateToXsd = function(now){
+      
+      //"YYYY-MM-DDThh:mm:ss"^^xsd:date;
+      var month = now.getMonth() + 1; // getMonth returns values from 0 to 11
+      var s_now = now.getFullYear() + "-" 
+              + (month.toString().length==1 ? "0"+ month : month) + "-" 
+              + (now.getDate().toString().length==1 ? "0"+now.getDate() : now.getDate())
+              + "T" + (now.getHours().toString().length==1 ? "0" + now.getHours() : now.getHours()) + ":" 
+              + (now.getMinutes().toString().length==1 ? "0" + now.getMinutes() : now.getMinutes()) + ":" 
+              + (now.getSeconds().toString().length==1 ? "0" + now.getSeconds() : now.getSeconds())+"Z";
+      return s_now;
+  };
+  
+  var dateAdd = function(date, interval, units) {
+	  var ret = new Date(date); //don't change original date
+	  switch(interval.toLowerCase()) {
+	    case 'year'   :  ret.setFullYear(ret.getFullYear() + units);  break;
+	    case 'quarter':  ret.setMonth(ret.getMonth() + 3*units);  break;
+	    case 'month'  :  ret.setMonth(ret.getMonth() + units);  break;
+	    case 'week'   :  ret.setDate(ret.getDate() + 7*units);  break;
+	    case 'day'    :  ret.setDate(ret.getDate() + units);  break;
+	    case 'hour'   :  ret.setTime(ret.getTime() + units*3600000);  break;
+	    case 'minute' :  ret.setTime(ret.getTime() + units*60000);  break;
+	    case 'second' :  ret.setTime(ret.getTime() + units*1000);  break;
+	    default       :  ret = undefined;  break;
+	  }
+	  return ret;
+	}
+  
+
+  
+  
+  
   var invertMap = function (obj) {
     var new_obj = {};
     for (var prop in obj) {
@@ -25,8 +61,10 @@ module.factory('Helpers', function(){
   };
   
   return {
-      getCurrentDate :getCurrentDate,
-      invertMap : invertMap
+      getCurrentDate: getCurrentDate,
+      invertMap		: invertMap,
+      dateAdd		: dateAdd,
+      convertDateToXsd: convertDateToXsd
   };
 
 });
@@ -63,6 +101,7 @@ module.factory('ServerErrorResponse', function() {
   };
   return ServerErrorResponseService;
 });
+
 
 
 module.factory('Base64', function() {

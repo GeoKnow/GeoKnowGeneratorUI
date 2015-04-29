@@ -1,6 +1,6 @@
 'use strict';
 
-function SettingsMenuCtrl($scope) {
+function SettingsMenuCtrl($scope, AccountService) {
   
   $scope.oneAtATime = true;
   // these data can be replaced later with the configuration
@@ -14,8 +14,8 @@ function SettingsMenuCtrl($scope) {
   ];
 
   $scope.showItem = function(item) {
-    if ($scope.$parent.currentAccount.isAdmin()) return true; //show all items to admin
-    var role = $scope.$parent.currentAccount.getRole();
+    if (AccountService.getAccount().isAdmin()) return true; //show all items to admin
+    var role = AccountService.getAccount().getRole();
     if (role==null) return false; //hide all
     var allowedServices = role.services;
     for (var ind in item.requiredServices) {
@@ -52,7 +52,7 @@ function SystemSetupCtrl($rootScope, $scope, $location, ConfigurationService, fl
     ConfigurationService.getConfiguration().then(
       //success
       function(response){
-        
+        console.log(response);
         $scope.settings = {
           uriBase: response.data.ns,
           endpointService: response.data.authSparqlEndpoint,

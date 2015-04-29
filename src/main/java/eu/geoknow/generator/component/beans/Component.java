@@ -33,7 +33,7 @@ public class Component {
   @NotEmpty
   private String label;
   @NotEmpty
-  private String website;
+  private String homepage;
   @NotNull
   @Valid
   private List<Service> services;
@@ -58,12 +58,12 @@ public class Component {
     this.label = label;
   }
 
-  public String getWebsite() {
-    return website;
+  public String getHomepage() {
+    return homepage;
   }
 
-  public void setWebsite(String website) {
-    this.website = website;
+  public void setHomepage(String homepage) {
+    this.homepage = homepage;
   }
 
   public String getUri() {

@@ -34,6 +34,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 
 import eu.geoknow.generator.configuration.FrameworkConfiguration;
+import eu.geoknow.generator.exceptions.InformationMissingException;
 import eu.geoknow.generator.exceptions.ResourceNotFoundException;
 import eu.geoknow.generator.exceptions.ServiceInternalServerError;
 import eu.geoknow.generator.exceptions.ServiceNotAvailableException;
@@ -273,11 +274,12 @@ public class BatchAdminClient {
    * @return
    * @throws ServiceNotAvailableException
    * @throws ServiceInternalServerError
+   * @throws InformationMissingException
    * @throws Exception
    */
   public static Registration registerJob(String id, String xml, String springBatchServiceUri,
       String sbaDir) throws ResourceNotFoundException, UnknownException, IOException,
-      ServiceNotAvailableException, ServiceInternalServerError {
+      ServiceNotAvailableException, ServiceInternalServerError, InformationMissingException {
 
     // store the job data in the file system as well, otherwise SBA has
     // problems to manage jobs
@@ -313,8 +315,10 @@ public class BatchAdminClient {
    * @param id id of th job
    * @param xml XML to store in the file
    * @param sbaDir path to spring-batch-admin-geoknow/WEB-INF/classes/META-INF/spring /batch/jobs
+   * @throws InformationMissingException
    */
-  private static String storeXmlInJobDirectory(String id, String xml, String sbaDir) {
+  private static String storeXmlInJobDirectory(String id, String xml, String sbaDir)
+      throws InformationMissingException {
     java.io.FileWriter fwSBA = null;
     java.io.FileWriter fwWB = null;
     try {
@@ -343,8 +347,10 @@ public class BatchAdminClient {
    * 
    * @param id ID of the job
    * @param sbaDir path to spring-batch-admin-geoknow/WEB-INF/classes/META-INF/spring /batch/jobs
+   * @throws InformationMissingException
    */
-  public static void removeJobXmlFromFileSystem(String id, String sbaDir) {
+  public static void removeJobXmlFromFileSystem(String id, String sbaDir)
+      throws InformationMissingException {
     try {
       File sba = new File(sbaDir + "/" + id + ".xml");
       File fwd =

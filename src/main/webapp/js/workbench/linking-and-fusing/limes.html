@@ -1,16 +1,7 @@
 <div class="contents" ng-controller="LimesCtrl">
 
-  <h3 class="green bold">{{component.label}} </h3>
-  <div ng-show="component.offline" class="alert alert-danger" role="alert">
-    <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-    <span class="sr-only">Error:</span> Resource is not available
-  </div>
-  <dl class="dl-horizontal">
-    <dt>Version:</dt>
-    <dd>{{component.version}}</dd>
-    <dt>Homepage:</dt>
-    <dd>{{component.homepage}}</dd>
-  </dl>
+  <component-header></component-header>
+  
   <p>Link Discovery Framework for Metric Spaces</p>
   <p>To get started either upload a configuration file, choose an example, or fill in the options form.</p>
   <form class="form-inline InputForm col-xs-11" role="form" ng-show="inputForm">
@@ -275,7 +266,6 @@
     <div class="row">
       <div class="col-xs-2"></div>
       <div class="col-xs-2">
-        <!-- <a class="btn btn-sm btn-success btn-block" id="startLimes" ng-click="LaunchLimes()">Launch Limes</a> -->
         <a class="btn btn-sm btn-success btn-block" ng-click="registerJob()">Register Job</a>
       </div>
     </div>

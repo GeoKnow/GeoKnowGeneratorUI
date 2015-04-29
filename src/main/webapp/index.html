@@ -1,253 +1,214 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <title>GeoKnow Generator</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <meta name="description" content=""/>
-    <meta name="author" content=""/>
 
-    <!-- Le styles -->
-    <link href="lib/bootstrap-3.2.0-dist/css/bootstrap.min.css" rel="stylesheet"/>
-    <link href="lib/bootstrap-3.2.0-dist/css/bootstrap-theme.min.css" rel="stylesheet"/>
+<head>
+  <meta charset="utf-8">
+  <title>GeoKnow Generator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="" />
+  <meta name="author" content="GeoKnow EU project FP7" />
 
-    <link href="css/bootstrap-modal.css" rel="stylesheet"/>
-    <link href="css/bootstrap-slider.css" rel="stylesheet"/>
-    <link href="css/app.css" rel="stylesheet"/>
+  <!-- Le styles -->
+  <link href="lib/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="lib/bootstrap/3.3.0/css/bootstrap-theme.min.css" rel="stylesheet" />
+  <link href="lib/bootstrap-slider/bootstrap-slider.css" rel="stylesheet" />
+  <link href="lib/angular-loading-bar/loading-bar.css" rel="stylesheet">
+  <link href="css/app.css" rel="stylesheet" />
+  <link rel="icon" type="image/png" href="img/favicon.png">
 
-    <link rel="icon" type="image/png" href="img/favicon.png">
-
-    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
-    <!--[if lt IE 9]>
+  <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+  <!--[if lt IE 9]>
       <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
 
-    <!-- Le fav and touch icons -->
-    <!-- <link rel="shortcut icon" href="../assets/ico/favicon.ico"/>
+  <!-- Le fav and touch icons -->
+  <!-- <link rel="shortcut icon" href="../assets/ico/favicon.ico"/>
     <link rel="apple-touch-icon-precomposed" sizes="144x144" href="img/ico/apple-touch-icon-144-precomposed.png"/>
     <link rel="apple-touch-icon-precomposed" sizes="114x114" href="img/ico/apple-touch-icon-114-precomposed.png"/>
     <link rel="apple-touch-icon-precomposed" sizes="72x72" href="img/ico/apple-touch-icon-72-precomposed.png"/>
     <link rel="apple-touch-icon-precomposed" href="img/ico/apple-touch-icon-57-precomposed.png"/>
  -->
-  </head>
+</head>
 
-  <body ng-cloak ng-app="app" ng-controller="LoginCtrl">
+<body ng-cloak ng-app="app" ng-controller="LoginCtrl">
 
-      <!-- Subscribe to all flash messages. -->
-      <div flash-alert active-class="in alert" class="fade" duration="5000">
-        <button type="button" class="close" ng-click="hide()">&times;</button>
-        <span class="alert-message">{{flash.message}}</span>
+  <!-- Subscribe to all flash messages. -->
+  <div flash-alert active-class="in alert" class="fade" duration="0">
+    <button type="button" class="close" ng-click="hide()">&times;</button>
+    <span class="alert-message">{{flash.message}}</span>
+  </div>
+
+  <header ng-controller="NavbarCtrl">
+
+    <nav class="navbar navbar-default">
+      <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#"></a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+          <ul class="nav navbar-nav" ng-if="isUserAuthenticated()">
+            <li ng-class="getClass('/workbench')">
+              <a href="#/workbench">
+                <div class="glyphicon glyphicon-cog"></div> Workbench </a>
+            </li>
+            <li ng-class="getClass('/settings')">
+              <a href="#/settings">
+                <div class="glyphicon glyphicon-wrench"></div> Settings </a>
+            </li>
+            <li ng-class="getClass('/account')">
+              <a href="#/account">
+                <div class="glyphicon glyphicon-user"></div> Account </a>
+            </li>
+          </ul>
+          
+
+          <ul class="nav navbar-nav navbar-right">
+
+
+            <li class="navbar-text" ng-if="isUserAuthenticated() && $root.isSystemSetUp">
+              Logged in as <strong>{{currentAccount.username}}</strong>
+            </li>
+
+            <li ng-if="isUserAuthenticated() && $root.isSystemSetUp">
+              <a href="" ng-click="logout()">
+                <div class="glyphicon glyphicon-log-out"></div>Logout</a>
+            </li>
+            
+            <li ng-if="!isUserAuthenticated() && $root.isSystemSetUp">
+              <a href="" ng-click="signUp()">
+                <div class="glyphicon glyphicon-log-in"></div> Sing Up </a>
+            </li>
+            
+
+            <li ng-if="!isUserAuthenticated() && $root.isSystemSetUp">
+              <a href="" ng-click="login()">
+                <div class="glyphicon glyphicon-log-in"></div> Log In </a>
+            </li>
+          </ul>
+        </div><!-- /.navbar-collapse -->
+      </div><!-- /.container-fluid -->
+    </nav>
+  </header>
+  <!-- MAIN conteng DIV -->
+  <div class="row">
+    <div class="col-xs-12">
+      <div class="container-fluid">
+        <div id="contents" app-view-segment="0"></div>
       </div>
-
-	<div class="navbar navbar-static-top">
-	<div class="col-xs-2">
-	</div>
-			<div class="col-xs-9">
-	                <a class="navbar-brand" href="#/"></a>
-	                    <div ng-controller="NavbarCtrl">
-	                    	<ul ng-if="isUserAuthenticated()" class="nav navbar-nav navbar-left">
-    	                        <li ng-class="getClass('/workbench')">
-                                    <a href="#/workbench"><div class="glyphicon glyphicon-cog"></div> Workbench </a></li>
-    	                        <li ng-class="getClass('/settings')">
-                                    <a href="#/settings"><div class="glyphicon glyphicon-wrench"></div> Settings </a></li>
-    	                        <li ng-class="getClass('/account')">
-                                    <a href="#/account"><div class="glyphicon glyphicon-user"></div> Account </a></li>
-    	                        </ul>
-	                        <ul class="nav navbar-nav navbar-right">
-                                <li>
-                                <div ng-if="isUserAuthenticated() && $root.isSystemSetUp">
-                                            <span class="strong">You are logged in as <strong>{{currentAccount.getUsername()}}</strong></span> <button class="btn-sm btn-success" ng-click="logout()">Logout</button>
-                                </div>
-                                <div ng-if="!isUserAuthenticated() && $root.isSystemSetUp">
-                                            <!-- ng-disabled="loginForm.$invalid" -->
-                                            <button type="button" class="btn-sm btn-success navbar-left" data-toggle="modal" data-target="#modalLogin" ng-click="clearLoginForm()">Login</button>
-                                            <button type="button" class="btn-xs btn-link navbar-left" data-toggle="modal" data-target="#modalSignUp" ng-click="clearSignUpForm()">Register</button>
-                                        	<button type="button" class="btn-xs btn-link navbar-left" data-toggle="modal" data-target="#modalRestorePassword" ng-click="clearRestorePasswordForm()">Forgot password</button>
-                                </div>
-                                </li>
-	                        </ul>
-	                    </div>
-	        </div>
-	</div>
-
-	<div class="modal fade" id="modalLogin" modal-focus="#login">
-	<div class="modal-dialog">
-    <div class="modal-content">
-	<form name="loginForm" class="form-horizontal InputForm" role="form" ng-show="!isUserAuthenticated()">
-			<div class="modal-header">
-                <button type="button" class="close" ng-click="close('#modalLogin')" aria-hidden="true">&times;</button>
-                <h5 class="modal-title green bold">Login</h5>
-            </div>
-            <div class="modal-body">
-				<div class="form-group">
-                    <label class="sr-only" for="login">Username or e-mail</label>
-                    <input type="text" class="form-control col-xs-3 input-sm" id="login" placeholder="Username or e-mail address" ng-model="login.username" autofillable required>
-                    <div class="error" ng-show="loginForm.login.$dirty && loginForm.login.$invalid">
-                        <span ng-show="loginForm.login.$error.required">Enter your username</span>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="sr-only" for="password">Password</label>
-                    <input type="password" class="form-control col-xs-3 input-sm" id="password" placeholder="Password" ng-model="login.password" autofillable required>
-                </div>
-                <div class="error" ng-show="loginForm.password.$dirty && loginForm.password.$invalid">
-                    <span ng-show="loginForm.password.$error.required">Enter a password</span>
-                </div>
-             </div>
-
-             <div class="modal-footer">
-                <button type="submit" class="btn-sm btn-success" ng-click="login();" ng-disabled="loginForm.$invalid">Sign in</button>
-                <button type="button" class="btn-sm btn-default" ng-click="close('#modalLogin')">Cancel</button>
-            </div>
-    </form>
     </div>
-    </div>
-	</div>
-
-    <div class="modal fade" id="modalSignUp" modal-focus="#username">
-    <div class="modal-dialog">
-    <div class="modal-content">
-        <form name="signUpForm" class="form-horizontal InputForm" role="form">
-            <div class="modal-header">
-                <button type="button" class="close" ng-click="close('#modalSignUp')" aria-hidden="true">&times;</button>
-                <h5 class="modal-title green bold">Register</h5>
-            </div>
-            <div class="modal-body">
-                <div class="form-group">
-                    <label for="username" class="col-lg-2 control-label">Username</label>
-                    <div class="col-lg-10">
-                        <input type="text" id="username" name="username" class="form-control" placeholder="Username" ng-model="signUp.username" required unique-user-name/>
-                        <div class="error"  ng-show="signUpForm.username.$dirty && signUpForm.username.$invalid">Invalid:
-                            <span ng-show="signUpForm.username.$error.required">Enter a username</span>
-                            <span ng-show="signUpForm.username.$error.uniqueUserName">User already exists</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="email" class="col-lg-2 control-label">E-mail</label>
-                    <div class="col-lg-10">
-                        <input type="email" id="email" name="email" class="form-control" placeholder="E-mail address" ng-model="signUp.email" required unique-email/>
-                        <div class="error" ng-show="signUpForm.email.$dirty && signUpForm.email.$invalid">Invalid:
-                            <span ng-show="signUpForm.email.$error.required">Enter your email address</span>
-                            <span ng-show="signUpForm.email.$error.email">This is not a valid email address</span>
-                            <span ng-show="signUpForm.email.$error.uniqueEmail">Email already exists</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="submit" class="btn-sm btn-success" ng-click="createAccount();" ng-disabled="signUpForm.$invalid || isRegistering">Register</button>
-                <button type="button" class="btn-sm btn-default" ng-click="close('#modalSignUp')" ng-disabled="isRegistering">Cancel</button>
-                <span ng-show="isRegistering">Registering...</span>
-            </div>
-        </form>
-    </div>
-    </div>
-    </div>
-
-      <div class="modal fade" id="modalRestorePassword" modal-focus="#username">
-      <div class="modal-dialog">
-    	<div class="modal-content">
-          <form name="restorePasswordForm" class="form-horizontal InputForm" role="form">
-              <div class="modal-header">
-                  <button type="button" class="close" ng-click="close('#modalRestorePassword')" aria-hidden="true">&times;</button>
-                  <h5 class="modal-title green bold">Request password</h5>
-              </div>
-              <div class="modal-body">
-                  <div class="form-group">
-                      <label for="username" class="col-lg-2 control-label">Username or e-mail address</label>
-                      <div class="col-lg-10">
-                          <input type="text" id="username" name="username" class="form-control" placeholder="Username or e-mail address" ng-model="restorePassword.username" required/>
-                          <div class="error" ng-show="restorePasswordForm.username.$dirty && restorePasswordForm.username.$invalid">Invalid:
-                              <span ng-show="restorePasswordForm.username.$error.required">Enter your username or email address</span>
-                          </div>
-                      </div>
-                  </div>
-              </div>
-              <div class="modal-footer">
-                  <button type="submit" class="btn-sm btn-success" ng-click="restorePassword();" ng-disabled="restorePasswordForm.$invalid">Request password</button>
-                  <button type="button" class="btn-sm btn-default" ng-click="close('#modalRestorePassword')">Cancel</button>
-              </div>
-          </form>
-      </div>
-   	  </div>
-      </div>
-
-    <div id="contents" app-view-segment="0"></div>
-
+  </div>
+  <!-- FOOTER 
+  <footer>
+    <address>
+        <div class="container-fluid">
+          GeoKnow EU FP7
+          <nav class="pull-right">
+            <ul ng-controller="NavbarCtrl">
+              <li ng-class="getClass('/contact')" ><a href="#/contact">Contact</a></li>
+            </ul>
+          </nav>
+        </div>
+      </address>
+  </footer>-->
 
 
   <!-- THIS IS REPLACED BY THE LINE ABOVE TO USE SEGMENTS <div id="workspace" ng-view></div> -->
 
-    <!--  <div id="editor" ace-editor></div>-->
-    <!--  <alert id="error"></alert> -->
+  <!--  <div id="editor" ace-editor></div>-->
+  <!--  <alert id="error"></alert> -->
 
-    <!-- Le javascript
+  <!-- Le javascript
     ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
-    <!-- <script src="lib/jquery/jquery-1.7.2.min.js"></script> -->
+  <!-- Placed at the end of the document so the pages load faster -->
+  <!-- <script src="lib/jquery/jquery-1.7.2.min.js"></script> -->
 
-    <script src="lib/jquery/jquery-1.9.1.js"></script>
-    <script src="lib/jquery/jquery-ui-1.10.1.custom.min.js"></script>
-    
-    <script src="lib/angular-1.2.26/angular.min.js"></script>
-    <script src="lib/angular-1.2.26/angular-cookies.min.js"></script>
-    <script src="lib/angular-1.2.26/angular-route.min.js"></script>
+  <script src="lib/jquery/jquery-2.1.3.min.js"></script>
+  <script src="lib/jquery/jquery-ui-1.11.2.min.js"></script>
 
-    <script src="lib/bootstrap-3.2.0-dist/js/bootstrap.min.js"></script>
+  <script src="lib/angular/1.2.27/angular.min.js"></script>
+  <script src="lib/angular/1.2.27/angular-cookies.min.js"></script>
+  <script src="lib/angular/1.2.27/angular-route.min.js"></script>
 
-    <script src="lib/ui-bootstrap/ui-bootstrap-tpls-0.11.2.min.js"></script>
-    
-    <script src="lib/angular-route-segment/angular-route-segment.min.js"></script>
-    <script src="lib/angular-file-upload-master/angular-file-upload.min.js"></script>
-    <script src="lib/angular-file-upload-master/FileAPI.min.js"></script>
-    <script src="lib/angular-flash.min.js"></script>
+  <script src="lib/angular-route-segment/1.3.3/angular-route-segment.min.js"></script>
+  <script src="lib/angular-file-upload-master/2.1.1/angular-file-upload-shim.min.js"></script>
+  <script src="lib/angular-file-upload-master/2.1.1/angular-file-upload.min.js"></script>
+  <script src="lib/angular-file-upload-master/2.1.1/FileAPI.min.js"></script>
+  <script src="lib/angular-flash/angular-flash.min.js"></script>
+  <script src="lib/angular-loading-bar/loading-bar.js"></script>
 
-    <script src="lib/modal-master/bootstrap-modal.js"></script>
-    <script src="lib/modal-master/bootstrap-modalmanager.js"></script>
+  <script src="lib/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+  <script src="lib/bootstrap-slider/bootstrap-slider.js"></script>
+  <script src="lib/ui-bootstrap/ui-bootstrap-tpls-0.11.2.min.js"></script>
 
-    <script src="lib/slider/bootstrap-slider.js"></script>
-    <script src="lib/xml2json.min.js"></script>
-    
-    <!-- services for the different modules/pages -->
-    <script src="js/app.js"></script>
-    <script src="js/services/config.js"></script>
-    <script src="js/services/services.js"></script>
-    <script src="js/services/ns-service.js"></script>
-    <script src="js/services/configuration-service.js"></script>
-    <script src="js/services/graph-service.js"></script>
-    <script src="js/services/account-service.js"></script>
-    <script src="js/services/job-service.js"></script>
-    <script src="js/services/login-service.js"></script>
-    <script src="js/services/graph-group-service.js"></script>
-    <script src="js/services/users-service.js"></script>
-    <script src="js/services/authsession-service.js"></script>
-    <!-- controllers for the different modules/pages -->
-    <script src="js/controllers.js"></script>
-    <script src="js/login-controller.js"></script>
-    <script src="js/workbench/dashboard-controller.js"></script>
-    <script src="js/workbench/extraction-and-loading/import-rdf-controller.js"></script>
-    <script src="js/workbench/extraction-and-loading/sparqlify-controller.js"></script>
-    <script src="js/workbench/extraction-and-loading/triplegeo-controller.js"></script>
-    <script src="js/workbench/search-querying-and-exploration/facete-controller.js"></script>
-    <script src="js/workbench/search-querying-and-exploration/mappify-controller.js"></script>
-    <script src="js/workbench/search-querying-and-exploration/virtuoso-controller.js"></script>
-    <script src="js/workbench/manual-revision-and-authoring/ontowiki-controller.js"></script>
-    <script src="js/workbench/classification-and-enrichment/geolift-controller.js"></script>
-    <script src="js/workbench/linking-and-fusing/limes-controller.js"></script>
-    <script src="js/workbench/linking-and-fusing/fagi-gis-controller.js"></script>
-    <script src="js/settings/settings-controller.js"></script>
-    <script src="js/settings/datasets/graphs-controller.js"></script>
-    <script src="js/settings/data-sources/endpoint-controller.js"></script>
-    <script src="js/settings/data-sources/database-controller.js"></script>
-    <script src="js/settings/namespaces/namespaces-controller.js"></script>
-    <script src="js/settings/components/components-controller.js"></script>
-    <script src="js/account/account-controller.js"></script>
-    <script src="js/admin/users/users-controller.js"></script>
-    <script src="js/admin/roles-controller.js"></script>
+  <!-- For Limes Service -->
+  <script src="lib/xml2json.min.js"></script>
 
-    <!-- directives -->
-    <script src="js/directives.js"></script>
+  <!-- services for the different modules/pages -->
+  <script src="js/app.js"></script>
+  <script src="js/services/config.js"></script>
+  <script src="js/services/services.js"></script>
+  <script src="js/services/ns-service.js"></script>
+  <script src="js/services/configuration-service.js"></script>
+  <script src="js/services/graph-service.js"></script>
+  <script src="js/services/account-service.js"></script>
+  <script src="js/services/job-service.js"></script>
+  <script src="js/services/login-service.js"></script>
+  <script src="js/services/graph-group-service.js"></script>
+  <script src="js/services/users-service.js"></script>
+  <script src="js/services/authsession-service.js"></script>
+  <script src="js/services/components-service.js"></script>
+  <!-- global controllers -->
+  <script src="js/controllers.js"></script>
+  <script src="js/login-controller.js"></script>
+  <!-- user account contolers -->
+  <script src="js/account/account-controller.js"></script>
+  <!-- admin controllers -->
+  <script src="js/admin/users/users-controller.js"></script>
+  <script src="js/admin/roles-controller.js"></script>
+  <!-- workbench controllers -->
+  <script src="js/workbench/dashboard-controller.js"></script>
+  <script src="js/workbench/extraction-and-loading/import-rdf-controller.js"></script>
+  <script src="js/workbench/extraction-and-loading/sparqlify-controller.js"></script>
+  <script src="js/workbench/extraction-and-loading/triplegeo-controller.js"></script>
+  <script src="js/workbench/search-querying-and-exploration/facete-controller.js"></script>
+  <script src="js/workbench/search-querying-and-exploration/mappify-controller.js"></script>
+  <script src="js/workbench/search-querying-and-exploration/virtuoso-controller.js"></script>
+  <script src="js/workbench/manual-revision-and-authoring/ontowiki-controller.js"></script>
+  <script src="js/workbench/classification-and-enrichment/deer-controller.js"></script>
+  <script src="js/workbench/linking-and-fusing/limes-controller.js"></script>
+  <script src="js/workbench/linking-and-fusing/fagi-gis-controller.js"></script>
+  <!-- settings controllers -->
+  <script src="js/settings/settings-controller.js"></script>
+  <script src="js/settings/datasets/graphs-controller.js"></script>
+  <script src="js/settings/data-sources/endpoint-controller.js"></script>
+  <script src="js/settings/data-sources/database-controller.js"></script>
+  <script src="js/settings/namespaces/namespaces-controller.js"></script>
+  <script src="js/settings/components/components-controller.js"></script>
+  <!-- modal forms controllers -->
+  <script src="modal-forms/modal-login-controller.js"></script>
+  <script src="modal-forms/modal-signup-controller.js"></script>
+  <script src="modal-forms/modal-change-pw-controller.js"></script>
+  <script src="modal-forms/workbench/modal-job-controller.js"></script>
+  <script src="modal-forms/workbench/modal-limes-job-controller.js"></script>
+  <script src="modal-forms/settings/modal-roles-controller.js"></script>
+  <script src="modal-forms/settings/modal-user-controller.js"></script>
+  <script src="modal-forms/settings/dataset/modal-graph-controller.js"></script>
+  <script src="modal-forms/settings/dataset/modal-graphgroup-controller.js"></script>
+  <script src="modal-forms/settings/datasource/modal-endpoint-controller.js"></script>
+  <script src="modal-forms/settings/datasource/modal-database-controller.js"></script>
 
-  </body>
-</html>
+  <!-- directives -->
+  <script src="js/directives.js"></script>
+
+</body>
+
+</html> 

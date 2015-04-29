@@ -1,9 +1,22 @@
 'use strict';
 
-function DashboardCtrl($scope, JobService, ConfigurationService, $http) {
+function DashboardCtrl($scope, JobService, ComponentsService, $http) {
  
-  $scope.component = ConfigurationService.getComponent(":SpringBatchAdmin");
-  
+  var sbaUri ="http://generator.geoknow.eu/resource/SpringBatch";
+  var sbaServiceUri = "http://generator.geoknow.eu/resource/SpringBatchService";
+
+  ComponentsService.getComponent(sbaUri).then(
+    //success
+    function(response){
+      $scope.sba = response;
+      $scope.sbaService = ComponentsService.getComponentService(sbaServiceUri, $scope.sba);
+      if($scope.sbaService== null)
+        flash.error="Service not configured: " +sbaServiceUri; 
+    }, 
+    function(response){
+      flash.error="Component not configured: " +ServerErrorResponse.getMessage(response);
+    });
+
   $scope.jobs = [];
  
   $scope.updateJobs = function(){

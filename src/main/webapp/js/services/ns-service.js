@@ -57,8 +57,6 @@ module.factory('Ns', function (Helpers) {
 		},
 
 		getNamespace : function(prefix){
-			console.log(prefix);
-			console.log(prefixes);
 			return prefixes[prefix];
 		},
 
@@ -101,7 +99,7 @@ module.factory('Ns', function (Helpers) {
 				buildNamespaces();
 			}
 			else
-				console.log("WARNING: not added "  + prefix + "  for " + namespace + "  already has : "+ prefixes[prefix]);
+				console.log("WARNING: prefix already exist for " + prefixes[prefix]);
 		},
 
 		// return an array of prefix, namespace of the provided arr prefixes list

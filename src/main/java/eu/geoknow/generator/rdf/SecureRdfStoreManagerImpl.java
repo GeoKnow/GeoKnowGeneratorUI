@@ -1,6 +1,5 @@
 package eu.geoknow.generator.rdf;
 
-import eu.geoknow.generator.servlets.HttpRequestManager;
 
 
 public class SecureRdfStoreManagerImpl extends RdfStoreManagerImpl {

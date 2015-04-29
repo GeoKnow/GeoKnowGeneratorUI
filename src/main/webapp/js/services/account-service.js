@@ -66,11 +66,16 @@ module.factory("AccountService", function ( $cookieStore, $http, ConfigurationSe
         return this.role != undefined && this.role.uri == "gkg:Administrator";
     };
 
+    Account.prototype.isAuthenticatedUser = function () {
+        return this.username != undefined;
+    };
+
     /**
     * Static methods
     * Instance ('this') is not available in static context
     w*/
     Account.create = function(username, accountURI, email, role, settingsGraph) {
+    	
         return new Account(username, accountURI, email, role, settingsGraph);
     };
 

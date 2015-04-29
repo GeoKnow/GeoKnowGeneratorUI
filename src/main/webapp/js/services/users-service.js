@@ -2,13 +2,12 @@
 
 var module = angular.module('app.users-service', []);
 
-module.factory("UsersService", function($http, Config, flash, ServerErrorResponse) {
+module.factory("UsersService", function($http, Config, flash, ServerErrorResponse, AccountService) {
     var users = [];
     var roles = {};
 
     var userNames = [];
     var emails = [];
-
 
     var readUserNamesEmails = function() {
         var requestData = {
@@ -20,23 +19,22 @@ module.factory("UsersService", function($http, Config, flash, ServerErrorRespons
                     + " ORDER BY ?s ?p ?o",
             mode: "settings"
         };
-        return $http.post("rest/RdfStoreProxy", $.param(requestData)).then(
-            // success
-            function(response) {
-                var parsedResult = Config.parseSparqlResults(response.data);
-                userNames = [];
-                emails = [];
-                for (var ind in parsedResult) {
-                    userNames.push(parsedResult[ind]["foaf:accountName"][0]);
-                    emails.push(parsedResult[ind]["foaf:mbox"][0].replace("mailto:",""));
-                }
-                return parsedResult; },
+        return $http.post("rest/RdfStoreProxy", $.param(requestData)).then(function(response) {
+            var parsedResult = Config.parseSparqlResults(response.data);
+            userNames = [];
+            emails = [];
+            for (var ind in parsedResult) {
+                userNames.push(parsedResult[ind]["foaf:accountName"][0]);
+                emails.push(parsedResult[ind]["foaf:mbox"][0].replace("mailto:",""));
+            }
+            return parsedResult; },
             // error
             function(response) {
                 flash.error = ServerErrorResponse.getMessage(response);
                 return;
             });
     };
+
 
     var getUserNames = function() {
         return userNames;
@@ -48,30 +46,32 @@ module.factory("UsersService", function($http, Config, flash, ServerErrorRespons
 
     var readUsers = function() {
         var requestData = {
-            mode: "getProfiles"
+            mode: "getProfiles",
+            curuser: AccountService.getAccount().getUsername()
         };
         return $http.post("UserManagerServlet", $.param(requestData)).then(
-            //success
-            function(response) {
-                users = response.data;
-                userNames = [];
-                emails = [];
-                var ns = Config.getFrameworkOntologyNS();
-                for (var ind in users) {
-                    users[ind].profile.accountURI = users[ind].profile.accountURI.replace(Config.getNS(), ":");
-                    users[ind].profile.role.uri = users[ind].profile.role.uri.replace(ns, "gkg:");
-                    for (var sind in users[ind].profile.role.services) {
-                        users[ind].profile.role.services[sind] = users[ind].profile.role.services[sind].replace(Config.getNS(), ":");
-                    }
-                    userNames.push(users[ind].profile.username);
-                    emails.push(users[ind].profile.email.replace("mailto:",""));
+        		//success
+        		function(response) {
+            users = response.data;
+            userNames = [];
+            emails = [];
+            var ns = Config.getFrameworkOntologyNS();
+            for (var ind in users) {
+                users[ind].profile.accountURI = users[ind].profile.accountURI.replace(Config.getNS(), ":");
+                users[ind].profile.role.uri = users[ind].profile.role.uri.replace(ns, "gkg:");
+                for (var sind in users[ind].profile.role.services) {
+                    users[ind].profile.role.services[sind] = users[ind].profile.role.services[sind].replace(Config.getNS(), ":");
                 }
-                return users; }, 
-            //error
-            function(response) {
-                flash.error = ServerErrorResponse.getMessage(response);
-                return users;
-            });
+                userNames.push(users[ind].profile.username);
+                emails.push(users[ind].profile.email.replace("mailto:",""));
+            }
+            return users;
+        },            
+        // error
+        function(response) {
+            flash.error = ServerErrorResponse.getMessage(response);
+            return;
+        });
     };
 
     var getAllUsers = function() {
@@ -109,14 +109,9 @@ module.factory("UsersService", function($http, Config, flash, ServerErrorRespons
             mode: "settings"
         };
         return $http.post("rest/RdfStoreProxy", $.param(requestData)).then(
-            // success
+            //succeed
             function(response) {
                 roles = Config.parseSparqlResults(response.data);
-                return roles;
-            }, 
-            //error
-            function(response) {
-                flash.error = ServerErrorResponse.getMessage(response);
                 return roles;
             });
     };
@@ -223,7 +218,8 @@ module.factory("UsersService", function($http, Config, flash, ServerErrorRespons
         user.profile.role = user.profile.role.replace("gkg:", Config.getFrameworkOntologyNS());
 	    var parameters = {
 	        mode: "create",
-	        user: JSON.stringify(user)
+	        user: JSON.stringify(user),
+	        curuser: AccountService.getAccount().getUsername()
         };
         return $http({
             url: "UserManagerServlet",
@@ -237,7 +233,8 @@ module.factory("UsersService", function($http, Config, flash, ServerErrorRespons
 	var deleteUser = function(username) {
 	    var requestData = {
 	        mode: "delete",
-	        username: username
+	        username: username,
+	        curuser: AccountService.getAccount().getUsername()
         };
         return $http.post("UserManagerServlet", $.param(requestData));
 	};

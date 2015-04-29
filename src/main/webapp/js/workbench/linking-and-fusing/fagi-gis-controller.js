@@ -5,12 +5,26 @@
 *
 ***************************************************************************************************/
 
-app.controller('FagiGisCtrl', function($q, $scope, ConfigurationService, GraphService, AuthSessionService) {
+app.controller('FagiGisCtrl', function($q, $scope, ConfigurationService, ComponentsService, GraphService, AuthSessionService) {
+
+	var componentUri ="http://generator.geoknow.eu/resource/FagiGis";
+	var serviceUri = "http://generator.geoknow.eu/resource/FagiGisService";
+
+	ComponentsService.getComponent(componentUri).then(
+		//success
+		function(response){
+			$scope.component = response;
+			$scope.sevice = ComponentsService.getComponentService(serviceUri, $scope.component);
+			if($scope.sevice== null)
+				flash.error="Service not configured: " +serviceUri;	
+		}, 
+		function(response){
+			flash.error="Component not configured: " +ServerErrorResponse.getMessage(response);
+		});
 
 	$scope.namedGraphs = [];
 	$scope.endpoint = ConfigurationService.getSPARQLEndpoint();
 	$scope.endpoints = ConfigurationService.getAllEndpoints();
-	$scope.component = ConfigurationService.getComponent(":FagiGis");
 	$scope.databases = ConfigurationService.getAllDatabases();
 	console.log($scope.databases);
 
@@ -21,7 +35,10 @@ app.controller('FagiGisCtrl', function($q, $scope, ConfigurationService, GraphSe
 		targetGraph : ""
 	};
 	
-	var services = ConfigurationService.getComponentServices(":FagiGis");
+	$scope.openService = function(){
+		window.open($scope.sevice.serviceUrl);
+    return false;
+	}
   
   $scope.refreshGraphList = function() {
     GraphService.getAccessibleGraphs(false, false, true).then(function(graphs) {
@@ -51,7 +68,7 @@ app.controller('FagiGisCtrl', function($q, $scope, ConfigurationService, GraphSe
 			return;
 
 		createAuthEndpoint().then(function(authEndpoint){
-			$scope.url= services[0].serviceUrl +
+			$scope.url= $scope.sevice.serviceUrl +
 					'?endpoint-a=' + encodeURIComponent($scope.fagi.endpointA == $scope.endpoint? authEndpoint : $scope.fagi.endpointA ) +
 					'&endpoint-b=' + encodeURIComponent($scope.fagi.endpointB == $scope.endpoint? authEndpoint : $scope.fagi.endpointB ) +
 					'&dataset-a='  + encodeURIComponent($scope.fagi.datasetA!=""? $scope.fagi.datasetA.replace(':',ConfigurationService.getUriBase()):"") +

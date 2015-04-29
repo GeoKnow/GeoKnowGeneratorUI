@@ -60,7 +60,7 @@ public class UserManagerServlet extends HttpServlet {
   protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException,
       IOException {
     String mode = req.getParameter("mode");
-    // String currentUser = req.getParameter("curuser");
+
     String user = HttpUtils.getCookieValue(req, "user");
     String token = HttpUtils.getCookieValue(req, "token");
 

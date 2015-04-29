@@ -1,0 +1,22 @@
+'use strict';
+
+function ModalRolesCtrl($scope, $http, $modalInstance, ConfigurationService) {
+	
+	$scope.modaltitle = "New";
+	$scope.newRole = {
+			id:"", 
+			name:""
+			};
+	
+	
+	  $scope.ok = function () {
+		  
+		  var input = angular.copy($scope.newRole);
+		 
+	    $modalInstance.close(input);
+	  };
+
+	  $scope.cancel = function () {
+	    $modalInstance.dismiss('cancel');
+	  };
+	}

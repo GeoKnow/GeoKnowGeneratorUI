@@ -6,6 +6,7 @@ import java.io.PrintWriter;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Locale;
 import java.util.UUID;
 
 import javax.mail.MessagingException;
@@ -15,15 +16,18 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.core.Response;
 
-import org.codehaus.jackson.map.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import eu.geoknow.generator.configuration.FrameworkConfiguration;
 import eu.geoknow.generator.users.FrameworkUserManager;
+import eu.geoknow.generator.users.PasswordStore;
 import eu.geoknow.generator.users.UserProfile;
 import eu.geoknow.generator.utils.EmailSender;
 import eu.geoknow.generator.utils.HttpUtils;
 import eu.geoknow.generator.utils.RandomStringGenerator;
+
 
 /**
  * Servlet provides some authentication functions: login, logout, register new user, restore
@@ -67,6 +71,11 @@ public class AuthenticationServlet extends HttpServlet {
       throws ServletException, IOException {
     String mode = request.getParameter("mode");
 
+    String language = request.getParameter("lang");
+    if (language == null)
+      language = "en";
+    Locale locale = new Locale(language);
+
     PrintWriter out = response.getWriter();
 
     if ("login".equals(mode)) {
@@ -88,6 +97,9 @@ public class AuthenticationServlet extends HttpServlet {
         response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
         return;
       }
+
+      // save user's password in password store
+      PasswordStore.put(username, password);
 
       // create and save session token
       String token = UUID.randomUUID().toString();
@@ -147,15 +159,16 @@ public class AuthenticationServlet extends HttpServlet {
         e.printStackTrace();
       }
       if (userExists) {
-        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-        response.setHeader("content-type", "application/json");
-        out.print("{\"code\" : \"1\", \"message\" : \"User already exists\"}");
+        response.setStatus(Response.Status.CONFLICT.ordinal());
+        out.print("User already exists");
         return;
       }
       // create user
       String password = new RandomStringGenerator().generateBasic(6);
+
       try {
         frameworkUserManager.createUser(username, password, email);
+
 
         EmailSender emailSender = FrameworkConfiguration.getInstance().getDefaultEmailSender();
 
@@ -205,7 +218,9 @@ public class AuthenticationServlet extends HttpServlet {
                 + username + " not found");
             return;
           }
-          EmailSender emailSender = FrameworkConfiguration.getInstance().getDefaultEmailSender();
+          FrameworkConfiguration frameworkConfiguration = FrameworkConfiguration.getInstance();
+
+          EmailSender emailSender = frameworkConfiguration.getDefaultEmailSender();
           emailSender.send(userProfile.getEmail(), "GeoKnow change password",
               "Your password was changed. Your login: " + username + ", new password: "
                   + newPassword);
@@ -235,12 +250,16 @@ public class AuthenticationServlet extends HttpServlet {
         frameworkUserManager.setPassword(username, password);
 
         // send new password to user
-        EmailSender emailSender = FrameworkConfiguration.getInstance().getDefaultEmailSender();
-        emailSender.send(userProfile.getEmail(), "GeoKnow restore password", "Your login: "
-            + username + ", password: " + password);
+        FrameworkConfiguration frameworkConfiguration = FrameworkConfiguration.getInstance();
+
+        EmailSender emailSender = frameworkConfiguration.getDefaultEmailSender();
+
+        emailSender.send(userProfile.getEmail(), "GeoKnow registration", "Your login: " + username
+            + ", password: " + password);
         String responseStr =
-            "{\"message\" : \"New password will be sent to your e-mail address "
+            "{\"message\" : \"Your password will be sent to your e-mail address "
                 + userProfile.getEmail() + " \"}";
+
         response.getWriter().print(responseStr);
 
       } catch (MessagingException e) {

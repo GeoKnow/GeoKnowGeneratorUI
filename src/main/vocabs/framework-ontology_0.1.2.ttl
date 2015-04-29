@@ -1,0 +1,515 @@
+# baseURI: http://ldiw.ontos.com/ontology/
+
+@prefix :        <http://ldiw.ontos.com/ontology/> .
+@prefix acl:     <http://www.w3.org/ns/auth/acl#> .
+@prefix dcterms:  <http://purl.org/dc/terms/> .
+@prefix foaf:    <http://xmlns.com/foaf/0.1/> .
+@prefix ldis:    <http://stack.linkeddata.org/ldis-schema/> .
+@prefix lds:     <http://stack.linkeddata.org/ldis-schema/> .
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sd:      <http://www.w3.org/ns/sparql-service-description#> .
+@prefix void:    <http://rdfs.org/ns/void#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+
+:     rdf:type owl:Ontology ;
+      dcterms:contributor "Martin Voigt"^^xsd:string , "Alejandra Garcia Rojas"^^xsd:string ;
+      dcterms:descripton "Schema the Linked Data Integration Workbench"^^xsd:string ;
+      owl:versionInfo "0.1.2"^^xsd:string .
+
+:Account
+      rdf:type owl:Class ;
+      rdfs:comment "Account for the workbench"@en ;
+      rdfs:label "Account"@en ;
+      rdfs:subClassOf foaf:OnlineAccount .
+
+:Administrator
+      rdf:type :Role ;
+      rdfs:label "Administrator"@en .
+
+:AuthorisedSessions
+      rdf:type owl:Class ;
+      rdfs:comment "Sessions are fake endpoints provided to the Jobs in order to access private data."@en ;
+      rdfs:label "Authorised Sessions "@en ;
+      rdfs:subClassOf owl:Thing .
+
+:BasicUser
+      rdf:type :Role ;
+      rdfs:label "Basic user"@en ;
+      :isDefault "true"^^xsd:boolean ;
+      :isNotLoggedIn "true"^^xsd:boolean .
+
+:ClassificationAndEnrichment
+      rdf:type :ToolCategory ;
+      rdfs:label "Classification and Enrichment"@en .
+
+:Csv2RdfDataMapping
+      rdf:type owl:Class ;
+      rdfs:label "Csv2Rdf data mapping"@en ;
+      rdfs:subClassOf :DataMapping .
+
+:CsvFile
+      rdf:type owl:Class ;
+      rdfs:label "Csv file"@en ;
+      rdfs:subClassOf :DataSource .
+
+:DataMapping
+      rdf:type owl:Class ;
+      rdfs:label "Data mapping"@en ;
+      rdfs:subClassOf owl:Thing .
+
+:DataSource
+      rdf:type owl:Class ;
+      rdfs:label "Data Source"@en ;
+      rdfs:subClassOf owl:Thing .
+
+:Database
+      rdf:type owl:Class ;
+      rdfs:label "Database"@en ;
+      rdfs:subClassOf :DataSource .
+
+:DatabaseType
+      rdf:type owl:Class ;
+      rdfs:label "Database Type"@en ;
+      rdfs:subClassOf owl:Thing .
+
+:Disabled
+      rdf:type :Role ;
+      rdfs:label "Disabled"@en .
+
+:IBM_DB2
+      rdf:type :DatabaseType ;
+      rdfs:label "IBM DB2"^^xsd:string .
+
+:Job  rdf:type owl:Class ;
+      rdfs:label "Job"@en ;
+      rdfs:subClassOf owl:Thing .
+
+:License
+      rdf:type owl:Class ;
+      rdfs:label "License"@en ;
+      rdfs:subClassOf :DataSource .
+
+:LinkingAndFusing
+      rdf:type :ToolCategory ;
+      rdfs:label "Linking and Fusing"@en .
+
+:ManualRevisionAndAuthoring
+      rdf:type :ToolCategory ;
+      rdfs:label "Manual revision and Authoring"@en .
+
+:MicrosoftSQLServer
+      rdf:type :DatabaseType ;
+      rdfs:label "MicrosoftSQLServer"^^xsd:string .
+
+:MySQL
+      rdf:type :DatabaseType ;
+      rdfs:label "MySQL"^^xsd:string .
+
+:Ontology
+      rdf:type owl:Class ;
+      rdfs:label "Xml Definition"@en ;
+      rdfs:subClassOf :DataSource .
+
+:OracleSpatial
+      rdf:type :DatabaseType ;
+      rdfs:label "Oracle Spatial"^^xsd:string .
+
+:PostGIS
+      rdf:type :DatabaseType ;
+      rdfs:label "PostGIS"^^xsd:string .
+
+:Role
+      rdf:type owl:Class ;
+      rdfs:comment "Class associate with rights to use service which could be assigned to users."@en ;
+      rdfs:label "Role"@en ;
+      rdfs:subClassOf owl:Thing .
+
+:SPARQLEndpoint
+      rdf:type owl:Class ;
+      rdfs:label "SPARQL endpoint"@en ;
+      rdfs:subClassOf :DataSource .
+
+:Schedule
+      rdf:type owl:Class ;
+      rdfs:label "Schedule"@en ;
+      rdfs:subClassOf owl:Thing .
+
+:SearchQueryingAndExploration
+      rdf:type :ToolCategory ;
+      rdfs:label "Search Querying and Exploration "@en .
+
+:Tool
+      rdf:type owl:Class ;
+      rdfs:comment "A Tool is the actual interface in the Workbench that is going to be used for a specific task (i.e. transform Relational data to RDF)"@en ;
+      rdfs:label "Tool"@en ;
+      rdfs:subClassOf owl:Thing .
+
+:ToolCategory
+      rdf:type owl:Class ;
+      rdfs:comment "The tools are categorised in order to show them in the corresponding menu on the workbench"@en ;
+      rdfs:label "Tool Categories"@en ;
+      rdfs:subClassOf owl:Thing .
+
+:User
+      rdf:type owl:Class ;
+      rdfs:label "User"@en ;
+      rdfs:subClassOf owl:Thing .
+
+:accessCount
+      rdf:type owl:DatatypeProperty ;
+      rdfs:domain
+              [ rdf:type owl:Class ;
+                owl:unionOf (:AuthorisedSessions :Account)
+              ] ;
+      rdfs:label "requires "@en ;
+      rdfs:range xsd:integer .
+
+:account
+      rdf:type owl:ObjectProperty ;
+      rdfs:domain :User ;
+      rdfs:label "account"@en ;
+      rdfs:range :Account .
+
+:category
+      rdf:type owl:ObjectProperty ;
+      rdfs:domain :Tool ;
+      rdfs:label "category "@en ;
+      rdfs:range :ToolCategory .
+
+:dbHost
+      rdf:type owl:DatatypeProperty ;
+      rdfs:domain :Database ;
+      rdfs:label "Service URL"^^xsd:string ;
+      rdfs:range xsd:string .
+
+:dbName
+      rdf:type owl:DatatypeProperty ;
+      rdfs:comment "Name of the database to connect"^^xsd:string ;
+      rdfs:domain :Database ;
+      rdfs:label "database"^^xsd:string ;
+      rdfs:range xsd:string .
+
+:dbPassword
+      rdf:type owl:DatatypeProperty ;
+      rdfs:domain :Database ;
+      rdfs:label "password"^^xsd:string ;
+      rdfs:range xsd:string .
+
+:dbPort
+      rdf:type owl:DatatypeProperty ;
+      rdfs:domain :Database ;
+      rdfs:label "Database port number"^^xsd:string ;
+      rdfs:range xsd:integer .
+
+:dbType
+      rdf:type owl:DatatypeProperty ;
+      rdfs:domain :Database ;
+      rdfs:label "Database Type"^^xsd:string ;
+      rdfs:range :DatabaseType .
+
+:dbUser
+      rdf:type owl:DatatypeProperty ;
+      rdfs:comment "If the component requires user/password authentication method (for instance a database)"^^xsd:string ;
+      rdfs:domain :Database ;
+      rdfs:label "Service user"^^xsd:string ;
+      rdfs:range xsd:string .
+
+:end  rdf:type owl:DatatypeProperty ;
+      rdfs:domain :Schedule ;
+      rdfs:label "end"@en ;
+      rdfs:range xsd:dateTime .
+
+:extractionAndLoading
+      rdf:type :ToolCategory ;
+      rdfs:label "Extraction and Loading"@en .
+
+:frameworkDataDir
+      rdf:type owl:DatatypeProperty ;
+      rdfs:domain lds:StackComponent ;
+      rdfs:label "Directory for Framework Data"@en ;
+      rdfs:range xsd:string .
+
+:hasAccess
+      rdf:type owl:ObjectProperty ;
+      rdfs:comment "A role is configured with a set of Modules it can use {@en}	"^^xsd:string ;
+      rdfs:domain :Role ;
+      rdfs:label "has access"@en ;
+      rdfs:range :Tool .
+
+:hasSchedule
+      rdf:type owl:ObjectProperty ;
+      rdfs:domain :Job ;
+      rdfs:label "has schedule"@en ;
+      rdfs:range :Schedule .
+
+:interval
+      rdf:type owl:DatatypeProperty ;
+      rdfs:label "interval"@en ;
+      rdfs:range xsd:boolean .
+
+:intervalDay
+      rdf:type owl:DatatypeProperty ;
+      rdfs:domain :Schedule ;
+      rdfs:label "interval day"@en ;
+      rdfs:range xsd:boolean ;
+      rdfs:subPropertyOf :interval .
+
+:intervalMonth
+      rdf:type owl:DatatypeProperty ;
+      rdfs:domain :Schedule ;
+      rdfs:label "interval month"^^xsd:string ;
+      rdfs:range xsd:boolean ;
+      rdfs:subPropertyOf :interval .
+
+:intervalWeek
+      rdf:type owl:DatatypeProperty ;
+      rdfs:domain :Schedule ;
+      rdfs:label "interval week"@en ;
+      rdfs:range xsd:boolean ;
+      rdfs:subPropertyOf :interval .
+
+:isAllowedToUseService
+      rdf:type owl:ObjectProperty ;
+      rdfs:comment "This may disappear with the use of  hasAccess property based on the definition of Tools"@en ;
+      rdfs:domain :Role ;
+      rdfs:label "is allowed to use service"@en .
+
+:isDefault
+      rdf:type owl:DatatypeProperty ;
+      rdfs:comment "Role is used as default for newly registered user" ;
+      rdfs:domain :Role ;
+      rdfs:label "isDefault"@en ;
+      rdfs:range xsd:boolean .
+
+:isNotLoggedIn
+      rdf:type owl:DatatypeProperty ;
+      rdfs:comment "Role is used as default for not logged in user" ;
+      rdfs:domain :Role ;
+      rdfs:label "isNotLoggedIn"@en ;
+      rdfs:range xsd:boolean .
+
+:jsonString
+      rdf:type owl:DatatypeProperty ;
+      rdfs:label "json string"@en ;
+      rdfs:range xsd:string .
+
+:lastAccessLocation
+      rdf:type owl:DatatypeProperty ;
+      rdfs:domain
+              [ rdf:type owl:Class ;
+                owl:unionOf (:AuthorisedSessions :Account)
+              ] ;
+      rdfs:label "requires "@en ;
+      rdfs:range xsd:string .
+
+:lastAcess
+      rdf:type owl:DatatypeProperty ;
+      rdfs:domain
+              [ rdf:type owl:Class ;
+                owl:unionOf (:AuthorisedSessions :Account)
+              ] ;
+      rdfs:label "requires "@en ;
+      rdfs:range xsd:dateTime .
+
+:mapFileString
+      rdf:type owl:DatatypeProperty ;
+      rdfs:domain :Csv2RdfDataMapping ;
+      rdfs:label "map file string"@en ;
+      rdfs:range xsd:string .
+
+:passwordSha1Hash
+      rdf:type owl:DatatypeProperty ;
+      rdfs:comment "Workbench account password hash"@en ;
+      rdfs:domain :Account ;
+      rdfs:label "password sha1 hash"@en ;
+      rdfs:range xsd:string .
+
+:rdfStorePassword
+      rdf:type owl:DatatypeProperty ;
+      rdfs:domain :Account ;
+      rdfs:label "RDF Store Password"@en ;
+      rdfs:range xsd:string .
+
+:rdfStoreUsername
+      rdf:type owl:DatatypeProperty ;
+      rdfs:domain :Account ;
+      rdfs:label "RDF store username"@en ;
+      rdfs:range xsd:string .
+
+:requires
+      rdf:type owl:ObjectProperty ;
+      rdfs:label "requires "@en .
+
+:requiresDatasource
+      rdf:type owl:ObjectProperty ;
+      rdfs:domain :Job ;
+      rdfs:label "Authorised Sessions "@en ;
+      rdfs:range :DataSource ;
+      rdfs:subPropertyOf :requires .
+
+:requiresService
+      rdf:type owl:ObjectProperty ;
+      rdfs:domain
+              [ rdf:type owl:Class ;
+                owl:unionOf (:Tool :AuthorisedSessions :Job)
+              ] ;
+      rdfs:label "requires"@en ;
+      rdfs:range lds:ComponentService ;
+      rdfs:subPropertyOf :requires .
+
+:requiresSession
+      rdf:type owl:ObjectProperty ;
+      rdfs:domain :Job ;
+      rdfs:label "requires "@en ;
+      rdfs:range :AuthorisedSessions ;
+      rdfs:subPropertyOf :requires .
+
+:role
+      rdf:type owl:ObjectProperty ;
+      rdfs:domain :Account ;
+      rdfs:label "role"@en ;
+      rdfs:range :Role .
+
+:route
+      rdf:type owl:DatatypeProperty ;
+      rdfs:domain :Tool ;
+      rdfs:label "route "@en ;
+      rdfs:range xsd:string .
+
+:sessionToken
+      rdf:type owl:DatatypeProperty ;
+      rdfs:domain :Account ;
+      rdfs:label "session token"@en ;
+      rdfs:range xsd:string .
+
+:smtpHost
+      rdf:type owl:DatatypeProperty ;
+      rdfs:domain :EmailService ;
+      rdfs:label "Host address for SMTP"^^xsd:string ;
+      rdfs:range xsd:string .
+
+:smtpSslPort
+      rdf:type owl:DatatypeProperty ;
+      rdfs:domain :EmailService ;
+      rdfs:label "SSL SMTP Port"^^xsd:string ;
+      rdfs:range xsd:string .
+
+:smtpTlsPort
+      rdf:type owl:DatatypeProperty ;
+      rdfs:domain :EmailService ;
+      rdfs:label "TLS SMTP Port"^^xsd:string ;
+      rdfs:range xsd:string .
+
+:springBatchAdminJobsDir
+      rdf:type owl:DatatypeProperty ;
+      rdfs:label "spring batch admin jobs dir"^^xsd:string ;
+      rdfs:range xsd:string .
+
+:start
+      rdf:type owl:DatatypeProperty ;
+      rdfs:domain :Schedule ;
+      rdfs:label "start time"@en ;
+      rdfs:range xsd:dateTime .
+
+:url  rdf:type owl:DatatypeProperty ;
+      rdfs:domain
+              [ rdf:type owl:Class ;
+                owl:unionOf (:DataSource :AuthorisedSessions)
+              ] ;
+      rdfs:label "url"@en ;
+      rdfs:range xsd:anyURI .
+
+:xmlDefinition
+      rdf:type owl:DatatypeProperty ;
+      rdfs:domain :Job ;
+      rdfs:label "Xml Definition"@en ;
+      rdfs:range xsd:string .
+
+dcterms:created
+      rdf:type owl:DatatypeProperty ;
+      rdfs:domain void:Dataset ;
+      rdfs:label "created "@en ;
+      rdfs:range xsd:dateTime .
+
+dcterms:creator
+      rdf:type owl:ObjectProperty ;
+      rdfs:domain void:Dataset ;
+      rdfs:label "creator"^^xsd:string ;
+      rdfs:range :User .
+
+dcterms:description
+      rdf:type owl:DatatypeProperty ;
+      rdfs:domain void:Dataset ;
+      rdfs:label "description"^^xsd:string ;
+      rdfs:range xsd:string .
+
+dcterms:modified
+      rdf:type owl:DatatypeProperty ;
+      rdfs:domain void:Dataset ;
+      rdfs:label "modified"@en ;
+      rdfs:range xsd:dateTime .
+
+dcterms:source
+      rdf:type owl:DatatypeProperty ;
+      rdfs:label "source"^^xsd:string .
+
+dcterms:title
+      rdf:type owl:DatatypeProperty ;
+      rdfs:comment "The name of the dataset."^^xsd:string ;
+      rdfs:label "Title"^^xsd:string .
+
+void:Dataset
+      rdf:type owl:Class ;
+      rdfs:label "Dataset"@en ;
+      rdfs:subClassOf owl:Thing .
+
+void:Linkset
+      rdf:type owl:Class ;
+      rdfs:label "Linkset"@en ;
+      rdfs:subClassOf void:Dataset .
+
+acl:owner
+      rdf:type owl:ObjectProperty ;
+      rdfs:domain
+              [ rdf:type owl:Class ;
+                owl:unionOf (void:Dataset :AuthorisedSessions :Job)
+              ] ;
+      rdfs:label "owner"@en ;
+      rdfs:range :User .
+
+sd:NamedGraph
+      rdf:type rdfs:Class ;
+      rdfs:label "Named Graph"^^xsd:string .
+
+sd:Service
+      rdf:type rdfs:Class ;
+      rdfs:label "Service"^^xsd:string .
+
+foaf:accountName
+      rdf:type owl:DatatypeProperty ;
+      rdfs:domain :Account ;
+      rdfs:label "service "@en ;
+      rdfs:range xsd:string .
+
+foaf:fistName
+      rdf:type owl:DatatypeProperty ;
+      rdfs:domain :User ;
+      rdfs:label "First Name"@en .
+
+foaf:homepage
+      rdf:type owl:DatatypeProperty ;
+      rdfs:domain :SoftwareComponent ;
+      rdfs:label "homepage"^^xsd:string ;
+      rdfs:range xsd:anyURI .
+
+foaf:lastName
+      rdf:type owl:DatatypeProperty ;
+      rdfs:domain :User ;
+      rdfs:label "Last name"@en .
+
+foaf:mbox
+      rdf:type owl:DatatypeProperty ;
+      rdfs:domain :User ;
+      rdfs:label "e-mail "@en .

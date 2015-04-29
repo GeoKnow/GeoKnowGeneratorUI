@@ -3,8 +3,6 @@ package eu.geoknow.generator.rdf;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
-import eu.geoknow.generator.servlets.HttpRequestManager;
-
 
 /**
  * Basic implementation of RdfStoreManager. Uses public HTTP SPARQL endpoint to execute queries.

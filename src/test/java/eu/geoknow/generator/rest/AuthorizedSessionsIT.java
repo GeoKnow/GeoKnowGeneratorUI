@@ -26,7 +26,7 @@ public class AuthorizedSessionsIT {
     RestAssured.baseURI = "http://localhost";
     RestAssured.port = 8080;
     // TODO: find a way to parametrise this basePath
-    RestAssured.basePath = "/ldiw";
+    RestAssured.basePath = "/generator";
   }
 
   @Before
@@ -34,8 +34,8 @@ public class AuthorizedSessionsIT {
 
     // TODO: create here a user TEST
     ValidatableResponse auth =
-        given().param("mode", "login").param("username", "ldiw").param("password", "ldiw").when()
-            .post("/AuthenticationServlet").then();
+        given().param("mode", "login").param("username", "testing")
+            .param("password", "integration-testing").when().post("/AuthenticationServlet").then();
     auth.assertThat().statusCode(200);
     cookies = new HashMap<String, String>(auth.extract().cookies());
     log.info("authenticated user ldiw (admin)" + cookies.get("token"));

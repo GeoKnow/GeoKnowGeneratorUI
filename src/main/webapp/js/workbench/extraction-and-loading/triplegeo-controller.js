@@ -6,11 +6,23 @@
 *
 ***************************************************************************************************/
 
-var TripleGeoCtrl = function($scope, $http, ConfigurationService, flash, ServerErrorResponse, $window, AccountService, GraphService){
+var TripleGeoCtrl = function($scope, $http, ConfigurationService, ComponentsService, flash, ServerErrorResponse, $window, AccountService, GraphService){
 	
-	$scope.component = ConfigurationService.getComponent(":TripleGeo");
-	var services = ConfigurationService.getComponentServices(":TripleGeo");
-	var serviceUrl = services[0].serviceUrl;
+	var componentUri ="http://generator.geoknow.eu/resource/TripleGeo";
+	var serviceUri = "http://generator.geoknow.eu/resource/TripleGeoService";
+
+	ComponentsService.getComponent(componentUri).then(
+		//success
+		function(response){
+			$scope.component = response;
+			$scope.sevice = ComponentsService.getComponentService(serviceUri, $scope.component);
+			if($scope.sevice== null)
+				flash.error="Service not configured: " +serviceUri;	
+		}, 
+		function(response){
+			flash.error="Component not configured: " +ServerErrorResponse.getMessage(response);
+		});
+
 	var configArray = new Array();
 	var dbConfigArray = new Array();
 
@@ -311,7 +323,7 @@ var TripleGeoCtrl = function($scope, $http, ConfigurationService, flash, ServerE
 		  		
 					$http({
 							method: "POST",
-							url: serviceUrl+"/LoadFile",
+							url: $scope.service.serviceUrl+"/LoadFile",
 							params: {
 									file : filename,
 									shp: inputFileName
@@ -494,7 +506,7 @@ var TripleGeoCtrl = function($scope, $http, ConfigurationService, flash, ServerE
 		$scope.showProgress = true;
 			
 			$http({
-				url: serviceUrl+"/TripleGeoRun",
+				url: $scope.service.serviceUrl+"/TripleGeoRun",
 		        method: "POST",
 		        params: params,
 		        dataType: "json",
@@ -519,7 +531,7 @@ var TripleGeoCtrl = function($scope, $http, ConfigurationService, flash, ServerE
 	  	params = { filetype : filetype };
 	  	
 		$http({
-			url: serviceUrl+"/TripleGeoReview",
+			url: $scope.service.serviceUrl+"/TripleGeoReview",
 	        method: "POST",
 	        params: params,
 	        dataType: "json",
@@ -550,9 +562,9 @@ var TripleGeoCtrl = function($scope, $http, ConfigurationService, flash, ServerE
 		        username: AccountService.getAccount().getUsername()
 		      	};
 		console.log(parameters);
-		console.log(serviceUrl+"/ImportRDF");
+		console.log($scope.service.serviceUrl+"/ImportRDF");
 		$http({
-			url: serviceUrl+"/ImportRDF",
+			url: $scope.service.serviceUrl+"/ImportRDF",
 	        method: "POST",
 	        dataType: "json",
 	        params: parameters,

@@ -1,0 +1,56 @@
+<?xml version='1.0'?>
+
+<!DOCTYPE rdf:RDF [
+    <!ENTITY jena    'http://jena.hpl.hp.com/'>
+
+    <!ENTITY rdf     'http://www.w3.org/1999/02/22-rdf-syntax-ns#'>
+    <!ENTITY rdfs    'http://www.w3.org/2000/01/rdf-schema#'>
+    <!ENTITY owl     'http://www.w3.org/2002/07/owl#'>
+    <!ENTITY xsd     'http://www.w3.org/2001/XMLSchema#'>
+    <!ENTITY base    '&jena;2003/04/schemagen'>
+    <!ENTITY sgen    '&base;#'>
+]>
+
+<rdf:RDF
+  xmlns:rdf   ="&rdf;"
+  xmlns:rdfs  ="&rdfs;"
+  xmlns:owl   ="&owl;"
+  xmlns:sgen  ="&sgen;"
+  xmlns       ="&sgen;"
+  xml:base    ="&base;"
+>
+
+<!--
+    Prerequiseites, I have a sym link jena -> ../../3rd Parties libs/apache-jena-2.11.1/bin/
+    Running this file from the command line:
+        jena/schemagen -c  schemagen-config.xml -i inputfile.ttl -o out/put/dir -n ClassName
+    e.g.
+        jena/schemagen -c schemagen-config.xml -i ldis-0.1.1.ttl -o ../java -n LDIS
+-->
+
+<sgen:Config>
+    <!-- specifies that the  source document uses OWL -->
+    <sgen:owl rdf:datatype="&xsd;boolean">true</sgen:owl>
+
+    <!-- specifies that we want the generated vocab to use OntClass, OntProperty, etc, not Resource and Property -->
+    <sgen:ontology rdf:datatype="&xsd;boolean">false</sgen:ontology>
+
+    <!-- specifies that we want names mapped to uppercase (as standard Java constants) -->
+    <sgen:uppercase rdf:datatype="&xsd;boolean">false</sgen:uppercase>
+
+    <!-- the Java package that the vocabulary is in -->
+    <sgen:package rdf:datatype="&xsd;string">com.ontos.ldiw.vocabulary</sgen:package>
+
+    <!-- Include vocabulary source code -->
+    <sgen:includeSource rdf:datatype="&xsd;boolean">true</sgen:includeSource>
+
+
+<!-- template for extra declarations at the top of the class file -->
+<sgen:declarations rdf:datatype="&xsd;string">
+    public static Model getModel() {return m_model;}
+</sgen:declarations>
+
+
+</sgen:Config>
+
+</rdf:RDF>

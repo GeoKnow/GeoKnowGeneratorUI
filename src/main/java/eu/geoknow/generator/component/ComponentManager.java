@@ -28,10 +28,12 @@ import eu.geoknow.generator.component.beans.Service;
 import eu.geoknow.generator.component.beans.ServiceType;
 import eu.geoknow.generator.configuration.APP_CONSTANTS;
 import eu.geoknow.generator.configuration.FrameworkConfiguration;
+import eu.geoknow.generator.exceptions.InformationMissingException;
 import eu.geoknow.generator.exceptions.ResourceExistsException;
 import eu.geoknow.generator.exceptions.ResourceNotFoundException;
 import eu.geoknow.generator.exceptions.SPARQLEndpointException;
 import eu.geoknow.generator.rdf.SecureRdfStoreManagerImpl;
+
 
 public class ComponentManager {
 
@@ -39,17 +41,25 @@ public class ComponentManager {
 
   private static Collection<ServiceType> serviceTypes;
 
+  private static FrameworkConfiguration config;
+  private static SecureRdfStoreManagerImpl storeManager;
+
+  public ComponentManager() throws IOException, InformationMissingException {
+    config = FrameworkConfiguration.getInstance();
+    storeManager = config.getAdminRdfStoreManager();
+  }
+
   /**
-   * Return a list of components and its services
+   * Return a list of components and its services. For the moment this will provide all components
+   * defined in the framework-components, but there is no distinguish between components that are
+   * integrated in the workbench.
    * 
    * @return List<Component>
    * @throws SPARQLEndpointException
    * @throws IOException
    */
-  public static Collection<Component> getAllComponents() throws SPARQLEndpointException,
-      IOException {
+  public Collection<Component> getAllComponents() throws SPARQLEndpointException, IOException {
 
-    FrameworkConfiguration config = FrameworkConfiguration.getInstance();
     SecureRdfStoreManagerImpl storeManager = config.getAdminRdfStoreManager();
 
     Map<String, Component> components = new HashMap<String, Component>();
@@ -80,23 +90,33 @@ public class ComponentManager {
         String property = bindingNode.get("sproperty").path("value").textValue();
         String object = bindingNode.get("sobject").path("value").textValue();
 
+        log.debug(curi);
+        log.debug(suri);
         if (!components.containsKey(curi)) {
           Component c = new Component();
           c.setUri(curi);
           c.setLabel(bindingNode.get("label").path("value").textValue());
           c.setVersion(bindingNode.get("version").path("value").textValue());
-          c.setWebsite(bindingNode.get("homepage").path("value").textValue());
+          c.setHomepage(bindingNode.get("homepage").path("value").textValue());
           Service s = new Service();
           s.setUri(suri);
           setServiceProperty(s, property, object);
           c.getServices().add(s);
           components.put(c.getUri(), c);
         } else {
+          boolean found = false;
           for (Service si : components.get(curi).getServices()) {
             if (si.getUri().equals(suri)) {
               setServiceProperty(si, property, object);
+              found = true;
               break;
             }
+          }
+          if (!found) {
+            Service s = new Service();
+            s.setUri(suri);
+            setServiceProperty(s, property, object);
+            components.get(curi).getServices().add(s);
           }
         }
 
@@ -120,11 +140,11 @@ public class ComponentManager {
    * @throws IOException
    * @throws ResourceNotFoundException
    */
-  public static Component getComponent(String uri) throws SPARQLEndpointException, IOException,
+  public Component getComponent(String uri) throws SPARQLEndpointException, IOException,
       ResourceNotFoundException {
     Component component = null;
 
-    FrameworkConfiguration config = FrameworkConfiguration.getInstance();
+
     SecureRdfStoreManagerImpl storeManager = config.getAdminRdfStoreManager();
 
     try {
@@ -157,18 +177,26 @@ public class ComponentManager {
           component.setUri(uri);
           component.setLabel(bindingNode.get("label").path("value").textValue());
           component.setVersion(bindingNode.get("version").path("value").textValue());
-          component.setWebsite(bindingNode.get("homepage").path("value").textValue());
+          component.setHomepage(bindingNode.get("homepage").path("value").textValue());
           Service s = new Service();
           s.setUri(suri);
           setServiceProperty(s, property, object);
           component.getServices().add(s);
 
         } else {
+          boolean found = false;
           for (Service si : component.getServices()) {
             if (si.getUri().equals(suri)) {
               setServiceProperty(si, property, object);
+              found = true;
               break;
             }
+          }
+          if (!found) {
+            Service s = new Service();
+            s.setUri(suri);
+            setServiceProperty(s, property, object);
+            component.getServices().add(s);
           }
         }
 
@@ -194,11 +222,10 @@ public class ComponentManager {
    * @throws SPARQLEndpointException
    * @throws ResourceExistsException
    */
-  public static void addComponent(@Valid Component component) throws IOException,
+  public Component addComponent(@Valid Component component) throws IOException,
       SPARQLEndpointException, ResourceExistsException {
 
-    FrameworkConfiguration config = FrameworkConfiguration.getInstance();
-    SecureRdfStoreManagerImpl storeManager = config.getAdminRdfStoreManager();
+
 
     if (resourceExists(component.getUri(), config.getComponentsGraph(), storeManager))
       throw new ResourceExistsException(component.getLabel() + " already exists as "
@@ -220,6 +247,8 @@ public class ComponentManager {
 
     log.debug(result);
 
+    return component;
+
   }
 
   /**
@@ -230,11 +259,8 @@ public class ComponentManager {
    * @throws SPARQLEndpointException
    * @throws ResourceNotFoundException
    */
-  public static void updateComponent(Component component) throws IOException,
+  public Component updateComponent(Component component) throws IOException,
       SPARQLEndpointException, ResourceNotFoundException {
-
-    FrameworkConfiguration config = FrameworkConfiguration.getInstance();
-    SecureRdfStoreManagerImpl storeManager = config.getAdminRdfStoreManager();
 
     if (!resourceExists(component.getUri(), config.getComponentsGraph(), storeManager))
       throw new ResourceNotFoundException(component.getUri() + " not found");
@@ -253,6 +279,9 @@ public class ComponentManager {
       String result = storeManager.execute(query, APP_CONSTANTS.SPARQL_JSON_RESPONSE_FORMAT);
 
       log.debug(result);
+      // TODO: validate the result and return the component object if successfull
+
+      return component;
     } catch (Exception e) {
 
       e.printStackTrace();
@@ -268,10 +297,8 @@ public class ComponentManager {
    * @throws IOException
    * @throws SPARQLEndpointException
    */
-  public static void deleteComponent(String uri) throws IOException, SPARQLEndpointException {
+  public void deleteComponent(String uri) throws IOException, SPARQLEndpointException {
 
-    FrameworkConfiguration config = FrameworkConfiguration.getInstance();
-    SecureRdfStoreManagerImpl storeManager = config.getAdminRdfStoreManager();
     try {
 
       String query =
@@ -302,8 +329,8 @@ public class ComponentManager {
    * 
    *         TODO: this may be moved to a RDF helpers Class
    */
-  private static boolean resourceExists(String uri, String graph,
-      SecureRdfStoreManagerImpl storeManager) throws SPARQLEndpointException {
+  private boolean resourceExists(String uri, String graph, SecureRdfStoreManagerImpl storeManager)
+      throws SPARQLEndpointException {
 
     String query = "WITH <" + graph + "> ASK { <" + uri + "> ?s ?p}";
     log.debug(query);
@@ -327,7 +354,7 @@ public class ComponentManager {
    * @param component
    * @return String containing the triples that can be used in a insert statement
    */
-  private static String insertComponentStatements(Component component) {
+  private String insertComponentStatements(Component component) {
     // get all components and the services list
     String servicesStatements = "";
     log.debug(component.getServices().size());
@@ -344,7 +371,7 @@ public class ComponentManager {
         " <" + component.getUri() + "> a <" + LDIS.StackComponent.getURI() + "> ;   <"
             + RDFS.label.getURI() + "> \"" + component.getLabel() + "\" ; <" + DCTerms.hasVersion
             + "> \"" + component.getVersion() + "\" ; <" + FOAF.homepage.getURI() + "> <"
-            + component.getWebsite() + "> . " + servicesStatements + " ";
+            + component.getHomepage() + "> . " + servicesStatements + " ";
 
     return statemets;
   }
@@ -356,7 +383,7 @@ public class ComponentManager {
    * @throws IOException
    */
 
-  public static Collection<ServiceType> getServiceTypes() throws IOException {
+  public Collection<ServiceType> getServiceTypes() throws IOException {
 
     if (serviceTypes == null) {
 
@@ -368,8 +395,7 @@ public class ComponentManager {
               + LDIS.ComponentService.getURI() + "> ; <" + RDFS.label.getURI() + "> ?label}";
       log.debug(query);
 
-      QueryExecution qexec =
-          QueryExecutionFactory.create(query, FrameworkConfiguration.getLdisModel());
+      QueryExecution qexec = QueryExecutionFactory.create(query, LDIS.getModel());
       ResultSet results = qexec.execSelect();
       while (results.hasNext()) {
         QuerySolution soln = results.next();
@@ -396,7 +422,7 @@ public class ComponentManager {
     return serviceTypes;
   }
 
-  private static void setServiceProperty(Service s, String property, String object) {
+  public static void setServiceProperty(Service s, String property, String object) {
     if (RDF.type.getURI().equals(property))
       s.setType(object);
     else if (LDIS.serviceUrl.getURI().equals(property))

@@ -6,12 +6,23 @@
 *
 ***************************************************************************************************/
 
-var DeerCtrl = function($scope, $http, ConfigurationService, flash, ServerErrorResponse, $window, AccountService, GraphService){
+var DeerCtrl = function($scope, $http, ConfigurationService, ComponentsService, flash, ServerErrorResponse, $window, AccountService, GraphService){
 	
-	$scope.component = ConfigurationService.getComponent(":Deer");
-	var services = ConfigurationService.getComponentServices(":Deer");
-	var serviceUrl = services[0].serviceUrl;
-	
+	var componentUri ="http://generator.geoknow.eu/resource/DEER";
+	var serviceUri = "http://generator.geoknow.eu/resource/DEERService";
+
+	ComponentsService.getComponent(componentUri).then(
+		//success
+		function(response){
+			$scope.component = response;
+			$scope.sevice = ComponentsService.getComponentService(serviceUri, $scope.component);
+			if($scope.sevice== null)
+				flash.error="Service not configured: " +serviceUrl;	
+		}, 
+		function(response){
+			flash.error="Component not configured: " +ServerErrorResponse.getMessage(response);
+		});
+
 	$scope.endpoints = ConfigurationService.getAllEndpoints();
 	$scope.namedGraphs = [];
     GraphService.getAccessibleGraphs(true, false, true).then(function(graphs) {

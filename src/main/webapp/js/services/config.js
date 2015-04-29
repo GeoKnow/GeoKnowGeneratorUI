@@ -33,6 +33,7 @@ angular.module("app.configuration", [])
     $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded; charset=UTF-8";
 
     var FRAMEWORK_URI;
+    var FRAMEWORK_HOMEPAGE;
     var FLAG_PATH;
     var NS;
     var DEFAULT_SETTINGS_GRAPH;
@@ -43,32 +44,36 @@ angular.module("app.configuration", [])
     var AUTH_ENDPOINT;
     var PUBLIC_ENDPOINT;
     var SETTINGS_GRAPH;
+    
+    var SPRING_BATCH_URI;
+
+    // a variable to lookup by prefix
 
     var EOL      = "\n";
     var settings = {};
 
     var request = function(url, data, callbackSuccess){
         var deferred = $q.defer();
+
         $http.post(url, $.param(data))
-        .then(
-            // success
-            function(response){
-                try{
-                    deferred.resolve(callbackSuccess ? callbackSuccess(response.data) : response.data.results.bindings[0]["callret-0"].value);
-                }
-                catch (e){
-                    // a problem with the callback
-                    console.log(e);
-                    flash.error = e.message;
-                    deferred.reject(e);
-                }
-            }, 
-            // error
-            function(response){
-                var message = ServerErrorResponse.getMessage(response);
-                flash.error = message;
-                deferred.reject(message);
-            });
+        .success(function(data)
+        {
+            try{
+                deferred.resolve(callbackSuccess ? callbackSuccess(data) : data.results.bindings[0]["callret-0"].value);
+            }
+            catch (e){
+                // a problem with the callback
+                //console.log(e);
+                //flash.error = e.message;
+                //deferred.reject(e);
+            }
+        })
+        .error(function(data, status){
+            var message = ServerErrorResponse.getMessage(status);
+            flash.error = message;
+            deferred.reject(message);
+        });
+
         return deferred.promise;
     };
 
@@ -90,6 +95,17 @@ angular.module("app.configuration", [])
     var setFlagPath = function(flag_path)
     {
         FLAG_PATH = flag_path;
+    };
+    
+    //getter and setter for spring batch admin service uri
+    var getSpringBatchUri = function()
+    {
+        return SPRING_BATCH_URI;
+    };
+
+    var setSpringBatchUri = function(spring_batch_uri)
+    {
+    	SPRING_BATCH_URI = spring_batch_uri;
     };
 
     var setNS = function(ns)
@@ -193,6 +209,8 @@ angular.module("app.configuration", [])
     };
 
     var parseSparqlResults = function(data) {
+        
+        //virtuoso style:
         var bindings = data.results.bindings;
         var triples  = [];
 
@@ -232,12 +250,53 @@ angular.module("app.configuration", [])
             (map[p] || (map[p] = [])).push(o);
         }
 
+    	/**
+    	//ontoquad
+    	   var bindings = data.results.bindings;
+           var triples  = [];
+           var result = {};
+
+           var bnodes = {};
+
+           for (var i in bindings)
+           {
+               var binding = bindings[i];
+               triples.push([ Ns.shorten(binding.s), Ns.shorten(binding.p), Ns.shorten(binding.o) ]);
+
+               var triple = triples[i],
+                   s = triple[0],
+                   p = triple[1],
+                   o = triple[2];
+
+               if (binding.s.type=='bnode')
+               {
+                   var id  = s.slice(1),
+                   map = bnodes[id] = bnodes[id] || {};
+               }
+               else
+               {
+                   var map = result[s] || (result[s] = {});
+               }
+
+               if (binding.o.type=='bnode')
+               {
+                   var id = o.slice(1);
+                   o = bnodes[id] = bnodes[id] || {};
+               }
+
+               (map[p] || (map[p] = [])).push(o);
+
+
+
+           }**/
+    	
         return result;
     };
 
 
     var read = function()
     {
+        //var deferred = $q.defer();
         var requestData = {
             format: "application/sparql-results+json",
             query: "SELECT * FROM <" + SETTINGS_GRAPH + ">"+ EOL
@@ -245,14 +304,16 @@ angular.module("app.configuration", [])
                     + "ORDER BY ?s ?p ?o",
             mode: "settings"
         };
-        console.log("reading settings from " + SETTINGS_GRAPH);
 
-        return $http.post("rest/RdfStoreProxy", $.param(requestData)).then(function (response) {
-            settings = parseSparqlResults(response.data);
-            console.log(settings);
+        
+
+       return $http.post("rest/RdfStoreProxy", $.param(requestData)).then(function (response) {
+        	settings = parseSparqlResults(response.data);
+            
             return settings;
         });
 
+        return deferred.promise;
     };
 
     var write = function()
@@ -305,23 +366,77 @@ angular.module("app.configuration", [])
             walk(s, settings[s]);
 
         var requestData = {
-            format: "application/sparql-results+json",
-            query: Ns.getQueryPrefixes(PREFIXES) + EOL
-                    + "DROP SILENT GRAPH <"   + SETTINGS_GRAPH + ">" + EOL
-                    + "CREATE SILENT GRAPH <" + SETTINGS_GRAPH + ">" + EOL
-                    + "INSERT INTO <" + SETTINGS_GRAPH + ">" + EOL
-                    + "{" + EOL
-                    +        data
-                    + "}",
-            mode: "settings"
+        		 format: "application/sparql-results+json",
+                 graph: SETTINGS_GRAPH,
+                 data: data,
+                 prefixes: Ns.getQueryPrefixes(PREFIXES),
+//                 query: Ns.getQueryPrefixes(PREFIXES) + EOL
+//                         + "DROP SILENT GRAPH <"   + SETTINGS_GRAPH + ">" + EOL
+//                         + "CREATE SILENT GRAPH <" + SETTINGS_GRAPH + ">" + EOL
+//                         + "INSERT INTO <" + SETTINGS_GRAPH + ">" + EOL
+//                         + "{" + EOL
+//                         +        data
+//                         + "}",
+                 mode: "settings"
+             };
+             return request("rest/RdfStoreProxy/rewriteGraph", requestData);
+    };
+
+    var makeTriples = function(pSettings){
+        
+        var wrap = function(s)
+        {
+            if(/^https?:\/\//.test(s))
+                return "<" + s + ">";
+            else if(/^_:b/.test(s))
+                return s;
+            else if(Ns.isUri(s)){
+                // get the prefix for the query
+                var p = s.substr(0, s.indexOf(':'));
+                return "<" + Ns.getNamespace(p) + s + ">";
+            }
+            else
+            // TODO: we have also to validate the datatype!
+                return '"' + s + '"';
         };
 
-        console.log("writting settings to " + SETTINGS_GRAPH);
+        var walk = function(s, map)
+        {
+            for (var p in map)
+            {
+                var arr = map[p];
+                for (var i in arr)
+                {
+                    var o = arr[i];
+                    if (typeof o === "string")
+                        triples += wrap(s) + " " + wrap(p) + " " + wrap(o) + " ." + EOL;
+                    else
+                    {
+                        var bnode = "_:b" + ++bnodeIndex;
+                        triples += wrap(s) + " " + wrap(p) + " " + bnode + " ." + EOL;
+                        walk(bnode, o);
+                    }
+                }
+            }
+        };
 
-        return $http.post("rest/RdfStoreProxy", $.param(requestData)).then(function (response) {
-            return response;
-        });
+        var triples = "",
+            bnodeIndex = 0;
 
+        for (var s in pSettings)
+            walk(s, pSettings[s]);
+
+        return triples;
+    };
+
+    var dropGraph = function(name)
+    {
+        var requestData = {
+            format: "application/sparql-results+json",
+            graph: name,
+            //username: AccountService.getAccount().getUsername() //AccountService not available for config because of looped dependency
+        }
+        return request("rest/GraphManagerServlet/dropGraph", requestData);
     };
 
     var getGroupsGraph = function() {
@@ -379,6 +494,10 @@ angular.module("app.configuration", [])
         write                   : write,
         read                    : read,
         request                 : request,
-        parseSparqlResults      : parseSparqlResults
+        dropGraph               : dropGraph,
+        parseSparqlResults      : parseSparqlResults,
+        setSpringBatchUri       : setSpringBatchUri,
+        getSpringBatchUri       : getSpringBatchUri,
+        makeTriples             : makeTriples
     };
 });

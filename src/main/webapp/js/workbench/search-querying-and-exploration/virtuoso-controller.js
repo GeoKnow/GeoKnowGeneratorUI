@@ -5,13 +5,25 @@
 * Virtuoso Controller
 *
 ***************************************************************************************************/
-app.controller('VirtuosoCtrl', function($scope, ConfigurationService, AccountService, GraphService, GraphGroupService) {
+app.controller('VirtuosoCtrl', function($scope, ConfigurationService, ComponentsService, AccountService, GraphService, GraphGroupService) {
+
+	var componentUri ="http://generator.geoknow.eu/resource/Virtuoso";
+	var serviceUri = "http://generator.geoknow.eu/resource/VirtuosoAuthSPARQLEndpoint";
+
+	ComponentsService.getComponent(componentUri).then(
+		//success
+		function(response){
+			$scope.component = response;
+			$scope.sevice = ComponentsService.getComponentService(serviceUri, $scope.component);
+			if($scope.sevice== null)
+				flash.error="Service not configured: " +serviceUri;	
+		}, 
+		function(response){
+			flash.error="Component not configured: " +ServerErrorResponse.getMessage(response);
+		});
 
 	$scope.namedGraphs = [];
-	$scope.component = ConfigurationService.getComponent(":Virtuoso");
-	console.log($scope.component);
-	// $scope.services = ConfigurationService.getComponentServices(":Virtuoso", "lds:SPARQLEndPointService");
-
+	
 	$scope.virtuoso = {
 		service   : AccountService.getAccount().getUsername()==null ? ConfigurationService.getPublicSPARQLEndpoint() : ConfigurationService.getSPARQLEndpoint(),
 	 	dataset   : "",
@@ -41,8 +53,7 @@ app.controller('VirtuosoCtrl', function($scope, ConfigurationService, AccountSer
                     '?default-graph-uri=' + encodeURIComponent($scope.virtuoso.dataset.replace(':',ConfigurationService.getUriBase())) +
                     '&qtxt=select+distinct+%3FConcept+where+%7B%5B%5D+a+%3FConcept%7D+LIMIT+100' +
                     '&format=text%2Fhtml' +
-                    '&timeout=30000' +
-                    '&username=' + encodeURIComponent(AccountService.getAccount().getUsername());
+                    '&timeout=30000';
       }
       console.log($scope.url);
 	};

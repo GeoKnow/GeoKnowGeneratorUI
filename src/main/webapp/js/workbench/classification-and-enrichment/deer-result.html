@@ -1,14 +1,11 @@
-<div class="contents" ng-controller="GeoliftCtrl" ng-init="StartGeoLift()">
+<div class="contents" ng-controller="DeerCtrl" ng-init="StartGeoLift()">
 	<!-- Subscribe to all flash messages. -->
 	<div flash-alert active-class="in alert" class="fade" duration="0">
 		<button type="button" class="close" ng-click="hide()">&times;</button>
 	  <span class="alert-message">{{flash.message}}</span>
 	</div>
 
-	<h3 class="green bold">Deer</h3>
-	<b>RDF Data Extraction and Enrichment Framework</b>
-	<br>
-	<br>
+
 	
 <form class="form-inline InputForm col-xs-11" role="form" ng-show="inputForm">
 	<div class="row">

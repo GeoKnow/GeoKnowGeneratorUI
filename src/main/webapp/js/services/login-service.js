@@ -2,7 +2,7 @@
 
 var module = angular.module('app.login-service', []);
 
-module.factory("LoginService", function ($http, $cookieStore, AccountService, ConfigurationService, Base64, flash, ServerErrorResponse) {
+module.factory("LoginService", function ($http, $location, $cookieStore, AccountService, ConfigurationService, Base64, flash, ServerErrorResponse) {
 
     var login = function (username, password) {
 
@@ -20,20 +20,13 @@ module.factory("LoginService", function ($http, $cookieStore, AccountService, Co
             data: $.param(postData),
             contentType: "application/x-www-form-urlencoded"
         }).then(function (response) {
-            
-            // var role = {
-            //     // uri: response.data.role.uri.replace(ConfigurationService.getFrameworkOntologyNS(), "gkg:"),
-            //     uri: response.data.role.uri,
-            //     name: response.data.role.name,
-            //     services: response.data.role.services
-            // };
-
-            return AccountService.create(
-                response.data.username, 
-                response.data.accountURI,
-                response.data.email, 
-                response.data.role,
-                response.data.settingsGraph);
+        	
+        	 return AccountService.create(
+                     response.data.username, 
+                     response.data.accountURI,
+                     response.data.email, 
+                     response.data.role,
+                     response.data.settingsGraph);
 
         }, function (response) {
             flash.error = ServerErrorResponse.getMessage(response);
@@ -51,12 +44,13 @@ module.factory("LoginService", function ($http, $cookieStore, AccountService, Co
             data: $.param(postData),
             contentType: "application/x-www-form-urlencoded"
         }).then(function (response) {
-            document.execCommand("ClearAuthenticationCache");
+        	document.execCommand("ClearAuthenticationCache");
             ConfigurationService.restoreDefaultSettingsGraph();
+            $location.path("/");
             return AccountService.clearAccount();
+
         }, function (response) {
-            console.log(response);
-            flash.error = ServerErrorResponse.getMessage(response);
+        	flash.error = ServerErrorResponse.getMessage(response);
             
         });
     };

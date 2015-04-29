@@ -2,6 +2,16 @@
 
 var module = angular.module('app.directives', []);
 
+/*
+This directive will render a header for a component integration page
+*/
+app.directive("componentHeader", function(){
+  return {
+    restrict: 'E', 
+    templateUrl: 'js/workbench/partials/component-header.html'
+  };
+});
+
 /**
 * Modal iFrame directive is to show component tools in a
 * modal window that is the size of the browser's window

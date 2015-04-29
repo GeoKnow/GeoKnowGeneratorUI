@@ -1,0 +1,30 @@
+
+<div class="modal-content">
+<form name="loginForm" class="form-horizontal InputForm" role="form" novalidate>
+  <div class="modal-header">
+    <h3 class="modal-title green bold">Login</h3>
+  </div>
+  <div class="modal-body">
+		<div class="form-group">
+      <div class="col-lg-10">
+        <input type="text" class="form-control" id="login"  ng-model="login.username" placeholder="Username or e-mail" autofillable required>
+        <div class="error" ng-show="loginForm.login.$dirty && loginForm.login.$invalid">part of text shown below form field when it\u0027s value is invalid or missed (for required fields):
+          <span ng-show="loginForm.login.$error.required" >_username-missed-message_</span>
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="col-lg-10">
+        <input type="password" class="form-control" id="password" ng-model="login.password" placeholder="Password" autofillable required>
+        <div class="error" ng-show="loginForm.password.$dirty && loginForm.password.$invalid">_invalid-field-message_:
+          <span ng-show="loginForm.password.$error.required" >_password-missed-message_</span>
+        </div>  
+      </div>
+    </div> 
+  </div>
+  <div class="modal-footer">
+      <button class="btn btn-success" ng-click="ok()" ng-disabled="loginForm.$invalid" >Login</button>
+     	<button class="btn btn-default" ng-click="cancel()" >Cancel</button>
+  </div>
+</form>
+</div>

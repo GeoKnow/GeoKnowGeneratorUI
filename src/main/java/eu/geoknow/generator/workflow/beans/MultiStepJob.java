@@ -36,8 +36,6 @@ public class MultiStepJob {
     this.targetGraph = targetGraph;
   }
 
-
-
   public String getName() {
     return name;
   }

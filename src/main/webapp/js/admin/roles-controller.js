@@ -1,16 +1,9 @@
 'use strict';
 
-function UserRolesCtrl($scope, UsersService, ConfigurationService, $q, ServerErrorResponse, flash, AccountService, $window) {
-    
+function UserRolesCtrl($scope, $modal, UsersService, ConfigurationService, $q, ServerErrorResponse, flash, AccountService, $window) {
     $scope.services = ConfigurationService.getAllServices();
-    $scope.roles = UsersService.getAllRoles();
     $scope.users = UsersService.getAllUsers();
-
-    $scope.roleCreating = false;
-    $scope.newRole = {id:"", name:""};
-
-    $scope.userCreating = false;
-    $scope.newUser = {profile: { username:"", email:"", role:""}};
+    $scope.roles = UsersService.getAllRoles();
 
     $scope.changedRoles = [];
     $scope.changedUsers = [];
@@ -85,30 +78,30 @@ function UserRolesCtrl($scope, UsersService, ConfigurationService, $q, ServerErr
         if ($scope.changedUsers.indexOf(user.profile.accountURI) == -1) $scope.changedUsers.push(user.profile.accountURI);
     };
 
-    $scope.createRole = function() {
-        $scope.roleCreating = true;
-        UsersService.createRole($scope.newRole.id, $scope.newRole.name).then(function(response) {
-            $scope.refreshRoles();
-            $scope.roleCreating = false;
-            $scope.close("#modalRole");
-            flash.success = "Created";
-            $window.scrollTo(0,0);
-        }, function(response) {
-            $scope.roleCreating = false;
-            $scope.close("#modalRole");
-            flash.error = ServerErrorResponse.getMessage(response);
-            $window.scrollTo(0,0);
+    $scope.newRole = function() {
+      
+    	var modalInstance = $modal.open({
+        	templateUrl: 'modal-forms/settings/modal-roles.html',
+        	controller: 'ModalRolesCtrl',
+        	size: 'lg',
+        	backdrop: 'static'
+        	
         });
-    };
+    	
+    	
+    	modalInstance.result.then(function (newRole) { 
+    		 UsersService.createRole(newRole.id, newRole.name).then(function(response) {
+    	            $scope.refreshRoles();
+    	            flash.success = "Created";
+    	            
+    	        }, function(response) {
+    	            
+    	            flash.error = ServerErrorResponse.getMessage(response);
+    	            
+    	        });
+    	});
+    	
 
-    $scope.new = function() {
-        $scope.roleCreating = false;
-        $scope.newRole = {id:"", name:""};
-        $scope.roleForm.$setPristine();
-
-        $scope.userCreating = false;
-        $scope.newUser = {profile: { username:"", email:"", role:""}};
-        $scope.userForm.$setPristine();
     };
 
     $scope.saveRoles = function() {
@@ -122,7 +115,7 @@ function UserRolesCtrl($scope, UsersService, ConfigurationService, $q, ServerErr
         $q.all(promises).then(function(data) {
             $scope.savingRoles = false;
             $scope.refreshRoles();
-            flash.success = "All changes were successfully saved";
+            flash.success = "Saved";
             $window.scrollTo(0,0);
         }, function(response) {
             $scope.savingRoles = false;
@@ -163,7 +156,7 @@ function UserRolesCtrl($scope, UsersService, ConfigurationService, $q, ServerErr
         $q.all(promises).then(function(data) {
             $scope.savingUsers = false;
             $scope.refreshUsers();
-            flash.success = "All changes were successfully saved";
+            flash.success = "Saved";
             $window.scrollTo(0,0);
         }, function(response) {
             $scope.savingUsers = false;
@@ -185,23 +178,37 @@ function UserRolesCtrl($scope, UsersService, ConfigurationService, $q, ServerErr
         return $scope.changedRoles.length > 0;
     };
 
-    $scope.createUser = function() {
-        $scope.userCreating = true;
-        var user = angular.copy($scope.newUser);
+    var createUser = function(newUser) {
+        var user = angular.copy(newUser);
         UsersService.createUser(user).then(function(response) {
             $scope.refreshUsers();
-            $scope.userCreating = false;
-            $scope.close("#modalUser");
-            flash.success = "Created";
-            $window.scrollTo(0,0);
+            flash.success ="Created";
         }, function(response) {
-            $scope.userCreating = false;
-            $scope.close("#modalUser");
+           
             flash.error = ServerErrorResponse.getMessage(response);
-            $window.scrollTo(0,0);
+            
         });
     };
 
+    $scope.newUser = function(){
+    	var modalInstance = $modal.open({
+        	templateUrl: 'modal-forms/settings/modal-user.html',
+        	controller: 'ModalUserCtrl',
+        	size: 'lg',
+        	backdrop: 'static',
+        	resolve: {
+        		currentUser: function(){
+        			return null;
+        		}
+        	}
+        	
+        });
+    	
+    	modalInstance.result.then(function (user) { 
+    		createUser(user);
+    	});
+    }
+    
     $scope.deleteUser = function(user) {
         UsersService.deleteUser(user.profile.username).then(function(response) {
             $scope.refreshUsers();
