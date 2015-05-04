@@ -13,13 +13,13 @@ module.factory("AccountService", function ( $cookieStore, $http, ConfigurationSe
         this.accountURI = accountURI;
         this.role = role;
         this.email = email;
-        this.settingsGraph = settingsGraph;
+        this.settingsGraph = settingsGraph;        
         // update with prefixes
         if (this.accountURI != undefined) 
             this.accountURI = accountURI.replace(ConfigurationService.getUriBase(), ':');
         // update preview result or original ones
         if (this.role != undefined) {
-            this.role.uri = this.role.uri.replace(ConfigurationService.getFrameworkOntologyNS(), "gkg:");
+            this.role.uri = this.role.uri.replace(ConfigurationService.getUriBase(), ":");
             var roleServices = [];
             for (var ind in this.role.services) 
                 roleServices.push(this.role.services[ind].replace(ConfigurationService.getUriBase(), ":"));
@@ -52,18 +52,15 @@ module.factory("AccountService", function ( $cookieStore, $http, ConfigurationSe
 
     Account.prototype.setRole = function(role) {
         this.role = role;
-        
-        this.role.uri = this.role.uri.replace(ConfigurationService.getFrameworkOntologyNS(), "gkg:");
+        this.role.uri = this.role.uri.replace(ConfigurationService.getUriBase(), ":");
         var roleServices = [];
         for (var ind in this.role.services) 
             roleServices.push(this.role.services[ind].replace(ConfigurationService.getUriBase(), ":"));
         this.role.services = roleServices;
-
-        
     };
 
     Account.prototype.isAdmin = function () {
-        return this.role != undefined && this.role.uri == "gkg:Administrator";
+        return this.role != undefined && this.role.uri == ":Administrator";
     };
 
     Account.prototype.isAuthenticatedUser = function () {

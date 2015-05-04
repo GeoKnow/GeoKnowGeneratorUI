@@ -1,6 +1,5 @@
 package eu.geoknow.generator.rest;
 
-import static com.jayway.restassured.RestAssured.get;
 import static com.jayway.restassured.RestAssured.given;
 import static org.junit.Assert.assertEquals;
 
@@ -50,7 +49,7 @@ public class ComponentsIT {
 
     // check job description
     log.info("get all components");
-    Response res = get("/rest/components").andReturn();
+    Response res = given().cookies(cookies).when().get("/rest/components").andReturn();
     assertEquals(200, res.statusCode());
     assertEquals("application/json", res.contentType());
     log.info(res.getBody().asString());

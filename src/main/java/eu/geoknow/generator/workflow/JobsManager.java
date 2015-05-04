@@ -24,7 +24,7 @@ import com.hp.hpl.jena.vocabulary.XSD;
 import com.ontos.ldiw.vocabulary.LDIWO;
 import com.ontos.ldiw.vocabulary.SD;
 
-import eu.geoknow.generator.configuration.APP_CONSTANTS;
+import eu.geoknow.generator.configuration.APP_CONSTANT;
 import eu.geoknow.generator.configuration.FrameworkConfiguration;
 import eu.geoknow.generator.exceptions.InformationMissingException;
 import eu.geoknow.generator.exceptions.ResourceNotFoundException;
@@ -123,7 +123,7 @@ public class JobsManager {
     log.debug(query);
 
     String result =
-        frameworkRdfStoreManager.execute(query, APP_CONSTANTS.SPARQL_JSON_RESPONSE_FORMAT);
+        frameworkRdfStoreManager.execute(query, APP_CONSTANT.SPARQL_JSON_RESPONSE_FORMAT);
     log.debug(result);
     ObjectMapper mapper = new ObjectMapper();
     JsonNode rootNode = mapper.readTree(result);
@@ -249,7 +249,7 @@ public class JobsManager {
               + "> ?p ?o ;  " + "<" + DCTerms.creator.getURI() + "> <" + user.getAccountURI()
               + "> ." + "OPTIONAL { <" + uriBase + jobName + "_schedule_1" + "> ?a ?b } . " + "} }";
       String result =
-          frameworkRdfStoreManager.execute(query, APP_CONSTANTS.SPARQL_JSON_RESPONSE_FORMAT);
+          frameworkRdfStoreManager.execute(query, APP_CONSTANT.SPARQL_JSON_RESPONSE_FORMAT);
 
       log.debug(result);
       ObjectMapper mapper = new ObjectMapper();
@@ -307,7 +307,7 @@ public class JobsManager {
     log.debug(query);
 
     String result =
-        frameworkRdfStoreManager.execute(query, APP_CONSTANTS.SPARQL_JSON_RESPONSE_FORMAT);
+        frameworkRdfStoreManager.execute(query, APP_CONSTANT.SPARQL_JSON_RESPONSE_FORMAT);
     log.debug(result);
     ObjectMapper mapper = new ObjectMapper();
     JsonNode rootNode = mapper.readTree(result);
@@ -398,7 +398,7 @@ public class JobsManager {
     log.debug(query);
 
     // write information to the jobs graph
-    frameworkRdfStoreManager.execute(query, APP_CONSTANTS.SPARQL_JSON_RESPONSE_FORMAT);
+    frameworkRdfStoreManager.execute(query, APP_CONSTANT.SPARQL_JSON_RESPONSE_FORMAT);
 
     return job;
   }
@@ -419,7 +419,7 @@ public class JobsManager {
             + "> <" + userUri + "> }}";
     log.debug(query);
     String result =
-        frameworkRdfStoreManager.execute(query, APP_CONSTANTS.SPARQL_JSON_RESPONSE_FORMAT);
+        frameworkRdfStoreManager.execute(query, APP_CONSTANT.SPARQL_JSON_RESPONSE_FORMAT);
 
     ObjectMapper mapper = new ObjectMapper();
     JsonNode rootNode = mapper.readTree(result);

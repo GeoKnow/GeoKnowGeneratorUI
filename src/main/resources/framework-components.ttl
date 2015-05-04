@@ -115,6 +115,19 @@
       a       lds:EnrichmentService ;
       lds:serviceUrl <http://localhost:8080/deer-Service> .
 
+
+
+:Deer
+      a       lds:StackComponent ;
+      rdfs:label "Deer"^^xsd:string ;
+      lds:providesService :DeerService ;
+      lds:version "0.6.4"^^xsd:string ;
+      foaf:homepage <http://aksw.org/Projects/DEER.html> .
+:DeerService
+      a       lds:EnrichmentService ;
+      lds:serviceUrl <http://localhost:8080/Deer-Service> .
+
+
 :OntoWiki
       a       lds:StackComponent ;
       rdfs:label "OntoWiki"^^xsd:string ;
@@ -146,59 +159,3 @@
       a       lds:ExplorationService ;
       lds:serviceUrl <http://localhost:8080/FAGI-WebInterface/> .
 
-      
-########### ROUTES RESTRICTIONS DESCRIPTION #######################################################
-# Following triples describe required services for routes. It is used in conditional routing.
-# #######################################################################################
-
-
-:RolesRouteRestriction
-      a     ontos:RouteRestriction;
-      ontos:partialUrl "/settings/roles"^^xsd:string;
-      ontos:requiredService :UserManagerService .
-	  
-:SparqlifyRouteRestriction
-      a     ontos:RouteRestriction;
-      ontos:partialUrl "/workbench/extraction-and-loading/sparqlify"^^xsd:string;
-      ontos:requiredService :SparqlifyService .
-
-:TripleGeoRouteRestriction
-      a     ontos:RouteRestriction;
-      ontos:partialUrl "/workbench/extraction-and-loading/triplegeo"^^xsd:string;
-      ontos:requiredService :TripleGeoService .
-
-:D2RQGeoRouteRestriction
-      a     ontos:RouteRestriction;
-      ontos:partialUrl "/workbench/extraction-and-loading/d2rq"^^xsd:string;
-      ontos:requiredService :D2RQService .
-
-:FaceteRouteRestriction
-      a     ontos:RouteRestriction;
-      ontos:partialUrl "/workbench/search-querying-and-exploration/facete"^^xsd:string;
-      ontos:requiredService :FaceteService .
-	  
-:MappifyRouteRestriction
-      a     ontos:RouteRestriction;
-      ontos:partialUrl "/workbench/search-querying-and-exploration/mappify"^^xsd:string;
-      ontos:requiredService :MappifyService .
-	  
-:OntoWikiRouteRestriction
-      a     ontos:RouteRestriction;
-      ontos:partialUrl "/workbench/manual-revision-and-authoring/ontowiki"^^xsd:string;
-      ontos:requiredService :OntoWikiService .
-	  
-:LIMESRouteRestriction
-      a     ontos:RouteRestriction;
-      ontos:partialUrl "/workbench/linking-and-fusing/limes"^^xsd:string;
-      ontos:requiredService :LimesService .
-	  
-:DEERRouteRestriction
-      a     ontos:RouteRestriction;
-      ontos:partialUrl "/workbench/classification-and-enrichment/deer"^^xsd:string;
-      ontos:requiredService :DEERService .
-
-:DashboardRestriction
-      a     ontos:RouteRestriction;
-      ontos:partialUrl "/workbench"^^xsd:string;
-      ontos:requiredService :SpringBatchAdminService .
-	

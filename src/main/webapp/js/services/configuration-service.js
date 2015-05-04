@@ -49,11 +49,11 @@ module.factory('ConfigurationService', function ($q, Config, $http, $location, f
         setup: function(reset){
             console.log("setup reset: " + reset);
             if(reset)
-                return $http.post('rest/setup').success(function(data){
+                return $http.post('rest/config').success(function(data){
                     flash.success = data;   
                 });
             else
-                return $http.put('rest/setup').success(function(data){
+                return $http.put('rest/config').success(function(data){
                     flash.success = data;
                 });
         },
@@ -120,6 +120,7 @@ module.factory('ConfigurationService', function ($q, Config, $http, $location, f
             Config.write();
             return true;
         },
+
         getWorkbenchServices : function(){
             return $http.get("rest/config/services").then( 
                 // success
@@ -131,7 +132,7 @@ module.factory('ConfigurationService', function ($q, Config, $http, $location, f
             return $http.get("rest/config/services/"+uri).then( 
                 // success
                 function (response){
-                    return response.data.services;
+                    return response.data.service;
             }); 
         },
         getResourcesType: function (type) {
@@ -187,10 +188,16 @@ module.factory('ConfigurationService', function ($q, Config, $http, $location, f
             for (var resource in elements) {
                 var element = elements[resource];
                 if(element["rdfs:label"]== undefined) continue;
+
+                var lendpoint = element["void:sparqlEndpoint"][0]
+                if(resource==":VirtuosoAuthSPARQLEndpoint")
+                    lendpoint = Config.getAuthEndpoint();
+                else if(resource==":VirtuosoEndpoint")
+                    lendpoint = Config.getEndpoint();
                 results.push({
                     uri: resource,
                     label: element["rdfs:label"][0],
-                    endpoint: element["void:sparqlEndpoint"][0],
+                    endpoint: lendpoint,
                     homepage: element["foaf:homepage"] == undefined ? "" : element["foaf:homepage"][0]
                 });
             }

@@ -52,7 +52,6 @@ function SystemSetupCtrl($rootScope, $scope, $location, ConfigurationService, fl
     ConfigurationService.getConfiguration().then(
       //success
       function(response){
-        console.log(response);
         $scope.settings = {
           uriBase: response.data.ns,
           endpointService: response.data.authSparqlEndpoint,
@@ -64,8 +63,6 @@ function SystemSetupCtrl($rootScope, $scope, $location, ConfigurationService, fl
         }; 
          // checkbox to initialize or reset the system
         $scope.reset=false;
-
-        console.log($scope.settings );
       },
       // error 
       function(response){

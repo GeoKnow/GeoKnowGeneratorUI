@@ -1,13 +1,16 @@
 package eu.geoknow.generator.component;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import javax.validation.Valid;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -18,6 +21,7 @@ import com.hp.hpl.jena.query.QuerySolution;
 import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.rdf.model.Literal;
 import com.hp.hpl.jena.sparql.vocabulary.FOAF;
+import com.hp.hpl.jena.vocabulary.DC;
 import com.hp.hpl.jena.vocabulary.DCTerms;
 import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.vocabulary.RDFS;
@@ -26,13 +30,14 @@ import com.ontos.ldiw.vocabulary.LDIS;
 import eu.geoknow.generator.component.beans.Component;
 import eu.geoknow.generator.component.beans.Service;
 import eu.geoknow.generator.component.beans.ServiceType;
-import eu.geoknow.generator.configuration.APP_CONSTANTS;
+import eu.geoknow.generator.configuration.APP_CONSTANT;
 import eu.geoknow.generator.configuration.FrameworkConfiguration;
 import eu.geoknow.generator.exceptions.InformationMissingException;
 import eu.geoknow.generator.exceptions.ResourceExistsException;
 import eu.geoknow.generator.exceptions.ResourceNotFoundException;
 import eu.geoknow.generator.exceptions.SPARQLEndpointException;
-import eu.geoknow.generator.rdf.SecureRdfStoreManagerImpl;
+import eu.geoknow.generator.rdf.RdfStoreManager;
+
 
 
 public class ComponentManager {
@@ -42,11 +47,20 @@ public class ComponentManager {
   private static Collection<ServiceType> serviceTypes;
 
   private static FrameworkConfiguration config;
-  private static SecureRdfStoreManagerImpl storeManager;
+  private static RdfStoreManager storeManager;
 
-  public ComponentManager() throws IOException, InformationMissingException {
+  /**
+   * Initialize the manager providing the corresponding manager of the user that will execute the
+   * actions
+   * 
+   * @param storeManager
+   * @throws IOException
+   * @throws InformationMissingException
+   */
+  public ComponentManager(RdfStoreManager storeManager) throws IOException,
+      InformationMissingException {
     config = FrameworkConfiguration.getInstance();
-    storeManager = config.getAdminRdfStoreManager();
+    ComponentManager.storeManager = storeManager;
   }
 
   /**
@@ -59,8 +73,6 @@ public class ComponentManager {
    * @throws IOException
    */
   public Collection<Component> getAllComponents() throws SPARQLEndpointException, IOException {
-
-    SecureRdfStoreManagerImpl storeManager = config.getAdminRdfStoreManager();
 
     Map<String, Component> components = new HashMap<String, Component>();
 
@@ -76,7 +88,7 @@ public class ComponentManager {
               + "} ORDER BY ?component";
       log.debug(query);
 
-      String result = storeManager.execute(query, APP_CONSTANTS.SPARQL_JSON_RESPONSE_FORMAT);
+      String result = storeManager.execute(query, APP_CONSTANT.SPARQL_JSON_RESPONSE_FORMAT);
 
       ObjectMapper mapper = new ObjectMapper();
       JsonNode rootNode = mapper.readTree(result);
@@ -144,9 +156,6 @@ public class ComponentManager {
       ResourceNotFoundException {
     Component component = null;
 
-
-    SecureRdfStoreManagerImpl storeManager = config.getAdminRdfStoreManager();
-
     try {
 
       // get all components and the services list
@@ -159,7 +168,7 @@ public class ComponentManager {
 
       log.debug(query);
 
-      String result = storeManager.execute(query, APP_CONSTANTS.SPARQL_JSON_RESPONSE_FORMAT);
+      String result = storeManager.execute(query, APP_CONSTANT.SPARQL_JSON_RESPONSE_FORMAT);
 
       ObjectMapper mapper = new ObjectMapper();
       JsonNode rootNode = mapper.readTree(result);
@@ -225,8 +234,6 @@ public class ComponentManager {
   public Component addComponent(@Valid Component component) throws IOException,
       SPARQLEndpointException, ResourceExistsException {
 
-
-
     if (resourceExists(component.getUri(), config.getComponentsGraph(), storeManager))
       throw new ResourceExistsException(component.getLabel() + " already exists as "
           + component.getUri());
@@ -239,7 +246,7 @@ public class ComponentManager {
 
     String result;
     try {
-      result = storeManager.execute(query, APP_CONSTANTS.SPARQL_JSON_RESPONSE_FORMAT);
+      result = storeManager.execute(query, APP_CONSTANT.SPARQL_JSON_RESPONSE_FORMAT);
     } catch (Exception e) {
       e.printStackTrace();
       throw new SPARQLEndpointException(e.getMessage());
@@ -276,10 +283,10 @@ public class ComponentManager {
 
       log.debug(query);
 
-      String result = storeManager.execute(query, APP_CONSTANTS.SPARQL_JSON_RESPONSE_FORMAT);
+      String result = storeManager.execute(query, APP_CONSTANT.SPARQL_JSON_RESPONSE_FORMAT);
 
       log.debug(result);
-      // TODO: validate the result and return the component object if successfull
+      // TODO: validate the result and return the component object if successful
 
       return component;
     } catch (Exception e) {
@@ -309,7 +316,7 @@ public class ComponentManager {
 
       log.debug(query);
 
-      String result = storeManager.execute(query, APP_CONSTANTS.SPARQL_JSON_RESPONSE_FORMAT);
+      String result = storeManager.execute(query, APP_CONSTANT.SPARQL_JSON_RESPONSE_FORMAT);
 
       log.debug(result);
     } catch (Exception e) {
@@ -318,63 +325,7 @@ public class ComponentManager {
     }
   }
 
-  /**
-   * Checks if a uri exists in a given graph
-   * 
-   * @param uri
-   * @param graph
-   * @param storeManager
-   * @return
-   * @throws SPARQLEndpointException
-   * 
-   *         TODO: this may be moved to a RDF helpers Class
-   */
-  private boolean resourceExists(String uri, String graph, SecureRdfStoreManagerImpl storeManager)
-      throws SPARQLEndpointException {
 
-    String query = "WITH <" + graph + "> ASK { <" + uri + "> ?s ?p}";
-    log.debug(query);
-    try {
-      String result = storeManager.execute(query, APP_CONSTANTS.SPARQL_JSON_RESPONSE_FORMAT);
-      log.debug(result);
-      ObjectMapper mapper = new ObjectMapper();
-      JsonNode rootNode = mapper.readTree(result);
-      return rootNode.path("boolean").booleanValue();
-
-    } catch (Exception e) {
-      e.printStackTrace();
-      throw new SPARQLEndpointException(e.getMessage());
-    }
-
-  }
-
-  /**
-   * Given the component instance, this function will generate all triples for an insert query
-   * 
-   * @param component
-   * @return String containing the triples that can be used in a insert statement
-   */
-  private String insertComponentStatements(Component component) {
-    // get all components and the services list
-    String servicesStatements = "";
-    log.debug(component.getServices().size());
-    for (Service s : component.getServices()) {
-      servicesStatements +=
-          "<" + component.getUri() + "> <" + LDIS.providesService + ">  <" + s.getUri() + "> . <"
-              + s.getUri() + "> a  <" + s.getType() + "> ; <" + DCTerms.description + "> \""
-              + s.getDescription() + "\" ; <" + LDIS.serviceUrl.getURI() + "> <"
-              + s.getServiceUrl() + "> .";
-    }
-    log.debug(servicesStatements);
-    // get all components and the services list
-    String statemets =
-        " <" + component.getUri() + "> a <" + LDIS.StackComponent.getURI() + "> ;   <"
-            + RDFS.label.getURI() + "> \"" + component.getLabel() + "\" ; <" + DCTerms.hasVersion
-            + "> \"" + component.getVersion() + "\" ; <" + FOAF.homepage.getURI() + "> <"
-            + component.getHomepage() + "> . " + servicesStatements + " ";
-
-    return statemets;
-  }
 
   /**
    * Retreives existing types of services in the ldi-schema ontology
@@ -422,11 +373,231 @@ public class ComponentManager {
     return serviceTypes;
   }
 
-  public static void setServiceProperty(Service s, String property, String object) {
-    if (RDF.type.getURI().equals(property))
-      s.setType(object);
-    else if (LDIS.serviceUrl.getURI().equals(property))
-      s.setServiceUrl(object);
+
+
+  /**
+   * Get all services from all components
+   * 
+   * @return Collection<Service> object
+   * @throws SPARQLEndpointException
+   * @throws IOException
+   */
+  public Collection<Service> getAllServices() throws SPARQLEndpointException, IOException {
+
+    Map<String, Service> services = new HashMap<String, Service>();
+
+    try {
+
+      // get all components and the services list
+      String query =
+          "SELECT ?service ?sproperty ?sobject FROM <" + config.getComponentsGraph()
+              + "> WHERE { ?service ?sproperty ?sobject " + "} ";
+      log.debug(query);
+
+      String result = storeManager.execute(query, APP_CONSTANT.SPARQL_JSON_RESPONSE_FORMAT);
+
+      ObjectMapper mapper = new ObjectMapper();
+      JsonNode rootNode = mapper.readTree(result);
+      Iterator<JsonNode> bindingsIter = rootNode.path("results").path("bindings").elements();
+      while (bindingsIter.hasNext()) {
+        JsonNode bindingNode = bindingsIter.next();
+
+        String subject = bindingNode.get("service").path("value").textValue();
+        String property = bindingNode.get("sproperty").path("value").textValue();
+        String object = bindingNode.get("sobject").path("value").textValue();
+
+        if (!services.containsKey(subject)) {
+          Service s = new Service();
+          s.setUri(subject);
+          setServiceProperty(s, property, object);
+          services.put(subject, s);
+        } else {
+          Service s = services.get(subject);
+          setServiceProperty(s, property, object);
+        }
+      }
+
+    } catch (Exception e) {
+
+      e.printStackTrace();
+      throw new SPARQLEndpointException(e.getMessage());
+    }
+
+    return services.values();
   }
 
+  /**
+   * Get the information of a service
+   * 
+   * @param uri
+   * @return Service object
+   * @throws SPARQLEndpointException
+   * @throws IOException
+   */
+  public Service getService(String uri) throws SPARQLEndpointException, IOException {
+
+    Service service = new Service();
+    service.setUri(uri);
+    try {
+
+      // get all components and the services list
+      String query =
+          "SELECT ?sproperty ?sobject FROM <" + config.getComponentsGraph() + "> WHERE { <" + uri
+              + "> ?sproperty ?sobject " + "} ";
+      log.debug(query);
+
+      String result = storeManager.execute(query, APP_CONSTANT.SPARQL_JSON_RESPONSE_FORMAT);
+
+      ObjectMapper mapper = new ObjectMapper();
+      JsonNode rootNode = mapper.readTree(result);
+      Iterator<JsonNode> bindingsIter = rootNode.path("results").path("bindings").elements();
+      if (!bindingsIter.hasNext())
+        throw new ResourceNotFoundException(uri + " not found in the store");
+      while (bindingsIter.hasNext()) {
+        JsonNode bindingNode = bindingsIter.next();
+        String property = bindingNode.get("sproperty").path("value").textValue();
+        String object = bindingNode.get("sobject").path("value").textValue();
+        setServiceProperty(service, property, object);
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+      throw new SPARQLEndpointException(e.getMessage());
+    }
+
+    return service;
+  }
+
+  /**
+   * Update the data of a service
+   * 
+   * @param pservice
+   * @return Service object
+   * @throws SPARQLEndpointException
+   * @throws IOException
+   * @throws ResourceNotFoundException
+   */
+  public Service updateService(Service pservice) throws SPARQLEndpointException, IOException,
+      ResourceNotFoundException {
+
+    if (!resourceExists(pservice.getUri(), config.getComponentsGraph(), storeManager))
+      throw new ResourceNotFoundException(pservice.getUri() + " not found");
+
+    try {
+
+      String query =
+          "WITH <" + config.getComponentsGraph() + "> DELETE  { <" + pservice.getUri()
+              + "> ?sproperty ?sobject  }  INSERT {" + insertServiceStatements(pservice)
+              + "} WHERE { <" + pservice.getUri() + ">  ?sproperty ?sobject  }";
+      log.debug(query);
+
+      String result = storeManager.execute(query, APP_CONSTANT.SPARQL_JSON_RESPONSE_FORMAT);
+      log.debug(result);
+      // TODO: validate the result and return the component object if successful
+
+    } catch (Exception e) {
+      e.printStackTrace();
+      throw new SPARQLEndpointException(e.getMessage());
+    }
+
+    return pservice;
+  }
+
+  /**
+   * Assigns literal properties to the Service object
+   * 
+   * @param service
+   * @param property as the URI of the porperty to set
+   * @param value the value
+   */
+  public static void setServiceProperty(Service s, String property, String value) {
+    if (RDF.type.getURI().equals(property))
+      s.setType(value);
+    else if (LDIS.serviceUrl.getURI().equals(property))
+      s.setServiceUrl(value);
+    else if (DC.description.getURI().equals(property))
+      s.setDescription(value);
+    else {
+      s.getProperties().put(property, value);
+    }
+  }
+
+  /**
+   * Checks if a uri exists in a given graph
+   * 
+   * @param uri
+   * @param graph
+   * @param storeManager
+   * @return
+   * @throws SPARQLEndpointException
+   * 
+   *         TODO: this may be moved to a RDF helpers Class
+   */
+  private boolean resourceExists(String uri, String graph, RdfStoreManager storeManager)
+      throws SPARQLEndpointException {
+
+    String query = "WITH <" + graph + "> ASK { <" + uri + "> ?s ?p}";
+    log.debug(query);
+    try {
+      String result = storeManager.execute(query, APP_CONSTANT.SPARQL_JSON_RESPONSE_FORMAT);
+      log.debug(result);
+      ObjectMapper mapper = new ObjectMapper();
+      JsonNode rootNode = mapper.readTree(result);
+      return rootNode.path("boolean").booleanValue();
+
+    } catch (Exception e) {
+      e.printStackTrace();
+      throw new SPARQLEndpointException(e.getMessage());
+    }
+
+  }
+
+  /**
+   * Given the component instance, this function will generate all triples for an insert query
+   * 
+   * @param component
+   * @return String containing the triples that can be used in a insert statement
+   */
+  private String insertComponentStatements(Component component) {
+    // get all components and the services list
+    String servicesStatements = "";
+
+    for (Service s : component.getServices()) {
+      servicesStatements +=
+          "<" + component.getUri() + "> <" + LDIS.providesService + ">  <" + s.getUri() + "> .";
+      servicesStatements += insertServiceStatements(s);
+    }
+
+    // get all components and the services list
+    String statemets =
+        " <" + component.getUri() + "> a <" + LDIS.StackComponent.getURI() + "> ;   <"
+            + RDFS.label.getURI() + "> \"" + component.getLabel() + "\" ^^ xsd:string ; <"
+            + DCTerms.hasVersion + "> \"" + component.getVersion() + "\" ^^ xsd:string ; <"
+            + FOAF.homepage.getURI() + "> <" + component.getHomepage() + "> . "
+            + servicesStatements + " ";
+
+    return statemets;
+  }
+
+  /**
+   * Given the service instance, this function will generate all triples for an insert query
+   * 
+   * @param service
+   * @return String containing the triples that can be used in a insert statement
+   */
+  private String insertServiceStatements(Service service) {
+
+    List<String> properties = new ArrayList<String>();
+    properties.add("<" + service.getUri() + "> a  <" + service.getType() + "> ; <"
+        + DCTerms.description + "> \"" + service.getDescription() + "\" ; <"
+        + LDIS.serviceUrl.getURI() + "> <" + service.getServiceUrl() + "> ");
+
+    for (String p : service.getProperties().keySet())
+      properties.add("<" + p + "> \"" + service.getProperties().get(p) + "\" ^^ xsd:string ");
+
+    String servicesStatements = StringUtils.join(properties, ";") + ".";
+
+    log.debug(servicesStatements);
+
+    return servicesStatements;
+  }
 }

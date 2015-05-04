@@ -5,8 +5,7 @@
 * LIMES Controller
 ***************************************************************************************************/
 
-var LimesCtrl = function($scope, $http, ConfigurationService, ComponentsService, JobService, AuthSessionService, flash, ServerErrorResponse, $window, GraphService, AccountService, Ns, $modal, $timeout){
-	
+var LimesCtrl = function($scope, $http, ConfigurationService, ComponentsService, JobService, AuthSessionService, flash, ServerErrorResponse, $window, GraphService, AccountService, Ns, $modal, $timeout){	
 
 	var componentUri ="http://generator.geoknow.eu/resource/Limes";
 	var serviceUri = "http://generator.geoknow.eu/resource/LimesService";
@@ -15,12 +14,22 @@ var LimesCtrl = function($scope, $http, ConfigurationService, ComponentsService,
 		//success
 		function(response){
 			$scope.component = response;
-			$scope.sevice = ComponentsService.getComponentService(serviceUri, $scope.component);
-			if($scope.sevice== null)
+			$scope.service = ComponentsService.getComponentService(serviceUri, $scope.component);
+			if($scope.service== null)
 				flash.error="Service not configured: " +serviceUri;	
 		}, 
 		function(response){
-			flash.error="Component not configured: " +ServerErrorResponse.getMessage(response);
+			flash.error="Limes component not configured: " +ServerErrorResponse.getMessage(response);
+		});
+
+	// retreive the publication service url
+	var pubService;
+	ConfigurationService.getWorkbenchService("http://generator.geoknow.eu/resource/PublishingService").then(
+		function(response){
+			pubService = response;
+		},
+		function(response){
+			flash.error="PublishingService not configured: " +ServerErrorResponse.getMessage(response);
 		});
 
 	$scope.endpoints = ConfigurationService.getAllEndpoints();
@@ -249,14 +258,16 @@ var LimesCtrl = function($scope, $http, ConfigurationService, ComponentsService,
 				* and for storing results in private graphs
 				*/
       	return AuthSessionService.createSession().then(function(response){
-      		var workbench = ConfigurationService.getComponent(ConfigurationService.getFrameworkUri());
-			var workbenchHP = workbench.homepage;
-			if (workbenchHP.substr(-1) != '/') workbenchHP += '/';
+      		
+					var workbenchHP = ConfigurationService.getFrameworkHomepage();
+					if (workbenchHP.substr(-1) != '/') 
+						workbenchHP += '/';
+      		
       		var atuhEndpoint = workbenchHP + response.data.endpoint;
       		params.saveendpoint = atuhEndpoint;
-      		// overwrite endpoints if source or target uses the private endpoint
+	      		// overwrite endpoints if source or target uses the private endpoint
 					if($scope.limes.source.endpoint == ConfigurationService.getSPARQLEndpoint() ||
-							$scope.limes.target.endpoint == ConfigurationService.getSPARQLEndpoint()) {
+						$scope.limes.target.endpoint == ConfigurationService.getSPARQLEndpoint()) {
 						if($scope.limes.source.endpoint == ConfigurationService.getSPARQLEndpoint()){
 							params.source.endpoint = atuhEndpoint;
 							if($scope.limes.source.graph != null)
@@ -273,47 +284,46 @@ var LimesCtrl = function($scope, $http, ConfigurationService, ComponentsService,
       		//the accepted graph is therefore the target graph
 			createAuthEndpoint()
 				.then(function(){
-					
 					  //first two steps: create temp graphs
-		            var pubService = ConfigurationService.getComponentServices(":DataPublisher");         
-		            var pubServiceUrl = pubService[0].serviceUrl;
-		            var createAcceptGraphBody = "endpointUri="+params.saveendpoint
-		            + "&tempGraphUri="+params.acceptgraph + "&userName="+AccountService.getAccount().getUsername();
-		            var createReviewGraphBody = "endpointUri="+params.saveendpoint
-		            + "&tempGraphUri="+params.reviewgraph + "&userName="+AccountService.getAccount().getUsername();
+          var createAcceptGraphBody = "endpointUri="+params.saveendpoint
+          + "&tempGraphUri="+params.acceptgraph + "&userName="+AccountService.getAccount().getUsername();
+          var createReviewGraphBody = "endpointUri="+params.saveendpoint
+          + "&tempGraphUri="+params.reviewgraph + "&userName="+AccountService.getAccount().getUsername();
 		            
 					params.uribase = ConfigurationService.getUriBase();
 					params.uuid = jobDesc.name;
 					
-					
 					//create information for publishing step
-		          	//create body from params
-		          	var publishDataBody = "endpointUri="+params.saveendpoint
-		          		+ "&targetGraphUri="+jobDesc.namedgraph.replace(':', ConfigurationService.getUriBase())
-		          		+ "&inputGraphArray="+'[{"graph":"'+params.acceptgraph+'", "delete":"true"}';
-		          	
-		          	if(jobDesc.additionalSources){
-		          		
-		          		publishDataBody+=', {"graph":"'+jobDesc.namedgraph.replace(':', ConfigurationService.getUriBase())+'", "delete":"false"}';
-		          		
-		          	} 
-		          	
-		          	publishDataBody+=']'
-		          		+ "&backupExistingData="+jobDesc.newRevision
-		          		//todo: think of metadata in limes jobs
-		          		+ "&metaRdf="
-		          		+ "&userName="+AccountService.getAccount().getUsername();
-		          	
-		          	if(params.output=="TAB") {params.saveendpoint="";}
+        	//create body from params
+        	var publishDataBody = "endpointUri="+params.saveendpoint
+        		+ "&targetGraphUri="+jobDesc.namedgraph.replace(':', ConfigurationService.getUriBase())
+        		+ "&inputGraphArray="+'[{"graph":"'+params.acceptgraph+'", "delete":"true"}';
+        	
+        	if(jobDesc.additionalSources){
+        		publishDataBody+=', {"graph":"'+jobDesc.namedgraph.replace(':', ConfigurationService.getUriBase())+'", "delete":"false"}';
+        	} 
+        	
+        	publishDataBody+=']'
+        		+ "&backupExistingData="+jobDesc.newRevision
+        		//todo: think of metadata in limes jobs
+        		+ "&metaRdf="
+        		+ "&userName="+AccountService.getAccount().getUsername();
+        	
+        	if(params.output=="TAB") {params.saveendpoint="";}
 		          	
 					var steps = '['
-						+ '{"service":"'+pubServiceUrl+'/createTempGraph","contenttype":"application/x-www-form-urlencoded", "method":"POST", "body":"'+encodeURI(createAcceptGraphBody)+'", "numberOfOrder":1},'
-						+ '{"service":"'+pubServiceUrl+'/createTempGraph","contenttype":"application/x-www-form-urlencoded", "method":"POST", "body":"'+encodeURI(createReviewGraphBody)+'", "numberOfOrder":2},'
-		                + '{"service":"'+ $scope.service.serviceUrl+'","contenttype":"application/json", "method":"POST", "body": "'+encodeURI(JSON.stringify(params))+'" , "numberOfOrder":3}'
-		                + '{"service":"'+pubServiceUrl+'","contenttype":"application/x-www-form-urlencoded", "method":"POST", "body":"'+encodeURI(publishDataBody)+'", "numberOfOrder":4}'
-		                +']';
-					console.log(steps);
-					JobService.addMultiServiceJob(jobDesc.name, jobDesc.label, jobDesc.description, eval(steps), jobDesc.namedgraph.replace(':', ConfigurationService.getUriBase()))
+						+ '{"service":"'+pubService.serviceUrl+'/createTempGraph","contenttype":"application/x-www-form-urlencoded", "method":"POST", "body":"'+encodeURI(createAcceptGraphBody)+'", "numberOfOrder":1},'
+						+ '{"service":"'+pubService.serviceUrl+'/createTempGraph","contenttype":"application/x-www-form-urlencoded", "method":"POST", "body":"'+encodeURI(createReviewGraphBody)+'", "numberOfOrder":2},'
+		        + '{"service":"'+ $scope.service.serviceUrl+'","contenttype":"application/json", "method":"POST", "body": "'+encodeURI(JSON.stringify(params))+'" , "numberOfOrder":3},'
+            + '{"service":"'+pubService.serviceUrl+'","contenttype":"application/x-www-form-urlencoded", "method":"POST", "body":"'+encodeURI(publishDataBody)+'", "numberOfOrder":4}'
+            +']';
+					
+					JobService.addMultiServiceJob(
+							jobDesc.name, 
+							jobDesc.label, 
+							jobDesc.description, 
+							eval(steps), 
+							jobDesc.namedgraph.replace(':', ConfigurationService.getUriBase()))
 					.then(function(response){
 						$scope.$parent.updateJobs();
 						flash.success = "Job successfully added can be executed from the dashboard";

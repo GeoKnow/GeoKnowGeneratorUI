@@ -14,7 +14,7 @@
 @prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
 
 :     rdf:type owl:Ontology ;
-      dcterms:contributor "Martin Voigt"^^xsd:string , "Alejandra Garcia Rojas"^^xsd:string ;
+      dcterms:contributor "Alejandra Garcia Rojas"^^xsd:string , "Martin Voigt"^^xsd:string ;
       dcterms:descripton "Schema the Linked Data Integration Workbench"^^xsd:string ;
       owl:versionInfo "0.1.2"^^xsd:string .
 
@@ -24,21 +24,11 @@
       rdfs:label "Account"@en ;
       rdfs:subClassOf foaf:OnlineAccount .
 
-:Administrator
-      rdf:type :Role ;
-      rdfs:label "Administrator"@en .
-
 :AuthorisedSessions
       rdf:type owl:Class ;
       rdfs:comment "Sessions are fake endpoints provided to the Jobs in order to access private data."@en ;
       rdfs:label "Authorised Sessions "@en ;
       rdfs:subClassOf owl:Thing .
-
-:BasicUser
-      rdf:type :Role ;
-      rdfs:label "Basic user"@en ;
-      :isDefault "true"^^xsd:boolean ;
-      :isNotLoggedIn "true"^^xsd:boolean .
 
 :ClassificationAndEnrichment
       rdf:type :ToolCategory ;
@@ -73,10 +63,6 @@
       rdf:type owl:Class ;
       rdfs:label "Database Type"@en ;
       rdfs:subClassOf owl:Thing .
-
-:Disabled
-      rdf:type :Role ;
-      rdfs:label "Disabled"@en .
 
 :IBM_DB2
       rdf:type :DatabaseType ;

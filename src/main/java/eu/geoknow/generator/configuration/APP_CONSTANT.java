@@ -6,7 +6,7 @@ package eu.geoknow.generator.configuration;
  * @author alejandragarciarojas
  *
  */
-public final class APP_CONSTANTS {
+public final class APP_CONSTANT {
 
   public static final String SPARQL_JSON_RESPONSE_FORMAT = "application/sparql-results+json";
 

@@ -9,14 +9,15 @@ import org.hibernate.validator.constraints.NotEmpty;
  * 
  * <pre>
  * :PublishingService a lds:PublicationService ; 
- *   dcterms:description "Provides functionalit to upload 
+ *   dcterms:description "Provides functionality to upload 
  *     data."^^xsd:string ; 
  *   lds:serviceUrl <http://localhost:8080/service/rest/> .
  * 
- * <pre>
+ * </pre>
  * 
  * Mandatory properties are uri, type, description and service URL. The service can have other
- * properties that are variables (user, password, paths, etc.)
+ * properties that are variables (user, password, paths, etc.). These last could be sensitive data.
+ * These properties should be literals.
  * 
  * @author alejandragarciarojas
  *
@@ -31,6 +32,10 @@ public class Service {
   @NotEmpty
   private String serviceUrl;
   private HashMap<String, String> properties;
+
+  public Service() {
+    properties = new HashMap<String, String>();
+  }
 
   public String getType() {
     return type;

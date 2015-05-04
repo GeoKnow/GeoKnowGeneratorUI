@@ -629,7 +629,7 @@ var DeerCtrl = function($scope, $http, ConfigurationService, ComponentsService, 
 		}
 			
 		window.$windowScope = $scope;
-	 	var newWindow = $window.open('popup.html#/popup-geolift', 'frame', 'resizeable,height=600,width=800');
+	 	var newWindow = $window.open('popup.html#/popup-deer', 'frame', 'resizeable,height=600,width=800');
 		newWindow.params = params;
 		
 	};

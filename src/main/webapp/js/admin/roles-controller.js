@@ -1,7 +1,13 @@
 'use strict';
 
-function UserRolesCtrl($scope, $modal, UsersService, ConfigurationService, $q, ServerErrorResponse, flash, AccountService, $window) {
-    $scope.services = ConfigurationService.getAllServices();
+function UserRolesCtrl($scope, $modal, UsersService, ConfigurationService, ComponentsService, $q, ServerErrorResponse, flash, AccountService, $window) {
+
+    
+    ComponentsService.getAllServices().then(function(services){
+        $scope.services = services;   
+        console.log($scope.services); 
+    });
+
     $scope.users = UsersService.getAllUsers();
     $scope.roles = UsersService.getAllRoles();
 
@@ -16,7 +22,7 @@ function UserRolesCtrl($scope, $modal, UsersService, ConfigurationService, $q, S
 
     var getBasicUserRole = function() {
         for (var ind in $scope.roles) {
-            if ($scope.roles[ind].uri=="gkg:BasicUser") return $scope.roles[ind];
+            if ($scope.roles[ind].uri==":BasicUser") return $scope.roles[ind];
         }
         return null;
     };
@@ -50,7 +56,7 @@ function UserRolesCtrl($scope, $modal, UsersService, ConfigurationService, $q, S
     };
 
     $scope.roleUnchangeable = function(role) {
-        return role.uri=="gkg:Administrator" || role.uri=="gkg:BasicUser";
+        return role.uri==":Administrator" || role.uri==":BasicUser";
     };
 
     $scope.toggleService = function(service, role) {
@@ -64,7 +70,7 @@ function UserRolesCtrl($scope, $modal, UsersService, ConfigurationService, $q, S
     };
 
     $scope.serviceAllowed = function(service, role) {
-        if (role.uri=="gkg:Administrator") return true;
+        if (role.uri==":Administrator") return true;
         return role.services.indexOf(service.uri) > -1;
     };
 
@@ -73,7 +79,7 @@ function UserRolesCtrl($scope, $modal, UsersService, ConfigurationService, $q, S
     };
 
     $scope.toggleRole = function(user, role) {
-        if (user.profile.role.uri==role.uri) user.profile.role.uri = "gkg:BasicUser";
+        if (user.profile.role.uri==role.uri) user.profile.role.uri = ":BasicUser";
         else user.profile.role.uri = role.uri;
         if ($scope.changedUsers.indexOf(user.profile.accountURI) == -1) $scope.changedUsers.push(user.profile.accountURI);
     };

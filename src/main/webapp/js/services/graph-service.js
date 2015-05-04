@@ -94,7 +94,6 @@ module.factory("GraphService", function ($http, $q, Config, ConfigurationService
     var getAllNamedGraphs = function (reload) {
         return readNamedGraphs(reload).then(function (data) {
             var results = [];
-            console.log(data);
             for (var resource in data) {
                 var graph = data[resource];
                 // filter named graphs
@@ -407,7 +406,6 @@ module.factory("GraphService", function ($http, $q, Config, ConfigurationService
             }
             namedgraph["acl:owner"] = [AccountService.getAccount().getAccountURI()];
         }
-        console.log(parNamedGraph);
 
         // create the graph
         var requestData = {
@@ -417,18 +415,6 @@ module.factory("GraphService", function ($http, $q, Config, ConfigurationService
             username: AccountService.getAccount().getUsername(), 
         }
 
-        console.log(requestData);
-
-        // return Config.request("rest/GraphManagerServlet/createGraph", requestData, function (response) {
-        //     // if the creation succeed, then add the metadata insert the metadata of the graph
-        //     var settings = Config.getSettings();
-        //     settings[parNamedGraph.name] = namedgraph;
-        //     settings[parNamedGraph.name + "Graph"] = graph;
-        //     settings[":default-dataset"]["sd:namedGraph"].push(parNamedGraph.name);
-        //     console.log("save graph metadata");  
-        //     return Config.write();
-        // });
-
         var promise = $http.post("rest/GraphManagerServlet/createGraph", $.param(requestData)).then(
             // success
             function (response) {
@@ -437,12 +423,7 @@ module.factory("GraphService", function ($http, $q, Config, ConfigurationService
                 settings[parNamedGraph.name] = namedgraph;
                 settings[parNamedGraph.name + "Graph"] = graph;
                 settings[":default-dataset"]["sd:namedGraph"].push(parNamedGraph.name);
-                console.log("save graph metadata");  
                 return Config.write();
-            //fail
-            }, function (response) {
-                console.log(response);
-
             });
         return promise;
 

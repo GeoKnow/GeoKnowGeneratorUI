@@ -28,6 +28,26 @@ module.factory('ComponentsService', function ($http, $q) {
 					return component.services[i];
 			}
 			return null;
+		},
+
+		getAllServices : function(){
+			return $http.get("rest/components/services").then( 
+				// success
+				function (response){
+					return response.data.services;
+	    });
+		},
+
+		getService: function(uri){
+				return $http.get("rest/components/services/"+uri).then( 
+				// success
+				function (response){
+					return response.data.services;
+	    });
+		}
+
+		updateService : function(service){
+			
 		}
 	};
 

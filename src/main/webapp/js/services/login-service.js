@@ -20,14 +20,13 @@ module.factory("LoginService", function ($http, $location, $cookieStore, Account
             data: $.param(postData),
             contentType: "application/x-www-form-urlencoded"
         }).then(function (response) {
-        	
-        	 return AccountService.create(
-                     response.data.username, 
-                     response.data.accountURI,
-                     response.data.email, 
-                     response.data.role,
-                     response.data.settingsGraph);
-
+        	console.log(response);
+        	return AccountService.create(
+                response.data.username, 
+                response.data.accountURI,
+                response.data.email, 
+                response.data.role,
+                response.data.settingsGraph);
         }, function (response) {
             flash.error = ServerErrorResponse.getMessage(response);
         });

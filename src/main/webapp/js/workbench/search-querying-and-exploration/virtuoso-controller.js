@@ -55,7 +55,6 @@ app.controller('VirtuosoCtrl', function($scope, ConfigurationService, Components
                     '&format=text%2Fhtml' +
                     '&timeout=30000';
       }
-      console.log($scope.url);
 	};
 
 	$scope.refreshGraphList();

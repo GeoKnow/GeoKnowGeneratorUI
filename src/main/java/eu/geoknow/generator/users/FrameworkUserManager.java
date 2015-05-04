@@ -17,6 +17,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.util.ISO8601Utils;
 import com.google.gson.Gson;
+import com.hp.hpl.jena.vocabulary.RDFS;
 import com.ontos.ldiw.vocabulary.LDIWO;
 
 import eu.geoknow.generator.configuration.FrameworkConfiguration;
@@ -292,7 +293,7 @@ public class FrameworkUserManager implements UserManager {
             + "> {?account gkg:passwordSha1Hash \"" + DigestUtils.sha1Hex(newPassword) + "\"} } "
             + " WHERE {GRAPH <" + frameworkConfig.getAccountsGraph()
             + "> {?account foaf:accountName \"" + username + "\" .  } }";
-    // todo replace 2 queries with this query when OntoQuad will support
+    // TODO: replace 2 queries with this query when OntoQuad will support
     // DELETE {...} INSERT {...} WHERE {...} queries
     // String query = getPrefixes() + "\n" + "WITH <" +
     // frameworkConfig.getAccountsGraph() + "> "
@@ -336,7 +337,7 @@ public class FrameworkUserManager implements UserManager {
             + "\" . OPTIONAL { ?account gkg:passwordSha1Hash ?o . } } } " + " UNION " + " GRAPH <"
             + frameworkConfig.getAccountsGraph() + "> { ?account foaf:mbox <mailto:"
             + usernameOrEmail + "> . OPTIONAL { ?account gkg:passwordSha1Hash ?o . } } } " + " }";
-    // todo replace 2 queries with this query when OntoQuad will support
+    // TODO: replace 2 queries with this query when OntoQuad will support
     // DELETE {...} INSERT {...} WHERE {...} queries
     // String query = getPrefixes() + "\n" + "WITH <" +
     // frameworkConfig.getAccountsGraph() + "> "
@@ -459,7 +460,10 @@ public class FrameworkUserManager implements UserManager {
             + "\" . ?account ?p ?o . } " + " UNION " + " {?account foaf:mbox <mailto:" + userId
             + "> . ?account ?p ?o . } " + " UNION " + " {?account ?p ?o . FILTER (?account = :"
             + userId + ")} " + "}";
+    log.debug(query);
+
     String result = rdfStoreManager.execute(query, jsonResponseFormat);
+
     ObjectMapper mapper = new ObjectMapper();
     JsonNode rootNode = mapper.readTree(result);
     Iterator<JsonNode> bindingsIter = rootNode.path("results").path("bindings").elements();
@@ -471,6 +475,7 @@ public class FrameworkUserManager implements UserManager {
     while (bindingsIter.hasNext()) {
       JsonNode bindingNode = bindingsIter.next();
       String predicate = bindingNode.path("p").path("value").textValue();
+      log.debug(predicate);
       if (predicate.equals("http://xmlns.com/foaf/0.1/accountName"))
         userProfile.setUsername(bindingNode.path("o").path("value").textValue());
       else if (predicate.endsWith("/settingsGraph"))
@@ -480,6 +485,7 @@ public class FrameworkUserManager implements UserManager {
         userProfile.setEmail(mbox.substring("mailto:".length()));
       } else if (predicate.equals(LDIWO.role.getURI())) {
         String roleURI = bindingNode.path("o").path("value").textValue();
+        log.debug(roleURI);
         UserRole role = getRole(roleURI);
         userProfile.setRole(role);
       }
@@ -504,19 +510,29 @@ public class FrameworkUserManager implements UserManager {
     return userProfileExtended;
   }
 
-  // todo move to another class?
+  // TODO: move to another class?
   public RdfStoreManager getRdfStoreManager(String username) throws Exception {
     if (username == null || username.isEmpty())
       throw new IllegalArgumentException("username cannot be null");
-    String password = PasswordStore.getPassword(username);
-    if (password == null)
-      throw new Exception("No password found for user " + username
-          + " in local store. Authentication required.");
-    return frameworkConfig.getUserRdfStoreManager(username, password);
+
+    return frameworkConfig.getUserRdfStoreManager(frameworkConfig.getWorkbenchSystemAdmin(),
+        frameworkConfig.getWorkbenchSystemAdminPassword());
+
+    // password store is a nice idea, but useless, since every user needs to login again after
+    // server restart.
+    // there are tasks or jobs, that need user credentials and run out of the box after restart, so
+    // waiting for a login is
+    // not appropiate. better: have encryption
+    /**
+     * String password = PasswordStore.getPassword(username); if (password==null) throw new
+     * Exception("No password found for user " + username +
+     * " in local store. Authentication required."); return
+     * frameworkConfig.getUserRdfStoreManager(username, password);
+     **/
   }
 
   /*
-   * // todo username must be not null (may be null now - for VirtuosoProxy) public
+   * // TODO: username must be not null (may be null now - for VirtuosoProxy) public
    * ObjectPair<String, String> getRdfStoreUser(String frameworkUsername, String token) throws
    * Exception { String query = getPrefixes() + "\n" +
    * "SELECT ?rdfStoreUsername, ?rdfStorePassword FROM <" + frameworkConfig.getAccountsGraph() +
@@ -876,7 +892,7 @@ public class FrameworkUserManager implements UserManager {
       return false;
     JsonNode binding = bindingsIter.next();
     String role = binding.path("role").path("value").textValue();
-    return role.equals(LDIWO.Administrator.getURI());
+    return role.equals(frameworkConfig.getResourceNamespace() + RoleType.ADMINISTRATOR);
   }
 
   /**
@@ -899,10 +915,19 @@ public class FrameworkUserManager implements UserManager {
             + "> {?account gkg:role <" + role + ">} } " + " WHERE { GRAPH <"
             + frameworkConfig.getAccountsGraph() + "> {?account foaf:accountName \"" + userId
             + "\" . optional {?account gkg:role ?o .} } }";
+    log.debug(deleteQuery);
+    log.debug(insertQuery);
     rdfStoreManager.execute(deleteQuery, jsonResponseFormat);
     rdfStoreManager.execute(insertQuery, jsonResponseFormat);
 
-    // todo replace 2 queries with this query when OntoQuad will support
+    // remove all privileges on system graphs if any
+    setSystemGraphPermisions(userId, GraphPermissions.NO);
+
+    // if Role == Admin provide access to the graphs: components.
+    if (role.equals(frameworkConfig.getResourceNamespace() + RoleType.ADMINISTRATOR))
+      setSystemGraphPermisions(userId, GraphPermissions.WRITE);
+
+    // TODO: replace 2 queries with this query when OntoQuad will support
     // DELETE {...} INSERT {...} WHERE {...} queries
     // String query = getPrefixes() + "\n"
     // + " WITH <" + frameworkConfig.getAccountsGraph() + "> "
@@ -919,14 +944,19 @@ public class FrameworkUserManager implements UserManager {
     String query =
         getPrefixes() + "\n" + "SELECT ?s ?p ?o FROM <" + frameworkConfig.getAccountsGraph() + "> "
             + "WHERE {?s ?p ?o . filter(?s=<" + roleURI + ">)}";
+    log.debug(query);
     String result = rdfStoreManager.execute(query, jsonResponseFormat);
+
     ObjectMapper mapper = new ObjectMapper();
     JsonNode rootNode = mapper.readTree(result);
     Iterator<JsonNode> bindingsIter = rootNode.path("results").path("bindings").elements();
     while (bindingsIter.hasNext()) {
       JsonNode bindingNode = bindingsIter.next();
       String predicate = bindingNode.path("p").path("value").textValue();
-      if (predicate.equals("http://xmlns.com/foaf/0.1/name"))
+
+      log.debug(predicate);
+
+      if (predicate.equals(RDFS.label.getURI()))
         role.setName(bindingNode.path("o").path("value").textValue());
       else if (predicate.equals(LDIWO.isAllowedToUseService.getURI()))
         roleServices.add(bindingNode.path("o").path("value").textValue());
@@ -945,7 +975,7 @@ public class FrameworkUserManager implements UserManager {
     Iterator<JsonNode> bindingsIter = rootNode.path("results").path("bindings").elements();
     String role;
     if (!bindingsIter.hasNext()) {
-      role = LDIWO.BasicUser.getURI();
+      role = frameworkConfig.getResourceNamespace() + RoleType.DEFAULT;
     } else {
       JsonNode binding = bindingsIter.next();
       role = binding.path("role").path("value").textValue();
@@ -975,5 +1005,19 @@ public class FrameworkUserManager implements UserManager {
     if (!bindingsIter.hasNext())
       return null;
     return bindingsIter.next().path("name").path("value").textValue();
+  }
+
+  /**
+   * Set the permissions to the system graphs
+   * 
+   * @param user
+   * @param permisions
+   * @throws Exception
+   */
+  private void setSystemGraphPermisions(String user, GraphPermissions permisions) throws Exception {
+    for (String g : frameworkConfig.getSystemGraphs().keySet()) {
+      rdfStoreUserManager.setRdfGraphPermissions(user, frameworkConfig.getSystemGraphs().get(g),
+          permisions);
+    }
   }
 }

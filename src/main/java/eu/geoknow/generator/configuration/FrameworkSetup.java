@@ -37,6 +37,10 @@ import eu.geoknow.generator.users.VirtuosoUserManager;
  * 
  * @author taleksaschina on 30.06.2014.
  * @author mvoigt
+ * @author alejandragarciarojas added componentsGraph, and re-stuctured the setup
+ * 
+ *         TODO: roles have to be defined also in he framework-user.ttl instead of the ontology
+ * 
  */
 public class FrameworkSetup {
 
@@ -120,19 +124,8 @@ public class FrameworkSetup {
     // Make graphs no accessible by default
     rdfStoreUserManager.setPublicRdfPermissions(UserManager.GraphPermissions.NO);
 
-    rdfStoreUserManager.setRdfGraphPermissions(config.getWorkbenchSystemAdmin(),
-        config.getSettingsGraph(), UserManager.GraphPermissions.WRITE);
-    rdfStoreUserManager.setRdfGraphPermissions(config.getWorkbenchSystemAdmin(),
-        config.getAccountsGraph(), UserManager.GraphPermissions.WRITE);
-    rdfStoreUserManager.setRdfGraphPermissions(config.getWorkbenchSystemAdmin(),
-        config.getGroupsGraph(), UserManager.GraphPermissions.WRITE);
-    rdfStoreUserManager.setRdfGraphPermissions(config.getWorkbenchSystemAdmin(),
-        config.getJobsGraph(), UserManager.GraphPermissions.WRITE);
-    rdfStoreUserManager.setRdfGraphPermissions(config.getWorkbenchSystemAdmin(),
-        config.getAuthSessionsGraph(), UserManager.GraphPermissions.WRITE);
-
-    setupComponentsGraph();
-    // add creation and modification dates to the graphs
+    // add creation dates of the graphs to the SystemGraphsModel, this metadata is going
+    // to be added to the settingsGraph
     addDates(config.getSettingsGraph(), FrameworkConfiguration.getSystemGraphsModel());
     addDates(config.getAccountsGraph(), FrameworkConfiguration.getSystemGraphsModel());
     addDates(config.getComponentsGraph(), FrameworkConfiguration.getSystemGraphsModel());
@@ -140,47 +133,21 @@ public class FrameworkSetup {
     addDates(config.getAuthSessionsGraph(), FrameworkConfiguration.getSystemGraphsModel());
     addDates(config.getJobsGraph(), FrameworkConfiguration.getSystemGraphsModel());
 
-    // Removing components from settings graph
-    /*
-     * settingsModel.add(FrameworkConfiguration.getComponentsModel()); // add to settings virtuoso
-     * component without users/passwords String queryString =
-     * "PREFIX foaf:<http://xmlns.com/foaf/0.1/> " +
-     * "PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#> " +
-     * "PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#> " +
-     * "PREFIX void:    <http://rdfs.org/ns/void#> " +
-     * "PREFIX lds:<http://stack.linkeddata.org/ldis-schema/>" + " CONSTRUCT   { <" +
-     * config.getFrameworkUri() + "> ?p ?o . " + "<" + config.getFrameworkUri() +
-     * "> lds:integrates ?component ." +
-     * "?component rdfs:label ?label . ?component rdf:type ?type . " +
-     * "?component lds:providesService ?service . " + "?service rdf:type ?servicetype ." +
-     * "?service rdfs:label ?servicelabel ." + "?service void:sparqlEndpoint ?serviceendpoint ." +
-     * "?service lds:serviceUrl ?serviceUrl ." + "} " + " WHERE  { <" + config.getFrameworkUri() +
-     * "> ?p ?o ." + "<" + config.getFrameworkUri() + "> lds:integrates ?component ." +
-     * "?component rdfs:label ?label . ?component rdf:type ?type . " +
-     * "?component lds:providesService ?service . " + "?service rdf:type ?servicetype ." +
-     * "?service lds:serviceUrl ?serviceUrl ." + "OPTIONAL { " +
-     * "   ?service rdfs:label ?servicelabel ." +
-     * "   ?service void:sparqlEndpoint ?serviceendpoint " + "  }" + "}";
-     * 
-     * log.debug(queryString); QueryExecution qexec = QueryExecutionFactory.create(queryString,
-     * FrameworkConfiguration.getConfigurationModel()); Model triples = qexec.execConstruct();
-     * settingsModel.add(triples); qexec.close();
-     */
+    // sets the graph permissions to accountsGraph, groupsGraph, jobsGraph and authSessionsGrapg.
+    // all are writable by the System user
+    rdfStoreUserManager.setRdfGraphPermissions(config.getWorkbenchSystemAdmin(),
+        config.getGroupsGraph(), UserManager.GraphPermissions.WRITE);
+    rdfStoreUserManager.setRdfGraphPermissions(config.getWorkbenchSystemAdmin(),
+        config.getJobsGraph(), UserManager.GraphPermissions.WRITE);
+    rdfStoreUserManager.setRdfGraphPermissions(config.getWorkbenchSystemAdmin(),
+        config.getAuthSessionsGraph(), UserManager.GraphPermissions.WRITE);
 
-
-    // write the system settings model (include system graphs data)
-    // insert configuration data, system graphs and datasources to the settings model
-    Model settingsModel = ModelFactory.createDefaultModel();
-    settingsModel.add(FrameworkConfiguration.getConfigurationModel());
-    settingsModel.add(FrameworkConfiguration.getDatasourceModel());
-    settingsModel.add(FrameworkConfiguration.getSystemGraphsModel());
-    ByteArrayOutputStream os = new ByteArrayOutputStream();
-    os = new ByteArrayOutputStream();
-    settingsModel.write(os, "N-TRIPLES");
-    String queryString =
-        "INSERT DATA { GRAPH <" + config.getSettingsGraph() + "> { " + os.toString() + " } }";
-    os.close();
-    frameworkRdfStoreManager.execute(queryString, null);
+    // setup the settingsGraph with corresponding metadata
+    setupSettingsGraph();
+    // setup the componentsGraph with corresponding metadata
+    setupComponentsGraph();
+    // add the roles to the accounts graph
+    setupAccountsGraph();
 
     // get accounts to be created form the configuration file
     log.info("create users from framework configuration");
@@ -302,11 +269,34 @@ public class FrameworkSetup {
     }
   }
 
+
+
+  private void setupSettingsGraph() throws Exception {
+    log.debug("setting up " + config.getSettingsGraph());
+    frameworkRdfStoreManager.createGraph(config.getComponentsGraph());
+
+    // only admin user can read/write the graph
+    rdfStoreUserManager.setRdfGraphPermissions(config.getWorkbenchSystemAdmin(),
+        config.getComponentsGraph(), UserManager.GraphPermissions.WRITE);
+    // write the system settings model (include system graphs data)
+    // insert configuration data, system graphs and datasources to the settings model
+    Model settingsModel = ModelFactory.createDefaultModel();
+    settingsModel.add(FrameworkConfiguration.getConfigurationModel());
+    settingsModel.add(FrameworkConfiguration.getDatasourceModel());
+    settingsModel.add(FrameworkConfiguration.getSystemGraphsModel());
+    ByteArrayOutputStream os = new ByteArrayOutputStream();
+    os = new ByteArrayOutputStream();
+    settingsModel.write(os, "N-TRIPLES");
+    String queryString =
+        "INSERT DATA { GRAPH <" + config.getSettingsGraph() + "> { " + os.toString() + " } }";
+    os.close();
+    frameworkRdfStoreManager.execute(queryString, null);
+  }
+
   /**
    * Creates the components graph and provides corresponding privileges. Then, loads the file in the
    * graph.
    * 
-   * @param file
    * @throws Exception
    */
   private void setupComponentsGraph() throws Exception {
@@ -314,25 +304,47 @@ public class FrameworkSetup {
     // users
     log.debug("setting up " + config.getComponentsGraph());
     frameworkRdfStoreManager.createGraph(config.getComponentsGraph());
-
     // only admin user can read/write the graph
     rdfStoreUserManager.setRdfGraphPermissions(config.getWorkbenchSystemAdmin(),
         config.getComponentsGraph(), UserManager.GraphPermissions.WRITE);
 
     ByteArrayOutputStream os = new ByteArrayOutputStream();
-
     FrameworkConfiguration.getComponentsModel().write(os, "N-TRIPLES");
-
     String queryString =
         "INSERT DATA { GRAPH <" + config.getComponentsGraph() + "> { " + os.toString() + " } }";
     os.close();
-
     try {
       frameworkRdfStoreManager.execute(queryString, null);
     } catch (Exception e) {
       log.error(e);
       throw new SPARQLEndpointException(e.getMessage());
     }
+  }
 
+  /**
+   * Set up Accounts Graph
+   * 
+   * @throws Exception
+   */
+  private void setupAccountsGraph() throws Exception {
+    // components graph are writable by admin and readable by framework
+    // users
+    log.debug("setting up " + config.getAccountsGraph());
+    frameworkRdfStoreManager.createGraph(config.getAccountsGraph());
+    // only admin user can read/write the graph
+    rdfStoreUserManager.setRdfGraphPermissions(config.getWorkbenchSystemAdmin(),
+        config.getAccountsGraph(), UserManager.GraphPermissions.WRITE);
+
+    ByteArrayOutputStream os = new ByteArrayOutputStream();
+    FrameworkConfiguration.getRolesModel().write(os, "N-TRIPLES");
+    String queryString =
+        "INSERT DATA { GRAPH <" + config.getAccountsGraph() + "> { " + os.toString() + " } }";
+    os.close();
+    try {
+      frameworkRdfStoreManager.execute(queryString, null);
+    } catch (Exception e) {
+      log.error(e);
+      throw new SPARQLEndpointException(e.getMessage());
+    }
   }
 }

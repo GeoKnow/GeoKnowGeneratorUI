@@ -16,6 +16,7 @@ import org.junit.Test;
 import eu.geoknow.generator.component.beans.Component;
 import eu.geoknow.generator.component.beans.Service;
 import eu.geoknow.generator.component.beans.ServiceType;
+import eu.geoknow.generator.configuration.FrameworkConfiguration;
 import eu.geoknow.generator.exceptions.InformationMissingException;
 import eu.geoknow.generator.exceptions.ResourceExistsException;
 import eu.geoknow.generator.exceptions.ResourceNotFoundException;
@@ -27,7 +28,9 @@ import eu.geoknow.generator.exceptions.SPARQLEndpointException;
  * in the corresponding graph
  * 
  * @author alejandragarciarojas
- *
+ * 
+ *         TODO: add test to validate user rights to update components, the test is currently using
+ *         a super user
  */
 public class ComponentManagerIT {
 
@@ -35,8 +38,10 @@ public class ComponentManagerIT {
   private Service service;
   private Component component;
 
+  private ComponentManager manager;
+
   @Before
-  public void init() {
+  public void init() throws IOException, InformationMissingException {
 
     service = new Service();
     service.setUri("http://testig/component/service");
@@ -51,6 +56,11 @@ public class ComponentManagerIT {
     component.setVersion("1");
 
     component.getServices().add(service);
+
+    manager =
+        new ComponentManager(FrameworkConfiguration.getInstance().getUserRdfStoreManager("testing",
+            "integration-testing"));
+
   }
 
 
@@ -58,7 +68,7 @@ public class ComponentManagerIT {
   public void getComponentsTest() throws IOException, SPARQLEndpointException,
       ResourceNotFoundException, InformationMissingException {
 
-    ComponentManager manager = new ComponentManager();
+    log.info("getComponentsTest");
     Collection<Component> components = manager.getAllComponents();
     assertFalse(components.isEmpty());
     Component c = components.iterator().next();
@@ -69,18 +79,8 @@ public class ComponentManagerIT {
 
 
   @Test
-  public void addUpdateDeleteTest() throws SPARQLEndpointException, IOException,
-      ResourceExistsException, ResourceNotFoundException, InformationMissingException {
-
-    ComponentManager manager = new ComponentManager();
-
-    // get a unexisitng component
-    try {
-      manager.getComponent(component.getUri());
-      fail("Should have thrown an ResourceNotFoundException");
-    } catch (ResourceNotFoundException e) {
-      assertTrue(e instanceof ResourceNotFoundException);
-    }
+  public void addAddTest() throws SPARQLEndpointException, IOException, ResourceExistsException,
+      ResourceNotFoundException, InformationMissingException {
 
     // insert a component
     log.info("Inserting " + component.getUri());
@@ -90,29 +90,49 @@ public class ComponentManagerIT {
     Component c1 = manager.getComponent(component.getUri());
     assertEquals(c1.getLabel(), component.getLabel());
 
-    // update a component
+  }
+
+  @Test
+  public void addUpdateTest() throws SPARQLEndpointException, IOException, ResourceExistsException,
+      ResourceNotFoundException, InformationMissingException {
+    // change description
+
+    Component c1 = manager.getComponent(component.getUri());
     c1.setLabel("label 2");
     c1.setVersion("2");
     c1.setHomepage("http://testig2/component");
-    c1.getServices().clear();
-    log.info("Updating " + c1.getUri());
-    manager.updateComponent(component);
+    manager.updateComponent(c1);
 
     Component c2 = null;
     c2 = manager.getComponent(component.getUri());
     assertNotSame(c2.getLabel(), component.getLabel());
+    assertNotSame(c2.getVersion(), component.getVersion());
+    assertNotSame(c2.getHomepage(), component.getHomepage());
+
+    // update services
+    c1.getServices().get(0).getProperties().put("user", "anyone");
+    c1.getServices().get(0).getProperties().put("password", "hola");
+    log.info("Updating " + c1.getServices().get(0).getUri());
+    manager.updateComponent(c1);
+
+    Service s1 = manager.getService(c1.getServices().get(0).getUri());
+    assertEquals("anyone", s1.getProperties().get("user"));
+  }
+
+  @Test
+  public void addDeleteTest() throws SPARQLEndpointException, IOException, ResourceExistsException,
+      ResourceNotFoundException, InformationMissingException {
+
+    log.info("deleting " + component.getUri());
+    manager.deleteComponent(component.getUri());
 
     // try to update not existing component
-    log.info("Updating unexisting " + c2.getUri());
-    c2.setUri("http://testig/2/component");
     try {
-      manager.updateComponent(c2);
+      manager.updateComponent(component);
       fail("Should have thrown an ResourceNotFoundException");
     } catch (ResourceNotFoundException e) {
       assertTrue(e instanceof ResourceNotFoundException);
     }
-
-    manager.deleteComponent(component.getUri());
 
     // try to get the deleted component
     try {
@@ -126,7 +146,8 @@ public class ComponentManagerIT {
   @Test
   public void getAllTypes() throws IOException, InformationMissingException {
 
-    ComponentManager manager = new ComponentManager();
+    ComponentManager manager =
+        new ComponentManager(FrameworkConfiguration.getInstance().getAdminRdfStoreManager());
     Collection<ServiceType> all = manager.getServiceTypes();
     assertFalse(all.isEmpty());
     assertFalse(all.iterator().next().getLabels().isEmpty());

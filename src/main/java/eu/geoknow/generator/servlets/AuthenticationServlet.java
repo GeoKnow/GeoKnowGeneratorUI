@@ -18,6 +18,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.Response;
 
+import org.apache.log4j.Logger;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import eu.geoknow.generator.configuration.FrameworkConfiguration;
@@ -45,6 +47,9 @@ public class AuthenticationServlet extends HttpServlet {
    * 
    */
   private static final long serialVersionUID = 1L;
+
+  private static final Logger log = Logger.getLogger(AuthenticationServlet.class);
+
   private FrameworkUserManager frameworkUserManager;
 
   @Override
@@ -116,6 +121,8 @@ public class AuthenticationServlet extends HttpServlet {
       try {
         userProfile = frameworkUserManager.getUserProfile(username);
         // send request with session token and user profile
+
+        log.debug(userProfile.getRole().getName());
 
         ObjectMapper objectMapper = new ObjectMapper();
         String responseStr = objectMapper.writeValueAsString(userProfile);

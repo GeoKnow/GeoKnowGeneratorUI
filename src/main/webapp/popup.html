@@ -8,10 +8,9 @@
     <meta name="author" content=""/>
 
     <!-- Le styles -->
-    <link href="css/bootstrap.css" rel="stylesheet"/>
-    <link href="css/bootstrap-modal-bs3patch.css" rel="stylesheet"/>
-    <link href="css/bootstrap-modal.css" rel="stylesheet"/>
-    <link href="css/bootstrap-slider.css" rel="stylesheet"/>
+    <link href="lib/bootstrap-3.2.0-dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="lib/bootstrap-3.2.0-dist/css/bootstrap-theme.min.css" rel="stylesheet"/>
+
     <link href="css/app.css" rel="stylesheet"/>
     
     <link rel="icon" type="image/png" href="img/favicon.png">
@@ -49,17 +48,31 @@
     <!-- Le javascript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
+
     <script src="lib/jquery/jquery-1.9.1.js"></script>
     <script src="lib/jquery/jquery-ui-1.10.1.custom.min.js"></script>
-    <script src="lib/bootstrap/bootstrap.js"></script>
-    <script src="lib/angularjs/angular.js"></script>
-    <script src="lib/angularjs/angular-cookies.js"></script>
-    <script src="lib/angularjs/angular-route.js"></script>
+    
+    <script src="lib/angular-1.2.26/angular.min.js"></script>
+    <script src="lib/angular-1.2.26/angular-cookies.min.js"></script>
+    <script src="lib/angular-1.2.26/angular-route.min.js"></script>
+
+    <script src="lib/bootstrap-3.2.0-dist/js/bootstrap.min.js"></script>
+
+    <script src="lib/ui-bootstrap/ui-bootstrap-tpls-0.11.2.min.js"></script>
+    
+    <script src="lib/angular-route-segment/angular-route-segment.min.js"></script>
+    <script src="lib/angular-file-upload-master/angular-file-upload.min.js"></script>
+    <script src="lib/angular-file-upload-master/FileAPI.min.js"></script>
+    <script src="lib/angular-flash.min.js"></script>
+
     <script src="lib/modal-master/bootstrap-modal.js"></script>
     <script src="lib/modal-master/bootstrap-modalmanager.js"></script>
-    <script src="js/app.js"></script>
+
     <script src="lib/slider/bootstrap-slider.js"></script>
+    <script src="lib/xml2json.min.js"></script>
+    
     <!-- services for the different modules/pages -->
+    <script src="js/app.js"></script>
     <script src="js/services/config.js"></script>
     <script src="js/services/services.js"></script>
     <script src="js/services/ns-service.js"></script>
@@ -68,20 +81,12 @@
     <script src="js/services/account-service.js"></script>
     <script src="js/services/login-service.js"></script>
     <script src="js/services/graph-group-service.js"></script>
-    <script src="js/services/users-service.js"></script>    
-
+    <script src="js/services/users-service.js"></script>
     <!-- controllers for the different modules/pages -->
     <script src="js/controllers.js"></script>
     <script src="js/login-controller.js"></script>
-    <script src="js/workbench/extraction-and-loading/import-rdf-controller.js"></script>
-    <script src="js/workbench/extraction-and-loading/sparqlify-controller.js"></script>
-    <script src="js/workbench/extraction-and-loading/triplegeo-controller.js"></script>
-    <script src="js/workbench/search-querying-and-exploration/facete-controller.js"></script>
-    <script src="js/workbench/search-querying-and-exploration/mappify-controller.js"></script>
-    <script src="js/workbench/search-querying-and-exploration/virtuoso-controller.js"></script>
-    <script src="js/workbench/manual-revision-and-authoring/ontowiki-controller.js"></script>
+    <script src="js/workbench/dashboard-controller.js"></script>
     <script src="js/workbench/classification-and-enrichment/geolift-controller.js"></script>
-    <script src="js/workbench/linking-and-fusing/limes-controller.js"></script>
     <script src="js/settings/settings-controller.js"></script>
     <script src="js/settings/datasets/graphs-controller.js"></script>
     <script src="js/settings/data-sources/endpoint-controller.js"></script>
@@ -91,14 +96,5 @@
     <script src="js/account/account-controller.js"></script>
     <script src="js/admin/users/users-controller.js"></script>
     <script src="js/admin/roles-controller.js"></script>
-
-    <!-- directives -->
-    <script src="js/directives.js"></script>
-    <script src="lib/osm/OpenLayers.js"></script>
-    <script src="lib/ui-bootstrap/ui-bootstrap-tpls-0.6.0.min.js"></script>
-    <script src="lib/angular-route-segment/angular-route-segment.min.js"></script>
-    <script src="lib/angular-file-upload-master/angular-file-upload.min.js"></script>
-    <script src="lib/angular-file-upload-master/FileAPI.min.js"></script>
-    <script src="lib/angular-flash.min.js"></script>
   </body>
 </html>

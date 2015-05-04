@@ -2,6 +2,7 @@ package eu.geoknow.generator.configuration;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.jena.riot.RiotException;
@@ -60,12 +61,14 @@ public class FrameworkConfiguration {
   private final static String componentsFile = "framework-components.ttl";
   private final static String usersFile = "framework-users.ttl";
   private final static String sysgraphsFile = "framework-system-graphs.ttl";
+  private final static String rolesFile = "framework-roles.ttl";
 
   private static Model configurationModel = null;
   private static Model datasourceModel = null;
   private static Model componentsModel = null;
   private static Model usersModel = null;
   private static Model sysgraphsModel = null;
+  private static Model rolesModel = null;
 
   // RDF store admin, who has rights to manage RDF store users (create,
   // delete, grant permissions, etc.).
@@ -89,14 +92,11 @@ public class FrameworkConfiguration {
   private String workbenchSystemAdminPassword = "";
 
   // system graphs
-  private String componentsGraph = "";
-  private String accountsGraph = "";
-  private String settingsGraph = "";
-  private String jobsGraph = "";
-  private String authSessionsGraph = "";
-  private String groupsGraph = "";
   private String frameworkUri;
   private String homepage;
+
+  // system graphs
+  private static HashMap<String, String> systemGraphs;
 
   private String springBatchUri = "";
   private String springBatchJobsDir = "";
@@ -263,6 +263,7 @@ public class FrameworkConfiguration {
       qexec.close();
 
       // get and set the system named graphs
+      systemGraphs = new HashMap<String, String>();
       query =
           "SELECT ?name ?label  " + "WHERE { ?s <" + SD.namedGraph.getURI() + "> ?o .  ?o  <"
               + SD.name.getURI() + "> ?name . ?o <" + SD.graph.getURI() + "> ?g . ?g <"
@@ -275,21 +276,14 @@ public class FrameworkConfiguration {
       }
       for (; results.hasNext();) {
         QuerySolution soln = results.next();
-
-        if ("settings".equals(soln.get("label").asLiteral().getString()))
-          instance.setSettingsGraph(soln.get("name").toString());
-        else if ("accounts".equals(soln.get("label").asLiteral().getString()))
-          instance.setAccountsGraph(soln.get("name").toString());
-        else if ("groups".equals(soln.get("label").asLiteral().getString()))
-          instance.setGroupsGraph(soln.get("name").toString());
-        else if ("jobs".equals(soln.get("label").asLiteral().getString()))
-          instance.setJobsGraph(soln.get("name").toString());
-        else if ("sessions".equals(soln.get("label").asLiteral().getString()))
-          instance.setAuthSessionsGraph(soln.get("name").toString());
+        String graph = soln.get("label").asLiteral().getString();
+        String name = soln.get("name").toString();
+        systemGraphs.put(graph, name);
+        log.debug(graph + " added to the system graphs as " + name);
       }
       qexec.close();
-
-      instance.setComponentsGraph(instance.getResourceNamespace() + "components");
+      // TODO: experiment to not define system graphs in the configuration file
+      instance.getSystemGraphs().put("components", instance.getResourceNamespace() + "components");
 
       // get the path to the workflow engine
       query =
@@ -499,22 +493,6 @@ public class FrameworkConfiguration {
     this.workbenchSystemAdminPassword = workbenchSystemAdminPassword;
   }
 
-  public String getAccountsGraph() {
-    return accountsGraph;
-  }
-
-  public void setAccountsGraph(String accountsGraph) {
-    this.accountsGraph = accountsGraph;
-  }
-
-  public String getSettingsGraph() {
-    return settingsGraph;
-  }
-
-  public void setSettingsGraph(String settingsGraph) {
-    this.settingsGraph = settingsGraph;
-  }
-
   public String getResourceNamespace() {
     return resourceNS;
   }
@@ -531,13 +509,6 @@ public class FrameworkConfiguration {
     this.publicSparqlEndpoint = publicSparqlEndpoint;
   }
 
-  public String getGroupsGraph() {
-    return groupsGraph;
-  }
-
-  public void setGroupsGraph(String groupsGraph) {
-    this.groupsGraph = groupsGraph;
-  }
 
   public String getVirtuosoJdbcConnString() {
     return virtuosoJdbcConnString;
@@ -571,26 +542,20 @@ public class FrameworkConfiguration {
     this.homepage = homepage;
   }
 
+  public HashMap<String, String> getSystemGraphs() {
+    return systemGraphs;
+  }
+
+  public void setSystemGraphs(HashMap<String, String> systemGraphs) {
+    this.systemGraphs = systemGraphs;
+  }
+
   public GraphGroupManager getGraphGroupManager() {
     return new VirtuosoGraphGroupManager(virtuosoJdbcConnString, rdfStoreAdmin,
         rdfStoreAdminPassword);
   }
 
-  public String getJobsGraph() {
-    return jobsGraph;
-  }
 
-  public void setJobsGraph(String jobsGraph) {
-    this.jobsGraph = jobsGraph;
-  }
-
-  public String getAuthSessionsGraph() {
-    return authSessionsGraph;
-  }
-
-  public void setAuthSessionsGraph(String authSessionsGraph) {
-    this.authSessionsGraph = authSessionsGraph;
-  }
 
   public String getSpringBatchUri() {
     return springBatchUri;
@@ -628,14 +593,6 @@ public class FrameworkConfiguration {
 
   public void setSpringBatchJobsDir(String springBatchJobsDir) {
     this.springBatchJobsDir = springBatchJobsDir;
-  }
-
-  public String getComponentsGraph() {
-    return componentsGraph;
-  }
-
-  public void setComponentsGraph(String componentsGraph) {
-    this.componentsGraph = componentsGraph;
   }
 
   /**
@@ -734,6 +691,49 @@ public class FrameworkConfiguration {
       throw new IOException("Couldn't read " + sysgraphsFile + " file: " + e.getMessage());
     }
     return sysgraphsModel;
+  }
+
+  /**
+   * Returns a Jena Model with the system graphs configuration file loaded
+   * 
+   * @return Model
+   * @throws IOException in case the file cannot be loaded or a parsing error is presented
+   */
+  public static Model getRolesModel() throws IOException {
+    try {
+      if (rolesModel == null) {
+        rolesModel = ModelFactory.createDefaultModel();
+        rolesModel.read(rolesFile);
+      }
+    } catch (RiotException e) {
+      e.printStackTrace();
+      throw new IOException("Couldn't read " + rolesFile + " file: " + e.getMessage());
+    }
+    return rolesModel;
+  }
+
+  public String getAccountsGraph() {
+    return instance.getSystemGraphs().get("accounts");
+  }
+
+  public String getGroupsGraph() {
+    return instance.getSystemGraphs().get("groups");
+  }
+
+  public String getJobsGraph() {
+    return instance.getSystemGraphs().get("jobs");
+  }
+
+  public String getAuthSessionsGraph() {
+    return instance.getSystemGraphs().get("sessions");
+  }
+
+  public String getSettingsGraph() {
+    return instance.getSystemGraphs().get("settings");
+  }
+
+  public String getComponentsGraph() {
+    return instance.getSystemGraphs().get("components");
   }
 
 }

@@ -45,33 +45,35 @@ module.factory("UsersService", function($http, Config, flash, ServerErrorRespons
     };
 
     var readUsers = function() {
-        var requestData = {
-            mode: "getProfiles",
-            curuser: AccountService.getAccount().getUsername()
-        };
-        return $http.post("UserManagerServlet", $.param(requestData)).then(
-        		//success
-        		function(response) {
-            users = response.data;
-            userNames = [];
-            emails = [];
-            var ns = Config.getFrameworkOntologyNS();
-            for (var ind in users) {
-                users[ind].profile.accountURI = users[ind].profile.accountURI.replace(Config.getNS(), ":");
-                users[ind].profile.role.uri = users[ind].profile.role.uri.replace(ns, "gkg:");
-                for (var sind in users[ind].profile.role.services) {
-                    users[ind].profile.role.services[sind] = users[ind].profile.role.services[sind].replace(Config.getNS(), ":");
-                }
-                userNames.push(users[ind].profile.username);
-                emails.push(users[ind].profile.email.replace("mailto:",""));
-            }
-            return users;
-        },            
-        // error
-        function(response) {
-            flash.error = ServerErrorResponse.getMessage(response);
-            return;
-        });
+      
+      var requestData = {
+          mode: "getProfiles",
+          curuser: AccountService.getAccount().getUsername()
+      };
+      return $http.post("UserManagerServlet", $.param(requestData)).then(
+    		//success
+      	function(response) {
+          console.log(response)
+          users = response.data;
+          userNames = [];
+          emails = [];
+          var ns = Config.getFrameworkOntologyNS();
+          for (var ind in users) {
+              users[ind].profile.accountURI = users[ind].profile.accountURI.replace(Config.getNS(), ":");
+              users[ind].profile.role.uri = users[ind].profile.role.uri.replace(ns, "gkg:");
+              for (var sind in users[ind].profile.role.services) {
+                  users[ind].profile.role.services[sind] = users[ind].profile.role.services[sind].replace(Config.getNS(), ":");
+              }
+              userNames.push(users[ind].profile.username);
+              emails.push(users[ind].profile.email.replace("mailto:",""));
+          }
+          return users;
+      },            
+      // error
+      function(response) {
+          flash.error = ServerErrorResponse.getMessage(response);
+          return;
+      });
     };
 
     var getAllUsers = function() {
@@ -111,6 +113,7 @@ module.factory("UsersService", function($http, Config, flash, ServerErrorRespons
         return $http.post("rest/RdfStoreProxy", $.param(requestData)).then(
             //succeed
             function(response) {
+                console.log(response);
                 roles = Config.parseSparqlResults(response.data);
                 return roles;
             });
@@ -192,7 +195,7 @@ module.factory("UsersService", function($http, Config, flash, ServerErrorRespons
             for (var ind in allRoles) {
                 if (allRoles[ind].isNotLoggedIn) return allRoles[ind];
             }
-            return getRole("gkg:BasicUser");
+            return getRole(":BasicUser");
         });
     };
 

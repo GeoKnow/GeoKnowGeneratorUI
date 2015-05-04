@@ -34,7 +34,6 @@ app.controller('FaceteFormCtrl', function($scope, ConfigurationService, Componen
    	dataset   : "",
   };
   
-  
 	$scope.refreshGraphList = function() {
     GraphService.getAccessibleGraphs(false, false, true).then(function(graphs) {
       $scope.namedGraphs = graphs;

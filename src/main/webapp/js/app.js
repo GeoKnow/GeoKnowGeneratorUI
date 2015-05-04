@@ -197,7 +197,7 @@ app.config(function($routeSegmentProvider, $routeProvider)
     //redirect to access-denied page if user has no access to page
     $rootScope.$on("$routeChangeStart", function(event, next, current) {
         if ($rootScope.isSystemSetUp==undefined) {
-            $http.get("rest/setup").then(function(response) {
+            $http.get("rest/config/setup").then(function(response) {
                 $rootScope.isSystemSetUp = response.data == "true";
                 if (!$rootScope.isSystemSetUp) {
                     $location.path('/system-setup');
@@ -209,13 +209,17 @@ app.config(function($routeSegmentProvider, $routeProvider)
             $location.path('/system-setup');
         } else if (AccountService.getAccount().getAccountURI() != undefined && next.$$route) { //check route permissions
             var requiredServices = ConfigurationService.getRequiredServices(next.$$route.originalPath);
+            console.log(requiredServices);
             if (requiredServices==null) return;
+            console.log(AccountService.getAccount().isAdmin());
             if (AccountService.getAccount().isAdmin()) return;
             var role = AccountService.getAccount().getRole();
+            console.log(role);
             if (role==undefined) {
                 $location.path("/access-denied");
             } else {
                 var allowedServices = role.services;
+                console.log(allowedServices);
                 for (var ind in requiredServices) {
                     if (allowedServices.indexOf(requiredServices[ind])==-1) {
                         $location.path("/access-denied");

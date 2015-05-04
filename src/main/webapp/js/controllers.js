@@ -140,6 +140,19 @@ app.controller('ModalWindow', function ($scope) {
   });        
   
 });
+
 */
+
+var DataSourceTabCtrl = function($scope, $window, $location) {
+
+  // The tab directive will use this data
+  $scope.tabs = ['SPARQL Endpoint', 'Relational Database'];
+  $scope.tabs.index = 0;
+  $scope.tabs.active = function() { 
+    return $scope.tabs[$scope.tabs.index]; 
+    };
+  
+};
+
 
 

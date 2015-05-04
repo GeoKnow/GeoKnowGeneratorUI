@@ -59,13 +59,14 @@ module.factory('JobService', function ($http, $q) {
 		},
 		
 		/**
-		* body is encoced to avoid confusion with the job object in the case
-		* where the body content for the service is also json
+		* Do a PUT call to register a job
 		* 
 		* @param id unique name of the job
 		* @param desc description of the job
 		* @param steps an array with job steps as objects. a steps comrpises the following keys: 
-		* 	service, contenttype, method, body, numberOfOrder.
+		* 	service, contenttype, method, body, numberOfOrder. The body parameter is encoced to 
+		*   avoid confusion with the job object in the case where the body content for the 
+		*   service is also jso
 		*/
 		addMultiServiceJob : function(id, label, desc, steps, targetGraph){
 			//create json object
