@@ -39,15 +39,20 @@ module.factory('ComponentsService', function ($http, $q) {
 		},
 
 		getService: function(uri){
-				return $http.get("rest/components/services/"+uri).then( 
+			return $http.get("rest/components/services/"+uri).then( 
 				// success
 				function (response){
 					return response.data.services;
 	    });
-		}
+		},
 
 		updateService : function(service){
-			
+			console.log(service);
+			return $http.post("rest/components/services/", service).then( 
+				function (response){
+					console.log(response);
+					return response.data;
+	    });
 		}
 	};
 

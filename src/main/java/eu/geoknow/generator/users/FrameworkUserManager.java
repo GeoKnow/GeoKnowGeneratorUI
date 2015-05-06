@@ -475,7 +475,6 @@ public class FrameworkUserManager implements UserManager {
     while (bindingsIter.hasNext()) {
       JsonNode bindingNode = bindingsIter.next();
       String predicate = bindingNode.path("p").path("value").textValue();
-      log.debug(predicate);
       if (predicate.equals("http://xmlns.com/foaf/0.1/accountName"))
         userProfile.setUsername(bindingNode.path("o").path("value").textValue());
       else if (predicate.endsWith("/settingsGraph"))

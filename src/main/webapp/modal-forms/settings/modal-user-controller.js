@@ -1,8 +1,8 @@
 'use strict';
 
-function ModalUserCtrl($scope, $http, $modalInstance, currentUser, ConfigurationService, UsersService, GraphService) {
+function ModalUserCtrl($scope, $http, $modalInstance, currentUser, ConfigurationService, RolesService, GraphService) {
 	
-	$scope.modaltitle = "New";
+	$scope.modaltitle = "New User";
 	$scope.allgraphs = [];
 	
 	GraphService.getAllNamedGraphs(true).then(function(data){
@@ -10,7 +10,11 @@ function ModalUserCtrl($scope, $http, $modalInstance, currentUser, Configuration
 		
 	});
 	
-	$scope.allroles = UsersService.getAllRoles();
+	RolesService.getAllRoles().then(
+		function(response){
+			$scope.allroles = response;
+		});
+
 	$scope.user = { 
 			  profile: { accountURI:"", username:"", email:"", role:null}
     		, ownGraphs: []

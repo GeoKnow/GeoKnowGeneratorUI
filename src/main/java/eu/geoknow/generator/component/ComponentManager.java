@@ -27,10 +27,11 @@ import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.vocabulary.RDFS;
 import com.ontos.ldiw.vocabulary.LDIS;
 
+import eu.geoknow.generator.common.APP_CONSTANT;
+import eu.geoknow.generator.common.Queries;
 import eu.geoknow.generator.component.beans.Component;
 import eu.geoknow.generator.component.beans.Service;
 import eu.geoknow.generator.component.beans.ServiceType;
-import eu.geoknow.generator.configuration.APP_CONSTANT;
 import eu.geoknow.generator.configuration.FrameworkConfiguration;
 import eu.geoknow.generator.exceptions.InformationMissingException;
 import eu.geoknow.generator.exceptions.ResourceExistsException;
@@ -234,7 +235,7 @@ public class ComponentManager {
   public Component addComponent(@Valid Component component) throws IOException,
       SPARQLEndpointException, ResourceExistsException {
 
-    if (resourceExists(component.getUri(), config.getComponentsGraph(), storeManager))
+    if (Queries.resourceExists(component.getUri(), config.getComponentsGraph(), storeManager))
       throw new ResourceExistsException(component.getLabel() + " already exists as "
           + component.getUri());
 
@@ -269,7 +270,7 @@ public class ComponentManager {
   public Component updateComponent(Component component) throws IOException,
       SPARQLEndpointException, ResourceNotFoundException {
 
-    if (!resourceExists(component.getUri(), config.getComponentsGraph(), storeManager))
+    if (!Queries.resourceExists(component.getUri(), config.getComponentsGraph(), storeManager))
       throw new ResourceNotFoundException(component.getUri() + " not found");
 
     try {
@@ -479,7 +480,7 @@ public class ComponentManager {
   public Service updateService(Service pservice) throws SPARQLEndpointException, IOException,
       ResourceNotFoundException {
 
-    if (!resourceExists(pservice.getUri(), config.getComponentsGraph(), storeManager))
+    if (!Queries.resourceExists(pservice.getUri(), config.getComponentsGraph(), storeManager))
       throw new ResourceNotFoundException(pservice.getUri() + " not found");
 
     try {
@@ -521,35 +522,7 @@ public class ComponentManager {
     }
   }
 
-  /**
-   * Checks if a uri exists in a given graph
-   * 
-   * @param uri
-   * @param graph
-   * @param storeManager
-   * @return
-   * @throws SPARQLEndpointException
-   * 
-   *         TODO: this may be moved to a RDF helpers Class
-   */
-  private boolean resourceExists(String uri, String graph, RdfStoreManager storeManager)
-      throws SPARQLEndpointException {
 
-    String query = "WITH <" + graph + "> ASK { <" + uri + "> ?s ?p}";
-    log.debug(query);
-    try {
-      String result = storeManager.execute(query, APP_CONSTANT.SPARQL_JSON_RESPONSE_FORMAT);
-      log.debug(result);
-      ObjectMapper mapper = new ObjectMapper();
-      JsonNode rootNode = mapper.readTree(result);
-      return rootNode.path("boolean").booleanValue();
-
-    } catch (Exception e) {
-      e.printStackTrace();
-      throw new SPARQLEndpointException(e.getMessage());
-    }
-
-  }
 
   /**
    * Given the component instance, this function will generate all triples for an insert query

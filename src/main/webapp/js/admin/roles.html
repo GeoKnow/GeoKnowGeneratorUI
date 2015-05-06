@@ -5,7 +5,7 @@
         <div class="col-lg-4">
             <label class="col-lg-4">Default role</label>
             <div class="col-lg-8">
-                <select class="form-control" ng-model="defaultRole" ng-options="role as role.name for role in roles | orderBy:'name'" ng-change="setDefaultRole()"></select>
+                <select class="form-control" ng-model="defaultRole.uri" ng-options="role.uri as role.name for role in roles | orderBy:'name'" ng-change="setDefaultRole()"></select>
             </div>
         </div>
     </div>
@@ -14,14 +14,14 @@
         <div class="col-lg-4">
             <label class="col-lg-4">Not logged in role</label>
             <div class="col-lg-8">
-                <select class="form-control" ng-model="notLoggedInRole" ng-options="role as role.name for role in roles | orderBy:'name'" ng-change="setNotLoggedInRole()"></select>
+                <select class="form-control" ng-model="notLoggedInRole.uri" ng-options="role.uri as role.name for role in roles | orderBy:'name'" ng-change="setNotLoggedInRole()"></select>
             </div>
         </div>
     </div>
 
     <br/>
 
-    <button type="button" class="btn btn-success btn-large" ng-click="new();">Add role</button>
+    <button type="button" class="btn btn-success btn-large" ng-click="newRole();">Add role</button>
 
     <h4>
         <span class="btn-group">
@@ -48,16 +48,12 @@
         </div>
     </div>
 
-    <button type="button" class="btn btn-success btn-large" ng-click="saveRoles();" ng-disabled="!isRolesChanged() || savingRoles">Save changes</button>
-    <button type="button" class="btn btn-success btn-large" ng-click="revertRoles();" ng-disabled="!isRolesChanged() || savingRoles">Revert changes</button>
-    <span ng-show="savingRoles">Saving...</span>
-
     <br/>
     <br/>
     <br/>
     <br/>
 
-    <button type="button" class="btn btn-success btn-large" ng-click="new();">Add user</button>
+    <!-- button type="button" class="btn btn-success btn-large" ng-click="newUser();">Add user</button -->
 
     <h4>
         <span class="btn-group">
@@ -81,16 +77,12 @@
                         </button>
                         {{user.profile.username}}
                     </th>
-                    <td ng-repeat="role in roles">
-                        <input type="checkbox" ng-checked="hasRole(user, role)" ng-click="toggleRole(user, role)"/>
+                    <td ng-repeat="role in roles" ng-disabled="roleUnchangeable(user.profile.role.uri)">
+                        <input type="radio" name="{{user.profile.accountURI}}" ng-value="role.uri"  ng-checked="hasRole(user,role)" ng-click="toggleRole(user, role)"/>
                     </td>
                 </tr>
             </table>
         </div>
     </div>
-
-    <button type="button" class="btn btn-success btn-large" ng-click="saveUsers();" ng-disabled="!isUsersChanged() || savingUsers">Save changes</button>
-    <button type="button" class="btn btn-success btn-large" ng-click="revertUsers();" ng-disabled="!isUsersChanged() || savingUsers">Revert changes</button>
-    <span ng-show="savingUsers">Saving...</span>
 
 </div>

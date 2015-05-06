@@ -1,36 +1,62 @@
 package eu.geoknow.generator.users;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 /**
- * Created by taleksaschina on 24.06.2014.
+ * 
+ * @author taleksaschina created on 24.06.2014.
+ * @author alejandragarciarojas added RoleType
+ *
  */
 public class UserRole {
-    private String uri;
-    private String name;
-    private Collection<String> services;
+  private String uri;
+  private String name;
+  private Collection<String> services;
+  private boolean isDefault;
+  private boolean isNotLoggedIn;
 
-    public String getUri() {
-        return uri;
-    }
+  public UserRole() {
+    services = new ArrayList<String>();
+  }
 
-    public void setUri(String uri) {
-        this.uri = uri;
-    }
+  public String getUri() {
+    return uri;
+  }
 
-    public String getName() {
-        return name;
-    }
+  public void setUri(String uri) {
+    this.uri = uri;
+  }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+  public String getName() {
+    return name;
+  }
 
-    public Collection<String> getServices() {
-        return services;
-    }
+  public void setName(String name) {
+    this.name = name;
+  }
 
-    public void setServices(Collection<String> services) {
-        this.services = services;
-    }
+  public boolean isDefault() {
+    return isDefault;
+  }
+
+  public void setIsDefault(boolean isDefault) {
+    this.isDefault = isDefault;
+  }
+
+  public boolean isNotLoggedIn() {
+    return isNotLoggedIn;
+  }
+
+  public void setIsNotLoggedIn(boolean isNotLoggedIn) {
+    this.isNotLoggedIn = isNotLoggedIn;
+  }
+
+  public Collection<String> getServices() {
+    return services;
+  }
+
+  public void setServices(Collection<String> services) {
+    this.services = services;
+  }
 }

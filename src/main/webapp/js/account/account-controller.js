@@ -3,10 +3,8 @@
 function AccountCtrl($scope,$sce, $http, $modal, flash, AccountService, LoginService, ServerErrorResponse, Base64, AuthenticationErrorResponse) {
     
     $scope.account = AccountService.getAccount();
-    console.log($scope.account);
     
     $scope.changePassword = function() {
-        
         
         var modalInstance = $modal.open({
             templateUrl: 'modal-forms/modal-change-pw.html',

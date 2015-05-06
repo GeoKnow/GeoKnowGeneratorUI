@@ -1,4 +1,4 @@
-package eu.geoknow.generator.configuration;
+package eu.geoknow.generator.common;
 
 /**
  * A final class to place all constants used in the different classes.

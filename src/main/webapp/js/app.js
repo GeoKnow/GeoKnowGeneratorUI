@@ -11,6 +11,7 @@ var app = angular.module('app', ['ngRoute',
                                  'app.graph-group-service',
                                  'app.authsession-service',
                                  'app.components-service',
+                                 'app.roles-service',
                                  'app.login-service',
                                  'app.users-service',
                                  'app.directives', 
@@ -57,11 +58,11 @@ app.config(function($routeSegmentProvider, $routeProvider)
 
         .segment('default', {
             templateUrl: 'default.html',
-            resolve: {
+           /* resolve: {
                     roles: function(UsersService) {
                         return UsersService.readRoles();
                     }                        
-                }
+                }*/
                 })
             
         .segment('popup-triplegeo', {
@@ -209,12 +210,9 @@ app.config(function($routeSegmentProvider, $routeProvider)
             $location.path('/system-setup');
         } else if (AccountService.getAccount().getAccountURI() != undefined && next.$$route) { //check route permissions
             var requiredServices = ConfigurationService.getRequiredServices(next.$$route.originalPath);
-            console.log(requiredServices);
             if (requiredServices==null) return;
-            console.log(AccountService.getAccount().isAdmin());
             if (AccountService.getAccount().isAdmin()) return;
             var role = AccountService.getAccount().getRole();
-            console.log(role);
             if (role==undefined) {
                 $location.path("/access-denied");
             } else {

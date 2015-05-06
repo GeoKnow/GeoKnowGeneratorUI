@@ -24,7 +24,7 @@ import com.hp.hpl.jena.vocabulary.XSD;
 import com.ontos.ldiw.vocabulary.LDIWO;
 import com.ontos.ldiw.vocabulary.SD;
 
-import eu.geoknow.generator.configuration.APP_CONSTANT;
+import eu.geoknow.generator.common.APP_CONSTANT;
 import eu.geoknow.generator.configuration.FrameworkConfiguration;
 import eu.geoknow.generator.exceptions.InformationMissingException;
 import eu.geoknow.generator.exceptions.ResourceNotFoundException;

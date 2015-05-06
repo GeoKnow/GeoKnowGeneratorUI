@@ -1,6 +1,6 @@
 'use strict';
 
-function LoginCtrl($scope, $modal, flash, AccountService, LoginService, ServerErrorResponse, Base64, UsersService, ConfigurationService, AuthenticationErrorResponse) {
+function LoginCtrl($scope, $modal, flash, AccountService, LoginService, ServerErrorResponse, Base64, RolesService, ConfigurationService, AuthenticationErrorResponse) {
 
   initialize();
 
@@ -27,7 +27,8 @@ function LoginCtrl($scope, $modal, flash, AccountService, LoginService, ServerEr
         $scope.currentAccount = AccountService.getAccount();
         // retrive default role if no user logged in
         if ($scope.currentAccount.getRole() == undefined) {
-          UsersService.readNotLoggedInRole().then(function(response) {
+          RolesService.getNotLoggedInRole().then(function(response) {
+            console.log(response);
             $scope.currentAccount.setRole(response);
           });
         }

@@ -1,62 +1,48 @@
 'use strict';
 
-function UserRolesCtrl($scope, $modal, UsersService, ConfigurationService, ComponentsService, $q, ServerErrorResponse, flash, AccountService, $window) {
+function UserRolesCtrl($scope, $modal, UsersService, ConfigurationService, ComponentsService, RolesService, $q, ServerErrorResponse, flash, AccountService, $window) {
 
-    
-    ComponentsService.getAllServices().then(function(services){
-        $scope.services = services;   
-        console.log($scope.services); 
-    });
-
-    $scope.users = UsersService.getAllUsers();
-    $scope.roles = UsersService.getAllRoles();
-
-    $scope.changedRoles = [];
-    $scope.changedUsers = [];
-
-    $scope.savingRoles = false;
-    $scope.savingUsers = false;
-
-    $scope.defaultRole = null;
-    $scope.notLoggedInRole = null;
-
-    var getBasicUserRole = function() {
-        for (var ind in $scope.roles) {
-            if ($scope.roles[ind].uri==":BasicUser") return $scope.roles[ind];
-        }
-        return null;
-    };
-
-    var initDefaultRoles = function() {
-        $scope.defaultRole = null;
-        $scope.notLoggedInRole = null;
-        for (var ind in $scope.roles) {
-            if ($scope.roles[ind].isDefault) $scope.defaultRole = $scope.roles[ind];
-            else if ($scope.roles[ind].isNotLoggedIn) $scope.notLoggedInRole = $scope.roles[ind];
-        }
-        if ($scope.defaultRole==null) $scope.defaultRole = getBasicUserRole();
-        if ($scope.notLoggedInRole==null) $scope.notLoggedInRole = getBasicUserRole();
-    };
-
-    initDefaultRoles();
-
-    $scope.refreshUsers = function() {
+    var refreshRoles = function() {
+        RolesService.getAllRoles().then(
+            function(roles){
+                $scope.roles = roles;
+                for(var i in $scope.roles){
+                    if($scope.roles[i].isDefault)
+                        $scope.defaultRole = $scope.roles[i];
+                    if($scope.roles[i].isNotLoggedIn)
+                        $scope.notLoggedInRole = $scope.roles[i];
+                }
+            },
+            function(response){
+                flash.error = ServerErrorResponse.getMessage(response);
+            });
+        };
+    var refreshUsers = function() {
         UsersService.reloadUsers().then(function(result) {
             $scope.users = result;
             $scope.changedUsers = [];
         });
     };
 
-    $scope.refreshRoles = function() {
-        UsersService.reloadRoles().then(function(result) {
-            $scope.roles = result;
-            $scope.changedRoles = [];
-            initDefaultRoles();
+    // initialise settings and scope variables  
+    ConfigurationService.getSettings().then(
+        //success
+        function(){
+            // initialise roles
+            refreshRoles();
+            refreshUsers();
+            // get all services
+            ComponentsService.getAllServices().then(function(services){
+                $scope.services = services;   
+            });
+        },
+        //fail
+        function(response){
+            flash.error = ServerErrorResponse.getMessage(response);
         });
-    };
 
     $scope.roleUnchangeable = function(role) {
-        return role.uri==":Administrator" || role.uri==":BasicUser";
+        return role.uri==ConfigurationService.getUriBase()+"Administrator" ;
     };
 
     $scope.toggleService = function(service, role) {
@@ -66,11 +52,20 @@ function UserRolesCtrl($scope, $modal, UsersService, ConfigurationService, Compo
         } else { // is newly selected
             role.services.push(service.uri);
         }
-        if ($scope.changedRoles.indexOf(role.uri)==-1) $scope.changedRoles.push(role.uri);
+        RolesService.updateRole(role).then(
+            //success
+            function(response){
+                refreshRoles();
+            },
+            //fail
+            function(response){
+                flash.error = ServerErrorResponse.getMessage(response);
+            });
     };
 
     $scope.serviceAllowed = function(service, role) {
-        if (role.uri==":Administrator") return true;
+        if (role.uri==ConfigurationService.getUriBase()+"Administrator") 
+            return true;
         return role.services.indexOf(service.uri) > -1;
     };
 
@@ -79,9 +74,13 @@ function UserRolesCtrl($scope, $modal, UsersService, ConfigurationService, Compo
     };
 
     $scope.toggleRole = function(user, role) {
-        if (user.profile.role.uri==role.uri) user.profile.role.uri = ":BasicUser";
-        else user.profile.role.uri = role.uri;
-        if ($scope.changedUsers.indexOf(user.profile.accountURI) == -1) $scope.changedUsers.push(user.profile.accountURI);
+        UsersService.setUserRole(user.profile.accountURI, role.uri).then(
+            function(response){
+                refreshUsers();
+            },
+            function(response){
+                flash.error = ServerErrorResponse.getMessage(response);
+            });
     };
 
     $scope.newRole = function() {
@@ -94,100 +93,48 @@ function UserRolesCtrl($scope, $modal, UsersService, ConfigurationService, Compo
         	
         });
     	
-    	
-    	modalInstance.result.then(function (newRole) { 
-    		 UsersService.createRole(newRole.id, newRole.name).then(function(response) {
-    	            $scope.refreshRoles();
-    	            flash.success = "Created";
-    	            
-    	        }, function(response) {
-    	            
+        modalInstance.result.then(function (newRole) { 
+    		RolesService.addRole(newRole).then(
+                function(response) {
+                    refreshRoles();
+                }, function(response) {
     	            flash.error = ServerErrorResponse.getMessage(response);
-    	            
     	        });
     	});
-    	
 
     };
 
-    $scope.saveRoles = function() {
-        $scope.savingRoles = true;
-        var promises = [];
-        for (var ind in $scope.roles) {
-            if ($scope.changedRoles.indexOf($scope.roles[ind].uri) > -1) {
-                promises.push(UsersService.updateRoleServices($scope.roles[ind].uri, $scope.roles[ind].services));
-            }
-        }
-        $q.all(promises).then(function(data) {
-            $scope.savingRoles = false;
-            $scope.refreshRoles();
-            flash.success = "Saved";
-            $window.scrollTo(0,0);
-        }, function(response) {
-            $scope.savingRoles = false;
-            flash.error = ServerErrorResponse.getMessage(response);
-            $window.scrollTo(0,0);
-        });
-    };
-
-    $scope.revertRoles = function() {
-        $scope.refreshRoles();
-        $scope.changedRoles = [];
-    };
 
     $scope.setDefaultRole = function() {
-        UsersService.setDefaultRole($scope.defaultRole.uri).then(function(response) {
-            $scope.refreshRoles();
-        }, function(response) {
-            $scope.refreshRoles();
-        });
+
+        RolesService.setDefaultRole($scope.defaultRole.uri).then(
+            //success
+            function(response){
+                refreshRoles();
+            },
+            //fail
+            function(response){
+                flash.error = ServerErrorResponse.getMessage(response);
+            });
     };
 
     $scope.setNotLoggedInRole = function() {
-        UsersService.setNotLoggedInRole($scope.notLoggedInRole.uri).then(function(response) {
-            $scope.refreshRoles();
-        }, function(response) {
-            $scope.refreshRoles();
-        });
+        RolesService.setNotLoggedInRole($scope.notLoggedInRole.uri).then(
+            //success
+            function(response){
+                refreshRoles();
+            },
+            //fail
+            function(response){
+                flash.error = ServerErrorResponse.getMessage(response);
+            });
     };
 
-    $scope.saveUsers = function() {
-        $scope.savingUsers = true;
-        var promises = [];
-        for (var ind in $scope.users) {
-            if ($scope.changedUsers.indexOf($scope.users[ind].profile.accountURI) > -1) {
-                promises.push(UsersService.setUserRole($scope.users[ind].profile.accountURI, $scope.users[ind].profile.role.uri));
-            }
-        }
-        $q.all(promises).then(function(data) {
-            $scope.savingUsers = false;
-            $scope.refreshUsers();
-            flash.success = "Saved";
-            $window.scrollTo(0,0);
-        }, function(response) {
-            $scope.savingUsers = false;
-            flash.error = ServerErrorResponse.getMessage(response);
-            $window.scrollTo(0,0);
-        });
-    };
-
-    $scope.revertUsers = function() {
-        $scope.refreshUsers();
-        $scope.changedUsers = [];
-    };
-
-    $scope.isUsersChanged = function() {
-        return $scope.changedUsers.length > 0;
-    };
-
-    $scope.isRolesChanged = function() {
-        return $scope.changedRoles.length > 0;
-    };
 
     var createUser = function(newUser) {
         var user = angular.copy(newUser);
         UsersService.createUser(user).then(function(response) {
-            $scope.refreshUsers();
+            refreshUsers();
             flash.success ="Created";
         }, function(response) {
            
@@ -217,11 +164,11 @@ function UserRolesCtrl($scope, $modal, UsersService, ConfigurationService, Compo
     
     $scope.deleteUser = function(user) {
         UsersService.deleteUser(user.profile.username).then(function(response) {
-            $scope.refreshUsers();
+            refreshUsers();
         }, function(response) {
             flash.error = ServerErrorResponse.getMessage(response);
             $window.scrollTo(0,0);
-            $scope.refreshUsers();
+            refreshUsers();
         })
     };
 
@@ -229,10 +176,4 @@ function UserRolesCtrl($scope, $modal, UsersService, ConfigurationService, Compo
         return user.profile.username == AccountService.getAccount().getUsername();
     };
 
-    $scope.close = function(modalID) {
-        $(modalID).modal('hide');
-        $('body').removeClass('modal-open');
-        $('.modal-backdrop').slideUp();
-        $('.modal-scrollable').slideUp();
-    };
 }

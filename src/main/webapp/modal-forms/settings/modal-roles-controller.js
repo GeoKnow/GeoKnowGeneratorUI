@@ -2,7 +2,7 @@
 
 function ModalRolesCtrl($scope, $http, $modalInstance, ConfigurationService) {
 	
-	$scope.modaltitle = "New";
+	$scope.modaltitle = "New Role";
 	$scope.newRole = {
 			id:"", 
 			name:""

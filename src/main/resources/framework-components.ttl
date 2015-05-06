@@ -29,8 +29,8 @@
 :VirtuosoConductor 
   a  lds:StorageService ;
   lds:password "dba"^^xsd:string ;
-  lds:serviceUrl <http://192.168.2.29:8890/conductor> ;
-  lds:connectionString "jdbc:virtuoso://192.168.2.29:1111/"^^xsd:string;
+  lds:serviceUrl <http://192.168.43.188:8890/conductor> ;
+  lds:connectionString "jdbc:virtuoso://192.168.43.188:1111/"^^xsd:string;
   lds:user   "dba"^^xsd:string .
 
 # #######################################################################################
@@ -41,15 +41,15 @@
   a       lds:SecuredSPARQLEndPointService;
   rdfs:label "Workbench Auth" ;
   lds:password "generator"^^xsd:string ;
-  lds:serviceUrl <http://192.168.2.29:8890/sparql-auth> ;
-  void:sparqlEndpoint <http://192.168.2.29:8890/sparql-auth> ;
+  lds:serviceUrl <http://192.168.43.188:8890/sparql-auth> ;
+  void:sparqlEndpoint <http://192.168.43.188:8890/sparql-auth> ;
   lds:user   "generator"^^xsd:string .
 
 :VirtuosoEndpoint
   a       lds:SPARQLEndPointService;
   rdfs:label "Workbench Pub" ;
-  void:sparqlEndpoint <http://192.168.2.29:8890/sparql-auth> ;
-  lds:serviceUrl <http://192.168.2.29:8890/sparql> .
+  void:sparqlEndpoint <http://192.168.43.188:8890/sparql-auth> ;
+  lds:serviceUrl <http://192.168.43.188:8890/sparql> .
 
 :SpringBatch
       a       lds:StackComponent ;

@@ -19,6 +19,7 @@ import org.apache.log4j.Logger;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.ontos.ldiw.vocabulary.LDIWO;
 
 import eu.geoknow.generator.component.beans.Service;
 import eu.geoknow.generator.configuration.FrameworkConfiguration;
@@ -56,6 +57,7 @@ public class Configuration {
       config = new JsonObject();
       config.addProperty("frameworkUri", frameworkConf.getFrameworkUri());
       config.addProperty("ns", frameworkConf.getResourceNamespace());
+      config.addProperty("frameworkOntologyNs", LDIWO.NS);
       config.addProperty("defaultSettingsGraphUri", frameworkConf.getSettingsGraph());
       config.addProperty("groupsGraphUri", frameworkConf.getGroupsGraph());
       config.addProperty("accountsGraph", frameworkConf.getAccountsGraph());
@@ -63,6 +65,7 @@ public class Configuration {
       config.addProperty("authSparqlEndpoint", frameworkConf.getAuthSparqlEndpoint());
       config.addProperty("homepage", frameworkConf.getHomepage());
       config.addProperty("flagPath", frameworkConf.getFrameworkDataDir());
+
 
     } catch (Exception e) {
       log.error(e);

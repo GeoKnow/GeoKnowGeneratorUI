@@ -23,6 +23,6 @@
       ontos:isDefault "true"^^xsd:boolean ;
       ontos:isNotLoggedIn "true"^^xsd:boolean .
 
-:NotLoggedIn
+:NotLoggedInRole
       rdf:type ontos:Role ;
-      rdfs:label "Not Logged In"@en .
+      rdfs:label "Not Logged In Role"@en .

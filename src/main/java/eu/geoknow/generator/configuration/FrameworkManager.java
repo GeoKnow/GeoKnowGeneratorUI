@@ -12,6 +12,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ontos.ldiw.vocabulary.LDIS;
 
+import eu.geoknow.generator.common.APP_CONSTANT;
 import eu.geoknow.generator.component.ComponentManager;
 import eu.geoknow.generator.component.beans.Service;
 import eu.geoknow.generator.exceptions.InformationMissingException;
