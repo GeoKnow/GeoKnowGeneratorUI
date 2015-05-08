@@ -3,12 +3,17 @@
 function DatabaseCtrl($scope, $modal, ConfigurationService){
 	
 	
-	
-	$scope.databases = ConfigurationService.getAllDatabases();
-	$scope.uribase = ConfigurationService.getUriBase();
-	$scope.modaltitle = "";
-	$scope.identifiers = ConfigurationService.getIdentifiers();
+    ConfigurationService.getSettings().then(
+        function(settings){
+            $scope.databases = ConfigurationService.getAllDatabases();
+            $scope.uribase = ConfigurationService.getUriBase();
+            $scope.identifiers = ConfigurationService.getIdentifiers();
+        }, 
+        function(response){
+            flash.error = ServerErrorResponse.getMessage(response);
+        });
 
+	$scope.modaltitle = "";
 
 	$scope.new = function(){
 		

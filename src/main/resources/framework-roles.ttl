@@ -14,15 +14,19 @@
 # #######################################################################################
 
 :Administrator
-      rdf:type ontos:Role ;
-      rdfs:label "Administrator"@en .
+  rdf:type ontos:Role ;
+  rdfs:label "Administrator"@en ;
+  ontos:isDefault "false"^^xsd:boolean ;
+	ontos:isNotLoggedIn "false"^^xsd:boolean .
 
 :BasicUser
-      rdf:type ontos:Role ;
-      rdfs:label "Basic User"@en ;
-      ontos:isDefault "true"^^xsd:boolean ;
-      ontos:isNotLoggedIn "true"^^xsd:boolean .
+  rdf:type ontos:Role ;
+  rdfs:label "Basic User"@en ;
+  ontos:isNotLoggedIn "false"^^xsd:boolean ;
+  ontos:isDefault "true"^^xsd:boolean .
 
 :NotLoggedInRole
-      rdf:type ontos:Role ;
-      rdfs:label "Not Logged In Role"@en .
+  rdf:type ontos:Role ;
+  rdfs:label "Not Logged In Role"@en ;
+  ontos:isDefault "false"^^xsd:boolean ;
+  ontos:isNotLoggedIn "true"^^xsd:boolean .

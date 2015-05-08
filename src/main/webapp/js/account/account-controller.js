@@ -23,10 +23,7 @@ function AccountCtrl($scope,$sce, $http, $modal, flash, AccountService, LoginSer
             
             LoginService.changePassword(password.oldPassword, password.newPassword)
             .then(function(response) {
-                
                 flash.success = response.data.message;
-                
-                
             }, function(response) {
                 
                 if (response.status==500 && response.data) {
@@ -41,10 +38,6 @@ function AccountCtrl($scope,$sce, $http, $modal, flash, AccountService, LoginSer
         
     };
 
-    
-
-  
-    
     //$scope.$watch( function() { return AccountService.getAccount(); }, function() {
       //  $scope.currentAccount = angular.copy(AccountService.getAccount());
     //}, true);

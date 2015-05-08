@@ -9,6 +9,36 @@ module.factory("UsersService", function($http, Config, flash, ServerErrorRespons
     var userNames = [];
     var emails = [];
 
+    var readUsers = function() {
+      var requestData = {
+          mode: "getProfiles",
+          curuser: AccountService.getAccount().getUsername()
+      };
+      return $http.post("UserManagerServlet", $.param(requestData)).then(
+        //success
+        function(response) {
+          users = response.data;
+          userNames = [];
+          emails = [];
+          console.log(users);  
+          var ns = Config.getFrameworkOntologyNS();
+          for (var ind in users) {
+              users[ind].profile.accountURI = users[ind].profile.accountURI.replace(Config.getNS(), ":");
+              users[ind].profile.role.uri = users[ind].profile.role.uri.replace(ns, "gkg:");
+              for (var sind in users[ind].profile.role.services) {
+                  users[ind].profile.role.services[sind] = users[ind].profile.role.services[sind].replace(Config.getNS(), ":");
+              }
+              userNames.push(users[ind].profile.username);
+              emails.push(users[ind].profile.email.replace("mailto:",""));
+          }
+          return users;
+      },            
+      // error
+      function(response) {
+          flash.error = ServerErrorResponse.getMessage(response);
+          return;
+      });
+    };
     var service = {
         readUserNamesEmails : function() {
           var requestData = {
@@ -48,44 +78,9 @@ module.factory("UsersService", function($http, Config, flash, ServerErrorRespons
         return emails;
         },
 
-        readUsers : function() {
-          var requestData = {
-              mode: "getProfiles",
-              curuser: AccountService.getAccount().getUsername()
-          };
-          return $http.post("UserManagerServlet", $.param(requestData)).then(
-        		//success
-          	function(response) {
-              users = response.data;
-              userNames = [];
-              emails = [];
-              console.log(users);  
-              var ns = Config.getFrameworkOntologyNS();
-              for (var ind in users) {
-                  users[ind].profile.accountURI = users[ind].profile.accountURI.replace(Config.getNS(), ":");
-                  users[ind].profile.role.uri = users[ind].profile.role.uri.replace(ns, "gkg:");
-                  for (var sind in users[ind].profile.role.services) {
-                      users[ind].profile.role.services[sind] = users[ind].profile.role.services[sind].replace(Config.getNS(), ":");
-                  }
-                  userNames.push(users[ind].profile.username);
-                  emails.push(users[ind].profile.email.replace("mailto:",""));
-              }
-              return users;
-          },            
-          // error
-          function(response) {
-              flash.error = ServerErrorResponse.getMessage(response);
-              return;
-          });
-        },
-
-        getAllUsers : function() {
-            return angular.copy(users);
-        },
-
         reloadUsers : function() {
             return readUsers().then(function(data) {
-                return getAllUsers();
+                return angular.copy(users);
             });
         },
 

@@ -159,7 +159,7 @@ public class Publish {
     // String query = "CREATE SILENT GRAPH <" + tempGraphUri + ">";
     try {
       String response =
-          FrameworkConfiguration.getInstance().getAdminRdfStoreManager().createGraph(tempGraphUri);
+          FrameworkConfiguration.getInstance().getSystemRdfStoreManager().createGraph(tempGraphUri);
       // check if it worked
 
 

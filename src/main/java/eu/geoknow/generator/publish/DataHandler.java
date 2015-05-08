@@ -72,7 +72,7 @@ public class DataHandler {
     this.date = LocalDate.now();
     this.dateTime = LocalDateTime.now();
     try {
-      frameworkRdfStoreManager = FrameworkConfiguration.getInstance().getAdminRdfStoreManager();
+      frameworkRdfStoreManager = FrameworkConfiguration.getInstance().getSystemRdfStoreManager();
     } catch (IOException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();

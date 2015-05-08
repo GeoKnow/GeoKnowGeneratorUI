@@ -284,6 +284,7 @@ public class FrameworkConfiguration {
       qexec.close();
       // TODO: experiment to not define system graphs in the configuration file
       instance.getSystemGraphs().put("components", instance.getResourceNamespace() + "components");
+      instance.getSystemGraphs().put("roles", instance.getResourceNamespace() + "roles");
 
       // get the path to the workflow engine
       query =
@@ -367,10 +368,10 @@ public class FrameworkConfiguration {
   }
 
   public FrameworkUserManager getFrameworkUserManager() {
-    return new FrameworkUserManager(getRdfStoreUserManager(), getAdminRdfStoreManager(), instance);
+    return new FrameworkUserManager(getRdfStoreUserManager(), getSystemRdfStoreManager(), instance);
   }
 
-  public SecureRdfStoreManagerImpl getAdminRdfStoreManager() {
+  public SecureRdfStoreManagerImpl getSystemRdfStoreManager() {
     return getUserRdfStoreManager(workbenchSystemAdmin, workbenchSystemAdminPassword);
   }
 
@@ -734,6 +735,10 @@ public class FrameworkConfiguration {
 
   public String getComponentsGraph() {
     return instance.getSystemGraphs().get("components");
+  }
+
+  public String getRolesGraph() {
+    return instance.getSystemGraphs().get("roles");
   }
 
 }

@@ -130,7 +130,7 @@ public class GraphManagerServlet {
       String result = rdfStoreManager.dropGraph(graph);
 
       // remove graph from graph groups descriptions
-      RdfStoreManager frameworkRdfStoreManager = frameworkConfig.getAdminRdfStoreManager();
+      RdfStoreManager frameworkRdfStoreManager = frameworkConfig.getSystemRdfStoreManager();
       String query =
           "PREFIX sd: <http://www.w3.org/ns/sparql-service-description#> "
               + " DELETE WHERE {GRAPH <" + frameworkConfig.getGroupsGraph()
@@ -284,7 +284,7 @@ public class GraphManagerServlet {
       String settingsGraph = frameworkUserManager.getDescribedIn(graphURI);
 
       // update metadata
-      RdfStoreManager frameworkRdfStoreManager = frameworkConfig.getAdminRdfStoreManager();
+      RdfStoreManager frameworkRdfStoreManager = frameworkConfig.getSystemRdfStoreManager();
 
       String graphLabel = graphNode.path("graph").path("label").textValue();
       String graphDescription = graphNode.path("graph").path("description").textValue();
@@ -404,7 +404,7 @@ public class GraphManagerServlet {
 
       // drop graph metadata
       String settingsGraph = frameworkUserManager.getDescribedIn(graph);
-      RdfStoreManager frameworkRdfStoreManager = frameworkConfig.getAdminRdfStoreManager();
+      RdfStoreManager frameworkRdfStoreManager = frameworkConfig.getSystemRdfStoreManager();
       String query =
           "PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>\n"
               + "PREFIX gkg: <http://ldiw.ontos.com/ontology/>\n" + " DELETE {GRAPH <"

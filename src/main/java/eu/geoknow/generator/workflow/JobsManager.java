@@ -80,7 +80,7 @@ public class JobsManager {
       uriBase = frameworkConfig.getResourceNamespace();
       frameworkUserManager = frameworkConfig.getFrameworkUserManager();
       jobsGraph = frameworkConfig.getJobsGraph();
-      frameworkRdfStoreManager = frameworkConfig.getAdminRdfStoreManager();
+      frameworkRdfStoreManager = frameworkConfig.getSystemRdfStoreManager();
       springBatchServiceUri = frameworkConfig.getSpringBatchUri();
       springBatchDataDir = frameworkConfig.getSpringBatchJobsDir();
       // remove last slash if existing

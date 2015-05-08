@@ -1,6 +1,6 @@
 'use strict';
 
-function ModalDatabaseCtrl($scope, $http, $modalInstance, currentDatabase, ConfigurationService) {
+function ModalDatabaseCtrl($scope, $http, $modalInstance, currentDatabase, DatasourcesService) {
 	
 	$scope.modaltitle = "New";
 	$scope.database = { 
@@ -14,7 +14,12 @@ function ModalDatabaseCtrl($scope, $http, $modalInstance, currentDatabase, Confi
 			dbPort:""};
 	
 	$scope.isNew=true;
-	$scope.databaseTypes = ConfigurationService.getDatabaseTypes();
+	DatasourcesService.getDatabaseTypes().then(
+		function(response){
+			console.log(response);
+			$scope.databaseTypes = response;
+		});
+
 	if(currentDatabase!=null){
 		$scope.modaltitle = "Edit";
 		

@@ -37,14 +37,14 @@
           </div>
         </div>
         
-        <div class="form-group">
+        <div class="form-group" ng-show="!isNew()">
           <label class="col-xs-2 control-label">Date created</label>
           <div class="col-xs-10">
             <p class="form-control-static">{{namedgraph.graph.created}}</p>
           </div>
         </div>
         
-        <div class="form-group">
+        <div class="form-group" ng-show="!isNew()">
           <label class="col-xs-2 control-label">Date modified</label>
           <div class="col-xs-10">
             <p class="form-control-static">{{namedgraph.graph.modified}}</p>

@@ -57,7 +57,7 @@ function ModalGraphCtrl($scope, $http, $modalInstance, currentNamedGraph, Config
   $scope.refreshUsersList();
   //if a new named graph gets created
   if ($scope.isNew()) {
-    $scope.modaltitle = "New";
+    $scope.modaltitle = "New Graph";
     var s_now = Helpers.getCurrentDate();
     var defaultEndpoint = ConfigurationService.getSPARQLEndpoint();
     $scope.namedgraph.graph.created = s_now;
@@ -67,7 +67,7 @@ function ModalGraphCtrl($scope, $http, $modalInstance, currentNamedGraph, Config
     $scope.namedgraph.owner = AccountService.getAccount().getAccountURI();
   } else {
     //if and existing named graph gets modified	  	
-    $scope.modaltitle = "Edit";
+    $scope.modaltitle = "Edit Graph";
     $scope.namedgraph = angular.copy(currentNamedGraph);
     $scope.namedgraph.name = $scope.namedgraph.name.replace(':', '');
     $scope.namedgraph.owner = AccountService.getAccount().getAccountURI();

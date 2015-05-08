@@ -53,7 +53,7 @@ public class FrameworkSetup {
   public FrameworkSetup() throws IOException, InformationMissingException {
     // init
     this.config = FrameworkConfiguration.getInstance();
-    this.frameworkRdfStoreManager = config.getAdminRdfStoreManager();
+    this.frameworkRdfStoreManager = config.getSystemRdfStoreManager();
     this.rdfStoreUserManager = config.getRdfStoreUserManager();
     this.rdfStoreUserManager.setup();
   }
@@ -141,13 +141,15 @@ public class FrameworkSetup {
         config.getJobsGraph(), UserManager.GraphPermissions.WRITE);
     rdfStoreUserManager.setRdfGraphPermissions(config.getWorkbenchSystemAdmin(),
         config.getAuthSessionsGraph(), UserManager.GraphPermissions.WRITE);
+    rdfStoreUserManager.setRdfGraphPermissions(config.getWorkbenchSystemAdmin(),
+        config.getAccountsGraph(), UserManager.GraphPermissions.WRITE);
 
     // setup the settingsGraph with corresponding metadata
     setupSettingsGraph();
     // setup the componentsGraph with corresponding metadata
     setupComponentsGraph();
     // add the roles to the accounts graph
-    setupAccountsGraph();
+    setupRolesGraph();
 
     // get accounts to be created form the configuration file
     log.info("create users from framework configuration");
@@ -229,13 +231,8 @@ public class FrameworkSetup {
 
     // drop system graphs
     log.debug("Drop system graphs");
-    frameworkRdfStoreManager.dropGraph(config.getComponentsGraph());
-
-    frameworkRdfStoreManager.dropGraph(config.getSettingsGraph());
-    frameworkRdfStoreManager.dropGraph(config.getAccountsGraph());
-    frameworkRdfStoreManager.dropGraph(config.getGroupsGraph());
-    frameworkRdfStoreManager.dropGraph(config.getJobsGraph());
-    frameworkRdfStoreManager.dropGraph(config.getAuthSessionsGraph());
+    for (String graph : config.getSystemGraphs().values())
+      frameworkRdfStoreManager.dropGraph(graph);
 
     // drop sparql user
     log.debug("Drop system SPARQL user");
@@ -261,11 +258,8 @@ public class FrameworkSetup {
     while (bindingsIter.hasNext()) {
       JsonNode bindingNode = bindingsIter.next();
       String graph = bindingNode.path("g").path("value").textValue();
-      if (graph.equals(config.getComponentsGraph()) || graph.equals(config.getSettingsGraph())
-          || graph.equals(config.getAccountsGraph()) || graph.equals(config.getGroupsGraph())
-          || graph.equals(config.getJobsGraph()) || graph.equals(config.getAuthSessionsGraph())) {
+      if (config.getSystemGraphs().containsKey(graph))
         throw new Exception("Graph " + graph + " already exists");
-      }
     }
   }
 
@@ -273,17 +267,17 @@ public class FrameworkSetup {
 
   private void setupSettingsGraph() throws Exception {
     log.debug("setting up " + config.getSettingsGraph());
-    frameworkRdfStoreManager.createGraph(config.getComponentsGraph());
+    frameworkRdfStoreManager.createGraph(config.getSettingsGraph());
 
     // only admin user can read/write the graph
     rdfStoreUserManager.setRdfGraphPermissions(config.getWorkbenchSystemAdmin(),
-        config.getComponentsGraph(), UserManager.GraphPermissions.WRITE);
+        config.getSettingsGraph(), UserManager.GraphPermissions.WRITE);
     // write the system settings model (include system graphs data)
     // insert configuration data, system graphs and datasources to the settings model
     Model settingsModel = ModelFactory.createDefaultModel();
     settingsModel.add(FrameworkConfiguration.getConfigurationModel());
     settingsModel.add(FrameworkConfiguration.getDatasourceModel());
-    settingsModel.add(FrameworkConfiguration.getSystemGraphsModel());
+    // settingsModel.add(FrameworkConfiguration.getSystemGraphsModel());
     ByteArrayOutputStream os = new ByteArrayOutputStream();
     os = new ByteArrayOutputStream();
     settingsModel.write(os, "N-TRIPLES");
@@ -326,19 +320,19 @@ public class FrameworkSetup {
    * 
    * @throws Exception
    */
-  private void setupAccountsGraph() throws Exception {
+  private void setupRolesGraph() throws Exception {
     // components graph are writable by admin and readable by framework
     // users
-    log.debug("setting up " + config.getAccountsGraph());
-    frameworkRdfStoreManager.createGraph(config.getAccountsGraph());
+    log.debug("setting up " + config.getRolesGraph());
+    frameworkRdfStoreManager.createGraph(config.getRolesGraph());
     // only admin user can read/write the graph
     rdfStoreUserManager.setRdfGraphPermissions(config.getWorkbenchSystemAdmin(),
-        config.getAccountsGraph(), UserManager.GraphPermissions.WRITE);
+        config.getRolesGraph(), UserManager.GraphPermissions.WRITE);
 
     ByteArrayOutputStream os = new ByteArrayOutputStream();
     FrameworkConfiguration.getRolesModel().write(os, "N-TRIPLES");
     String queryString =
-        "INSERT DATA { GRAPH <" + config.getAccountsGraph() + "> { " + os.toString() + " } }";
+        "INSERT DATA { GRAPH <" + config.getRolesGraph() + "> { " + os.toString() + " } }";
     os.close();
     try {
       frameworkRdfStoreManager.execute(queryString, null);

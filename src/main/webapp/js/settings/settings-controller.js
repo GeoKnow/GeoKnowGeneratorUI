@@ -6,7 +6,7 @@ function SettingsMenuCtrl($scope, AccountService) {
   // these data can be replaced later with the configuration
   $scope.items = [
   	{ name: "Data Sources", route:'#/settings/data-sources', url:'/settings/data-sources', requiredServices:[] },
-  	{ name: "Datasets", route:'#/settings/datasets', url:'/settings/datasets', requiredServices:[] },
+  	{ name: "Named Graphs  ", route:'#/settings/named-graphs', url:'/settings/named-graphs', requiredServices:[] },
     // { name: "Namespaces", route:'#/settings/namespaces', url:'/settings/namespaces', requiredServices:[] },
   	{ name: "Components", route:'#/settings/components', url:'/settings/components', requiredServices:[] },
     //{ name: "Users", route:'#/settings/users', url:'/settings/users', requiredServices:[":UserManagerService"] },

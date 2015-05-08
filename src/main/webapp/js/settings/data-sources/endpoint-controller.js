@@ -4,8 +4,16 @@
 function EndpointCtrl($scope, $modal, ConfigurationService,  AccountService){
 	
 	
-	$scope.endpoints = ConfigurationService.getAllEndpoints();
-	$scope.uribase = ConfigurationService.getUriBase();
+    ConfigurationService.getSettings().then(
+        function(settings){
+            $scope.endpoints = ConfigurationService.getAllEndpoints();
+            $scope.uribase = ConfigurationService.getUriBase();
+        }, 
+        function(response){
+            flash.error = ServerErrorResponse.getMessage(response);
+        });
+	
+	
 	$scope.modaltitle = "";
 
 	$scope.isEditable = function(endpoint){

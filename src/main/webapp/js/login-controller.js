@@ -69,7 +69,7 @@ function LoginCtrl($scope, $modal, flash, AccountService, LoginService, ServerEr
     modalInstance.result.then(function(login) {
       LoginService.login(Base64.encode(login.username), Base64.encode(login.password))
         .then(function(data) {
-          //console.log(data);
+          console.log(data);
           $scope.currentAccount = data;
         }, function(response) {
           flash.error = ServerErrorResponse.getMessage(response);

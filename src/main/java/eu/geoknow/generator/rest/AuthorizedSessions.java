@@ -79,7 +79,7 @@ public class AuthorizedSessions {
       frameworkUserManager = FrameworkConfiguration.getInstance().getFrameworkUserManager();
       sessionsGraph = FrameworkConfiguration.getInstance().getAuthSessionsGraph();
       endpoint = FrameworkConfiguration.getInstance().getAuthSparqlEndpoint();
-      frameworkRdfStoreManager = FrameworkConfiguration.getInstance().getAdminRdfStoreManager();
+      frameworkRdfStoreManager = FrameworkConfiguration.getInstance().getSystemRdfStoreManager();
       log.debug(this.toString());
     } catch (IOException e) {
       // TODO Auto-generated catch block

@@ -1,7 +1,7 @@
 'use strict';
 
 
-function GraphCtrl($scope, $http, $modal, flash, Config, ConfigurationService, Helpers, AccountService, GraphService, GraphGroupService) {
+function GraphCtrl($scope, $http, $modal, flash, Config, ConfigurationService, Helpers, AccountService, GraphService, GraphGroupService, ServerErrorResponse) {
 
   $scope.accessModes = GraphService.getAccessModes();
 
@@ -11,7 +11,7 @@ function GraphCtrl($scope, $http, $modal, flash, Config, ConfigurationService, H
 
   $scope.new = function() {
     var modalInstance = $modal.open({
-      templateUrl: 'modal-forms/settings/dataset/modal-graph.html',
+      templateUrl: 'modal-forms/settings/named-graphs/modal-graph.html',
       controller: 'ModalGraphCtrl',
       size: 'lg',
       backdrop: 'static',
@@ -29,7 +29,7 @@ function GraphCtrl($scope, $http, $modal, flash, Config, ConfigurationService, H
   $scope.edit = function(graphName) {
 
     var modalInstance = $modal.open({
-      templateUrl: 'modal-forms/settings/dataset/modal-graph.html',
+      templateUrl: 'modal-forms/settings/named-graphs/modal-graph.html',
       controller: 'ModalGraphCtrl',
       backdrop: 'static',
       size: 'lg',
@@ -43,14 +43,13 @@ function GraphCtrl($scope, $http, $modal, flash, Config, ConfigurationService, H
     });
     modalInstance.result.then(function(responseGraph) {
       $scope.save(responseGraph, false);
-
     });
   };
 
   $scope.editAdmin = function(graphName) {
 
     var modalInstance = $modal.open({
-      templateUrl: 'modal-forms/settings/dataset/modal-graph.html',
+      templateUrl: 'modal-forms/settings/named-graphs/modal-graph.html',
       controller: 'ModalGraphCtrl',
       size: 'lg',
       backdrop: 'static',
@@ -94,24 +93,32 @@ function GraphCtrl($scope, $http, $modal, flash, Config, ConfigurationService, H
       },
       function(response) {
         //error
-        flash.error(response.data);
+        flash.error = ServerErrorResponse.getMessage(response);
       });
   };
 
   $scope.delete = function(graphName) {
-    GraphService.deleteGraph(graphName).then(function(response) {
-      $scope.refreshUserGraphs();
-      $scope.refreshAllGraphs();
-      $scope.refreshGraphGroups();
-    });
+    GraphService.deleteGraph(graphName).then(
+      function(response) {
+        $scope.refreshUserGraphs();
+        $scope.refreshAllGraphs();
+        $scope.refreshGraphGroups();
+      }, 
+      function(response){
+            flash.error = ServerErrorResponse.getMessage(response);
+      });
   };
 
   $scope.deleteForeign = function(graphName) {
-    GraphService.deleteForeignGraph(graphName).then(function(response) {
-      $scope.refreshUserGraphs();
-      $scope.refreshAllGraphs();
-      $scope.refreshGraphGroups();
-    });
+    GraphService.deleteForeignGraph(graphName).then(
+      function(response) {
+        $scope.refreshUserGraphs();
+        $scope.refreshAllGraphs();
+        $scope.refreshGraphGroups();
+      }, 
+      function(response){
+            flash.error = ServerErrorResponse.getMessage(response);
+      });
   };
 
   $scope.toggleUserRead = function(user) {
@@ -133,22 +140,33 @@ function GraphCtrl($scope, $http, $modal, flash, Config, ConfigurationService, H
   };
 
   $scope.refreshUserGraphs = function() {
-    GraphService.getUserGraphs(AccountService.getAccount().getAccountURI(), true)
-      .then(function (graphs){
+    GraphService.getUserGraphs(AccountService.getAccount().getAccountURI(), true).then(
+      function (graphs){
         $scope.namedgraphs = graphs;
+      },
+      function(response){
+            flash.error = ServerErrorResponse.getMessage(response);
       });
   };
 
   $scope.refreshAccessibleGraphs = function() {
-    GraphService.getAccessibleGraphs(false, true, true).then(function(graphs) {
-      $scope.accnamedgraphs = graphs;
-    });
+    GraphService.getAccessibleGraphs(false, true, true).then(
+      function(graphs) {
+        $scope.accnamedgraphs = graphs;
+      },
+      function(response){
+            flash.error = ServerErrorResponse.getMessage(response);
+      });
   };
 
   $scope.refreshAllGraphs = function() {
-    GraphService.getAllNamedGraphs(true).then(function(graphs) {
-      $scope.allgraphs = graphs;
-    });
+    GraphService.getAllNamedGraphs(true).then(
+      function(graphs) {
+        $scope.allgraphs = graphs;
+      },
+      function(response){
+            flash.error = ServerErrorResponse.getMessage(response);
+      });
   };
 
   $scope.userFilter = function(user) {
@@ -166,7 +184,7 @@ function GraphCtrl($scope, $http, $modal, flash, Config, ConfigurationService, H
   $scope.newGroup = function() {
     $scope.refreshAllGraphs();
     var modalInstance = $modal.open({
-      templateUrl: 'modal-forms/settings/dataset/modal-graphgroup.html',
+      templateUrl: 'modal-forms/settings/named-graphs/modal-graphgroup.html',
       controller: 'ModalGraphGroupCtrl',
       size: 'lg',
       backdrop: 'static',
@@ -181,9 +199,13 @@ function GraphCtrl($scope, $http, $modal, flash, Config, ConfigurationService, H
     });
 
     modalInstance.result.then(function(graphgroup) {
-      GraphGroupService.addGraphGroup(graphgroup).then(function(result) {
-        $scope.refreshGraphGroups();
-      });
+      GraphGroupService.addGraphGroup(graphgroup).then(
+        function(result) {
+          $scope.refreshGraphGroups();
+        },
+        function(response){
+            flash.error = ServerErrorResponse.getMessage(response);
+        });
     });
 
   };
@@ -191,7 +213,7 @@ function GraphCtrl($scope, $http, $modal, flash, Config, ConfigurationService, H
   $scope.editGroup = function(groupName) {
     $scope.refreshAllGraphs();
     var modalInstance = $modal.open({
-      templateUrl: 'modal-forms/settings/dataset/modal-graphgroup.html',
+      templateUrl: 'modal-forms/settings/named-graphs/modal-graphgroup.html',
       controller: 'ModalGraphGroupCtrl',
       size: 'lg',
       backdrop: 'static',
@@ -200,30 +222,40 @@ function GraphCtrl($scope, $http, $modal, flash, Config, ConfigurationService, H
           return GraphGroupService.getGraphGroup(groupName);
         },
         allGraphs: function() {
-
           return $scope.allgraphs;
-
         }
       }
     });
 
     modalInstance.result.then(function(graphgroup) {
-      GraphGroupService.updateGraphGroup(graphgroup).then(function(result) {
-        $scope.refreshGraphGroups();
-      });
+      GraphGroupService.updateGraphGroup(graphgroup).then(
+        function(result) {
+          $scope.refreshGraphGroups();
+        },
+        function(response){
+            flash.error = ServerErrorResponse.getMessage(response);
+        });
     });
   };
 
   $scope.deleteGroup = function(groupName) {
-    GraphGroupService.deleteGraphGroup(groupName).then(function(result) {
-      $scope.refreshGraphGroups();
-    });
+    GraphGroupService.deleteGraphGroup(groupName).then(
+      function(result) {
+        $scope.refreshGraphGroups();
+      },
+      function(response){
+            flash.error = ServerErrorResponse.getMessage(response);
+      });
   };
 
   $scope.refreshGraphGroups = function() {
-    GraphGroupService.getAllGraphGroups(true).then(function(result) {
-      $scope.graphgroups = result;
-    });
+    GraphGroupService.getAllGraphGroups(true).then(
+      function(result) {
+        $scope.graphgroups = result;
+      },
+      function(response){
+            flash.error = ServerErrorResponse.getMessage(response);
+      });
   };
 
   // Initialize all tables

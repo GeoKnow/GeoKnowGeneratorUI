@@ -34,7 +34,7 @@ public class FrameworkManager {
 
   public FrameworkManager() throws IOException, InformationMissingException {
     config = FrameworkConfiguration.getInstance();
-    storeManager = config.getAdminRdfStoreManager();
+    storeManager = config.getSystemRdfStoreManager();
   }
 
   /**

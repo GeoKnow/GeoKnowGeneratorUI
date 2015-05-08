@@ -49,7 +49,7 @@ public class RdfStoreProxy {
     try {
       frameworkConfiguration = FrameworkConfiguration.getInstance();
       FrameworkUserManager frameworkUserManager = frameworkConfiguration.getFrameworkUserManager();
-      RdfStoreManager frameworkRdfStoreManager = frameworkConfiguration.getAdminRdfStoreManager();
+      RdfStoreManager frameworkRdfStoreManager = frameworkConfiguration.getSystemRdfStoreManager();
 
       log.debug("mode: " + mode);
       log.debug("username: " + username);
@@ -109,7 +109,7 @@ public class RdfStoreProxy {
     try {
       FrameworkConfiguration frameworkConfiguration = FrameworkConfiguration.getInstance();
       FrameworkUserManager frameworkUserManager = frameworkConfiguration.getFrameworkUserManager();
-      RdfStoreManager frameworkRdfStoreManager = frameworkConfiguration.getAdminRdfStoreManager();
+      RdfStoreManager frameworkRdfStoreManager = frameworkConfiguration.getSystemRdfStoreManager();
 
       RdfStoreManager rdfStoreManager;
       UserProfile user =

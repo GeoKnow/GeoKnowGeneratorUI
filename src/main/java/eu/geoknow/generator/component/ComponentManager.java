@@ -392,7 +392,8 @@ public class ComponentManager {
       // get all components and the services list
       String query =
           "SELECT ?service ?sproperty ?sobject FROM <" + config.getComponentsGraph()
-              + "> WHERE { ?service ?sproperty ?sobject " + "} ";
+              + "> WHERE { ?component <" + LDIS.providesService
+              + "> ?service.  ?service ?sproperty ?sobject " + "} ";
       log.debug(query);
 
       String result = storeManager.execute(query, APP_CONSTANT.SPARQL_JSON_RESPONSE_FORMAT);

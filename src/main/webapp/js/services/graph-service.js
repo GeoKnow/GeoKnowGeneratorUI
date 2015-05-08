@@ -420,8 +420,11 @@ module.factory("GraphService", function ($http, $q, Config, ConfigurationService
             function (response) {
                    // if the creation succeed, then add the metadata insert the metadata of the graph
                 var settings = Config.getSettings();
+                console.log(settings);
                 settings[parNamedGraph.name] = namedgraph;
                 settings[parNamedGraph.name + "Graph"] = graph;
+                if(settings[":default-dataset"]["sd:namedGraph"] == undefined)
+                    settings[":default-dataset"]["sd:namedGraph"] = [];
                 settings[":default-dataset"]["sd:namedGraph"].push(parNamedGraph.name);
                 return Config.write();
             });

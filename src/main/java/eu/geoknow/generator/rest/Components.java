@@ -5,6 +5,7 @@ import java.util.Collection;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.CookieParam;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -25,7 +26,6 @@ import eu.geoknow.generator.configuration.FrameworkConfiguration;
 import eu.geoknow.generator.exceptions.InformationMissingException;
 import eu.geoknow.generator.exceptions.ResourceNotFoundException;
 import eu.geoknow.generator.exceptions.SPARQLEndpointException;
-import eu.geoknow.generator.rdf.RdfStoreManager;
 import eu.geoknow.generator.users.FrameworkUserManager;
 import eu.geoknow.generator.users.UserProfile;
 
@@ -57,7 +57,6 @@ public class Components {
       value = "token") String token, Component component) {
 
     FrameworkUserManager frameworkUserManager;
-    RdfStoreManager storeManager;
     UserProfile user;
     try {
       frameworkUserManager = FrameworkConfiguration.getInstance().getFrameworkUserManager();
@@ -70,8 +69,6 @@ public class Components {
       if (!frameworkUserManager.isAdmin(user.getAccountURI())) {
         return Response.status(Response.Status.UNAUTHORIZED).entity("Admin role required").build();
       }
-      // get the manager of the user that will perform the transaction
-      storeManager = frameworkUserManager.getRdfStoreManager(user.getUsername());
 
     } catch (Exception e) {
       log.error(e);
@@ -80,7 +77,9 @@ public class Components {
     }
 
     try {
-      ComponentManager manager = new ComponentManager(storeManager);
+      // the system user will perform the changes to the Store
+      ComponentManager manager =
+          new ComponentManager(FrameworkConfiguration.getInstance().getSystemRdfStoreManager());
       Component c = manager.updateComponent(component);
       Gson gson = new Gson();
       String json = "{\"component\" : " + gson.toJson(c) + "}";
@@ -111,7 +110,6 @@ public class Components {
       value = "token") String token) {
 
     FrameworkUserManager frameworkUserManager;
-    RdfStoreManager storeManager;
     UserProfile user;
     try {
       frameworkUserManager = FrameworkConfiguration.getInstance().getFrameworkUserManager();
@@ -120,8 +118,6 @@ public class Components {
       if (user == null) {
         return Response.status(Response.Status.UNAUTHORIZED).entity("Invalid credentials").build();
       }
-      // get the manager of the user that will perform the transaction
-      storeManager = frameworkUserManager.getRdfStoreManager(user.getUsername());
 
     } catch (Exception e) {
       log.error(e);
@@ -130,7 +126,8 @@ public class Components {
     }
 
     try {
-      ComponentManager manager = new ComponentManager(storeManager);
+      ComponentManager manager =
+          new ComponentManager(FrameworkConfiguration.getInstance().getSystemRdfStoreManager());
       Collection<Component> components = manager.getAllComponents();
 
       // in fact not all properties should be accessible by any user
@@ -165,7 +162,6 @@ public class Components {
       @CookieParam(value = "user") Cookie userc, @CookieParam(value = "token") String token) {
 
     FrameworkUserManager frameworkUserManager;
-    RdfStoreManager storeManager;
     UserProfile user;
     try {
       frameworkUserManager = FrameworkConfiguration.getInstance().getFrameworkUserManager();
@@ -174,8 +170,6 @@ public class Components {
       if (user == null) {
         return Response.status(Response.Status.UNAUTHORIZED).entity("Invalid credentials").build();
       }
-      // get the manager of the user that will perform the transaction
-      storeManager = frameworkUserManager.getRdfStoreManager(user.getUsername());
 
     } catch (Exception e) {
       log.error(e);
@@ -184,7 +178,8 @@ public class Components {
     }
 
     try {
-      ComponentManager manager = new ComponentManager(storeManager);
+      ComponentManager manager =
+          new ComponentManager(FrameworkConfiguration.getInstance().getSystemRdfStoreManager());
       Component component = manager.getComponent(uri);
       // in fact not all properties should be accessible by any user
       if (!frameworkUserManager.isAdmin(user.getAccountURI())) {
@@ -207,7 +202,7 @@ public class Components {
   }
 
   /**
-   * Get the the data of a single component
+   * Get the data of a single component
    * 
    * @return JSON
    */
@@ -218,7 +213,6 @@ public class Components {
       @CookieParam(value = "user") Cookie userc, @CookieParam(value = "token") String token) {
 
     FrameworkUserManager frameworkUserManager;
-    RdfStoreManager storeManager;
     UserProfile user;
     try {
       frameworkUserManager = FrameworkConfiguration.getInstance().getFrameworkUserManager();
@@ -227,8 +221,6 @@ public class Components {
       if (user == null) {
         return Response.status(Response.Status.UNAUTHORIZED).entity("Invalid credentials").build();
       }
-      // get the manager of the user that will perform the transaction
-      storeManager = frameworkUserManager.getRdfStoreManager(user.getUsername());
     } catch (Exception e) {
       log.error(e);
       e.printStackTrace();
@@ -237,7 +229,8 @@ public class Components {
 
     try {
 
-      ComponentManager manager = new ComponentManager(storeManager);
+      ComponentManager manager =
+          new ComponentManager(FrameworkConfiguration.getInstance().getSystemRdfStoreManager());
 
       Service service = manager.getService(uri);
       // in fact not all properties should be accessible by any user
@@ -273,7 +266,6 @@ public class Components {
       value = "token") String token) {
 
     FrameworkUserManager frameworkUserManager;
-    RdfStoreManager storeManager;
     UserProfile user;
     try {
       frameworkUserManager = FrameworkConfiguration.getInstance().getFrameworkUserManager();
@@ -282,8 +274,6 @@ public class Components {
       if (user == null) {
         return Response.status(Response.Status.UNAUTHORIZED).entity("Invalid credentials").build();
       }
-      // get the manager of the user that will perform the transaction
-      storeManager = frameworkUserManager.getRdfStoreManager(user.getUsername());
     } catch (Exception e) {
       log.error(e);
       e.printStackTrace();
@@ -292,7 +282,8 @@ public class Components {
 
     try {
 
-      ComponentManager manager = new ComponentManager(storeManager);
+      ComponentManager manager =
+          new ComponentManager(FrameworkConfiguration.getInstance().getSystemRdfStoreManager());
 
       Collection<Service> services = manager.getAllServices();
       // in fact not all properties should be accessible by any user
@@ -311,6 +302,52 @@ public class Components {
       return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
     }
 
+  }
+
+  /**
+   * Delete a component of the given URI
+   * 
+   * @param uri
+   * @param userc
+   * @param token
+   * @return
+   */
+  @DELETE
+  @Path("{uri : .+}")
+  public Response delete(@PathParam("uri") String uri, @CookieParam(value = "user") Cookie userc,
+      @CookieParam(value = "token") String token) {
+
+    FrameworkUserManager frameworkUserManager;
+    UserProfile user;
+    try {
+      frameworkUserManager = FrameworkConfiguration.getInstance().getFrameworkUserManager();
+      // authenticates the user, throw exception if fail
+      user = frameworkUserManager.validate(userc, token);
+      if (user == null) {
+        return Response.status(Response.Status.UNAUTHORIZED).entity("Invalid credentials").build();
+      }
+      // only admin can delete
+      if (!frameworkUserManager.isAdmin(user.getAccountURI())) {
+        return Response.status(Response.Status.UNAUTHORIZED).entity("Admin role required").build();
+      }
+
+    } catch (Exception e) {
+      log.error(e);
+      e.printStackTrace();
+      return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+    }
+    try {
+
+      ComponentManager manager =
+          new ComponentManager(FrameworkConfiguration.getInstance().getSystemRdfStoreManager());
+      manager.deleteComponent(uri);
+
+      return Response.status(Response.Status.OK).build();
+
+    } catch (Exception e) {
+      log.error(e);
+      return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+    }
   }
 
 }

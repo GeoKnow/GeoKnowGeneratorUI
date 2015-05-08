@@ -12,6 +12,7 @@ var app = angular.module('app', ['ngRoute',
                                  'app.authsession-service',
                                  'app.components-service',
                                  'app.roles-service',
+                                 'app.datasources-service',
                                  'app.login-service',
                                  'app.users-service',
                                  'app.directives', 
@@ -40,7 +41,7 @@ app.config(function($routeSegmentProvider, $routeProvider)
         .when('/settings', 'settings')
         // secondary routes 
         .when('/settings/data-sources', 'settings.data-sources')
-        .when('/settings/datasets', 'settings.datasets')
+        .when('/settings/named-graphs', 'settings.named-graphs')
         //.when('/settings/namespaces', 'settings.namespaces')
         .when('/settings/components', 'settings.components')
         .when('/settings/roles', 'settings.roles')
@@ -58,11 +59,7 @@ app.config(function($routeSegmentProvider, $routeProvider)
 
         .segment('default', {
             templateUrl: 'default.html',
-           /* resolve: {
-                    roles: function(UsersService) {
-                        return UsersService.readRoles();
-                    }                        
-                }*/
+
                 })
             
         .segment('popup-triplegeo', {
@@ -114,8 +111,8 @@ app.config(function($routeSegmentProvider, $routeProvider)
         .segment('settings',{
             templateUrl: 'js/settings/settings.html'})
             .within()
-                .segment('datasets', {
-                    templateUrl: 'js/settings/datasets/graphs.html'})
+                .segment('named-graphs', {
+                    templateUrl: 'js/settings/named-graphs/graphs.html'})
                 .segment('data-sources', {
                     templateUrl: 'js/settings/data-sources/data-sources.html'})
                 .segment('namespaces', {
@@ -125,18 +122,7 @@ app.config(function($routeSegmentProvider, $routeProvider)
                 // .segment('users', {
                     //templateUrl: 'js/admin/users/users.html'})
                 .segment('roles', {
-                    templateUrl: 'js/admin/roles.html',
-                    resolve: {
-                            settings: function (ConfigurationService) {
-                                return ConfigurationService.getSettings();
-                            },
-                            users: function(UsersService) {
-                                return UsersService.readUsers();
-                            },
-                            roles: function(UsersService) {
-                                return UsersService.readRoles();
-                            }                        
-                        }
+                    templateUrl: 'js/admin/roles.html'
                     })
             .up() 
         .segment('account', {
@@ -218,6 +204,7 @@ app.config(function($routeSegmentProvider, $routeProvider)
             } else {
                 var allowedServices = role.services;
                 console.log(allowedServices);
+                console.log(requiredServices);
                 for (var ind in requiredServices) {
                     if (allowedServices.indexOf(requiredServices[ind])==-1) {
                         $location.path("/access-denied");

@@ -147,7 +147,7 @@ public class ComponentManagerIT {
   public void getAllTypes() throws IOException, InformationMissingException {
 
     ComponentManager manager =
-        new ComponentManager(FrameworkConfiguration.getInstance().getAdminRdfStoreManager());
+        new ComponentManager(FrameworkConfiguration.getInstance().getSystemRdfStoreManager());
     Collection<ServiceType> all = manager.getServiceTypes();
     assertFalse(all.isEmpty());
     assertFalse(all.iterator().next().getLabels().isEmpty());

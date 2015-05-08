@@ -17,7 +17,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.util.ISO8601Utils;
 import com.google.gson.Gson;
-import com.hp.hpl.jena.vocabulary.RDFS;
 import com.ontos.ldiw.vocabulary.LDIWO;
 
 import eu.geoknow.generator.configuration.FrameworkConfiguration;
@@ -97,7 +96,10 @@ public class FrameworkUserManager implements UserManager {
      * write user graph // rollback actions: rdfStoreUserManager.dropUser(name); throw e; }
      */
     // get default role uri
-    String role = getDefaultRoleURI();
+    RoleManager roles = new RoleManager(rdfStoreManager);
+    // String role = getDefaultRoleURI();
+    String role = roles.getDefaultRole().getUri();
+
     // write user account to accounts graph
     String query =
         getPrefixes() + "\n" + "INSERT DATA { GRAPH <" + frameworkConfig.getAccountsGraph()
@@ -469,6 +471,9 @@ public class FrameworkUserManager implements UserManager {
     Iterator<JsonNode> bindingsIter = rootNode.path("results").path("bindings").elements();
     if (!bindingsIter.hasNext())
       return null;
+
+    RoleManager roles = new RoleManager(rdfStoreManager);
+
     UserProfile userProfile = new UserProfile();
     userProfile.setAccountURI(bindingsIter.next().path("account").path("value").textValue());
     bindingsIter = rootNode.path("results").path("bindings").elements();
@@ -485,7 +490,7 @@ public class FrameworkUserManager implements UserManager {
       } else if (predicate.equals(LDIWO.role.getURI())) {
         String roleURI = bindingNode.path("o").path("value").textValue();
         log.debug(roleURI);
-        UserRole role = getRole(roleURI);
+        UserRole role = roles.getRole(roleURI);
         userProfile.setRole(role);
       }
     }
@@ -919,13 +924,6 @@ public class FrameworkUserManager implements UserManager {
     rdfStoreManager.execute(deleteQuery, jsonResponseFormat);
     rdfStoreManager.execute(insertQuery, jsonResponseFormat);
 
-    // remove all privileges on system graphs if any
-    setSystemGraphPermisions(userId, GraphPermissions.NO);
-
-    // if Role == Admin provide access to the graphs: components.
-    if (role.equals(frameworkConfig.getResourceNamespace() + RoleType.ADMINISTRATOR))
-      setSystemGraphPermisions(userId, GraphPermissions.WRITE);
-
     // TODO: replace 2 queries with this query when OntoQuad will support
     // DELETE {...} INSERT {...} WHERE {...} queries
     // String query = getPrefixes() + "\n"
@@ -936,51 +934,37 @@ public class FrameworkUserManager implements UserManager {
     // "\" . optional {?account gkg:role ?o .} }";
   }
 
-  private UserRole getRole(String roleURI) throws Exception {
-    UserRole role = new UserRole();
-    role.setUri(roleURI);
-    Collection<String> roleServices = new ArrayList<>();
-    String query =
-        getPrefixes() + "\n" + "SELECT ?s ?p ?o FROM <" + frameworkConfig.getAccountsGraph() + "> "
-            + "WHERE {?s ?p ?o . filter(?s=<" + roleURI + ">)}";
-    log.debug(query);
-    String result = rdfStoreManager.execute(query, jsonResponseFormat);
-
-    ObjectMapper mapper = new ObjectMapper();
-    JsonNode rootNode = mapper.readTree(result);
-    Iterator<JsonNode> bindingsIter = rootNode.path("results").path("bindings").elements();
-    while (bindingsIter.hasNext()) {
-      JsonNode bindingNode = bindingsIter.next();
-      String predicate = bindingNode.path("p").path("value").textValue();
-
-      log.debug(predicate);
-
-      if (predicate.equals(RDFS.label.getURI()))
-        role.setName(bindingNode.path("o").path("value").textValue());
-      else if (predicate.equals(LDIWO.isAllowedToUseService.getURI()))
-        roleServices.add(bindingNode.path("o").path("value").textValue());
-    }
-    role.setServices(roleServices);
-    return role;
-  }
-
-  private String getDefaultRoleURI() throws Exception {
-    String query =
-        getPrefixes() + "\n" + "SELECT DISTINCT ?role FROM <" + frameworkConfig.getAccountsGraph()
-            + "> " + "WHERE { ?role gkg:isDefault true . }";
-    String result = rdfStoreManager.execute(query, jsonResponseFormat);
-    ObjectMapper mapper = new ObjectMapper();
-    JsonNode rootNode = mapper.readTree(result);
-    Iterator<JsonNode> bindingsIter = rootNode.path("results").path("bindings").elements();
-    String role;
-    if (!bindingsIter.hasNext()) {
-      role = frameworkConfig.getResourceNamespace() + RoleType.DEFAULT;
-    } else {
-      JsonNode binding = bindingsIter.next();
-      role = binding.path("role").path("value").textValue();
-    }
-    return role;
-  }
+  /*
+   * REPLACED FUNCTIONS WITHIN RoleManager
+   * 
+   * private UserRole getRole(String roleURI) throws Exception { UserRole role = new UserRole();
+   * role.setUri(roleURI); Collection<String> roleServices = new ArrayList<>(); String query =
+   * getPrefixes() + "\n" + "SELECT ?s ?p ?o FROM <" + frameworkConfig.getAccountsGraph() + "> " +
+   * "WHERE {?s ?p ?o . filter(?s=<" + roleURI + ">)}"; log.debug(query); String result =
+   * rdfStoreManager.execute(query, jsonResponseFormat);
+   * 
+   * ObjectMapper mapper = new ObjectMapper(); JsonNode rootNode = mapper.readTree(result);
+   * Iterator<JsonNode> bindingsIter = rootNode.path("results").path("bindings").elements(); while
+   * (bindingsIter.hasNext()) { JsonNode bindingNode = bindingsIter.next(); String predicate =
+   * bindingNode.path("p").path("value").textValue();
+   * 
+   * log.debug(predicate);
+   * 
+   * if (predicate.equals(RDFS.label.getURI()))
+   * role.setName(bindingNode.path("o").path("value").textValue()); else if
+   * (predicate.equals(LDIWO.isAllowedToUseService.getURI()))
+   * roleServices.add(bindingNode.path("o").path("value").textValue()); }
+   * role.setServices(roleServices); return role; }
+   * 
+   * private String getDefaultRoleURI() throws Exception { String query = getPrefixes() + "\n" +
+   * "SELECT DISTINCT ?role FROM <" + frameworkConfig.getAccountsGraph() + "> " +
+   * "WHERE { ?role gkg:isDefault true . }"; String result = rdfStoreManager.execute(query,
+   * jsonResponseFormat); ObjectMapper mapper = new ObjectMapper(); JsonNode rootNode =
+   * mapper.readTree(result); Iterator<JsonNode> bindingsIter =
+   * rootNode.path("results").path("bindings").elements(); String role; if (!bindingsIter.hasNext())
+   * { role = frameworkConfig.getResourceNamespace() + RoleType.DEFAULT; } else { JsonNode binding =
+   * bindingsIter.next(); role = binding.path("role").path("value").textValue(); } return role; }
+   */
 
   /**
    * This method returns Workbench user name.
@@ -1006,17 +990,5 @@ public class FrameworkUserManager implements UserManager {
     return bindingsIter.next().path("name").path("value").textValue();
   }
 
-  /**
-   * Set the permissions to the system graphs
-   * 
-   * @param user
-   * @param permisions
-   * @throws Exception
-   */
-  private void setSystemGraphPermisions(String user, GraphPermissions permisions) throws Exception {
-    for (String g : frameworkConfig.getSystemGraphs().keySet()) {
-      rdfStoreUserManager.setRdfGraphPermissions(user, frameworkConfig.getSystemGraphs().get(g),
-          permisions);
-    }
-  }
+
 }
