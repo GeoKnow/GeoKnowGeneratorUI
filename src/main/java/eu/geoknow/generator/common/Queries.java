@@ -32,7 +32,9 @@ public class Queries {
       log.debug(result);
       ObjectMapper mapper = new ObjectMapper();
       JsonNode rootNode = mapper.readTree(result);
-      return rootNode.path("boolean").booleanValue();
+      boolean res = rootNode.path("boolean").booleanValue();
+      log.debug(res);
+      return res;
 
     } catch (Exception e) {
       e.printStackTrace();

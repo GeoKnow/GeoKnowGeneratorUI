@@ -36,11 +36,16 @@
             <table class="table table-fixed">
                 <tr>
                     <td class="col-header"></td>
-                    <th ng-repeat="role in roles">{{role.name}}</th>
+                    <th ng-repeat="role in roles" align="center">
+                        <button type="button" class="btn btn-default btn-xs" ng-disabled="roleUndeletable(role)" ng-confirm-click="deleteRole(role)" ng-confirm-message="Are you sure you want to delete role {{role.name}}?">
+                            <span class="glyphicon glyphicon-trash"></span>
+                        </button>
+                        {{role.name}}
+                    </th>
                 </tr>
                 <tr ng-repeat="s in services">
-                    <th class="col-header" tooltip="{{s.description}}">{{s.uri}}</th>
-                    <td ng-repeat="role in roles">
+                    <th class="col-header" tooltip="{{s.description}}">{{s.label}}</th>
+                    <td ng-repeat="role in roles" align="center">
                         <input type="checkbox" ng-disabled="roleUnchangeable(role)" ng-checked="serviceAllowed(s, role)" ng-click="toggleService(s, role)"/>
                     </td>
                 </tr>

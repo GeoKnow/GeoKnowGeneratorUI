@@ -10,7 +10,7 @@
        <div class="form-group">
             <label class="col-xs-2 control-label">Identifier</label>
             <div class="col-xs-10">
-                <input type="text" class="form-control" id="id" name="id" ng-model="newRole.id" required regex-validate="identifier"/>
+                <input type="text" class="form-control" id="id" name="id" ng-model="newRole.uri" required regex-validate="identifier"/>
                 <div class="error" ng-show="roleForm.id.$dirty && roleForm.id.$invalid">Invalid field:
                     <span ng-show="roleForm.id.$error.required || roleForm.id.$error.regexValidate">Malformed, only letters and numbers allowed</span>
                 </div>

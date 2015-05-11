@@ -3,6 +3,8 @@ package eu.geoknow.generator.users;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 /**
  * 
  * @author taleksaschina created on 24.06.2014.
@@ -13,11 +15,15 @@ public class UserRole {
   private String uri;
   private String name;
   private Collection<String> services;
+  @JsonIgnore
   private boolean isDefault;
+  @JsonIgnore
   private boolean isNotLoggedIn;
 
   public UserRole() {
     services = new ArrayList<String>();
+    isDefault = false;
+    isNotLoggedIn = false;
   }
 
   public String getUri() {

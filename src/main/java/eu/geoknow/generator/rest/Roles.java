@@ -20,6 +20,7 @@ import org.apache.log4j.Logger;
 import com.google.gson.Gson;
 
 import eu.geoknow.generator.configuration.FrameworkConfiguration;
+import eu.geoknow.generator.exceptions.ResourceExistsException;
 import eu.geoknow.generator.exceptions.ResourceNotFoundException;
 import eu.geoknow.generator.users.FrameworkUserManager;
 import eu.geoknow.generator.users.RoleManager;
@@ -73,7 +74,8 @@ public class Roles {
    * @return
    */
   @GET
-  @Path("{uri : .+}")
+  @Path("/{uri : .+}")
+  @Produces(MediaType.APPLICATION_JSON)
   public Response getRole(@PathParam("uri") String uri, @CookieParam(value = "user") Cookie userc,
       @CookieParam(value = "token") String token) {
 
@@ -102,6 +104,9 @@ public class Roles {
       return Response.status(Response.Status.OK).entity(json).type(MediaType.APPLICATION_JSON)
           .build();
 
+    } catch (ResourceNotFoundException e) {
+      log.error(e);
+      return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
     } catch (Exception e) {
       log.error(e);
       return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
@@ -116,7 +121,7 @@ public class Roles {
    * @param token
    * @return UserRole
    */
-  @PUT
+  @POST
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   public Response createRole(UserRole role, @CookieParam(value = "user") Cookie userc,
@@ -150,13 +155,12 @@ public class Roles {
       Gson gson = new Gson();
       String json = "{\"role\" : " + gson.toJson(res) + "}";
       log.info(json);
-      return Response.status(Response.Status.OK).entity(json).type(MediaType.APPLICATION_JSON)
+      return Response.status(Response.Status.CREATED).entity(json).type(MediaType.APPLICATION_JSON)
           .build();
 
-    } catch (ResourceNotFoundException e) {
+    } catch (ResourceExistsException e) {
       log.error(e);
-      return Response.status(Response.Status.NO_CONTENT)
-          .entity("The component was not found in the system.").build();
+      return Response.status(Response.Status.CONFLICT).entity(e.getMessage()).build();
     } catch (Exception e) {
       log.error(e);
       return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
@@ -172,7 +176,7 @@ public class Roles {
    * @param token
    * @return
    */
-  @POST
+  @PUT
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   public Response updateRole(UserRole role, @CookieParam(value = "user") Cookie userc,
@@ -211,8 +215,7 @@ public class Roles {
 
     } catch (ResourceNotFoundException e) {
       log.error(e);
-      return Response.status(Response.Status.NO_CONTENT)
-          .entity("The component was not found in the system.").build();
+      return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
     } catch (Exception e) {
       log.error(e);
       return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
@@ -228,7 +231,7 @@ public class Roles {
    * @return
    */
   @DELETE
-  @Path("{uri : .+}")
+  @Path("/{uri : .+}")
   public Response deleteRole(@PathParam("uri") String uri,
       @CookieParam(value = "user") Cookie userc, @CookieParam(value = "token") String token) {
 
@@ -265,19 +268,49 @@ public class Roles {
   }
 
   /**
-   * Sets the provided role as uri, as the given type (i.e. NotLoggedIn, Default ...)
+   * Sets the Default to the provided uri.
    * 
-   * @param type
    * @param uri of the role
    * @param userc
    * @param token
    * @return
    */
-  @POST
-  @Path("{type}/{uri : .+}")
-  public Response setType(@PathParam("type") String type, @PathParam("uri") String uri,
+  @PUT
+  @Path("/default/{uri : .+}")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response setDefaultType(@PathParam("uri") String uri,
       @CookieParam(value = "user") Cookie userc, @CookieParam(value = "token") String token) {
+    return setType(RoleType.DEFAULT, uri, userc, token);
+  }
 
+  /**
+   * Sets the not-logged-in to the provided uri.
+   * 
+   * @param uri of the role
+   * @param userc
+   * @param token
+   * @return
+   */
+  @PUT
+  @Path("/not-logged-in/{uri : .+}")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response setNotLoggedInType(@PathParam("uri") String uri,
+      @CookieParam(value = "user") Cookie userc, @CookieParam(value = "token") String token) {
+    return setType(RoleType.NOT_LOGGED_IN_USER, uri, userc, token);
+  }
+
+  /**
+   * A general method to set the Defaulf or the NotLoggedIn type
+   * 
+   * @param type
+   * @param uri
+   * @param userc
+   * @param token
+   * @return
+   */
+  private Response setType(String type, String uri, Cookie userc, String token) {
     log.debug(type + "/" + uri);
     FrameworkUserManager frameworkUserManager;
     UserProfile user;
@@ -312,8 +345,7 @@ public class Roles {
 
     } catch (ResourceNotFoundException e) {
       log.error(e);
-      return Response.status(Response.Status.NO_CONTENT)
-          .entity("The component was not found in the system.").build();
+      return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
     } catch (Exception e) {
       log.error(e);
       return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
