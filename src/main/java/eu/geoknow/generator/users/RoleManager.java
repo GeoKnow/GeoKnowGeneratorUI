@@ -17,6 +17,7 @@ import eu.geoknow.generator.common.APP_CONSTANT;
 import eu.geoknow.generator.common.Queries;
 import eu.geoknow.generator.configuration.FrameworkConfiguration;
 import eu.geoknow.generator.exceptions.InformationMissingException;
+import eu.geoknow.generator.exceptions.ResourceExistsException;
 import eu.geoknow.generator.exceptions.ResourceNotFoundException;
 import eu.geoknow.generator.exceptions.SPARQLEndpointException;
 import eu.geoknow.generator.rdf.RdfStoreManager;
@@ -128,9 +129,10 @@ public class RoleManager {
    * @throws ResourceNotFoundException
    * @throws SPARQLEndpointException
    */
-  public UserRole create(UserRole role) throws ResourceNotFoundException, SPARQLEndpointException {
+  public UserRole create(UserRole role) throws ResourceExistsException, SPARQLEndpointException {
+
     if (Queries.resourceExists(role.getUri(), config.getRolesGraph(), storeManager))
-      throw new ResourceNotFoundException(role.getUri() + " not found");
+      throw new ResourceExistsException(role.getUri() + " aleready exists");
 
     String query =
         "INSERT DATA { GRAPH <" + config.getRolesGraph() + "> { " + insertRoleStatements(role)

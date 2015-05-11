@@ -31,7 +31,7 @@ module.factory('ComponentsService', function ($http, $q) {
 		},
 
 		getAllServices : function(){
-			return $http.get("rest/components/services").then( 
+			return $http.get("rest/services").then( 
 				// success
 				function (response){
 					return response.data.services;
@@ -39,21 +39,45 @@ module.factory('ComponentsService', function ($http, $q) {
 		},
 
 		getService: function(uri){
-			return $http.get("rest/components/services/"+uri).then( 
+			return $http.get("rest/services/"+uri).then( 
 				// success
 				function (response){
 					return response.data.services;
 	    });
 		},
+/*
+
+Not implemented yet
 
 		updateService : function(service){
-			console.log(service);
-			return $http.post("rest/components/services/", service).then( 
-				function (response){
-					console.log(response);
-					return response.data;
-	    });
-		}
+			var request = {
+				method: 'PUT',
+ 				url: "rest/components/services/",
+ 				headers: {
+   				'Content-Type': 'application/json'
+ 				},
+ 				data: service
+			};
+			return $http(request).then(function(response){
+				return response.data.service;
+			});
+		}, 
+
+		addService : function(service){
+			var request = {
+				method: 'POST',
+ 				url: "rest/components/services/",
+ 				headers: {
+   				'Content-Type': 'application/json'
+ 				},
+ 				data: service
+			};
+			return $http(request).then(function(response){
+				return response.data.service;
+			});
+		}, 
+*/
+
 	};
 
 	return service;

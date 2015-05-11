@@ -26,6 +26,8 @@ public class Service {
   @NotEmpty
   private String uri;
   @NotEmpty
+  private String label;
+  @NotEmpty
   private String type;
   @NotEmpty
   private String description;
@@ -75,6 +77,14 @@ public class Service {
 
   public void setUri(String uri) {
     this.uri = uri;
+  }
+
+  public String getLabel() {
+    return label;
+  }
+
+  public void setLabel(String label) {
+    this.label = label;
   }
 
 }

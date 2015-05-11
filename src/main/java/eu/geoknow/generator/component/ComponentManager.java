@@ -252,11 +252,47 @@ public class ComponentManager {
       e.printStackTrace();
       throw new SPARQLEndpointException(e.getMessage());
     }
-
     log.debug(result);
-
     return component;
+  }
 
+  /**
+   * Inserts a service
+   * 
+   * @param component a valid instance of Component
+   * @throws IOException
+   * @throws SPARQLEndpointException
+   * @throws ResourceExistsException
+   * @throws ResourceNotFoundException
+   */
+  public Service addService(String uri, @Valid Service service) throws IOException,
+      SPARQLEndpointException, ResourceExistsException, ResourceNotFoundException {
+
+    // check that the component metadata exists
+    if (!Queries.resourceExists(uri, config.getComponentsGraph(), storeManager))
+      throw new ResourceNotFoundException(uri + " doesnt exist ");
+
+    // check that the service doesn't exists
+    if (Queries.resourceExists(service.getUri(), config.getComponentsGraph(), storeManager))
+      throw new ResourceExistsException("Service " + service.getUri() + " already exist  as "
+          + service.getLabel());
+
+    String query =
+        "INSERT DATA { GRAPH <" + config.getComponentsGraph() + "> { <" + uri + ">  <"
+            + LDIS.providesService.getURI() + "> <" + service.getUri() + ">. "
+            + insertServiceStatements(service) + " }}";
+
+    log.debug(query);
+
+    String result;
+    try {
+      result = storeManager.execute(query, APP_CONSTANT.SPARQL_JSON_RESPONSE_FORMAT);
+    } catch (Exception e) {
+      e.printStackTrace();
+      throw new SPARQLEndpointException(e.getMessage());
+    }
+    log.debug(result);
+    return service;
   }
 
   /**
@@ -270,6 +306,7 @@ public class ComponentManager {
   public Component updateComponent(Component component) throws IOException,
       SPARQLEndpointException, ResourceNotFoundException {
 
+    // check that the component exists
     if (!Queries.resourceExists(component.getUri(), config.getComponentsGraph(), storeManager))
       throw new ResourceNotFoundException(component.getUri() + " not found");
 
@@ -326,7 +363,33 @@ public class ComponentManager {
     }
   }
 
+  /**
+   * Delete a service with the given uri
+   * 
+   * @param uri
+   * @throws IOException
+   * @throws SPARQLEndpointException
+   */
+  public void deleteService(String uri) throws IOException, SPARQLEndpointException {
 
+    try {
+
+      String query =
+          "WITH <" + config.getComponentsGraph() + "> DELETE  { ?component  <"
+              + LDIS.providesService + "> <" + uri + "> . <" + uri
+              + "> ?sproperty ?sobject  } WHERE { < ?component  <" + LDIS.providesService + "> <"
+              + uri + "> . <" + uri + "> ?sproperty ?sobject  }";
+
+      log.debug(query);
+
+      String result = storeManager.execute(query, APP_CONSTANT.SPARQL_JSON_RESPONSE_FORMAT);
+
+      log.debug(result);
+    } catch (Exception e) {
+      e.printStackTrace();
+      throw new SPARQLEndpointException(e.getMessage());
+    }
+  }
 
   /**
    * Retreives existing types of services in the ldi-schema ontology
@@ -514,6 +577,8 @@ public class ComponentManager {
   public static void setServiceProperty(Service s, String property, String value) {
     if (RDF.type.getURI().equals(property))
       s.setType(value);
+    else if (RDFS.label.getURI().equals(property))
+      s.setLabel(value);
     else if (LDIS.serviceUrl.getURI().equals(property))
       s.setServiceUrl(value);
     else if (DC.description.getURI().equals(property))
@@ -562,6 +627,7 @@ public class ComponentManager {
 
     List<String> properties = new ArrayList<String>();
     properties.add("<" + service.getUri() + "> a  <" + service.getType() + "> ; <"
+        + RDFS.label.getURI() + "> \"" + service.getLabel() + "\" ^^ xsd:string ; <"
         + DCTerms.description + "> \"" + service.getDescription() + "\" ; <"
         + LDIS.serviceUrl.getURI() + "> <" + service.getServiceUrl() + "> ");
 

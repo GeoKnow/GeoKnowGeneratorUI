@@ -46,6 +46,7 @@ public class ComponentManagerIT {
     service = new Service();
     service.setUri("http://testig/component/service");
     service.setDescription("a service");
+    service.setLabel("a service");
     service.setServiceUrl("http://testig/component/service");
     service.setType("test");
 
@@ -57,9 +58,7 @@ public class ComponentManagerIT {
 
     component.getServices().add(service);
 
-    manager =
-        new ComponentManager(FrameworkConfiguration.getInstance().getUserRdfStoreManager("testing",
-            "integration-testing"));
+    manager = new ComponentManager(FrameworkConfiguration.getInstance().getSystemRdfStoreManager());
 
   }
 
@@ -79,8 +78,8 @@ public class ComponentManagerIT {
 
 
   @Test
-  public void addAddTest() throws SPARQLEndpointException, IOException, ResourceExistsException,
-      ResourceNotFoundException, InformationMissingException {
+  public void addComponentTest() throws SPARQLEndpointException, IOException,
+      ResourceExistsException, ResourceNotFoundException, InformationMissingException {
 
     // insert a component
     log.info("Inserting " + component.getUri());
@@ -93,8 +92,8 @@ public class ComponentManagerIT {
   }
 
   @Test
-  public void addUpdateTest() throws SPARQLEndpointException, IOException, ResourceExistsException,
-      ResourceNotFoundException, InformationMissingException {
+  public void updateComponentTest() throws SPARQLEndpointException, IOException,
+      ResourceExistsException, ResourceNotFoundException, InformationMissingException {
     // change description
 
     Component c1 = manager.getComponent(component.getUri());

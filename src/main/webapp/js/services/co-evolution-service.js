@@ -20,7 +20,7 @@ module.factory("CoevolutionService", function ($http, ComponentsService) {
     });
   
 
-	var service = {
+  var service = {
 
     getGroup : function(id) {
       return $http({
@@ -29,22 +29,31 @@ module.factory("CoevolutionService", function ($http, ComponentsService) {
       });
     },
 
-		createGroup : function(id, name) {
+    createGroup : function(id, name) {
       return $http({
         url: "graphs/group/"+id,
         method: "PUT",
         data : name
       });
-		},
+    },
 
-		getGroupVersions : function(id){
+    getGroupVersions : function(id){
       return $http({
         url: "graphs/group/" + id + "/versions",
         method: "GET"
       });
-    }
-	};
+    }, 
 
-	return service;
+    getGroupLatestVersion : function(id){
+      return $http({
+        url: "graphs/latest/group/" + id ,
+        method: "GET"
+      });
+    }, 
+
+
+  };
+
+  return service;
 
 });

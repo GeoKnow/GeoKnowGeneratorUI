@@ -45,6 +45,12 @@ function UserRolesCtrl($scope, $modal, UsersService, ConfigurationService, Compo
         return role.uri==ConfigurationService.getUriBase()+"Administrator" ;
     };
 
+    $scope.roleUndeletable = function(role) {
+        return (role.uri==ConfigurationService.getUriBase()+"Administrator" 
+            || role.uri == $scope.defaultRole.uri 
+            || role.uri == $scope.notLoggedInRole.uri )
+    };
+
     $scope.toggleService = function(service, role) {
         var index = role.services.indexOf(service.uri);
         if (index > -1) { // is currently selected
@@ -94,6 +100,7 @@ function UserRolesCtrl($scope, $modal, UsersService, ConfigurationService, Compo
         });
     	
         modalInstance.result.then(function (newRole) { 
+            newRole.uri = ConfigurationService.getUriBase()+ newRole.uri;
     		RolesService.addRole(newRole).then(
                 function(response) {
                     refreshRoles();
@@ -104,9 +111,19 @@ function UserRolesCtrl($scope, $modal, UsersService, ConfigurationService, Compo
 
     };
 
+    $scope.deleteRole = function(role) {
+        RolesService.deleteRole(role.uri).then(
+            //success
+            function(response){
+                refreshRoles();
+            },
+            //fail
+            function(response){
+                flash.error = ServerErrorResponse.getMessage(response);
+            });
+    };
 
     $scope.setDefaultRole = function() {
-
         RolesService.setDefaultRole($scope.defaultRole.uri).then(
             //success
             function(response){
