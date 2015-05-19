@@ -75,7 +75,7 @@ function UsersCtrl($scope, $http, $modal, flash, Config, Helpers, AccountService
         			for (var ind in $scope.users) {
         	   		    if ($scope.users[ind].profile.username == username) {
         	   		    	var user =  angular.copy($scope.users[ind]);
-        	   		    	user.profile.role = user.profile.role.uri.replace(Config.getFrameworkOntologyNS(), "gkg:");
+        	   		    	user.profile.role = user.profile.role.uri.replace(Config.getFrameworkOntologyNS(), "ontos:");
         	   		        return user;
         	   		        
         	   		    }
@@ -104,7 +104,7 @@ function UsersCtrl($scope, $http, $modal, flash, Config, Helpers, AccountService
    	}
    	
 	var save = function(user, newUser){
-		user.profile.role = user.profile.role.replace("gkg:", Config.getFrameworkOntologyNS());
+		user.profile.role = user.profile.role.replace("ontos:", Config.getFrameworkOntologyNS());
 	    var parameters = {
 	        mode: newUser ? "create" : "update",
 	        user: JSON.stringify(user),

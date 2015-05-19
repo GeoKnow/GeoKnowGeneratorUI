@@ -1,16 +1,16 @@
 
 
 <h4>SPARQL Endpoint</h4>
+<!-- EndpointCtrl Controller -->
+<div ng-if="isUserAuthenticated()" ng-controller="EndpointCtrl">
 
-<div ng-controller="EndpointCtrl">
-
-  <button ng-if="isUserAuthenticated()" type="button" class="btn btn-success btn-large"
+  <button type="button" class="btn btn-success btn-large"
     ng-click="new();"> Add new Endpoint</button>
 
   <table class="table table-striped">
   <thead>
     <tr>
-      <th ng-if="isUserAuthenticated()">Action</th>
+      <th>Action</th>
       <th>Uri</th>
       <th>Label</th>
       <th>Endpoint</th>
@@ -19,7 +19,7 @@
   </thead>
   <tbody>
     <tr ng-repeat="endpoint in endpoints">
-      <td ng-if="isUserAuthenticated()">
+      <td>
         <button ng-disabled="!isEditable(endpoint.endpoint)" type="button" class="btn btn-default btn-xs" ng-click="delete(endpoint.uri)"><span class="glyphicon glyphicon-trash"></span></button>
         <button ng-disabled="!isEditable(endpoint.endpoint)"  type="button" class="btn btn-default btn-xs" ng-click="edit(endpoint.uri);" data-toggle="modal" data-target="#modalEndpoint"><span class="glyphicon glyphicon-edit"></span></button>
       </td>
@@ -30,21 +30,20 @@
     </tr>
   </tbody>
   </table>
-<!-- EndpointCtrl Controller -->
 </div>
 
 
 <h4>Relational Databases</h4>
+<!-- DatabaseCtrl Controller -->
+<div ng-if="isUserAuthenticated()" ng-controller="DatabaseCtrl">
 
-<div ng-controller="DatabaseCtrl">
-
-  <button ng-if="isUserAuthenticated()" type="button" class="btn btn-success btn-large"
+  <button type="button" class="btn btn-success btn-large"
     ng-click="new();">Add new Database</button>
 
   <table class="table table-striped">
   <thead>
     <tr>
-      <th ng-if="isUserAuthenticated()">Action</th>
+      <th>Action</th>
       <th>Uri</th>
       <th>Label</th>
       <th>Type</th>
@@ -55,7 +54,7 @@
   </thead>
   <tbody>
     <tr ng-repeat="database in databases">
-      <td ng-if="isUserAuthenticated()">
+      <td >
         <button type="button" class="btn btn-default btn-xs" ng-click="delete(database.uri)"><span class="glyphicon glyphicon-trash"></span></button>
         <button type="button" class="btn btn-default btn-xs" data-toggle="modal" data-target="#modalDatabase" ng-click="edit(database.uri); "><span class="glyphicon glyphicon-edit"></span></button>
       </td>
@@ -68,6 +67,41 @@
     </tr>
   </tbody>
   </table>
-<!-- DatabaseCtrl Controller -->
+
+
+
+<!-- LicenseSourceCtrl  -->
+<h4>Licences</h4>
+<div ng-if="isUserAuthenticated()" class="col-xs-12" ng-controller="LicenseSourceCtrl">
+
+  <p ng-if="licenses.length<=0">No licences found</p>
+  <button  type="button" class="btn btn-primary btn-large"
+    ng-click="new()">Add Licence</button>
+
+  <div class="col-xs-12">
+    <table class="table toowide" ng-if="licenses.length>0">
+    <thead>
+      <tr>
+        <th>Actions</th>
+        <th>URI</th>
+        <th>Label</th>
+        <th>URL Input</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="license in licenses">
+        <td>
+          <button type="button" class="btn btn-default btn-xs" ng-confirm-click="delete(license.uri)" ng-confirm-message="Are you sure you want to delete this resource?"><span class="glyphicon glyphicon-trash"></span></button>
+          <button type="button" class="btn btn-default btn-xs" ng-click="edit(license.uri); "><span class="glyphicon glyphicon-edit"></span></button>
+        </td>
+        <td>{{license.uri}}</td>
+        <td>{{license.label}}</td>
+        <td><a href="{{license.url}}">{{license.url}}</a></td>
+        
+      </tr>
+    </tbody>
+    </table>
+  </div>
+
 </div>
 

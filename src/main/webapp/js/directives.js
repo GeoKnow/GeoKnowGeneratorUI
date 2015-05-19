@@ -220,7 +220,7 @@ app.directive("downloadResult", function ($compile) {
 app.directive('regexValidate', function() {
     var expressions = [];
     expressions['url']            =  /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/;
-    expressions['uri']            =  /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/;
+    expressions['partialUrl']     =  /^([\w-]+)+([\w-]+\/?)*\/$/ ;
     expressions['identifier']     =  /^[a-zA-Z0-9_]*$/ ;
     expressions['sparqlEndpoint'] =  /^https?:\/\/.*\/?$/; // /^https?:\/\/[^\/]+\/sparql\/?$/
     expressions['basicPassword']  = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}$/;
@@ -272,6 +272,7 @@ app.directive('uniqueIdentifier', ['$compile', 'ConfigurationService', function(
                 ctrl.$setValidity('uniqueIdentifier', false);
               });
           }
+        }
     };
  }]);
 

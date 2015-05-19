@@ -6,21 +6,23 @@
 *
 ***************************************************************************************************/
 
-var ImportFormCtrl = function($scope, $http, ConfigurationService, flash, AccountService, GraphService) {
+var ImportFormCtrl = function($scope, $http, ConfigurationService, flash, AccountService, GraphService, Ns, Upload, ImportRdfService, ServerErrorResponse) {
 
   var currentAccount = AccountService.getAccount();
-	$scope.namedGraphs = [];
-    $scope.refreshGraphList = function() {
-        GraphService.getAccessibleGraphs(true, false, true).then(function(graphs) {
-            $scope.namedGraphs = graphs;
-        });
-    };
-    $scope.refreshGraphList();
+	
+
+  $scope.refreshGraphList = function() {
+    GraphService.getAccessibleGraphs(true, false, true).then(function(graphs) {
+      $scope.namedGraphs = graphs;
+    });
+  };
+  
+  $scope.refreshGraphList();
 	$scope.endpoints = ConfigurationService.getAllEndpoints();
 	$scope.uploadMessage = '';
 		  
 	var uploadError = false;
-    var uploading = false;
+  var uploading = false;
 	var importing = false;
 	var uploadedFiles = null;
 		
@@ -29,63 +31,69 @@ var ImportFormCtrl = function($scope, $http, ConfigurationService, flash, Accoun
 	$scope.sourceTypes = [
 		{value:'file', label:'File'},
 		{value:'url', label:'URL'},
-		{value:'query', label:'SPARQL Query'}
+		{value:'externalQuery', label:'Endpoint'},
+    {value:'localQuery', label:'Local'}
 	];
-	var type = '';
 
   $scope.fileElements = false;
   $scope.urlElements = false;
-  $scope.queryElements = false;
+  $scope.externalQueryElements = false;
+  $scope.localQueryElements = false;
+
+  $scope.graphLabel=function (id, label) {
+    return label+ " <" + id + ">";
+  }
 		
   $scope.updateForm = function() {
     if($scope.sourceType.value == 'file'){
     	$scope.fileElements = true;	
 		  $scope.urlElements = false;
-  		$scope.queryElements = false;
+  		$scope.externalQueryElements = false;
+      $scope.localQueryElements = false;
     }
     else if($scope.sourceType.value == 'url'){
     	$scope.fileElements = false;	
 		  $scope.urlElements = true;
-  		$scope.queryElements = false;
+  		$scope.externalQueryElements = false;
+      $scope.localQueryElements = false;
     }
-    else if($scope.sourceType.value == 'query'){
+    else if($scope.sourceType.value == 'externalQuery'){
     	$scope.fileElements = false;	
 		  $scope.urlElements = false;
-  		$scope.queryElements = true;
+  		$scope.externalQueryElements = true;
+      $scope.localQueryElements = false;
     }
-    type = $scope.sourceType.value;
+    else if($scope.sourceType.value == 'localQuery'){
+      $scope.fileElements = false;  
+      $scope.urlElements = false;
+      $scope.externalQueryElements = false;
+      $scope.localQueryElements = true;
+    }
   };
 	
-	$scope.onFileSelect = function($files) {
-  	uploading = true;
-    //$files: an array of files selected, each file has name, size, and type.
-    for (var i = 0; i < $files.length; i++) {
-      var $file = $files[i];
-      $http.uploadFile({
-        url: 'UploadServlet', //upload.php script, node.js route, or servlet uplaod url)
-        file: $file
-      }).then(function(response, status, headers, config) {
-        // file is uploaded successfully
-        if(response.data.status=="FAIL"){
-          uploadError = true;
-          $scope.uploadMessage=response.data.message;
-        }
-        else {
-          uploadError = false;
-          uploadedFiles = $file.name;
-          //Use response.data.results to get the file location;
-        }
-  			uploading = false;
-      }); 
+
+  $scope.$watch('importFile.files', function () {
+    if($scope.importFile != undefined )
+      $scope.upload($scope.importFile.files);
+  });
+
+  $scope.upload = function (files) {
+    if (files && files.length) {
+      for (var i = 0; i < files.length; i++) {
+        var file = files[i];
+        Upload.upload({
+            url: 'UploadServlet',
+            file: file
+        }).progress(function (evt) {
+            var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
+            flash.success='progress: ' + parseInt(100.0 * evt.loaded / evt.total) + '% file :'+ evt.config.file.name;
+            console.log('progress: ' + progressPercentage + '% ' + evt.config.file.name);
+        }).success(function (data, status, headers, config) {
+            console.log('file ' + config.file.name + 'uploaded. Response: ' + data);
+            uploadedFiles=config.file.name;
+        });
+      }
     }
-  };
-
-  $scope.uploadedError =  function(){
-    return uploadError;
-  };
-
-  $scope.isUploading =  function(){
-    return uploading;
   };
 
   $scope.isImporting =  function(){
@@ -106,57 +114,27 @@ var ImportFormCtrl = function($scope, $http, ConfigurationService, flash, Accoun
     // validate the input fields accoding to the import type
     var parameters;
     importing = true;
-    if(type == 'file'){
-      parameters ={
-        rdfFiles: uploadedFiles, 
-        endpoint: ConfigurationService.getSPARQLEndpoint(), 
-        graph: $scope.importFile.graph.replace(':',ConfigurationService.getUriBase()), 
-        uriBase : ConfigurationService.getUriBase(),
-        username : currentAccount.getUsername()
-      };
-      
-    }
-    else if(type == 'url'){
-      parameters ={
-        rdfUrl: $scope.importUrl.inputUrl, 
-        endpoint: ConfigurationService.getSPARQLEndpoint(), 
-        graph: $scope.importUrl.graph.replace(':',ConfigurationService.getUriBase()), 
-        uriBase : ConfigurationService.getUriBase(),
-        username : currentAccount.getUsername()
-      };
-
-    }
-    else if(type == 'query'){
-      parameters ={
-        rdfQuery: $scope.importSparql.sparqlQuery,
-        rdfQueryEndpoint: $scope.importSparql.endPoint, 
-        endpoint: currentAccount.getUsername()==null ? ConfigurationService.getPublicSPARQLEndpoint() : ConfigurationService.getSPARQLEndpoint(),
-        graph: $scope.importSparql.graph.replace(':',ConfigurationService.getUriBase()), 
-        uriBase : ConfigurationService.getUriBase(),
-        username : currentAccount.getUsername()
-      };
-    }
-    $http({
-        url: 'ImportRDF', 
-        method: "POST",
-        params: parameters,
-        dataType: "json",
-        contentType: "application/json; charset=utf-8"
-      })
-      .success(function (data, status, headers, config){
-        if(data.status=="FAIL"){
-          flash.error = data.message;
-          importing = false;
-        }
-        else{
-          flash.success = data.message;
-          $scope.resetValues();
-        }
-      })
-      .error(function(data, status, headers, config) {
-          flash.error = data;
-          $scope.resetValues();
+    var response;
+    if($scope.sourceType.value == 'file')
+      response = ImportRdfService.importFromFile(uploadedFiles, $scope.importFile.targetGraph);
+    else if($scope.sourceType.value == 'url')
+      response = ImportRdfService.importFromUrl($scope.importUrl.inputUrl, $scope.importUrl.targetGraph);
+    else if($scope.sourceType.value == 'externalQuery')
+      response =  ImportRdfService.importFromEndpoint(scope.importEndpoint.sparqlQuery, $scope.importEndpoint.endPoint, $scope.importEndpoint.targetGraph);
+    else if($scope.sourceType.value == 'localQuery')
+      response =  ImportRdfService.importFromEndpoint($scope.importLocal.sourceGraph, $scope.importLocal.targetGraph, $scope.importLocal.sparqlQuery);
+    
+    response.then(
+      //success
+      function (response){
+        flash.success = "successfully imported " + response.data.tiples + " triples";
+        // TODO: add metadata 
+      }, 
+      function(response) {
+        flash.error = ServerErrorResponse.getMessage(response);
       });
+
+    $scope.resetValues();
   };
 
   $scope.resetValues = function(){
@@ -166,13 +144,15 @@ var ImportFormCtrl = function($scope, $http, ConfigurationService, flash, Accoun
 
     $scope.urlForm.$setPristine();
     $scope.fileForm.$setPristine();
-    $scope.sparqlForm.$setPristine();
+    $scope.endpointForm.$setPristine();
+    $scope.localForm.$setPristine();
 
-    $scope.fileForm.fileName.value = null;
+    // $scope.fileForm.fileName.value = null;
 
-    $scope.importFile = {file:"", graph:"?"};
-    $scope.importUrl = {url:"", graph:"?"};
-    $scope.importSparql = {endpoint:"", sparqlQuery:"", graph:"?"};
+    $scope.importFile = {files:"", targetGraph:"?"};
+    $scope.importUrl = {url:"", targetGraph:"?"};
+    $scope.importEndpoint = {endpoint:"", sparqlQuery:"", targetGraph:"?"};
+    $scope.importLocal = {endpoint:"", sparqlQuery:"", targetGraph:"?"};
   };
 
   $scope.$watch( function () { return currentAccount.getUsername(); }, function () {

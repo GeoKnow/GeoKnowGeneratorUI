@@ -1,6 +1,6 @@
 'use strict';
 
-function ModalGraphCtrl($scope, $http, $modalInstance, currentNamedGraph, ConfigurationService, GraphService, AccountService, Helpers, cfpLoadingBar) {
+function ModalGraphCtrl($scope, $http, $modalInstance, currentNamedGraph, versionedGroup, ConfigurationService, GraphService, AccountService, Helpers, cfpLoadingBar, Ns) {
   $scope.isNew = function() {
     if (currentNamedGraph == null) {
       return true;
@@ -8,6 +8,12 @@ function ModalGraphCtrl($scope, $http, $modalInstance, currentNamedGraph, Config
       return false;
     }
   }
+  console.log(versionedGroup);
+
+  $scope.uriBase = ConfigurationService.getUriBase();
+  if(versionedGroup!= undefined)
+    $scope.uriBase = Ns.getNamespace(versionedGroup.identifier);
+  
   $scope.namedgraph = {
     name: "",
     graph: {
@@ -15,7 +21,8 @@ function ModalGraphCtrl($scope, $http, $modalInstance, currentNamedGraph, Config
       endpoint: "",
       description: "",
       modified: "",
-      label: ""
+      label: "",
+      graphset:""
     },
     owner: "",
     publicAccess: "",
@@ -65,6 +72,8 @@ function ModalGraphCtrl($scope, $http, $modalInstance, currentNamedGraph, Config
     $scope.namedgraph.graph.endpoint = defaultEndpoint;
     $scope.namedgraph.publicAccess = GraphService.getNoAccessMode();
     $scope.namedgraph.owner = AccountService.getAccount().getAccountURI();
+    if(versionedGroup!= undefined)
+      $scope.namedgraph.graph.graphset=versionedGroup.identifier;
   } else {
     //if and existing named graph gets modified	  	
     $scope.modaltitle = "Edit Graph";
@@ -104,7 +113,7 @@ function ModalGraphCtrl($scope, $http, $modalInstance, currentNamedGraph, Config
     }
   };
   $scope.ok = function() {
-    console.log($scope.namedgraph);
+    // console.log($scope.$broadcast('validateUnique'));
     var input = angular.copy($scope.namedgraph)
     $modalInstance.close(input);
   };

@@ -1,6 +1,7 @@
 package eu.geoknow.generator.rest;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import javax.ws.rs.CookieParam;
@@ -22,7 +23,9 @@ import com.hp.hpl.jena.vocabulary.RDFS;
 import com.ontos.ldiw.vocabulary.LDIWO;
 
 import eu.geoknow.generator.configuration.FrameworkConfiguration;
+import eu.geoknow.generator.datasources.DatasoucesManager;
 import eu.geoknow.generator.datasources.beans.DatabaseType;
+import eu.geoknow.generator.datasources.beans.Endpoint;
 import eu.geoknow.generator.users.FrameworkUserManager;
 import eu.geoknow.generator.users.UserProfile;
 
@@ -82,4 +85,52 @@ public class Datasources {
     }
 
   }
+
+
+  /**
+   * Provide all Endpoints registered on the settings
+   * 
+   * @param userc
+   * @param token
+   * @return JSON array of {@Endpoint}
+   */
+  @GET
+  @Path("endpoints")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response getEndpoints(@CookieParam(value = "user") Cookie userc, @CookieParam(
+      value = "token") String token) {
+
+    FrameworkUserManager frameworkUserManager;
+    UserProfile user;
+    try {
+      frameworkUserManager = FrameworkConfiguration.getInstance().getFrameworkUserManager();
+      // authenticates the user, throw exception if fail
+      user = frameworkUserManager.validate(userc, token);
+      if (user == null) {
+        return Response.status(Response.Status.UNAUTHORIZED).entity("Invalid credentials").build();
+      }
+
+    } catch (Exception e) {
+      log.error(e);
+      e.printStackTrace();
+      return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+    }
+
+    try {
+      DatasoucesManager manager =
+          new DatasoucesManager(FrameworkConfiguration.getInstance().getSystemRdfStoreManager());
+      Collection<Endpoint> endpoints = manager.getAllEndpoints();
+
+      Gson gson = new Gson();
+      String json = "{ \"endpoints\" : " + gson.toJson(endpoints) + "}";
+      return Response.status(Response.Status.OK).entity(json).type(MediaType.APPLICATION_JSON)
+          .build();
+
+    } catch (Exception e) {
+      log.error(e);
+      return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+    }
+
+  }
+
 }

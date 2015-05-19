@@ -29,7 +29,6 @@ module.factory('ConfigurationService', function ($q, Config, $http, $location, f
                         Ns.getAllNamespaces                        
                         Ns.add(":", Config.getNS());
                         Config.read().then(function(settings){
-                            // Try to get here the user's settings graph
                             defer.resolve(settings);
                         });
 
@@ -161,7 +160,7 @@ module.factory('ConfigurationService', function ($q, Config, $http, $location, f
 
         getDatabaseTypes: function () {
             var results = [];
-            var elements = Config.select("rdf:type", "gkg:DatabaseType");
+            var elements = Config.select("rdf:type", "ontos:DatabaseType");
             for (var resource in elements) {
                 var element = elements[resource];
                 results.push({
@@ -194,7 +193,8 @@ module.factory('ConfigurationService', function ($q, Config, $http, $location, f
          */
         getAllEndpoints: function () {
             var results = [];
-            var elements = Config.select("rdf:type", "gkg:SPARQLEndpoint");
+            var elements = Config.select("rdf:type", "ontos:SPARQLEndpoint");
+            console.log(elements);
             for (var resource in elements) {
                 var element = elements[resource];
                 if(element["rdfs:label"]== undefined) continue;
@@ -211,6 +211,7 @@ module.factory('ConfigurationService', function ($q, Config, $http, $location, f
                     homepage: element["foaf:homepage"] == undefined ? "" : element["foaf:homepage"][0]
                 });
             }
+
             return results;
         },
 
@@ -230,7 +231,7 @@ module.factory('ConfigurationService', function ($q, Config, $http, $location, f
             settings[endpoint.uri] = {
                 "rdfs:label": [endpoint.label],
                 "foaf:homepage": [endpoint.homepage],
-                "rdf:type": ["void:Dataset", "gkg:SPARQLEndpoint", "gkg:DataSource"],
+                "rdf:type": ["void:Dataset", "ontos:SPARQLEndpoint", "ontos:DataSource"],
                 "void:sparqlEndpoint": [endpoint.endpoint]
             };
             Config.write();
@@ -251,23 +252,23 @@ module.factory('ConfigurationService', function ($q, Config, $http, $location, f
          */
         getAllDatabases: function () {
             var results = [];
-            var elements = Config.select("rdf:type", "gkg:Database");
+            var elements = Config.select("rdf:type", "ontos:Database");
             for (var resource in elements) {
                 var element = elements[resource];
-                // var typeLabel = Config.getSettings()[element["gkg:dbType"][0]]["rdfs:label"];
-                var type = Config.getSettings()[element["gkg:dbType"][0]];
+                // var typeLabel = Config.getSettings()[element["ontos:dbType"][0]]["rdfs:label"];
+                var type = Config.getSettings()[element["ontos:dbType"][0]];
 
                 if (type != undefined)
                     type = type["rdfs:label"][0];
                 results.push({
                     uri: resource,
                     label: element["rdfs:label"][0],
-                    dbHost: element["gkg:dbHost"][0],
-                    dbName: element["gkg:dbName"][0],
-                    dbUser: element["gkg:dbUser"][0],
-                    dbPort: element["gkg:dbPort"][0],
+                    dbHost: element["ontos:dbHost"][0],
+                    dbName: element["ontos:dbName"][0],
+                    dbUser: element["ontos:dbUser"][0],
+                    dbPort: element["ontos:dbPort"][0],
                     dbType: type,
-                    dbPassword: element["gkg:dbPassword"][0]
+                    dbPassword: element["ontos:dbPassword"][0]
                 });
             }
             return results;
@@ -278,12 +279,12 @@ module.factory('ConfigurationService', function ($q, Config, $http, $location, f
             var results = {
                 uri: uri,
                 label: settings[uri]["rdfs:label"][0],
-                dbHost: settings[uri]["gkg:dbHost"][0],
-                dbName: settings[uri]["gkg:dbName"][0],
-                dbPort: settings[uri]["gkg:dbPort"][0],
-                dbType: settings[uri]["gkg:dbType"][0],
-                dbUser: settings[uri]["gkg:dbUser"][0],
-                dbPassword: settings[uri]["gkg:dbPassword"][0]
+                dbHost: settings[uri]["ontos:dbHost"][0],
+                dbName: settings[uri]["ontos:dbName"][0],
+                dbPort: settings[uri]["ontos:dbPort"][0],
+                dbType: settings[uri]["ontos:dbType"][0],
+                dbUser: settings[uri]["ontos:dbUser"][0],
+                dbPassword: settings[uri]["ontos:dbPassword"][0]
             };
             return results;
         },
@@ -292,13 +293,13 @@ module.factory('ConfigurationService', function ($q, Config, $http, $location, f
             var settings = Config.getSettings();
             settings[database.uri] = {
                 "rdfs:label": [database.label],
-                "gkg:dbHost": [database.dbHost],
-                "rdf:type": ["void:Dataset", "gkg:Database", "gkg:DataSource"],
-                "gkg:dbPort": [database.dbPort],
-                "gkg:dbName": [database.dbName],
-                "gkg:dbType": [database.dbType],
-                "gkg:dbUser": [database.dbUser],
-                "gkg:dbPassword": [database.dbPassword]
+                "ontos:dbHost": [database.dbHost],
+                "rdf:type": ["void:Dataset", "ontos:Database", "ontos:DataSource"],
+                "ontos:dbPort": [database.dbPort],
+                "ontos:dbName": [database.dbName],
+                "ontos:dbType": [database.dbType],
+                "ontos:dbUser": [database.dbUser],
+                "ontos:dbPassword": [database.dbPassword]
             };
             Config.write();
             return true;
@@ -307,12 +308,12 @@ module.factory('ConfigurationService', function ($q, Config, $http, $location, f
         updateDatabase: function (pDatabase) {
             var database = Config.getSettings()[pDatabase.uri];
             database["rdfs:label"][0] = pDatabase.label;
-            database["gkg:dbHost"][0] = pDatabase.dbHost;
-            database["gkg:dbType"][0] = pDatabase.dbType;
-            database["gkg:dbPort"][0] = pDatabase.dbPort;
-            database["gkg:dbName"][0] = pDatabase.dbName;
-            database["gkg:dbUser"][0] = pDatabase.dbUser;
-            database["gkg:dbPassword"][0] = pDatabase.dbPassword;
+            database["ontos:dbHost"][0] = pDatabase.dbHost;
+            database["ontos:dbType"][0] = pDatabase.dbType;
+            database["ontos:dbPort"][0] = pDatabase.dbPort;
+            database["ontos:dbName"][0] = pDatabase.dbName;
+            database["ontos:dbUser"][0] = pDatabase.dbUser;
+            database["ontos:dbPassword"][0] = pDatabase.dbPassword;
             Config.write();
             return true;
         },
@@ -322,14 +323,14 @@ module.factory('ConfigurationService', function ($q, Config, $http, $location, f
          */
         getAllCsvSources: function () {
             var results = [];
-            var elements = Config.select("rdf:type", "gkg:CsvFile");
+            var elements = Config.select("rdf:type", "ontos:CsvFile");
             for (var resource in elements) {
                 var element = elements[resource];
                
                 results.push({
                     uri: resource,
                     label: element["rdfs:label"][0],
-                    url: element["gkg:csvUrl"][0]
+                    url: element["ontos:csvUrl"][0]
                 });
             }
             return results;
@@ -339,7 +340,7 @@ module.factory('ConfigurationService', function ($q, Config, $http, $location, f
             var results = {
                 uri: uri,
                 label: settings[uri]["rdfs:label"][0],
-                url: settings[uri]["gkg:csvUrl"][0]
+                url: settings[uri]["ontos:csvUrl"][0]
             };
             return results;
         },
@@ -348,8 +349,8 @@ module.factory('ConfigurationService', function ($q, Config, $http, $location, f
         	var settings = Config.getSettings();
         	settings[csv.uri]={
         			"rdfs:label": [csv.label],
-        			"rdf:type": ["gkg:CsvFile", "gkg:DataSource"],
-        			"gkg:csvUrl": [csv.url]
+        			"rdf:type": ["ontos:CsvFile", "ontos:DataSource"],
+        			"ontos:csvUrl": [csv.url]
         			
         	},
         	Config.write();
@@ -361,7 +362,7 @@ module.factory('ConfigurationService', function ($q, Config, $http, $location, f
         	
         	var csvsource = Config.getSettings()[csv.uri];
         	csvsource["rdfs:label"][0]=csv.label;
-        	csvsource["gkg:csvUrl"][0]=csv.url;
+        	csvsource["ontos:csvUrl"][0]=csv.url;
         	 Config.write();
              return true;
         },
@@ -379,7 +380,7 @@ module.factory('ConfigurationService', function ($q, Config, $http, $location, f
                 results.push({
                     uri: resource,
                     label: element["rdfs:label"][0],
-                    url: element["gkg:licenseUrl"][0]
+                    url: element["ontos:licenseUrl"][0]
                 });
             }
             return results;
@@ -389,7 +390,7 @@ module.factory('ConfigurationService', function ($q, Config, $http, $location, f
             var results = {
                 uri: uri,
                 label: settings[uri]["rdfs:label"][0],
-                url: settings[uri]["gkg:licenseUrl"][0]
+                url: settings[uri]["ontos:licenseUrl"][0]
             };
             return results;
         },
@@ -399,7 +400,7 @@ module.factory('ConfigurationService', function ($q, Config, $http, $location, f
         	settings[license.uri]={
         			"rdfs:label": [license.label],
         			"rdf:type": ["dcterms:LicenseDocument"],
-        			"gkg:licenseUrl": [license.url]
+        			"ontos:licenseUrl": [license.url]
         			
         	},
         	Config.write();
@@ -411,7 +412,7 @@ module.factory('ConfigurationService', function ($q, Config, $http, $location, f
         	
         	var licenseSource = Config.getSettings()[license.uri];
         	licenseSource["rdfs:label"][0]=license.label;
-        	licenseSource["gkg:licenseUrl"][0]=license.url;
+        	licenseSource["ontos:licenseUrl"][0]=license.url;
         	 Config.write();
              return true;
         },
@@ -443,10 +444,10 @@ module.factory('ConfigurationService', function ($q, Config, $http, $location, f
         },
 
         getRequiredServices: function(url) {
-            var routeRestrictions = Config.select("rdf:type", "gkg:RouteRestriction");
+            var routeRestrictions = Config.select("rdf:type", "ontos:RouteRestriction");
             for (var ind in routeRestrictions) {
-                if (routeRestrictions[ind]["gkg:partialUrl"] == url) {
-                    return routeRestrictions[ind]["gkg:requiredService"];
+                if (routeRestrictions[ind]["ontos:partialUrl"] == url) {
+                    return routeRestrictions[ind]["ontos:requiredService"];
                 }
             }
             return null;

@@ -64,6 +64,7 @@ public class Queries {
     }
   }
 
+
   /**
    * Checks in the triple store if a graph exists. ATTENTION: If the graph exists but not triples
    * are in, the query returns false!

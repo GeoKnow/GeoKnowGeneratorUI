@@ -24,7 +24,7 @@ module.factory("UsersService", function($http, Config, flash, ServerErrorRespons
           var ns = Config.getFrameworkOntologyNS();
           for (var ind in users) {
               users[ind].profile.accountURI = users[ind].profile.accountURI.replace(Config.getNS(), ":");
-              users[ind].profile.role.uri = users[ind].profile.role.uri.replace(ns, "gkg:");
+              users[ind].profile.role.uri = users[ind].profile.role.uri.replace(ns, "ontos:");
               for (var sind in users[ind].profile.role.services) {
                   users[ind].profile.role.services[sind] = users[ind].profile.role.services[sind].replace(Config.getNS(), ":");
               }
@@ -44,9 +44,9 @@ module.factory("UsersService", function($http, Config, flash, ServerErrorRespons
           var requestData = {
             format: "application/sparql-results+json",
             query: "prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> "
-                    + " prefix gkg: <" + Config.getFrameworkOntologyNS() + "> "
+                    + " prefix ontos: <" + Config.getFrameworkOntologyNS() + "> "
                     + " SELECT ?s ?p ?o FROM <" + Config.getAccountsGraph() + "> "
-                    + " WHERE {?s ?p ?o . ?s rdf:type gkg:Account . filter(?p=foaf:accountName || ?p=foaf:mbox) } "
+                    + " WHERE {?s ?p ?o . ?s rdf:type ontos:Account . filter(?p=foaf:accountName || ?p=foaf:mbox) } "
                     + " ORDER BY ?s ?p ?o",
             mode: "settings"
           };
@@ -87,19 +87,19 @@ module.factory("UsersService", function($http, Config, flash, ServerErrorRespons
         setUserRole : function(accountURI, role) {
             var requestData = {
                 format: "application/sparql-results+json",
-                query: "prefix gkg: <" + Config.getFrameworkOntologyNS() + "> "
+                query: "prefix ontos: <" + Config.getFrameworkOntologyNS() + "> "
                         + " prefix : <" + Config.getNS() + "> "
                         + " WITH <" + Config.getAccountsGraph() + "> "
-                        + " DELETE {" + accountURI + " gkg:role ?r .} "
-                        + " INSERT {" + accountURI + " gkg:role <" + role + "> .} "
-                        + " WHERE {" + accountURI + " gkg:role ?r . } ",
+                        + " DELETE {" + accountURI + " ontos:role ?r .} "
+                        + " INSERT {" + accountURI + " ontos:role <" + role + "> .} "
+                        + " WHERE {" + accountURI + " ontos:role ?r . } ",
                 mode: "settings"
             };
             return $http.post("rest/RdfStoreProxy", $.param(requestData));
         },
 
         createUser : function(user) {
-            user.profile.role = user.profile.role.replace("gkg:", Config.getFrameworkOntologyNS());
+            user.profile.role = user.profile.role.replace("ontos:", Config.getFrameworkOntologyNS());
             var parameters = {
                 mode: "create",
                 user: JSON.stringify(user),
