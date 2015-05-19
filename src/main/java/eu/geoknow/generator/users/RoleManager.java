@@ -131,7 +131,7 @@ public class RoleManager {
    */
   public UserRole create(UserRole role) throws ResourceExistsException, SPARQLEndpointException {
 
-    if (Queries.resourceExists(role.getUri(), config.getRolesGraph(), storeManager))
+    if (Queries.resourceExists(role.getUri(), storeManager))
       throw new ResourceExistsException(role.getUri() + " aleready exists");
 
     String query =
@@ -161,7 +161,7 @@ public class RoleManager {
   public UserRole updateRole(UserRole role) throws SPARQLEndpointException,
       ResourceNotFoundException {
 
-    if (!Queries.resourceExists(role.getUri(), config.getRolesGraph(), storeManager))
+    if (!Queries.resourceExists(role.getUri(), storeManager))
       throw new ResourceNotFoundException(role.getUri() + " not found");
 
     String query =
@@ -284,7 +284,7 @@ public class RoleManager {
   private void setRoleType(String uri, String type) throws SPARQLEndpointException,
       ResourceNotFoundException {
 
-    if (!Queries.resourceExists(uri, config.getRolesGraph(), storeManager))
+    if (!Queries.resourceExists(uri, storeManager))
       throw new ResourceNotFoundException(uri + " not found");
 
     resetRoles(type);

@@ -21,6 +21,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.ontos.ldiw.vocabulary.LDIWO;
 
+import eu.geoknow.generator.common.Queries;
 import eu.geoknow.generator.component.beans.Service;
 import eu.geoknow.generator.configuration.FrameworkConfiguration;
 import eu.geoknow.generator.configuration.FrameworkManager;
@@ -227,4 +228,40 @@ public class Configuration {
     }
   }
 
+  /**
+   * Get the status of the setup
+   * 
+   * @return true/false
+   */
+  @GET
+  @Path("/exists/{uri : .+}")
+  @Produces(MediaType.TEXT_PLAIN)
+  public Response exists(@CookieParam(value = "user") Cookie userc,
+      @CookieParam(value = "token") String token, @PathParam("uri") String uri) {
+    UserProfile user;
+    try {
+      FrameworkUserManager frameworkUserManager =
+          FrameworkConfiguration.getInstance().getFrameworkUserManager();
+      // authenticates the user, throw exception if fail
+      user = frameworkUserManager.validate(userc, token);
+      if (user == null) {
+        return Response.status(Response.Status.UNAUTHORIZED).entity("Invalid credentials").build();
+      }
+    } catch (Exception e) {
+      log.error(e);
+      return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+    }
+
+    try {
+      boolean res =
+          Queries.resourceExists(uri, FrameworkConfiguration.getInstance()
+              .getSystemRdfStoreManager());
+      String json = "{ \"response\" : " + res + "}";
+      return Response.status(Response.Status.OK).entity(json).type(MediaType.APPLICATION_JSON)
+          .build();
+    } catch (Exception e) {
+      log.error(e);
+      return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+    }
+  }
 }

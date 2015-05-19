@@ -1,6 +1,6 @@
 'use strict';
 
-function ModalRolesCtrl($scope, $http, $modalInstance, ConfigurationService) {
+function ModalRolesCtrl($scope, $modalInstance) {
 	
 	$scope.modaltitle = "New Role";
 	$scope.newRole = {
