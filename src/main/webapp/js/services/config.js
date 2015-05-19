@@ -249,46 +249,6 @@ angular.module("app.configuration", [])
 
             (map[p] || (map[p] = [])).push(o);
         }
-
-    	/**
-    	//ontoquad
-    	   var bindings = data.results.bindings;
-           var triples  = [];
-           var result = {};
-
-           var bnodes = {};
-
-           for (var i in bindings)
-           {
-               var binding = bindings[i];
-               triples.push([ Ns.shorten(binding.s), Ns.shorten(binding.p), Ns.shorten(binding.o) ]);
-
-               var triple = triples[i],
-                   s = triple[0],
-                   p = triple[1],
-                   o = triple[2];
-
-               if (binding.s.type=='bnode')
-               {
-                   var id  = s.slice(1),
-                   map = bnodes[id] = bnodes[id] || {};
-               }
-               else
-               {
-                   var map = result[s] || (result[s] = {});
-               }
-
-               if (binding.o.type=='bnode')
-               {
-                   var id = o.slice(1);
-                   o = bnodes[id] = bnodes[id] || {};
-               }
-
-               (map[p] || (map[p] = [])).push(o);
-
-
-
-           }**/
     	
         return result;
     };
@@ -305,11 +265,8 @@ angular.module("app.configuration", [])
             mode: "settings"
         };
 
-        
-
        return $http.post("rest/RdfStoreProxy", $.param(requestData)).then(function (response) {
         	settings = parseSparqlResults(response.data);
-            
             return settings;
         });
 
@@ -379,6 +336,7 @@ angular.module("app.configuration", [])
 //                         + "}",
                  mode: "settings"
              };
+             console.log(requestData);
              return request("rest/RdfStoreProxy/rewriteGraph", requestData);
     };
 
@@ -436,7 +394,7 @@ angular.module("app.configuration", [])
             graph: name,
             //username: AccountService.getAccount().getUsername() //AccountService not available for config because of looped dependency
         }
-        return request("rest/GraphManagerServlet/dropGraph", requestData);
+        return request("rest/graphs/dropGraph", requestData);
     };
 
     var getGroupsGraph = function() {

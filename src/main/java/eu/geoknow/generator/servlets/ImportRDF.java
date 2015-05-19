@@ -66,9 +66,6 @@ public class ImportRDF extends HttpServlet {
     JsonResponse res = new JsonResponse();
     ObjectMapper mapper = new ObjectMapper();
 
-    // jdbcConnection = getServletContext().getInitParameter("virtuoso-jdbc");
-    // jdbcUser = getServletContext().getInitParameter("virtuoso-user");
-    // jdbcPassword = getServletContext().getInitParameter("virtuoso-password");
 
     uriBase = request.getParameter("uriBase");
     rdfUrl = request.getParameter("rdfUrl");
@@ -80,30 +77,6 @@ public class ImportRDF extends HttpServlet {
     username = request.getParameter("username");
     token = HttpUtils.getCookieValue(request, "token");
 
-    // boolean useJDBC= false;
-    // System.out.println("rdfUrl   " +rdfUrl);
-    // System.out.println("rdfFiles " +rdfFiles);
-    // System.out.println("endpoint " +endpoint);
-    // System.out.println("graph    " +graph);
-
-    // if(useJDBC){
-    // // this solution is much faster but not working yet in java
-    // if(rdfFiles!= null){
-    // try {
-    // jdbcUpdate(filePath+rdfFiles, graph);
-    // res.setStatus("SUCESS");
-    // res.setMessage("Nothing to import");
-    // } catch (ClassNotFoundException e) {
-    // res.setStatus("FAIL");
-    // res.setMessage(e.getMessage());
-    // e.printStackTrace();
-    // } catch (SQLException e) {
-    // res.setStatus("FAIL");
-    // res.setMessage(e.getMessage());
-    // e.printStackTrace();
-    // }
-    // }
-    // }
 
     String source = ((rdfFiles == null) ? rdfUrl : filePath + rdfFiles);
     try {
@@ -130,11 +103,7 @@ public class ImportRDF extends HttpServlet {
     out.close();
   }
 
-  // private static void jdbcUpdate(String file, String graph) throws
-  // ClassNotFoundException, SQLException{
-  // UpdateJDBC ujdbc = new UpdateJDBC(jdbcConnection, jdbcUser, jdbcPassword);
-  // ujdbc.loadLocalFile(file, graph);
-  // }
+
 
   private int queryImport(String destEndpoint, String graph, String sourceEndpoint, String sparql)
       throws Exception {

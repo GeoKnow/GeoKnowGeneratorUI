@@ -31,9 +31,9 @@ import eu.geoknow.generator.users.FrameworkUserManager;
 import eu.geoknow.generator.users.UserManager;
 import eu.geoknow.generator.users.UserProfile;
 
-@Path("/GraphManagerServlet")
-public class GraphManagerServlet {
-  private static final Logger log = Logger.getLogger(GraphManagerServlet.class);
+@Path("/graphs")
+public class Graphs {
+  private static final Logger log = Logger.getLogger(Graphs.class);
 
 
   @POST

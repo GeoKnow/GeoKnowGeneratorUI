@@ -1,0 +1,42 @@
+
+<div class="modal-content">
+<form name="thisForm" class="form-horizontal InputForm" role="form" novalidate>
+  <div class="modal-header">
+      <h3 class="modal-title">{{modaltitle}}</h3>
+  </div>
+  <div class="modal-body">  
+   <div class="form-group">
+      <label class="col-xs-2 control-label">URI</label>
+      <div class="input-group col-xs-10">
+        <div class="input-group-addon">{{uriBase}}</div>
+        <input type="text" class="form-control" id="identifier" name="identifier" ng-model="resource.identifier" required regex-validate="identifier" unique-identifier />
+        <div class="error" ng-show="thisForm.identifier.$dirty && thisForm.identifier.$invalid">Invalid field:
+          <span ng-show="thisForm.identifier.$error.required || thisForm.identifier.$error.regexValidate">Accepted leters, numbers, scores, underscore and slashes. Must end with a slash.</span>
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="label" class="col-xs-2 control-label">Label</label>
+      <div class="col-xs-10">
+          <input type="text" class="form-control" id="label" name="label" ng-model="resource.label" required />
+          <div class="error" ng-show="thisForm.label.$dirty && thisForm.label.$invalid">Invalid field:
+              <span ng-show="thisForm.label.$error.required">Label required</span>
+          </div>
+      </div>
+    </div>   
+    <div class="form-group">
+      <label for="description" class="col-xs-2 control-label" >Description</label>
+      <div class="col-xs-10">
+          <input type="text" class="form-control" name="description" id="description" ng-model="resource.description" required />
+          <div class="error"  ng-show="thisForm.description.$dirty && thisForm.description.$invalid">Invalid field:
+              <span ng-show="thisForm.description.$error.required">Description missing</span>
+          </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+      <button class="btn btn-success" ng-click="ok()" ng-disabled="thisForm.$invalid" >OK</button>
+            <button class="btn btn-default" ng-click="cancel()" >Cancel</button>
+  </div>
+</form>
+</div>

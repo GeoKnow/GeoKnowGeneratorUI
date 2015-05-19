@@ -2,7 +2,7 @@
 
 var module = angular.module('app.graph-service', []);
 
-module.factory("GraphService", function ($http, $q, Config, ConfigurationService, AccountService, Helpers) {
+module.factory("GraphService", function ($http, $q, Config, ConfigurationService, AccountService, Helpers, Ns) {
     var accessModes = {
         ":No": "No",
         "acl:Read": "Read",
@@ -32,7 +32,7 @@ module.factory("GraphService", function ($http, $q, Config, ConfigurationService
                 format: "application/sparql-results+json",
                 username: AccountService.getAccount().getUsername()
             };
-            return $http.post("rest/GraphManagerServlet/getAllGraphsSparql", $.param(requestData)).then(function (result) {
+            return $http.post("rest/graphs/getAllGraphsSparql", $.param(requestData)).then(function (result) {
                 namedGraphs = Config.parseSparqlResults(result.data);
                 namedGraphsLoaded = true;
                 return namedGraphs;
@@ -58,7 +58,7 @@ module.factory("GraphService", function ($http, $q, Config, ConfigurationService
                 } else {
                     var publicAccessMode = null;
                     var userAccessMode = null;
-                    var access = namedGraph["gkg:access"];
+                    var access = namedGraph["ontos:access"];
                     for (var acc in access) {
                         var agentClass = access[acc]["acl:agentClass"];
                         var agent = access[acc]["acl:agent"];
@@ -82,6 +82,7 @@ module.factory("GraphService", function ($http, $q, Config, ConfigurationService
                         , description : data[namedGraph["sd:graph"]]["dcterms:description"][0]
                         , modified : data[namedGraph["sd:graph"]]["dcterms:modified"][0]
                         , created : data[namedGraph["sd:graph"]]["dcterms:created"][0]
+                        , graphset : data[namedGraph["sd:graph"]]["gv:hasGraphSet"][0]
                     }
                     , access : accessMode
                 };
@@ -104,7 +105,8 @@ module.factory("GraphService", function ($http, $q, Config, ConfigurationService
                             label: data[graph["sd:graph"]]["rdfs:label"][0],
                             description: data[graph["sd:graph"]]["dcterms:description"][0],
                             modified: data[graph["sd:graph"]]["dcterms:modified"][0],
-                            created: data[graph["sd:graph"]]["dcterms:created"][0]
+                            created: data[graph["sd:graph"]]["dcterms:created"][0] ,
+                            graphset : data[graph["sd:graph"]]["gv:hasGraphSet"][0]
                         },
                         owner: null,
                         publicAccess: getNoAccessMode(),
@@ -112,7 +114,7 @@ module.factory("GraphService", function ($http, $q, Config, ConfigurationService
                         usersRead: []
                     };
 
-                    var access = graph["gkg:access"];
+                    var access = graph["ontos:access"];
                     if (access != undefined) {
                         for (var acc in access) {
                             var agentClass = access[acc]["acl:agentClass"];
@@ -150,14 +152,15 @@ module.factory("GraphService", function ($http, $q, Config, ConfigurationService
                 label: settings[namedGraph["sd:graph"]]["rdfs:label"][0],
                 description: settings[namedGraph["sd:graph"]]["dcterms:description"][0],
                 modified: settings[namedGraph["sd:graph"]]["dcterms:modified"][0],
-                created: settings[namedGraph["sd:graph"]]["dcterms:created"][0]
+                created: settings[namedGraph["sd:graph"]]["dcterms:created"][0],
+                graphset : settings[namedGraph["sd:graph"]]["gv:hasGraphSet"][0]
             },
             owner: null,
             publicAccess: getNoAccessMode(),
             usersWrite: [],
             usersRead: []
         };
-        var access = namedGraphs[parName]["gkg:access"];
+        var access = namedGraphs[parName]["ontos:access"];
         if (access != undefined) {
             for (var acc in access) {
                 var agentClass = access[acc]["acl:agentClass"];
@@ -185,7 +188,7 @@ module.factory("GraphService", function ($http, $q, Config, ConfigurationService
             username: AccountService.getAccount().getUsername(),
             graph: JSON.stringify(parNamedGraph)
         };
-        return $http.post("rest/GraphManagerServlet/updateForeign", $.param(requestData));
+        return $http.post("rest/graphs/updateForeign", $.param(requestData));
     };
 
     var deleteForeignGraph = function (parGraphName) {
@@ -194,7 +197,7 @@ module.factory("GraphService", function ($http, $q, Config, ConfigurationService
             username: AccountService.getAccount().getUsername(),
             graph: parGraphName.replace(':', Config.getNS())
         };
-        return $http.post("rest/GraphManagerServlet/dropForeign", $.param(requestData));
+        return $http.post("rest/graphs/dropForeign", $.param(requestData));
     };
 
     /**
@@ -228,7 +231,8 @@ module.factory("GraphService", function ($http, $q, Config, ConfigurationService
                             label: data[graph["sd:graph"]]["rdfs:label"][0],
                             description: data[graph["sd:graph"]]["dcterms:description"][0],
                             modified: data[graph["sd:graph"]]["dcterms:modified"][0],
-                            created: data[graph["sd:graph"]]["dcterms:created"][0]
+                            created: data[graph["sd:graph"]]["dcterms:created"][0],
+                            graphset : data[graph["sd:graph"]]["gv:hasGraphSet"][0]
                         },
                         owner: graph["acl:owner"][0],
                         publicAccess: getNoAccessMode(),
@@ -236,7 +240,7 @@ module.factory("GraphService", function ($http, $q, Config, ConfigurationService
                         usersRead: []
                     };
 
-                    var access = graph["gkg:access"];
+                    var access = graph["ontos:access"];
                     if (access != undefined) {
                         for (var acc in access) {
                             var agentClass = access[acc]["acl:agentClass"];
@@ -271,14 +275,15 @@ module.factory("GraphService", function ($http, $q, Config, ConfigurationService
                 label: settings[namedGraph["sd:graph"]]["rdfs:label"][0],
                 description: settings[namedGraph["sd:graph"]]["dcterms:description"][0],
                 modified: settings[namedGraph["sd:graph"]]["dcterms:modified"][0],
-                created: settings[namedGraph["sd:graph"]]["dcterms:created"][0]
+                created: settings[namedGraph["sd:graph"]]["dcterms:created"][0],
+                graphset : settings[namedGraph["sd:graph"]]["gv:hasGraphSet"][0]
             },
             publicAccess: getNoAccessMode(),
             usersWrite: [],
             usersRead: []
         };
 
-        var access = settings[parName]["gkg:access"];
+        var access = settings[parName]["ontos:access"];
         if (access != undefined) {
             for (var acc in access) {
                 var agentClass = access[acc]["acl:agentClass"];
@@ -335,6 +340,8 @@ module.factory("GraphService", function ($http, $q, Config, ConfigurationService
     // add a named graph in the store
     var addGraph = function (parNamedGraph) {
         // create the metadata for the graph
+        console.log("json for creating graph");
+        console.log(JSON.stringify(parNamedGraph));
         var namedgraph = {
             "rdf:type": ["sd:NamedGraph"],
             "sd:name": [parNamedGraph.name],
@@ -345,15 +352,17 @@ module.factory("GraphService", function ($http, $q, Config, ConfigurationService
             "rdf:type": ["void:Dataset", "sd:Graph"],
             "dcterms:description": [parNamedGraph.graph.description],
             "dcterms:modified": [parNamedGraph.graph.modified],
-            "dcterms:created": [parNamedGraph.graph.created]
+            "dcterms:created": [parNamedGraph.graph.created],
+            "gv:hasGraphSet": (parNamedGraph.graph.graphset == undefined ? [""] : [parNamedGraph.graph.graphset])
         };
+
 
         var permissions = [];
         // graphs can only be created by authenticated users
         if (AccountService.getAccount().getUsername() != undefined) {
             // TODO: to update 
             if (parNamedGraph.publicAccess == "acl:Read") {
-                namedgraph["gkg:access"] = [{
+                namedgraph["ontos:access"] = [{
                     "acl:mode": ["acl:Read"],
                     "acl:agentClass": ["foaf:Agent"]
                 }];
@@ -362,7 +371,7 @@ module.factory("GraphService", function ($http, $q, Config, ConfigurationService
                     permissions: "r"
                 });
             } else if (parNamedGraph.publicAccess == "acl:Write") {
-                namedgraph["gkg:access"] = [{
+                namedgraph["ontos:access"] = [{
                     "acl:mode": ["acl:Write"],
                     "acl:agentClass": ["foaf:Agent"]
                 }];
@@ -378,10 +387,10 @@ module.factory("GraphService", function ($http, $q, Config, ConfigurationService
             }
             for (var user in parNamedGraph.usersRead) {
                 if (parNamedGraph.usersWrite.indexOf(ConfigurationService.getUriBase()+parNamedGraph.usersRead[user]) == -1) {
-                    if (namedgraph["gkg:access"] == undefined) {
-                        namedgraph["gkg:access"] = [];
+                    if (namedgraph["ontos:access"] == undefined) {
+                        namedgraph["ontos:access"] = [];
                     }
-                    namedgraph["gkg:access"].push({
+                    namedgraph["ontos:access"].push({
                         "acl:mode": ["acl:Read"],
                         "acl:agent": [ConfigurationService.getUriBase()+parNamedGraph.usersRead[user]]
                     });
@@ -392,10 +401,10 @@ module.factory("GraphService", function ($http, $q, Config, ConfigurationService
                 }
             }
             for (var user in parNamedGraph.usersWrite) {
-                if (namedgraph["gkg:access"] == undefined) {
-                    namedgraph["gkg:access"] = [];
+                if (namedgraph["ontos:access"] == undefined) {
+                    namedgraph["ontos:access"] = [];
                 }
-                namedgraph["gkg:access"].push({
+                namedgraph["ontos:access"].push({
                     "acl:mode": ["acl:Write"],
                     "acl:agent": [ConfigurationService.getUriBase()+parNamedGraph.usersWrite[user]]
                 });
@@ -410,22 +419,22 @@ module.factory("GraphService", function ($http, $q, Config, ConfigurationService
         // create the graph
         var requestData = {
             format: "application/sparql-results+json",
-            graph: Config.getNS() + parNamedGraph.name.replace(':', ''),
+            graph: Ns.lengthen(parNamedGraph.name),
             permissions: JSON.stringify(permissions),
             username: AccountService.getAccount().getUsername(), 
         }
-
-        var promise = $http.post("rest/GraphManagerServlet/createGraph", $.param(requestData)).then(
+        console.log(requestData);
+        var promise = $http.post("rest/graphs/createGraph", $.param(requestData)).then(
             // success
             function (response) {
                    // if the creation succeed, then add the metadata insert the metadata of the graph
                 var settings = Config.getSettings();
-                console.log(settings);
                 settings[parNamedGraph.name] = namedgraph;
                 settings[parNamedGraph.name + "Graph"] = graph;
                 if(settings[":default-dataset"]["sd:namedGraph"] == undefined)
                     settings[":default-dataset"]["sd:namedGraph"] = [];
                 settings[":default-dataset"]["sd:namedGraph"].push(parNamedGraph.name);
+                console.log(settings)
                 return Config.write();
             });
         return promise;
@@ -439,12 +448,13 @@ module.factory("GraphService", function ($http, $q, Config, ConfigurationService
         graph["rdfs:label"][0] = parNamedGraph.graph.label;
         graph["dcterms:description"][0] = parNamedGraph.graph.description;
         graph["dcterms:modified"][0] = parNamedGraph.graph.modified;
-        graph["dcterms:created"][0] = parNamedGraph.graph.created;  
+        graph["dcterms:created"][0] = parNamedGraph.graph.created;
+        graph["gv:hasGraphSet"][0] = (parNamedGraph.graph.graphset == undefined ? [] : [parNamedGraph.graph.graphset])
 
         var permissions = null;
         if (AccountService.getAccount().getUsername() != undefined) {
             if (parNamedGraph.publicAccess == "acl:Read") {
-                namedgraph["gkg:access"] = [{
+                namedgraph["ontos:access"] = [{
                     "acl:mode": ["acl:Read"],
                     "acl:agentClass": ["foaf:Agent"]
                 }];
@@ -453,7 +463,7 @@ module.factory("GraphService", function ($http, $q, Config, ConfigurationService
                     permissions: "r"
                 }];
             } else if (parNamedGraph.publicAccess == "acl:Write") {
-                namedgraph["gkg:access"] = [{
+                namedgraph["ontos:access"] = [{
                     "acl:mode": ["acl:Write"],
                     "acl:agentClass": ["foaf:Agent"]
                 }];
@@ -462,7 +472,7 @@ module.factory("GraphService", function ($http, $q, Config, ConfigurationService
                     permissions: "w"
                 }];
             } else if (parNamedGraph.publicAccess == getNoAccessMode()) {
-                namedgraph["gkg:access"] = undefined;
+                namedgraph["ontos:access"] = undefined;
                 permissions = [{
                     username: null,
                     permissions: "n"
@@ -470,10 +480,10 @@ module.factory("GraphService", function ($http, $q, Config, ConfigurationService
             }
             for (var user in parNamedGraph.usersRead) {
                 if (parNamedGraph.usersWrite.indexOf(ConfigurationService.getUriBase()+parNamedGraph.usersRead[user]) == -1) {
-                    if (namedgraph["gkg:access"] == undefined) {
-                        namedgraph["gkg:access"] = [];
+                    if (namedgraph["ontos:access"] == undefined) {
+                        namedgraph["ontos:access"] = [];
                     }
-                    namedgraph["gkg:access"].push({
+                    namedgraph["ontos:access"].push({
                         "acl:mode": ["acl:Read"],
                         "acl:agent": [ConfigurationService.getUriBase()+parNamedGraph.usersRead[user]]
                     });
@@ -484,10 +494,10 @@ module.factory("GraphService", function ($http, $q, Config, ConfigurationService
                 }
             }
             for (var user in parNamedGraph.usersWrite) {
-                if (namedgraph["gkg:access"] == undefined) {
-                    namedgraph["gkg:access"] = [];
+                if (namedgraph["ontos:access"] == undefined) {
+                    namedgraph["ontos:access"] = [];
                 }
-                namedgraph["gkg:access"].push({
+                namedgraph["ontos:access"].push({
                     "acl:mode": ["acl:Write"],
                     "acl:agent": [ConfigurationService.getUriBase()+parNamedGraph.usersWrite[user]]
                 });
@@ -500,11 +510,11 @@ module.factory("GraphService", function ($http, $q, Config, ConfigurationService
         if (permissions != null) {
             var requestData = {
                 format: "application/sparql-results+json",
-                graph: Config.getNS() + parNamedGraph.name.replace(':', ''),
+                graph: Ns.lengthen(parNamedGraph.name),
                 permissions: JSON.stringify(permissions),
                 username: AccountService.getAccount().getUsername()
             };
-            return Config.request("rest/GraphManagerServlet/updateGraph", requestData, function () {
+            return Config.request("rest/graphs/updateGraph", requestData, function () {
                 return Config.write();
             });
             // Config.setGraphPermissions(Config.getNS() + parNamedGraph.name.replace(':', ''), JSON.stringify(permissions));
@@ -517,14 +527,15 @@ module.factory("GraphService", function ($http, $q, Config, ConfigurationService
 
         var requestData = {
             format: "application/sparql-results+json",
-            graph: parGraphName.replace(':', Config.getNS()),
+            graph: Ns.lengthen(parGraphName),
             username: AccountService.getAccount().getUsername()
         }
 
-        return Config.request("rest/GraphManagerServlet/dropGraph", requestData, function () {
+        return Config.request("rest/graphs/dropGraph", requestData, function () {
             var settings = Config.getSettings();
             settings[":default-dataset"]["sd:namedGraph"].pop(parGraphName);
             delete settings[parGraphName];
+            delete settings[parGraphName + "Graph"]
             return Config.write();
         });
     };

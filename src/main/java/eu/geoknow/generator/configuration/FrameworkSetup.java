@@ -277,7 +277,7 @@ public class FrameworkSetup {
     Model settingsModel = ModelFactory.createDefaultModel();
     settingsModel.add(FrameworkConfiguration.getConfigurationModel());
     settingsModel.add(FrameworkConfiguration.getDatasourceModel());
-    // settingsModel.add(FrameworkConfiguration.getSystemGraphsModel());
+
     ByteArrayOutputStream os = new ByteArrayOutputStream();
     os = new ByteArrayOutputStream();
     settingsModel.write(os, "N-TRIPLES");

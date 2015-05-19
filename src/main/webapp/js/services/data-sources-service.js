@@ -12,6 +12,14 @@ module.factory('DatasourcesService', function ($http, $q) {
 				function (response){
 					return response.data.databaseTypes;
 	    });
+		}, 
+
+		getAllEndpoints : function() {
+			return $http.get("rest/datasources/endpoints").then( 
+				// success
+				function (response){
+					return response.data.endpoints;
+	    });
 		}
 	};
 

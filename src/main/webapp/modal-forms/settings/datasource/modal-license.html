@@ -1,0 +1,47 @@
+
+<div class="modal-content">
+<form name="licenseSourceForm" class="form-horizontal InputForm" role="form" novalidate>
+  <div class="modal-header">
+      <h3 class="modal-title">{{modaltitle | i18n}}</h3>
+  </div>
+  <div class="modal-body">
+  
+  		
+       <div class="form-group">
+          <label class="col-xs-2 control-label" data-i18n="_identifier_"></label>
+          <div class="col-xs-10">
+            <input type="text" class="form-control" name="identifier" id="identifier" data-i18n-attr="_identifier_|placeholder" ng-model="license.uri" ng-disabled="!isNew" required regex-validate="identifier" unique-identifier>
+            <div class="error" ng-show="licenseSourceForm.identifier.$dirty && licenseSourceForm.identifier.$invalid">{{'_invalid-field-message_' | i18n}}:
+              <span ng-show="licenseSourceForm.identifier.$error.required || licenseSourceForm.identifier.$error.regexValidate" data-i18n="_malformed-letters-number-id-message_"></span>
+              <span ng-show="licenseSourceForm.identifier.$error.uniqueIdentifier" data-i18n="_id-already-exists-message_"></span>
+            </div>
+          </div>
+        </div>       
+        <div class="form-group">
+          <label for="label" class="col-xs-2 control-label" data-i18n="_label_"></label>
+          <div class="col-xs-10">
+            <input type="text" class="form-control" name="label" id="label" data-i18n-attr="_label_|placeholder" ng-model="license.label" required>
+            <div class="error" ng-show="licenseSourceForm.label.$dirty && licenseSourceForm.label.$invalid">{{'_invalid-field-message_' | i18n}}:
+              <span ng-show="licenseSourceForm.label.$error.required" data-i18n="_label-missed-message_"></span>
+            </div>
+          </div>
+        </div>
+       
+         <div class="form-group">
+          <label for="label" class="col-xs-2 control-label" data-i18n="_url-input_"></label>
+          <div class="col-xs-10">
+            <input type="text" class="form-control" name="url" id="url" data-i18n-attr="_url-input_|placeholder" ng-model="license.url" required>
+            <div class="error" ng-show="licenseSourceForm.url.$dirty && licenseSourceForm.url.$invalid">{{'_invalid-field-message_' | i18n}}:
+              <span ng-show="licenseSourceForm.url.$error.required" data-i18n="_url-missed-message_"></span>
+            </div>
+          </div>
+        </div>
+  
+    
+  </div>
+  <div class="modal-footer">
+      <button class="btn btn-primary" ng-click="ok()" ng-disabled="licenseSourceForm.$invalid" data-i18n="_ok_"></button>
+     				<button class="btn btn-default" ng-click="cancel()" data-i18n="_cancel_"></button>
+  </div>
+</form>
+</div>

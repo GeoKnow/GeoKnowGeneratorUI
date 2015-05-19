@@ -2,123 +2,159 @@
 
 <div ng-controller="ImportFormCtrl">
 
-	<form class="form-horizontal InputForm col-xs-11" role="form">
-	<div class="row">
-		<label for="source-type" class="col-xs-2 control-label">Import from a </label>
-		<div class="col-xs-10">
-	      <select id="source-type" class="form-control" ng-model="sourceType" 
-	      				ng-options="c.label for c in sourceTypes" ng-change="updateForm()" required>
-	      </select>
-		</div>
+	<form class="form-horizontal InputForm" role="form">
+		<div class="form-group">
+			<label for="source-type" class="col-sm-2 control-label">Import from a </label>
+			<div class="col-sm-8">
+	  		<select id="source-type" class="form-control" ng-model="sourceType" ng-options="c.label for c in sourceTypes" ng-change="updateForm()" required></select>
+	  	</div>
 	</div>
 	</form>
-<br/>
-<br/>
-<br/>
-	<!-- Import from file form -->
-	<div ng-show="fileElements" class="animate-show">
-		<form class="form-horizontal InputForm col-xs-11" role="form" name="fileForm" novalidate>
-			<div class="form-group">
-				<label for="graph" class="col-xs-2 control-label">To a dataset </label>
-				<div class="input-group col-xs-10">
-          <select id="graph" name= "graph" class="form-control" ng-model="importFile.graph" ng-options="c.name as c.graph.label for c in namedGraphs" required></select>
-          <span class="input-group-btn">
-              <button type="button" class="btn btn-link reset" ng-click="refreshGraphList()">
-                  <i class="glyphicon glyphicon-refresh" aria-hidden="false"></i>
-              </button>
-          </span>
-        </div>
-	  	</div>
-			<div class="form-group">
-	    	<label for="inputFile" class="col-xs-2 control-label">File input</label>
-	    	<div class="col-xs-10">
-				  <!-- <input type="file" ng-file-select="onFileSelect($files)" > -->
-				  <input type="file" ng-file-select="onFileSelect($files)" multiple name="fileName" accept=".nt, .n3, .ttl, .rdf">
-				  <div class="error" ng-show="uploadedError()">Invalid:<span>{{uploadMessage}}</span></div>
-				  <div ng-show="isUploading()"><span>Uploading ...</span></div>
-	  		</div>
-	  	</div>
-	  	<div class="form-group">
-    		<div class="col-lg-offset-2 col-xs-10">
-      		<button class="btn btn-success" ng-click="import()" ng-disabled="isInvalid()||isImporting()">Import</button>
-      		<span ng-show="isImporting()"> Importing ... </span>
-    		</div>
-  	</div>
-	  </form>
-  </div>
 
+	<!-- Import from file form -->
+	<form ng-show="fileElements" class="form-horizontal InputForm" role="form" name="fileForm" novalidate>
+		<div class="form-group">
+	    <label for="inputFile" class="col-sm-2 control-label">File input</label>
+	    	  <!-- <input type="file" ng-file-select="onFileSelect($files)" > -->
+	    <div class="col-sm-8">
+				<input type="file" ngf-select ng-model="importFile.files" accept=".nt,.n3,.ttl,.rdf">
+				<div class="error" ng-show="uploadedError()">File value is invalid or missed (for required fields)<span>{{uploadMessage}}</span></div>
+			</div>
+	  </div>
+	 	<div class="form-group">
+			<label for="graph" class="col-sm-2 control-label">To dataset </label>
+			<div class="input-group col-sm-8">
+				<div class="input-group-btn">
+					<button type="button" class="btn btn-link reset" ng-click="refreshGraphList()">
+						<i class="glyphicon glyphicon-refresh" aria-hidden="false"></i>
+					</button>
+				</div>
+				<select id="targetGraph" class="form-control" ng-model="importFile.targetGraph" ng-options="namedgraph.name as graphLabel(namedgraph.name,namedgraph.graph.label) for namedgraph in namedGraphs" required></select>
+			</div>
+    </div>
+	  <div class="form-group">
+	  	<div class="col-sm-2"></div>
+	  	<div class="col-sm-8">
+				<button class="btn btn-success" ng-click="import()" ng-disabled="isInvalid() || isImporting()">Import</button>
+      	<span ng-show="isImporting()"> Importing ... </span>
+      </div>
+  	</div>
+	</form>
+  
 	<!-- Import from URL form  -->
-	<div ng-show="urlElements" class="animate-show">
-		<form class="form-horizontal InputForm col-xs-11" role="form" name="urlForm" novalidate>
-			<div class="form-group">
-				<label for="graph" class="col-xs-2 control-label">To a dataset </label>
-				<div class="input-group col-xs-10">
-                    <select id="graph" class="form-control" ng-model="importUrl.graph" ng-options="c.name as c.graph.label for c in namedGraphs" required></select>
-                    <span class="input-group-btn">
-                        <button type="button" class="btn btn-link reset" ng-click="refreshGraphList()">
-                            <i class="glyphicon glyphicon-refresh" aria-hidden="false"></i>
-                        </button>
-                    </span>
-		        </div>
-	  	    </div>
-			<div class="form-group">
-	    	<label for="inputUrl" class="col-xs-2 control-label">Url input</label>
-		    <div class="col-xs-10">
-			    <input type="text" id="inputUrl" name="inputUrl" class="form-control" ng-model="importUrl.inputUrl" regex-validate="url" required>
-			    <div class="error" ng-show="urlForm.inputUrl.$dirty && urlForm.inputUrl.$invalid">Invalid:
+	
+	<form ng-show="urlElements" class="form-horizontal InputForm" role="form" name="urlForm" novalidate>
+		<div class="form-group">
+	    <label for="inputUrl" class="col-sm-2 control-label">Url input</label>
+	    <div class="input-group col-sm-8">
+		  	<input type="text" id="inputUrl" name="inputUrl" class="form-control" ng-model="importUrl.inputUrl" regex-validate="url" required>
+				<div class="error" ng-show="urlForm.inputUrl.$dirty && urlForm.inputUrl.$invalid">Invalid:
           	<span ng-show="urlForm.inputUrl.$error.required">Specify a valid URL</span>
           	<span ng-show="urlForm.inputUrl.$error.regexValidate">This is not a valid URL.</span>
-        	</div>
-	  		</div>
-	  	</div>
-	  	<div class="form-group">
-    		<div class="col-lg-offset-2 col-xs-10">
-      		<button class="btn btn-success" ng-click="import()" ng-disabled="urlForm.$invalid || isUnchanged(importUrl) || isImporting()">Import</button>
+       	</div>
+      </div>
+	  </div>
+	  <div class="form-group">
+			<label for="graph" class="col-sm-2 control-label">To dataset </label>
+			<div class="input-group col-sm-8">
+				<div class="input-group-btn">
+					<button type="button" class="btn btn-link reset" ng-click="refreshGraphList()">
+						<i class="glyphicon glyphicon-refresh" aria-hidden="false"></i>
+					</button>
+				</div>
+				<select id="targetGraph" class="form-control" ng-model="importUrl.targetGraph" ng-options="namedgraph.name as graphLabel(namedgraph.name,namedgraph.graph.label) for namedgraph in namedGraphs" required></select>
+			</div>
+		</div>
+	  <div class="form-group">
+	  	<div class="col-sm-2"></div>
+	  	<div class="input-group col-sm-8">
+				<button class="btn btn-success" ng-click="import()" ng-disabled="urlForm.$invalid || isImporting()">Import</button>
       		<span ng-show="isImporting()"> Importing ...</span>
-    		</div>
-  		</div>
-		</form>
-	</div>
+      </div>
+		</div>
+	</form>
+	
 
 	<!-- Import from URL sparql  -->
-	<div ng-show="queryElements" class="animate-show">
-		<form class="form-horizontal InputForm col-xs-11" role="form" name="sparqlForm" novalidate>
-			<div class="form-group">
-				<label for="graph" class="col-xs-2 control-label">To a dataset </label>
-				<div class="input-group col-xs-10">
-                    <select id="graph" class="form-control" ng-model="importSparql.graph" ng-options="c.name as c.graph.label for c in namedGraphs" required></select>
-                    <span class="input-group-btn">
-                        <button type="button" class="btn btn-link reset" ng-click="refreshGraphList()">
-                            <i class="glyphicon glyphicon-refresh" aria-hidden="false"></i>
-                        </button>
-                    </span>
-		        </div>
-	  	</div>
-			<div class="form-group">
-	    	<label for="endPoint" class="col-xs-2 control-label">SPARQL EndPoint</label>
-		    <div class="col-xs-10">
-		    	 <select id="endPoint" class="form-control" ng-model="importSparql.endPoint"
-		      				ng-options="c.endpoint as c.label for c in endpoints" required>
-		      </select>
-	  		</div>
-	  	</div>
-			<div class="form-group">
-	    	<label for="sparqlQuery" class="col-xs-2 control-label">Query</label>
-		    <div class="col-xs-10">
-		    	<textarea class="form-control" rows="3" id="sparqlQuery" name="sparqlQuery" ng-model="importSparql.sparqlQuery" required>{{scope.importSparql.sparqlQuery}}</textarea>
-		    	<div class="error" ng-show="sparqlForm.sparqlQuery.$dirty && sparqlForm.sparqlQuery.$invalid">Invalid:
-          	<span ng-show="sparqlForm.sparqlQuery.$error.required">Specify the EndPoint</span>
-        	</div>
-	  		</div>
-	  	</div>
-	  	<div class="form-group">
-    		<div class="col-lg-offset-2 col-xs-10">
-      		<button class="btn btn-success" ng-click="import()" ng-disabled="sparqlForm.$invalid || isUnchanged(importSparql) || isImporting()">Import</button>
-      		<span ng-show="isImporting()"> Importing ...</span>
-    		</div>
-  		</div>	
-	  </form>
-	</div>
+	<form ng-show="externalQueryElements" class="form-horizontal InputForm" role="form" name="endpointForm" novalidate>
 
+		<div class="form-group">
+	   	<label for="endPoint" class="col-xs-2 control-label">SPARQL EndPoint</label>
+	   	<div class="input-group col-sm-8">
+		 		<select id="endPoint" class="form-control" ng-model="importEndpoint.endPoint" ng-options="c.endpoint as c.label for c in endpoints" required></select>
+     	</div>
+	  </div>
+		<div class="form-group">
+	    <label for="sparqlQuery" class="col-xs-2 control-label">Query</label>
+	    <div class="input-group col-sm-8">
+		  	<textarea class="form-control" rows="3" id="sparqlQuery" name="sparqlQuery" ng-model="importEndpoint.sparqlQuery" required>{{scope.importEndpoint.sparqlQuery}}</textarea>
+		  	<div class="error" ng-show="endpointForm.sparqlQuery.$dirty && endpointForm.sparqlQuery.$invalid">Invalid:
+       		<span ng-show="endpointForm.sparqlQuery.$error.required">Specify the EndPoint</span>
+      	</div>
+      </div>
+	  </div>
+		<div class="form-group">
+			<label for="graph" class="col-xs-2 control-label">To dataset </label>
+			<div class="input-group col-sm-8">
+				<div class="input-group-btn">
+					<button type="button" class="btn btn-link reset" ng-click="refreshGraphList()">
+						<i class="glyphicon glyphicon-refresh" aria-hidden="false"></i>
+					</button>
+				</div>
+				<select id="targetGraph" class="form-control" ng-model="importEndpoint.targetGraph" ng-options="namedgraph.name as graphLabel(namedgraph.name,namedgraph.graph.label) for namedgraph in namedGraphs" required></select>
+			</div>
+		</div>
+	  <div class="form-group">
+			<div class="col-sm-2"></div>
+	  	<div class="input-group col-sm-8">
+      	<button class="btn btn-success" ng-click="import()" ng-disabled="importEndpoint.$invalid || isImporting()">Import</button>
+      	<span ng-show="isImporting()"> Importing ...</span>
+     	</div>
+    </div>
+	</form>
+
+
+	<!-- Import from LOCAL sparql  -->
+	<form ng-show="localQueryElements" class="form-horizontal InputForm" role="form" name="localForm" novalidate>
+		
+		<div class="form-group">
+			<label for="graph" class="col-xs-2 control-label">From dataset </label>
+			<div class="input-group col-sm-8">
+				<div class="input-group-btn">
+					<button type="button" class="btn btn-link reset" ng-click="refreshGraphList()">
+						<i class="glyphicon glyphicon-refresh" aria-hidden="false"></i>
+					</button>
+				</div>
+				<select id="targetGraph" class="form-control" ng-model="importLocal.sourceGraph" ng-options="namedgraph.name as graphLabel(namedgraph.name,namedgraph.graph.label) for namedgraph in namedGraphs" required></select>
+			</div>
+		</div>
+		<div class="form-group">
+			<label for="graph" class="col-xs-2 control-label">To dataset </label>
+			<div class="input-group col-sm-8">
+				<div class="input-group-btn">
+					<button type="button" class="btn btn-link reset" ng-click="refreshGraphList()">
+						<i class="glyphicon glyphicon-refresh" aria-hidden="false"></i>
+					</button>
+				</div>
+				<select id="targetGraph" class="form-control" ng-model="importLocal.targetGraph" ng-options="namedgraph.name as graphLabel(namedgraph.name,namedgraph.graph.label) for namedgraph in namedGraphs" required></select>
+			</div>
+		</div>
+		<div class="form-group">
+	    <label for="sparqlQuery" class="col-xs-2 control-label">Query</label>
+	    <div class="input-group col-sm-8">
+		  	<textarea class="form-control" rows="3" id="sparqlQuery" name="sparqlQuery" ng-model="importLocal.sparqlQuery" required>{{scope.importSparql.sparqlQuery}}</textarea>
+		  	<div class="error" ng-show="localForm.sparqlQuery.$dirty && localForm.sparqlQuery.$invalid">Invalid:
+       		<span ng-show="localForm.sparqlQuery.$error.required">Specify the Query</span>
+      	</div>
+      </div>
+	  </div>
+	  <div class="form-group">
+			<div class="col-sm-2"></div>
+	  	<div class="input-group col-sm-8">
+      	<button class="btn btn-success" ng-click="import()" ng-disabled="importLocal.$invalid || isImporting()">Import</button>
+      	<span ng-show="isImporting()"> Importing ...</span>
+     	</div>
+    </div>
+	</form>
 
 </div>

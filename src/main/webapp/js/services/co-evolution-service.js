@@ -22,6 +22,13 @@ module.factory("CoevolutionService", function ($http, ComponentsService) {
 
   var service = {
 
+    getGroups : function() {
+      return $http({
+        url: "graphs/group/",
+        method: "GET"
+      });
+    },
+
     getGroup : function(id) {
       return $http({
         url: "graphs/group/"+id,
@@ -29,11 +36,12 @@ module.factory("CoevolutionService", function ($http, ComponentsService) {
       });
     },
 
-    createGroup : function(id, name) {
+    createGroup : function(group) {
+      console.log(group);
       return $http({
-        url: "graphs/group/"+id,
-        method: "PUT",
-        data : name
+        url: "graphs/graphset",
+        method: "POST",
+        data : group
       });
     },
 

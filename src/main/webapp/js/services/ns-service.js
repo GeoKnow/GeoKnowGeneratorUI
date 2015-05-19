@@ -17,7 +17,7 @@ module.factory('Ns', function (Helpers) {
 		"geoknow"	: "http://geoknow.eu/geodata#",
 		"geom"		: "http://geovocab.org/geometry#",
 		"geos"		: "http://www.opengis.net/ont/geosparql#",
-		"gkg"			: "http://ldiw.ontos.com/ontology/",
+		"ontos"  	: "http://ldiw.ontos.com/ontology/",
 		"gz"			: "http://data.admin.ch/vocab/",
 		"gzp"			: "http://data.admin.ch/bfs/class/1.0",
 		"ld"			: "http://ld.geoknow.eu/flights/ontology/",
@@ -34,7 +34,11 @@ module.factory('Ns', function (Helpers) {
 		"wktrm"		: "http://wiktionary.dbpedia.org/terms/",
 		"drugbank": "http://www4.wiwiss.fu-berlin.de/drugbank/resource/drugbank/",
 		"sider"		: "http://www4.wiwiss.fu-berlin.de/sider/resource/sider/",
-		"diseasome" : "http://www4.wiwiss.fu-berlin.de/diseasome/resource/diseasome/" 
+		"diseasome" : "http://www4.wiwiss.fu-berlin.de/diseasome/resource/diseasome/",
+		"gv"			: "http://geoknow.eu/coevolution/graphversioning/", 
+		"gvg"			: "http://geoknow.eu/coevolution/graphversioning/graphset",
+		"cec"			: "http://geoknow.eu/coevolution/change/"
+
 	};
 	
 	var buildNamespaces = function(){
@@ -93,13 +97,29 @@ module.factory('Ns', function (Helpers) {
         return value;
     },
 
+    // replaces the prefix with the namespace retuns a uri
+    lengthen : function(v){
+    	var value = v.split(":");
+    	var uri = "";
+    	console.log(value);
+    	if(value[0]=="")
+    		uri = prefixes[":"] + value[1];
+    	else if(prefixes[value[0]] != undefined)
+    		uri = prefixes[value[0]] + v[1];
+    	else
+    		uri = v;
+    	console.log(uri);
+    	return uri;
+    },
+
 		add : function(prefix, namespace){
 			if(prefixes[prefix]==undefined){
 				prefixes[prefix] = namespace;
 				buildNamespaces();
 			}
 			else
-				console.log("WARNING: prefix already exist for " + prefixes[prefix]);
+				console.log("WARNING: prefix " + prefix + " already exist for " + prefixes[prefix] + ", couldn't asign " + namespace );
+			console.log(prefixes);
 		},
 
 		// return an array of prefix, namespace of the provided arr prefixes list

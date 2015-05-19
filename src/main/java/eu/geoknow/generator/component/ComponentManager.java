@@ -235,7 +235,7 @@ public class ComponentManager {
   public Component addComponent(@Valid Component component) throws IOException,
       SPARQLEndpointException, ResourceExistsException {
 
-    if (Queries.resourceExists(component.getUri(), config.getComponentsGraph(), storeManager))
+    if (Queries.resourceExists(component.getUri(), storeManager))
       throw new ResourceExistsException(component.getLabel() + " already exists as "
           + component.getUri());
 
@@ -269,11 +269,11 @@ public class ComponentManager {
       SPARQLEndpointException, ResourceExistsException, ResourceNotFoundException {
 
     // check that the component metadata exists
-    if (!Queries.resourceExists(uri, config.getComponentsGraph(), storeManager))
+    if (!Queries.resourceExists(uri, storeManager))
       throw new ResourceNotFoundException(uri + " doesnt exist ");
 
     // check that the service doesn't exists
-    if (Queries.resourceExists(service.getUri(), config.getComponentsGraph(), storeManager))
+    if (Queries.resourceExists(service.getUri(), storeManager))
       throw new ResourceExistsException("Service " + service.getUri() + " already exist  as "
           + service.getLabel());
 
@@ -307,7 +307,7 @@ public class ComponentManager {
       SPARQLEndpointException, ResourceNotFoundException {
 
     // check that the component exists
-    if (!Queries.resourceExists(component.getUri(), config.getComponentsGraph(), storeManager))
+    if (!Queries.resourceExists(component.getUri(), storeManager))
       throw new ResourceNotFoundException(component.getUri() + " not found");
 
     try {
@@ -544,7 +544,7 @@ public class ComponentManager {
   public Service updateService(Service pservice) throws SPARQLEndpointException, IOException,
       ResourceNotFoundException {
 
-    if (!Queries.resourceExists(pservice.getUri(), config.getComponentsGraph(), storeManager))
+    if (!Queries.resourceExists(pservice.getUri(), storeManager))
       throw new ResourceNotFoundException(pservice.getUri() + " not found");
 
     try {

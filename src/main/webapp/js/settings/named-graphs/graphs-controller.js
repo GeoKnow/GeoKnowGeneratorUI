@@ -1,15 +1,86 @@
 'use strict';
 
-
-function GraphCtrl($scope, $http, $modal, flash, Config, ConfigurationService, Helpers, AccountService, GraphService, GraphGroupService, ServerErrorResponse) {
+function GraphCtrl($scope, $http, $modal, flash, Config, ConfigurationService, CoevolutionService, Helpers, AccountService, GraphService, GraphGroupService, ServerErrorResponse) {
 
   $scope.accessModes = GraphService.getAccessModes();
+  $scope.uriBase = ConfigurationService.getUriBase();
+  $scope.versionGroups = [];
+
+  var refreshUserGraphs = function() {
+    GraphService.getUserGraphs(AccountService.getAccount().getAccountURI(), true).then(
+      function (graphs){
+        $scope.namedgraphs = graphs;
+      },
+      function(response){
+            flash.error = ServerErrorResponse.getMessage(response);
+      });
+  };
+
+  var refreshAccessibleGraphs = function() {
+    GraphService.getAccessibleGraphs(false, true, true).then(
+      function(graphs) {
+        $scope.accnamedgraphs = graphs;
+      },
+      function(response){
+            flash.error = ServerErrorResponse.getMessage(response);
+      });
+  };
+
+  var refreshAllGraphs = function() {
+    GraphService.getAllNamedGraphs(true).then(
+      function(graphs) {
+        $scope.allgraphs = graphs;
+      },
+      function(response){
+        flash.error = ServerErrorResponse.getMessage(response);
+      });
+  };
+
+  var saveGraph = function(namedgraph, newGraph, group) {
+
+    var response;
+    // the identifier is the prefix of the namespace, and this prefix was added
+    // to the ns-service at the creation/get of the groups
+    if(group != null)
+      namedgraph.name = group.identifier + ":" + namedgraph.name;
+    else
+      namedgraph.name = ":" + namedgraph.name;
+
+    if (newGraph)
+      response = GraphService.addGraph(namedgraph);
+    else {
+      if (namedgraph.owner == AccountService.getAccount().getAccountURI())
+        response = GraphService.updateGraph(namedgraph);
+      else {
+        response = GraphService.updateForeignGraph(namedgraph).then(function(response) {
+          refreshAllGraphs();
+        });
+      }
+    }
+    
+    response.then(
+      //success
+      function() {
+        // add the graph to a group if not null
+        if(group!=null){
+          $scope.saveVersionedGraph(namedgraph.name, group);
+          $scope.refreshVersionGroups();
+        }
+        refreshUserGraphs();
+        refreshAllGraphs();
+      },
+      //error
+      function(response) {
+        flash.error = ServerErrorResponse.getMessage(response);
+      });
+  };
+
 
   $scope.isNew = function() {
     return newGraph;
   };
 
-  $scope.new = function() {
+  $scope.new = function(group) {
     var modalInstance = $modal.open({
       templateUrl: 'modal-forms/settings/named-graphs/modal-graph.html',
       controller: 'ModalGraphCtrl',
@@ -18,11 +89,14 @@ function GraphCtrl($scope, $http, $modal, flash, Config, ConfigurationService, H
       resolve: {
         currentNamedGraph: function() {
           return null;
+        },
+        versionedGroup: function(){
+          return group;
         }
       }
     });
     modalInstance.result.then(function(responseGraph) {
-      $scope.save(responseGraph, true);
+      saveGraph(responseGraph, true, group);
     });
   };
 
@@ -37,12 +111,14 @@ function GraphCtrl($scope, $http, $modal, flash, Config, ConfigurationService, H
         currentNamedGraph: function() {
           var ng = angular.copy(GraphService.getNamedGraphCS(graphName));
           return ng;
+        },
+        versionedGroup: function(){
+          return undefined;
         }
       }
-
     });
     modalInstance.result.then(function(responseGraph) {
-      $scope.save(responseGraph, false);
+      saveGraph(responseGraph, false);
     });
   };
 
@@ -57,52 +133,26 @@ function GraphCtrl($scope, $http, $modal, flash, Config, ConfigurationService, H
         currentNamedGraph: function() {
           var ng = angular.copy(GraphService.getNamedGraph(graphName));
           return ng;
+        },
+        versionedGroup: function(){
+          return undefined;
         }
       }
 
     });
 
     modalInstance.result.then(function(responseGraph) {
-      $scope.save(responseGraph, false);
+      saveGraph(responseGraph, false);
     });
 
-  };
-
-  $scope.save = function(namedgraph, newGraph) {
-
-    var response;
-    namedgraph.name = ":" + namedgraph.name;
-    if (newGraph)
-      response = GraphService.addGraph(namedgraph);
-    else {
-      if (namedgraph.owner == AccountService.getAccount().getAccountURI())
-        response = GraphService.updateGraph(namedgraph);
-      else {
-        response = GraphService.updateForeignGraph(namedgraph).then(function(response) {
-          $scope.refreshAllGraphs();
-        });
-
-      }
-    }
-
-    response.then(
-      function() {
-        //success
-        $scope.refreshUserGraphs();
-        $scope.refreshAllGraphs();
-      },
-      function(response) {
-        //error
-        flash.error = ServerErrorResponse.getMessage(response);
-      });
   };
 
   $scope.delete = function(graphName) {
     GraphService.deleteGraph(graphName).then(
       function(response) {
-        $scope.refreshUserGraphs();
-        $scope.refreshAllGraphs();
-        $scope.refreshGraphGroups();
+        refreshUserGraphs();
+        refreshAllGraphs();
+        refreshGraphGroups();
       }, 
       function(response){
             flash.error = ServerErrorResponse.getMessage(response);
@@ -112,9 +162,9 @@ function GraphCtrl($scope, $http, $modal, flash, Config, ConfigurationService, H
   $scope.deleteForeign = function(graphName) {
     GraphService.deleteForeignGraph(graphName).then(
       function(response) {
-        $scope.refreshUserGraphs();
-        $scope.refreshAllGraphs();
-        $scope.refreshGraphGroups();
+        refreshUserGraphs();
+        refreshAllGraphs();
+        refreshGraphGroups();
       }, 
       function(response){
             flash.error = ServerErrorResponse.getMessage(response);
@@ -139,36 +189,6 @@ function GraphCtrl($scope, $http, $modal, flash, Config, ConfigurationService, H
     }
   };
 
-  $scope.refreshUserGraphs = function() {
-    GraphService.getUserGraphs(AccountService.getAccount().getAccountURI(), true).then(
-      function (graphs){
-        $scope.namedgraphs = graphs;
-      },
-      function(response){
-            flash.error = ServerErrorResponse.getMessage(response);
-      });
-  };
-
-  $scope.refreshAccessibleGraphs = function() {
-    GraphService.getAccessibleGraphs(false, true, true).then(
-      function(graphs) {
-        $scope.accnamedgraphs = graphs;
-      },
-      function(response){
-            flash.error = ServerErrorResponse.getMessage(response);
-      });
-  };
-
-  $scope.refreshAllGraphs = function() {
-    GraphService.getAllNamedGraphs(true).then(
-      function(graphs) {
-        $scope.allgraphs = graphs;
-      },
-      function(response){
-            flash.error = ServerErrorResponse.getMessage(response);
-      });
-  };
-
   $scope.userFilter = function(user) {
     return user != $scope.namedgraph.owner;
   };
@@ -181,8 +201,18 @@ function GraphCtrl($scope, $http, $modal, flash, Config, ConfigurationService, H
   GRAPH GROUPS
   ****/
 
+  var refreshGraphGroups = function() {
+    GraphGroupService.getAllGraphGroups(true).then(
+      function(result) {
+        $scope.graphgroups = result;
+      },
+      function(response){
+            flash.error = ServerErrorResponse.getMessage(response);
+      });
+  };
+
   $scope.newGroup = function() {
-    $scope.refreshAllGraphs();
+    refreshAllGraphs();
     var modalInstance = $modal.open({
       templateUrl: 'modal-forms/settings/named-graphs/modal-graphgroup.html',
       controller: 'ModalGraphGroupCtrl',
@@ -201,7 +231,7 @@ function GraphCtrl($scope, $http, $modal, flash, Config, ConfigurationService, H
     modalInstance.result.then(function(graphgroup) {
       GraphGroupService.addGraphGroup(graphgroup).then(
         function(result) {
-          $scope.refreshGraphGroups();
+          refreshGraphGroups();
         },
         function(response){
             flash.error = ServerErrorResponse.getMessage(response);
@@ -211,7 +241,7 @@ function GraphCtrl($scope, $http, $modal, flash, Config, ConfigurationService, H
   };
 
   $scope.editGroup = function(groupName) {
-    $scope.refreshAllGraphs();
+    refreshAllGraphs();
     var modalInstance = $modal.open({
       templateUrl: 'modal-forms/settings/named-graphs/modal-graphgroup.html',
       controller: 'ModalGraphGroupCtrl',
@@ -230,7 +260,7 @@ function GraphCtrl($scope, $http, $modal, flash, Config, ConfigurationService, H
     modalInstance.result.then(function(graphgroup) {
       GraphGroupService.updateGraphGroup(graphgroup).then(
         function(result) {
-          $scope.refreshGraphGroups();
+          refreshGraphGroups();
         },
         function(response){
             flash.error = ServerErrorResponse.getMessage(response);
@@ -241,28 +271,88 @@ function GraphCtrl($scope, $http, $modal, flash, Config, ConfigurationService, H
   $scope.deleteGroup = function(groupName) {
     GraphGroupService.deleteGraphGroup(groupName).then(
       function(result) {
-        $scope.refreshGraphGroups();
+        refreshGraphGroups();
       },
       function(response){
             flash.error = ServerErrorResponse.getMessage(response);
       });
   };
 
-  $scope.refreshGraphGroups = function() {
-    GraphGroupService.getAllGraphGroups(true).then(
-      function(result) {
-        $scope.graphgroups = result;
-      },
-      function(response){
+  
+  /**
+  *
+  * For the co-evolution service
+  *
+  **/
+  $scope.refreshVersionGroups = function(){
+    CoevolutionService.getGroups().then(
+    //success
+    function(response){
+      console.log(response);
+      $scope.versionGroups = response;   
+    },
+    //fail
+    function (response){
+      flash.error = ServerErrorResponse.getMessage(response);
+    });
+  };
+
+/*
+{
+  "label": "aaa",
+  "created": "",
+  "identifier": "aaa",
+  "description": "aaa"
+}
+*/
+  $scope.newVersionGroup = function(){
+    var modalInstance = $modal.open({
+      templateUrl: 'modal-forms/settings/named-graphs/modal-version-groups-form.html',
+      controller: 'ModalVersionGroupsCtrl',
+      size: 'lg',
+      backdrop: 'static',
+      resolve: {
+        modaltitle : function(){
+          return "New Version Group of Graphs";
+        }, 
+        resource : function (){
+          return null;
+        }, 
+        uriBase : function(){
+          return ConfigurationService.getUriBase();
+        }
+      }
+    });
+
+    modalInstance.result.then(function(response) {
+      CoevolutionService.createGroup(response).then(
+        function(response){
+          $scope.refreshVersionGroups();
+        },
+        function(response){
+          flash.error = ServerErrorResponse.getMessage(response);
+        });
+    });
+  };
+
+  $scope.saveVersionedGraph = function(graphName, group){
+    
+    CoevolutionService.addVersion(group.identifier, graphName).then(
+        function(response){
+          $scope.refreshVersionGroups();
+        },
+        function(response){
             flash.error = ServerErrorResponse.getMessage(response);
-      });
+        });
   };
 
   // Initialize all tables
-  $scope.refreshAllGraphs();
-  $scope.refreshUserGraphs();
-  $scope.refreshGraphGroups();
-  $scope.refreshAccessibleGraphs();
+  $scope.refreshVersionGroups();
+  
+  refreshAllGraphs();
+  refreshUserGraphs();
+  refreshGraphGroups();
+  refreshAccessibleGraphs();
 
 
 }
