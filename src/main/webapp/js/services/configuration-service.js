@@ -145,6 +145,16 @@ module.factory('ConfigurationService', function ($q, Config, $http, $location, f
             return results;
         },
 
+        // This is for validating unique identifiers directive, 
+        // it can still be imporved when REST best practices are implemented
+        resourceExists : function(uri){
+            return $http.get("rest/config/exists/"+uri).then( 
+                // success
+                function (response){
+                    return response.data.response;
+            }); 
+        },
+
         getIdentifiers: function () {
             return Object.keys(Config.getSettings());  
         },

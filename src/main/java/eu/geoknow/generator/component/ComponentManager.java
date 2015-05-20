@@ -27,7 +27,7 @@ import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.vocabulary.RDFS;
 import com.ontos.ldiw.vocabulary.LDIS;
 
-import eu.geoknow.generator.common.APP_CONSTANT;
+import eu.geoknow.generator.common.MediaType;
 import eu.geoknow.generator.common.Queries;
 import eu.geoknow.generator.component.beans.Component;
 import eu.geoknow.generator.component.beans.Service;
@@ -89,7 +89,7 @@ public class ComponentManager {
               + "} ORDER BY ?component";
       log.debug(query);
 
-      String result = storeManager.execute(query, APP_CONSTANT.SPARQL_JSON_RESPONSE_FORMAT);
+      String result = storeManager.execute(query, MediaType.SPARQL_JSON_RESPONSE_FORMAT);
 
       ObjectMapper mapper = new ObjectMapper();
       JsonNode rootNode = mapper.readTree(result);
@@ -169,7 +169,7 @@ public class ComponentManager {
 
       log.debug(query);
 
-      String result = storeManager.execute(query, APP_CONSTANT.SPARQL_JSON_RESPONSE_FORMAT);
+      String result = storeManager.execute(query, MediaType.SPARQL_JSON_RESPONSE_FORMAT);
 
       ObjectMapper mapper = new ObjectMapper();
       JsonNode rootNode = mapper.readTree(result);
@@ -247,7 +247,7 @@ public class ComponentManager {
 
     String result;
     try {
-      result = storeManager.execute(query, APP_CONSTANT.SPARQL_JSON_RESPONSE_FORMAT);
+      result = storeManager.execute(query, MediaType.SPARQL_JSON_RESPONSE_FORMAT);
     } catch (Exception e) {
       e.printStackTrace();
       throw new SPARQLEndpointException(e.getMessage());
@@ -286,7 +286,7 @@ public class ComponentManager {
 
     String result;
     try {
-      result = storeManager.execute(query, APP_CONSTANT.SPARQL_JSON_RESPONSE_FORMAT);
+      result = storeManager.execute(query, MediaType.SPARQL_JSON_RESPONSE_FORMAT);
     } catch (Exception e) {
       e.printStackTrace();
       throw new SPARQLEndpointException(e.getMessage());
@@ -321,7 +321,7 @@ public class ComponentManager {
 
       log.debug(query);
 
-      String result = storeManager.execute(query, APP_CONSTANT.SPARQL_JSON_RESPONSE_FORMAT);
+      String result = storeManager.execute(query, MediaType.SPARQL_JSON_RESPONSE_FORMAT);
 
       log.debug(result);
       // TODO: validate the result and return the component object if successful
@@ -354,7 +354,7 @@ public class ComponentManager {
 
       log.debug(query);
 
-      String result = storeManager.execute(query, APP_CONSTANT.SPARQL_JSON_RESPONSE_FORMAT);
+      String result = storeManager.execute(query, MediaType.SPARQL_JSON_RESPONSE_FORMAT);
 
       log.debug(result);
     } catch (Exception e) {
@@ -382,7 +382,7 @@ public class ComponentManager {
 
       log.debug(query);
 
-      String result = storeManager.execute(query, APP_CONSTANT.SPARQL_JSON_RESPONSE_FORMAT);
+      String result = storeManager.execute(query, MediaType.SPARQL_JSON_RESPONSE_FORMAT);
 
       log.debug(result);
     } catch (Exception e) {
@@ -459,7 +459,7 @@ public class ComponentManager {
               + "> ?service.  ?service ?sproperty ?sobject " + "} ";
       log.debug(query);
 
-      String result = storeManager.execute(query, APP_CONSTANT.SPARQL_JSON_RESPONSE_FORMAT);
+      String result = storeManager.execute(query, MediaType.SPARQL_JSON_RESPONSE_FORMAT);
 
       ObjectMapper mapper = new ObjectMapper();
       JsonNode rootNode = mapper.readTree(result);
@@ -511,7 +511,7 @@ public class ComponentManager {
               + "> ?sproperty ?sobject " + "} ";
       log.debug(query);
 
-      String result = storeManager.execute(query, APP_CONSTANT.SPARQL_JSON_RESPONSE_FORMAT);
+      String result = storeManager.execute(query, MediaType.SPARQL_JSON_RESPONSE_FORMAT);
 
       ObjectMapper mapper = new ObjectMapper();
       JsonNode rootNode = mapper.readTree(result);
@@ -555,7 +555,7 @@ public class ComponentManager {
               + "} WHERE { <" + pservice.getUri() + ">  ?sproperty ?sobject  }";
       log.debug(query);
 
-      String result = storeManager.execute(query, APP_CONSTANT.SPARQL_JSON_RESPONSE_FORMAT);
+      String result = storeManager.execute(query, MediaType.SPARQL_JSON_RESPONSE_FORMAT);
       log.debug(result);
       // TODO: validate the result and return the component object if successful
 

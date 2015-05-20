@@ -13,7 +13,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hp.hpl.jena.vocabulary.RDFS;
 import com.ontos.ldiw.vocabulary.LDIWO;
 
-import eu.geoknow.generator.common.APP_CONSTANT;
+import eu.geoknow.generator.common.MediaType;
 import eu.geoknow.generator.common.Queries;
 import eu.geoknow.generator.configuration.FrameworkConfiguration;
 import eu.geoknow.generator.exceptions.InformationMissingException;
@@ -59,7 +59,7 @@ public class RoleManager {
 
     try {
 
-      String result = storeManager.execute(query, APP_CONSTANT.SPARQL_JSON_RESPONSE_FORMAT);
+      String result = storeManager.execute(query, MediaType.SPARQL_JSON_RESPONSE_FORMAT);
       ObjectMapper mapper = new ObjectMapper();
       JsonNode rootNode = mapper.readTree(result);
       Iterator<JsonNode> bindingsIter = rootNode.path("results").path("bindings").elements();
@@ -102,7 +102,7 @@ public class RoleManager {
     role.setUri(uri);
     log.debug(query);
     try {
-      String result = storeManager.execute(query, APP_CONSTANT.SPARQL_JSON_RESPONSE_FORMAT);
+      String result = storeManager.execute(query, MediaType.SPARQL_JSON_RESPONSE_FORMAT);
       ObjectMapper mapper = new ObjectMapper();
       JsonNode rootNode = mapper.readTree(result);
       Iterator<JsonNode> bindingsIter = rootNode.path("results").path("bindings").elements();
@@ -139,7 +139,7 @@ public class RoleManager {
             + "} }";
     log.debug(query);
     try {
-      String result = storeManager.execute(query, APP_CONSTANT.SPARQL_JSON_RESPONSE_FORMAT);
+      String result = storeManager.execute(query, MediaType.SPARQL_JSON_RESPONSE_FORMAT);
       log.debug(result);
       // TODO: validate the result and return the component object if successful
 
@@ -170,7 +170,7 @@ public class RoleManager {
             + "> ?p ?o }";
     log.debug(query);
     try {
-      String result = storeManager.execute(query, APP_CONSTANT.SPARQL_JSON_RESPONSE_FORMAT);
+      String result = storeManager.execute(query, MediaType.SPARQL_JSON_RESPONSE_FORMAT);
       log.debug(result);
       // TODO: validate the result and return the component object if successful
 
@@ -194,7 +194,7 @@ public class RoleManager {
             + uri + "> ?p ?o }";
     log.debug(query);
     try {
-      String result = storeManager.execute(query, APP_CONSTANT.SPARQL_JSON_RESPONSE_FORMAT);
+      String result = storeManager.execute(query, MediaType.SPARQL_JSON_RESPONSE_FORMAT);
       log.debug(result);
       // TODO: validate the result and return the component object if successful
 
@@ -260,7 +260,7 @@ public class RoleManager {
     UserRole role = new UserRole();
     log.debug(query);
     try {
-      String result = storeManager.execute(query, APP_CONSTANT.SPARQL_JSON_RESPONSE_FORMAT);
+      String result = storeManager.execute(query, MediaType.SPARQL_JSON_RESPONSE_FORMAT);
       ObjectMapper mapper = new ObjectMapper();
       JsonNode rootNode = mapper.readTree(result);
       Iterator<JsonNode> bindingsIter = rootNode.path("results").path("bindings").elements();
@@ -295,7 +295,7 @@ public class RoleManager {
             + uri + "> <" + type + "> ?o . } ";
     log.debug(query);
     try {
-      String result = storeManager.execute(query, APP_CONSTANT.SPARQL_JSON_RESPONSE_FORMAT);
+      String result = storeManager.execute(query, MediaType.SPARQL_JSON_RESPONSE_FORMAT);
       log.debug(result);
       // TODO: validate the result and return the component object if successful
 
@@ -313,7 +313,7 @@ public class RoleManager {
             + LDIWO.Role.getURI() + "> .  OPTIONAL{ ?role <" + type + "> ?o }. } ";
     log.debug(query);
     try {
-      String result = storeManager.execute(query, APP_CONSTANT.SPARQL_JSON_RESPONSE_FORMAT);
+      String result = storeManager.execute(query, MediaType.SPARQL_JSON_RESPONSE_FORMAT);
       log.debug(result);
       // TODO: validate the result and return the component object if successful
 

@@ -7,9 +7,14 @@ import static org.junit.Assert.assertTrue;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
+import org.apache.log4j.Logger;
 import org.junit.Test;
 
+import com.ontos.ldiw.vocabulary.LDIWO;
+
+import eu.geoknow.generator.component.beans.Service;
 import eu.geoknow.generator.configuration.FrameworkConfiguration;
+import eu.geoknow.generator.configuration.FrameworkManager;
 import eu.geoknow.generator.exceptions.UnknownException;
 import eu.geoknow.generator.workflow.beans.JobExecutionWrapper;
 import eu.geoknow.generator.workflow.beans.JobsRegistered;
@@ -24,11 +29,23 @@ import eu.geoknow.generator.workflow.beans.Registration;
  */
 public class BatchAdminClientIT {
 
+  private static final Logger log = Logger.getLogger(BatchAdminClientIT.class);
+
   String springBatchServiceUri;
-  private static String sbaDir = "/var/ldiw/jobs";
+  String sbaDir;
 
   public BatchAdminClientIT() throws Exception {
-    springBatchServiceUri = FrameworkConfiguration.getInstance().getSpringBatchUri();
+
+    FrameworkConfiguration config = FrameworkConfiguration.getInstance();
+    FrameworkManager manager = new FrameworkManager();
+    Service sba = manager.getFrameworkService(config.getResourceNamespace() + "SpringBatchService");
+
+    springBatchServiceUri = sba.getServiceUrl();
+    sbaDir = sba.getProperties().get(LDIWO.springBatchAdminJobsDir.getURI());
+
+    log.info("springBatchServiceUri : " + springBatchServiceUri);
+    log.info("sbaDir : " + sbaDir);
+
     // remove last slash if existing
     if (springBatchServiceUri.endsWith("/")) {
       springBatchServiceUri =

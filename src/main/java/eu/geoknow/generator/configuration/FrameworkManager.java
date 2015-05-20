@@ -12,7 +12,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ontos.ldiw.vocabulary.LDIS;
 
-import eu.geoknow.generator.common.APP_CONSTANT;
+import eu.geoknow.generator.common.MediaType;
 import eu.geoknow.generator.component.ComponentManager;
 import eu.geoknow.generator.component.beans.Service;
 import eu.geoknow.generator.exceptions.InformationMissingException;
@@ -49,7 +49,7 @@ public class FrameworkManager {
     String query =
         "SELECT ?service ?property ?object WHERE { <" + config.getFrameworkUri() + "> <"
             + LDIS.providesService + ">  ?service . ?service ?property ?object . }";
-    String result = storeManager.execute(query, APP_CONSTANT.SPARQL_JSON_RESPONSE_FORMAT);
+    String result = storeManager.execute(query, MediaType.SPARQL_JSON_RESPONSE_FORMAT);
 
     ObjectMapper mapper = new ObjectMapper();
     JsonNode rootNode = mapper.readTree(result);
@@ -79,7 +79,7 @@ public class FrameworkManager {
     service.setUri(uri);
 
     String query = "SELECT ?service ?property ?object WHERE { <" + uri + "> ?property ?object . }";
-    String result = storeManager.execute(query, APP_CONSTANT.SPARQL_JSON_RESPONSE_FORMAT);
+    String result = storeManager.execute(query, MediaType.SPARQL_JSON_RESPONSE_FORMAT);
 
     ObjectMapper mapper = new ObjectMapper();
     JsonNode rootNode = mapper.readTree(result);

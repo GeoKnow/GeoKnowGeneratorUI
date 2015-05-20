@@ -1,5 +1,6 @@
 package eu.geoknow.generator.rest;
 
+import java.io.IOException;
 import java.util.Collection;
 
 import javax.servlet.ServletContext;
@@ -26,6 +27,7 @@ import eu.geoknow.generator.component.beans.Service;
 import eu.geoknow.generator.configuration.FrameworkConfiguration;
 import eu.geoknow.generator.configuration.FrameworkManager;
 import eu.geoknow.generator.configuration.FrameworkSetup;
+import eu.geoknow.generator.exceptions.InformationMissingException;
 import eu.geoknow.generator.exceptions.ResourceNotFoundException;
 import eu.geoknow.generator.users.FrameworkUserManager;
 import eu.geoknow.generator.users.UserProfile;
@@ -53,26 +55,27 @@ public class Configuration {
 
     FrameworkConfiguration frameworkConf;
     JsonObject config = null;
+
     try {
       frameworkConf = FrameworkConfiguration.getInstance();
-      config = new JsonObject();
-      config.addProperty("frameworkUri", frameworkConf.getFrameworkUri());
-      config.addProperty("ns", frameworkConf.getResourceNamespace());
-      config.addProperty("frameworkOntologyNs", LDIWO.NS);
-      config.addProperty("defaultSettingsGraphUri", frameworkConf.getSettingsGraph());
-      config.addProperty("groupsGraphUri", frameworkConf.getGroupsGraph());
-      config.addProperty("accountsGraph", frameworkConf.getAccountsGraph());
-      config.addProperty("sparqlEndpoint", frameworkConf.getPublicSparqlEndpoint());
-      config.addProperty("authSparqlEndpoint", frameworkConf.getAuthSparqlEndpoint());
-      config.addProperty("homepage", frameworkConf.getHomepage());
-      config.addProperty("flagPath", frameworkConf.getFrameworkDataDir());
-
-
-    } catch (Exception e) {
+    } catch (IOException | InformationMissingException e) {
       log.error(e);
       e.printStackTrace();
-      return Response.status(Response.Status.EXPECTATION_FAILED).entity(e.getMessage()).build();
+      return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
     }
+    config = new JsonObject();
+    config.addProperty("frameworkUri", frameworkConf.getFrameworkUri());
+    config.addProperty("ns", frameworkConf.getResourceNamespace());
+    config.addProperty("frameworkOntologyNs", LDIWO.NS);
+    config.addProperty("defaultSettingsGraphUri", frameworkConf.getSettingsGraph());
+    config.addProperty("groupsGraphUri", frameworkConf.getGroupsGraph());
+    config.addProperty("accountsGraph", frameworkConf.getAccountsGraph());
+    config.addProperty("sparqlEndpoint", frameworkConf.getPublicSparqlEndpoint());
+    config.addProperty("authSparqlEndpoint", frameworkConf.getAuthSparqlEndpoint());
+    config.addProperty("homepage", frameworkConf.getHomepage());
+    config.addProperty("flagPath", frameworkConf.getFrameworkDataDir());
+
+
     return Response.ok(config.toString(), MediaType.APPLICATION_JSON).build();
   }
 

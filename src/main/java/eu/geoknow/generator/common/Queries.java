@@ -32,7 +32,7 @@ public class Queries {
 
     log.debug(query);
     try {
-      String result = storeManager.execute(query, APP_CONSTANT.SPARQL_JSON_RESPONSE_FORMAT);
+      String result = storeManager.execute(query, MediaType.SPARQL_JSON_RESPONSE_FORMAT);
       log.debug(result);
       ObjectMapper mapper = new ObjectMapper();
       JsonNode rootNode = mapper.readTree(result);
@@ -51,7 +51,7 @@ public class Queries {
 
     String query = "SELECT (COUNT(*) AS ?triples) FROM <" + graph + "> {?s ?p ?o}";
     try {
-      String result = storeManager.execute(query, APP_CONSTANT.SPARQL_JSON_RESPONSE_FORMAT);
+      String result = storeManager.execute(query, MediaType.SPARQL_JSON_RESPONSE_FORMAT);
       log.debug(result);
       ObjectMapper mapper = new ObjectMapper();
       JsonNode rootNode = mapper.readTree(result);
@@ -80,7 +80,7 @@ public class Queries {
     String query = "ASK { GRAPH <" + graphUri + "> { ?s ?p ?o . } }";
     String response = "false";
     try {
-      response = storeManager.execute(query, APP_CONSTANT.SPARQL_JSON_RESPONSE_FORMAT);
+      response = storeManager.execute(query, MediaType.SPARQL_JSON_RESPONSE_FORMAT);
     } catch (Exception e) {
       // TODO Auto-generated catch block
       e.printStackTrace();

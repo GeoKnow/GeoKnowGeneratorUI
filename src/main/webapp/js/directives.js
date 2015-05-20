@@ -247,13 +247,31 @@ app.directive('uniqueIdentifier', ['$compile', 'ConfigurationService', function(
     return {
         restrict: 'A',
         require: 'ngModel',
-        link: function(scope, elem, attr, ngModel) {
-          var list = ConfigurationService.getIdentifiers();
-          ngModel.$parsers.unshift(function (value) {
-            ngModel.$setValidity('uniqueIdentifier', list.indexOf(':'+value) === -1);
-            return value;
+        link: function(scope, elm, attr, ctrl) {
+          // get the uriBase to be used with the value
+          var uriBase= (scope.uriBase==undefined? (scope.$parent.uriBase==undefined? ConfigurationService.getUriBase() : scope.$parent.uriBase) : scope.uriBase);
+          // executes only when 
+          elm.unbind('input').unbind('keydown').unbind('change');
+          elm.bind('blur', function () {
+            scope.$apply(dovalidation);
           });
-        }
+
+          // this was a test to execute the validation using $scope.$broadcast('validateUnique')
+          //scope.$on('validateUnique', dovalidation)
+          
+          function dovalidation() {
+            var uri= uriBase + elm.val();
+            console.log("validateUnique :" + uri);
+            ConfigurationService.resourceExists(uri).then(
+              //success
+              function(response){
+                ctrl.$setValidity('uniqueIdentifier', !response);
+              },
+              //fail
+              function(response){
+                ctrl.$setValidity('uniqueIdentifier', false);
+              });
+          }
     };
  }]);
 
