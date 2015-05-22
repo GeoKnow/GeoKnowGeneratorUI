@@ -42,7 +42,7 @@ module.factory('ComponentsService', function ($http, $q) {
 			return $http.get("rest/services/"+uri).then( 
 				// success
 				function (response){
-					return response.data.services;
+					return response.data.service;
 	    });
 		},
 /*

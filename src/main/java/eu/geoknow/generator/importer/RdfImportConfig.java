@@ -1,15 +1,21 @@
 package eu.geoknow.generator.importer;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+
 import org.hibernate.validator.constraints.NotEmpty;
 
 public class RdfImportConfig {
 
   @NotEmpty
+  @NotNull
+  @Valid
   private String targetGraph;
   private String sourceGraph;
   private String sourceEndpoint;
   private String sourceUrl;
   private String fileName;
+  private int triples;
 
   public String getTargetGraph() {
     return targetGraph;
@@ -59,6 +65,14 @@ public class RdfImportConfig {
 
   public void setFileName(String fileName) {
     this.fileName = fileName;
+  }
+
+  public int getTriples() {
+    return triples;
+  }
+
+  public void setTriples(int triples) {
+    this.triples = triples;
   }
 
 

@@ -1,6 +1,7 @@
 'use strict';
 
-function GraphCtrl($scope, $http, $modal, flash, Config, ConfigurationService, CoevolutionService, Helpers, AccountService, GraphService, GraphGroupService, ServerErrorResponse) {
+function GraphCtrl($scope, $http, $modal, flash, Config, Ns, ConfigurationService, CoevolutionService, Helpers, AccountService, GraphService, GraphGroupService, ServerErrorResponse) {
+
 
   $scope.accessModes = GraphService.getAccessModes();
   $scope.uriBase = ConfigurationService.getUriBase();
@@ -81,6 +82,7 @@ function GraphCtrl($scope, $http, $modal, flash, Config, ConfigurationService, C
   };
 
   $scope.new = function(group) {
+    console.log(group);
     var modalInstance = $modal.open({
       templateUrl: 'modal-forms/settings/named-graphs/modal-graph.html',
       controller: 'ModalGraphCtrl',
@@ -285,11 +287,22 @@ function GraphCtrl($scope, $http, $modal, flash, Config, ConfigurationService, C
   *
   **/
   $scope.refreshVersionGroups = function(){
-    CoevolutionService.getGroups().then(
+    return CoevolutionService.getGroups().then(
     //success
-    function(response){
-      console.log(response);
-      $scope.versionGroups = response;   
+    function(identifiers){
+      var vgroups=[];
+      for(var i in identifiers){
+        var namespace = identifiers[i] + "/";
+        var id = identifiers[i].replace(Ns.getNamespace("gvg"),"");
+        Ns.add(id, namespace);
+        CoevolutionService.getGroup(id).then(
+          function(vgroup){
+            vgroup["uri"] = Ns.getNamespace(vgroup.identifier);
+            vgroups.push(vgroup);
+          });
+      }
+      $scope.versionGroups = vgroups;  
+      return Config.read(); 
     },
     //fail
     function (response){
@@ -335,24 +348,44 @@ function GraphCtrl($scope, $http, $modal, flash, Config, ConfigurationService, C
     });
   };
 
+  $scope.deleteVersionGroup = function(vgroup){
+    console.log(vgroup);
+    CoevolutionService.deleteGroup(vgroup.identifier).then(
+      function(response){
+        $scope.refreshVersionGroups();
+      },
+      function(response){
+          flash.error = ServerErrorResponse.getMessage(response);
+      });
+  };  
+  
+
   $scope.saveVersionedGraph = function(graphName, group){
     
-    CoevolutionService.addVersion(group.identifier, graphName).then(
-        function(response){
-          $scope.refreshVersionGroups();
-        },
-        function(response){
-            flash.error = ServerErrorResponse.getMessage(response);
-        });
+    // THis is not going to be done, because is already in the generator graph management
+    // CoevolutionService.addVersion(group.identifier, graphName).then(
+    //     function(response){
+    //       $scope.refreshVersionGroups();
+    //     },
+    //     function(response){
+    //         flash.error = ServerErrorResponse.getMessage(response);
+    //     });
   };
 
   // Initialize all tables
-  $scope.refreshVersionGroups();
+  // need to refresh version groups before to have namespaces registered
+  $scope.refreshVersionGroups().then(
+
+    function(response){
+      refreshAllGraphs();
+      refreshUserGraphs();
+      refreshGraphGroups();
+      refreshAccessibleGraphs();  
+    },
+    function(response){
+          flash.error = ServerErrorResponse.getMessage(response);
+    });
   
-  refreshAllGraphs();
-  refreshUserGraphs();
-  refreshGraphGroups();
-  refreshAccessibleGraphs();
 
 
 }

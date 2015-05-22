@@ -29,7 +29,7 @@
 						<i class="glyphicon glyphicon-refresh" aria-hidden="false"></i>
 					</button>
 				</div>
-				<select id="targetGraph" class="form-control" ng-model="importFile.targetGraph" ng-options="namedgraph.name as graphLabel(namedgraph.name,namedgraph.graph.label) for namedgraph in namedGraphs" required></select>
+				<select id="targetGraph" class="form-control" ng-model="importRdf.targetGraph" ng-options="namedgraph.name as graphLabel(namedgraph.name,namedgraph.graph.label) for namedgraph in namedGraphs" required></select>
 			</div>
     </div>
 	  <div class="form-group">
@@ -47,7 +47,7 @@
 		<div class="form-group">
 	    <label for="inputUrl" class="col-sm-2 control-label">Url input</label>
 	    <div class="input-group col-sm-8">
-		  	<input type="text" id="inputUrl" name="inputUrl" class="form-control" ng-model="importUrl.inputUrl" regex-validate="url" required>
+		  	<input type="text" id="inputUrl" name="inputUrl" class="form-control" ng-model="importRdf.source" regex-validate="url" required>
 				<div class="error" ng-show="urlForm.inputUrl.$dirty && urlForm.inputUrl.$invalid">Invalid:
           	<span ng-show="urlForm.inputUrl.$error.required">Specify a valid URL</span>
           	<span ng-show="urlForm.inputUrl.$error.regexValidate">This is not a valid URL.</span>
@@ -62,7 +62,7 @@
 						<i class="glyphicon glyphicon-refresh" aria-hidden="false"></i>
 					</button>
 				</div>
-				<select id="targetGraph" class="form-control" ng-model="importUrl.targetGraph" ng-options="namedgraph.name as graphLabel(namedgraph.name,namedgraph.graph.label) for namedgraph in namedGraphs" required></select>
+				<select id="targetGraph" class="form-control" ng-model="importRdf.targetGraph" ng-options="namedgraph.name as graphLabel(namedgraph.name,namedgraph.graph.label) for namedgraph in namedGraphs" required></select>
 			</div>
 		</div>
 	  <div class="form-group">
@@ -81,13 +81,13 @@
 		<div class="form-group">
 	   	<label for="endPoint" class="col-xs-2 control-label">SPARQL EndPoint</label>
 	   	<div class="input-group col-sm-8">
-		 		<select id="endPoint" class="form-control" ng-model="importEndpoint.endPoint" ng-options="c.endpoint as c.label for c in endpoints" required></select>
+		 		<select id="endPoint" class="form-control" ng-model="importRdf.source" ng-options="c.endpoint as c.label for c in endpoints" required></select>
      	</div>
 	  </div>
 		<div class="form-group">
 	    <label for="sparqlQuery" class="col-xs-2 control-label">Query</label>
 	    <div class="input-group col-sm-8">
-		  	<textarea class="form-control" rows="3" id="sparqlQuery" name="sparqlQuery" ng-model="importEndpoint.sparqlQuery" required>{{scope.importEndpoint.sparqlQuery}}</textarea>
+		  	<textarea class="form-control" rows="3" id="sparqlQuery" name="sparqlQuery" ng-model="importEndpoint.sparqlQuery" required></textarea>
 		  	<div class="error" ng-show="endpointForm.sparqlQuery.$dirty && endpointForm.sparqlQuery.$invalid">Invalid:
        		<span ng-show="endpointForm.sparqlQuery.$error.required">Specify the EndPoint</span>
       	</div>
@@ -101,13 +101,13 @@
 						<i class="glyphicon glyphicon-refresh" aria-hidden="false"></i>
 					</button>
 				</div>
-				<select id="targetGraph" class="form-control" ng-model="importEndpoint.targetGraph" ng-options="namedgraph.name as graphLabel(namedgraph.name,namedgraph.graph.label) for namedgraph in namedGraphs" required></select>
+				<select id="targetGraph" class="form-control" ng-model="importRdf.targetGraph" ng-options="namedgraph.name as graphLabel(namedgraph.name,namedgraph.graph.label) for namedgraph in namedGraphs" required></select>
 			</div>
 		</div>
 	  <div class="form-group">
 			<div class="col-sm-2"></div>
 	  	<div class="input-group col-sm-8">
-      	<button class="btn btn-success" ng-click="import()" ng-disabled="importEndpoint.$invalid || isImporting()">Import</button>
+      	<button class="btn btn-success" ng-click="import()" ng-disabled="endpointForm.$invalid || isImporting()">Import</button>
       	<span ng-show="isImporting()"> Importing ...</span>
      	</div>
     </div>
@@ -125,7 +125,7 @@
 						<i class="glyphicon glyphicon-refresh" aria-hidden="false"></i>
 					</button>
 				</div>
-				<select id="targetGraph" class="form-control" ng-model="importLocal.sourceGraph" ng-options="namedgraph.name as graphLabel(namedgraph.name,namedgraph.graph.label) for namedgraph in namedGraphs" required></select>
+				<select id="sourceGraph" class="form-control" ng-model="importRdf.source" ng-options="namedgraph.name as graphLabel(namedgraph.name,namedgraph.graph.label) for namedgraph in namedGraphs" required></select>
 			</div>
 		</div>
 		<div class="form-group">
@@ -136,22 +136,40 @@
 						<i class="glyphicon glyphicon-refresh" aria-hidden="false"></i>
 					</button>
 				</div>
-				<select id="targetGraph" class="form-control" ng-model="importLocal.targetGraph" ng-options="namedgraph.name as graphLabel(namedgraph.name,namedgraph.graph.label) for namedgraph in namedGraphs" required></select>
+				<select id="targetGraph" class="form-control" ng-model="importRdf.targetGraph" ng-options="namedgraph.name as graphLabel(namedgraph.name,namedgraph.graph.label) for namedgraph in namedGraphs" required></select>
 			</div>
 		</div>
+
 		<div class="form-group">
-	    <label for="sparqlQuery" class="col-xs-2 control-label">Query</label>
+			<div class="col-sm-2"></div>
+			<div class="input-group col-sm-8">
+				<label>
+			    <input type="radio" ng-model="importLocal.action" value="ADD">
+			    Add All Triples 
+			  </label><br/>
+			  <label>
+			    <input type="radio" ng-model="importLocal.action" value="COPY">
+			    Clone All Graph (will delete content in target graph)
+			  </label><br/>
+			  <label>
+			    <input type="radio" ng-model="importLocal.action" value="QUERY">
+			    Add Triples using a query 
+			  </label>
+			</div>
+		</div>
+		<div class="form-group" ng-show="updateSparqlCopyQuery()" >
+		  <label for="sparqlQuery" class="col-xs-2 control-label">Query</label>
 	    <div class="input-group col-sm-8">
-		  	<textarea class="form-control" rows="3" id="sparqlQuery" name="sparqlQuery" ng-model="importLocal.sparqlQuery" required>{{scope.importSparql.sparqlQuery}}</textarea>
+		  	<textarea class="form-control" rows="3" ng-model="importLocal.sparqlQuery" id="sparqlQuery" name="sparqlQuery" required ></textarea>
 		  	<div class="error" ng-show="localForm.sparqlQuery.$dirty && localForm.sparqlQuery.$invalid">Invalid:
        		<span ng-show="localForm.sparqlQuery.$error.required">Specify the Query</span>
       	</div>
-      </div>
+      </div> 
 	  </div>
 	  <div class="form-group">
 			<div class="col-sm-2"></div>
 	  	<div class="input-group col-sm-8">
-      	<button class="btn btn-success" ng-click="import()" ng-disabled="importLocal.$invalid || isImporting()">Import</button>
+      	<button class="btn btn-success" ng-click="import()" ng-disabled="localForm.$invalid || isImporting()">Import</button>
       	<span ng-show="isImporting()"> Importing ...</span>
      	</div>
     </div>

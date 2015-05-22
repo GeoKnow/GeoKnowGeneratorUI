@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.UUID;
 
+import org.apache.log4j.Logger;
+
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.RDFNode;
@@ -20,16 +22,19 @@ public class HttpRdfInsert {
 
   private RdfStoreManager rdfStoreManager;
 
+  private static final Logger log = Logger.getLogger(HttpRdfInsert.class);
+
   public HttpRdfInsert(RdfStoreManager rdfStoreManager) {
     this.rdfStoreManager = rdfStoreManager;
   }
 
   public int localCopy(String sourceGraph, String targetGraph) throws IOException, Exception {
 
-    int initialTriples = Queries.countGraphTriples(targetGraph, rdfStoreManager);
     String query = "COPY <" + sourceGraph + "> TO <" + targetGraph + ">";
+    log.debug(query);
     String res = rdfStoreManager.execute(query, APP_CONSTANT.SPARQL_JSON_RESPONSE_FORMAT);
-    return Queries.countGraphTriples(targetGraph, rdfStoreManager) - initialTriples;
+    log.debug(res);
+    return Queries.countGraphTriples(targetGraph, rdfStoreManager);
 
   }
 
@@ -37,7 +42,9 @@ public class HttpRdfInsert {
 
     int initialTriples = Queries.countGraphTriples(targetGraph, rdfStoreManager);
     String query = "ADD <" + sourceGraph + "> TO <" + targetGraph + ">";
+    log.debug(query);
     String res = rdfStoreManager.execute(query, APP_CONSTANT.SPARQL_JSON_RESPONSE_FORMAT);
+    log.debug(res);
     return Queries.countGraphTriples(targetGraph, rdfStoreManager) - initialTriples;
 
   }
@@ -91,9 +98,10 @@ public class HttpRdfInsert {
         tmpModel.write(os, "N-TRIPLES");
 
         String queryString = "INSERT DATA { GRAPH <" + graph + "> { " + os.toString() + " } }";
+        log.debug(queryString);
         os.close();
-        rdfStoreManager.execute(queryString, APP_CONSTANT.SPARQL_JSON_RESPONSE_FORMAT);
-
+        String res = rdfStoreManager.execute(queryString, APP_CONSTANT.SPARQL_JSON_RESPONSE_FORMAT);
+        log.debug(res);
         total += linesCount;
         linesCount = 0;
         tmpModel.removeAll();
@@ -108,8 +116,8 @@ public class HttpRdfInsert {
 
       String queryString = "INSERT DATA { GRAPH <" + graph + "> { " + os.toString() + "} }";
       os.close();
-      rdfStoreManager.execute(queryString, null);
-
+      String res = rdfStoreManager.execute(queryString, null);
+      log.debug(res);
       total += linesCount;
 
     }

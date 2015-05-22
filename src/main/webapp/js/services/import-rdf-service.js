@@ -8,6 +8,8 @@ module.factory('ImportRdfService', function ($http, Ns) {
 	var service = {
 
 		importFromFile : function(file, targetGraph){
+      console.log(targetGraph);
+      console.log(Ns.lengthen(targetGraph));
 			var config ={
         fileName: file, 
         targetGraph: Ns.lengthen(targetGraph)
@@ -46,7 +48,7 @@ module.factory('ImportRdfService', function ($http, Ns) {
       };
       console.log(config);
 
-      response = $http({
+      return $http({
         url: 'rest/import-rdf/endpoint-query', 
         method: "POST",
         data: config,
@@ -55,7 +57,7 @@ module.factory('ImportRdfService', function ($http, Ns) {
       });
 		}, 
 
-		importFromLocalEndpoint : function(sourceGraph, targetGraph, sparqlQuery){
+		importFromLocal : function(sourceGraph, targetGraph, sparqlQuery){
 			var config ={
         sparqlQuery: sparqlQuery,
         targetGraph: Ns.lengthen(targetGraph), 
@@ -63,7 +65,7 @@ module.factory('ImportRdfService', function ($http, Ns) {
       };
       console.log(config);
 
-      response = $http({
+      return $http({
         url: 'rest/import-rdf/local-query', 
         method: "POST",
         data: config,

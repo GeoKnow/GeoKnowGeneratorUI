@@ -4,50 +4,68 @@ var module = angular.module('app.co-evolution-service', []);
 
 module.factory("CoevolutionService", function ($http, ComponentsService) {
 
-  var componentUri ="http://generator.geoknow.eu/resource/Coevolution";
+  var componentUri = "http://generator.geoknow.eu/resource/Coevolution";
   var serviceUri = "http://generator.geoknow.eu/resource/CoevolutionService";
   var serviceUrl = "";
 
-  ComponentsService.getComponent(componentUri).then(
+  var promise = ComponentsService.getService(serviceUri).then(
     //success
-    function(response){
-      serviceUrl = ComponentsService.getComponentService(serviceUri, $scope.component);
-      if($scope.sevice== null)
-        flash.error="Service not configured: " +serviceUri; 
-    }, 
-    function(response){
-      flash.error="Component not configured: " +ServerErrorResponse.getMessage(response);
+    function(service){
+      serviceUrl = service.serviceUrl;
+      console.log(serviceUrl);
+      return serviceUrl;
     });
-  
 
 	var service = {
 
+    promise: promise,
+
+    getComponent : function(){
+      return ComponentsService.getComponent(componentUri).then(
+        function(response){
+          return response;
+        });
+    },
+
+    serviceUrl : function(){
+      return serviceUrl;
+    },
+    //returns a list of identifiers 
     getGroups : function() {
       return $http({
-        url: "graphs/group/",
+        url: serviceUrl+"rest/api/graphs/graphset",
         method: "GET"
-      });
+      }).then(
+        function(response){
+          return response.data;
+        }
+      );
     },
 
     getGroup : function(id) {
       return $http({
-        url: "graphs/group/"+id,
-        method: "GET"
-      });
+        url: serviceUrl+"rest/api/graphs/graphset/"+id,
+        method: "GET",
+        }).then( 
+          function(response){
+            return response.data;
+          });
     },
 
     createGroup : function(group) {
-      console.log(group);
       return $http({
-        url: "graphs/graphset",
+        url: serviceUrl+"rest/api/graphs/graphset",
         method: "POST",
+        headers: {
+          'Content-Type': 'application/json'
+        },
         data : group
       });
 		},
 
 		getGroupVersions : function(id){
       return $http({
-        url: "graphs/group/" + id + "/versions",
+        url: serviceUrl+"rest/api/graphs/graphset/" + id + "/versions",
         method: "GET"
       });
     }

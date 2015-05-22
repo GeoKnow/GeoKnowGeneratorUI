@@ -58,6 +58,8 @@ app.config(function($routeSegmentProvider, $routeProvider)
         .when('/workbench/linking-and-fusing/limes', 'workbench.limes')
         .when('/workbench/linking-and-fusing/fagi-gis', 'workbench.fagi-gis')
         .when('/workbench/classification-and-enrichment/deer', 'workbench.deer')
+        .when('/workbench/evolution-and-repair/coevolution-create', 'workbench.coevolution-create')
+        .when('/workbench/evolution-and-repair/coevolution-apply', 'workbench.coevolution-apply')
 
         .segment('default', {
             templateUrl: 'default.html',
@@ -108,13 +110,23 @@ app.config(function($routeSegmentProvider, $routeProvider)
                     templateUrl: 'js/workbench/linking-and-fusing/limes.html' })
                 .segment('fagi-gis', {
                     templateUrl: 'js/workbench/linking-and-fusing/fagi-gis.html' })
+                .segment('coevolution-create', {
+                    templateUrl: 'js/workbench/evolution-and-repair/coevolution-create.html' })
+                .segment('coevolution-apply', {
+                    templateUrl: 'js/workbench/evolution-and-repair/coevolution-apply.html' })
             .up()
 
         .segment('settings',{
             templateUrl: 'js/settings/settings.html'})
             .within()
                 .segment('named-graphs', {
-                    templateUrl: 'js/settings/named-graphs/graphs.html'})
+                    templateUrl: 'js/settings/named-graphs/graphs.html', 
+                    resolve: {
+                        CoevolutionServiceInit : function(CoevolutionService){
+                            return CoevolutionService.promise;
+                        }
+                    }
+                })
                 .segment('data-sources', {
                     templateUrl: 'js/settings/data-sources/data-sources.html'})
                 .segment('namespaces', {

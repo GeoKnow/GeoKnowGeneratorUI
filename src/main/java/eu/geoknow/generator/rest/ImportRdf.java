@@ -15,6 +15,7 @@ import javax.ws.rs.core.Response;
 
 import org.apache.log4j.Logger;
 
+import com.google.gson.Gson;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.QueryExecutionFactory;
@@ -72,6 +73,7 @@ public class ImportRdf {
       return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
     }
 
+    log.debug(importConfig.getTargetGraph());
     // validate required values
     if (importConfig.getFileName().equals(""))
       return Response.status(Response.Status.BAD_REQUEST)
@@ -84,15 +86,16 @@ public class ImportRdf {
       Model model = ModelFactory.createDefaultModel();
       model.read(filePath + importConfig.getFileName());
       triples +=
-          insert.httpInsert(importConfig.getSourceGraph(), model, config.getResourceNamespace());
+          insert.httpInsert(importConfig.getTargetGraph(), model, config.getResourceNamespace());
     } catch (Exception e) {
       log.error(e);
       e.printStackTrace();
       return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
     }
 
-
-    String json = "{ \"triples\" : " + triples + "}";
+    importConfig.setTriples(triples);
+    Gson gson = new Gson();
+    String json = "{ \"import\" : " + gson.toJson(importConfig) + "}";
     return Response.status(Response.Status.OK).type(MediaType.APPLICATION_JSON).entity(json)
         .build();
   }
@@ -131,14 +134,17 @@ public class ImportRdf {
     HttpRdfInsert insert = new HttpRdfInsert(rdfStoreManager);
     try {
       triples +=
-          insert.httpInsert(importConfig.getSourceGraph(), model, config.getResourceNamespace());
+          insert.httpInsert(importConfig.getTargetGraph(), model, config.getResourceNamespace());
     } catch (Exception e) {
       log.error(e);
       e.printStackTrace();
       return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
     }
 
-    String json = "{ \"triples\" : " + triples + "}";
+    importConfig.setTriples(triples);
+    Gson gson = new Gson();
+    String json = "{ \"import\" : " + gson.toJson(importConfig) + "}";
+
     return Response.status(Response.Status.OK).type(MediaType.APPLICATION_JSON).entity(json)
         .build();
   }
@@ -191,7 +197,10 @@ public class ImportRdf {
       return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
     }
 
-    String json = "{ \"triples\" : " + triples + "}";
+    importConfig.setTriples(triples);
+    Gson gson = new Gson();
+    String json = "{ \"import\" : " + gson.toJson(importConfig) + "}";
+
     return Response.status(Response.Status.OK).type(MediaType.APPLICATION_JSON).entity(json)
         .build();
 
@@ -228,18 +237,15 @@ public class ImportRdf {
       return Response.status(Response.Status.BAD_REQUEST).entity("Sparql query is not provided")
           .build();
 
-
-
     int triples = 0;
     HttpRdfInsert insert = new HttpRdfInsert(rdfStoreManager);
     try {
-      if (importConfig.getSparqlQuery().startsWith("ADD"))
+      log.debug(importConfig.getSparqlQuery());
+      if (importConfig.getSparqlQuery().equals("ADD"))
         triples = insert.localAdd(importConfig.getSourceGraph(), importConfig.getTargetGraph());
-      if (importConfig.getSparqlQuery().startsWith("COPY"))
+      else if (importConfig.getSparqlQuery().equals("COPY"))
         triples = insert.localCopy(importConfig.getSourceGraph(), importConfig.getTargetGraph());
-      else { // CONSTRUCT
-        // CONSTRUCT { ?s ?p ?o } WHERE {GRAPH <http://generator.geoknow.eu/resource/accountsGraph>
-        // {?s ?p ?o} }
+      else {
         String res =
             rdfStoreManager.execute(importConfig.getSparqlQuery(),
                 APP_CONSTANT.SPARQL_TURTLE_RESPONSE_FORMAT);
@@ -254,8 +260,10 @@ public class ImportRdf {
       return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
     }
 
+    importConfig.setTriples(triples);
+    Gson gson = new Gson();
+    String json = "{ \"import\" : " + gson.toJson(importConfig) + "}";
 
-    String json = "{ \"triples\" : " + triples + "}";
     return Response.status(Response.Status.OK).type(MediaType.APPLICATION_JSON).entity(json)
         .build();
 

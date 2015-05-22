@@ -50,6 +50,7 @@ public class Queries {
       throws SPARQLEndpointException {
 
     String query = "SELECT (COUNT(*) AS ?triples) FROM <" + graph + "> {?s ?p ?o}";
+    log.debug(query);
     try {
       String result = storeManager.execute(query, MediaType.SPARQL_JSON_RESPONSE_FORMAT);
       log.debug(result);

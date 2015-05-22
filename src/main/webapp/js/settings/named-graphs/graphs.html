@@ -17,20 +17,20 @@
     </tr>
   </thead>
   <tbody>
-     <tr ng-repeat="vgroup in versionGroups" ng-controller="VersionGGCtrl">
+     <tr ng-repeat="vg in versionGroups">
       <td>
-        <button type="button" class="btn btn-default btn-xs" ng-click="deleteVersionGroup()"><span class="glyphicon glyphicon-trash"></span></button>
-        <button type="button" class="btn btn-default btn-xs" ng-click="addVersionedGraph()" data-toggle="tooltip" data-placement="top" title="Add graph">
+        <button type="button" class="btn btn-default btn-xs" ng-click="deleteVersionGroup(vg)"><span class="glyphicon glyphicon-trash"></span></button>
+        <button type="button" class="btn btn-default btn-xs" ng-click="new(vg)" data-toggle="tooltip" data-placement="top" title="Add graph">
             <span class="glyphicon glyphicon-plus"></span></button>   
       </td>
-      <td>{{vgroup.identifier}}</td>
-      <td>{{vgroup.label}}</td>
-      <td>{{vgroup.description}}</td>
-      <td>{{uriBase + vgroup.identifier +"/"}}</td>
-      <td>{{vgroup.created}}</td>
+      <td>{{vg.identifier}}</td>
+      <td>{{vg.label}}</td>
+      <td>{{vg.description}}</td>
+      <td>{{vg.uri}}</td>
+      <td>{{vg.created}}</td>
       <td>
           <ul class="list-unstyled">
-            <li ng-repeat="vgg in vgroup.graphs">{{vgg}}</li>
+            <li ng-repeat="vgg in vg.graphs">{{vgg}}</li>
           </ul>
           <!-- <select ng-model="vgraphSelected" ng-options="namedgraph.name as namedgraph.name for namedgraph in allgraphs | filter:graphInGroup() " value="">
             <option value="">-- leave empty to create new --</option></select> -->
@@ -149,8 +149,8 @@
         <!-- <tr ng-repeat="namedgraph in allgraphs | filter:graphFilter"> -->
         <tr ng-repeat="namedgraph in allgraphs">
             <td>
-                <button type="button" class="btn btn-default btn-xs" ng-click="deleteForeign('namedgraph.name')"><span class="glyphicon glyphicon-trash"></span></button>
-                <button type="button" class="btn btn-default btn-xs" data-toggle="modal" data-target="#modalGraph" ng-click="editAdmin('namedgraph.name');"><span class="glyphicon glyphicon-edit"></span></button>
+                <button type="button" class="btn btn-default btn-xs" ng-click="deleteForeign(namedgraph.name)"><span class="glyphicon glyphicon-trash"></span></button>
+                <button type="button" class="btn btn-default btn-xs" data-toggle="modal" data-target="#modalGraph" ng-click="editAdmin(namedgraph.name);"><span class="glyphicon glyphicon-edit"></span></button>
             </td>
             <td>{{namedgraph.name}}</td>
             <td>{{namedgraph.graph.label}}</td>

@@ -22,6 +22,25 @@ module.factory("GraphService", function ($http, $q, Config, ConfigurationService
     var namedGraphs = {};
     var namedGraphsLoaded = false;
 
+    var getGraphJson = function(uri, source){
+        
+        var namedGraph  =  source[uri];
+        var res = {
+            name  : namedGraph["sd:name"][0]
+            , graph : {
+                label : source[namedGraph["sd:graph"]]["rdfs:label"][0]
+                , description : source[namedGraph["sd:graph"]]["dcterms:description"][0]
+                , created : source[namedGraph["sd:graph"]]["dcterms:created"][0]
+                , modified : source[namedGraph["sd:graph"]]["dcterms:modified"][0]
+                , graphset : (source[namedGraph["sd:graph"]]["gv:hasGraphSet"]  == undefined)? '' : source[namedGraph["sd:graph"]]["gv:hasGraphSet"][0]
+                , author : (source[namedGraph["sd:graph"]]["dcterms:author"]  == undefined)? '' : source[namedGraph["sd:graph"]]["dcterms:author"]
+                , source : (source[namedGraph["sd:graph"]]["dcterms:source"] == undefined)? '' : source[namedGraph["sd:graph"]]["dcterms:source"]
+                , triples : (source[namedGraph["sd:graph"]]["void:triples"] == undefined)? 0 : source[namedGraph["sd:graph"]]["void:triples"][0]
+                , issued : (source[namedGraph["sd:graph"]]["dcterms:issued"] == undefined)? '' : source[namedGraph["sd:graph"]]["dcterms:issued"][0]
+            }
+        };
+        return res;
+    };
     var readNamedGraphs = function (reload) {
         if (namedGraphsLoaded && !reload) {
             var deferred = $q.defer();
@@ -75,6 +94,9 @@ module.factory("GraphService", function ($http, $q, Config, ConfigurationService
                     continue;
 
                 //add result
+                var meta = getGraphJson(resource, data)
+                console.log(meta);
+
                 var res = {
                     name  : namedGraph["sd:name"][0]
                     , graph : {
@@ -99,6 +121,10 @@ module.factory("GraphService", function ($http, $q, Config, ConfigurationService
                 var graph = data[resource];
                 // filter named graphs
                 if (graph["rdf:type"] == "sd:NamedGraph") {
+
+                    var meta = getGraphJson(resource, data)
+                    console.log(meta);
+
                     var res = {
                         name: graph["sd:name"][0],
                         graph: {
@@ -144,22 +170,13 @@ module.factory("GraphService", function ($http, $q, Config, ConfigurationService
 
     var getNamedGraph = function (parName) {
         var settings = Config.getSettings();
-        var namedGraph = settings[parName];
-        var results = {
-            name: namedGraphs[parName]["sd:name"][0] // name is the URI
-            ,
-            graph: {
-                label: settings[namedGraph["sd:graph"]]["rdfs:label"][0],
-                description: settings[namedGraph["sd:graph"]]["dcterms:description"][0],
-                modified: settings[namedGraph["sd:graph"]]["dcterms:modified"][0],
-                created: settings[namedGraph["sd:graph"]]["dcterms:created"][0],
-                graphset : settings[namedGraph["sd:graph"]]["gv:hasGraphSet"][0]
-            },
-            owner: null,
-            publicAccess: getNoAccessMode(),
-            usersWrite: [],
-            usersRead: []
-        };
+        
+        var results = getGraphJson(parName,settings);
+        results["owner"] = null;
+        results["publicAccess"]= getNoAccessMode();
+        results["usersWrite"]= [];
+        results["usersRead"]= [];
+
         var access = namedGraphs[parName]["ontos:access"];
         if (access != undefined) {
             for (var acc in access) {
@@ -225,20 +242,11 @@ module.factory("GraphService", function ($http, $q, Config, ConfigurationService
                         graph["acl:owner"][0] != userUri )
                         continue;
 
-                    var res = {
-                        name: graph["sd:name"][0],
-                        graph: {
-                            label: data[graph["sd:graph"]]["rdfs:label"][0],
-                            description: data[graph["sd:graph"]]["dcterms:description"][0],
-                            modified: data[graph["sd:graph"]]["dcterms:modified"][0],
-                            created: data[graph["sd:graph"]]["dcterms:created"][0],
-                            graphset : data[graph["sd:graph"]]["gv:hasGraphSet"][0]
-                        },
-                        owner: graph["acl:owner"][0],
-                        publicAccess: getNoAccessMode(),
-                        usersWrite: [],
-                        usersRead: []
-                    };
+                    var res = getGraphJson(resource,data);
+                    res["publicAccess"]= getNoAccessMode();
+                    res["usersWrite"]= [];
+                    res["usersRead"]= [];
+                    res["owner"] = userUri;
 
                     var access = graph["ontos:access"];
                     if (access != undefined) {
@@ -266,23 +274,13 @@ module.factory("GraphService", function ($http, $q, Config, ConfigurationService
     };
 
     var getNamedGraphCS = function (parName) {
+        
         var settings = Config.getSettings();
-        var namedGraph = settings[parName];
-        var results = {
-            name: settings[parName]["sd:name"][0] // name is the URI
-            ,
-            graph: {
-                label: settings[namedGraph["sd:graph"]]["rdfs:label"][0],
-                description: settings[namedGraph["sd:graph"]]["dcterms:description"][0],
-                modified: settings[namedGraph["sd:graph"]]["dcterms:modified"][0],
-                created: settings[namedGraph["sd:graph"]]["dcterms:created"][0],
-                graphset : settings[namedGraph["sd:graph"]]["gv:hasGraphSet"][0]
-            },
-            publicAccess: getNoAccessMode(),
-            usersWrite: [],
-            usersRead: []
-        };
-
+        var results = getGraphJson(parName,settings);
+        results["publicAccess"]= getNoAccessMode();
+        results["usersWrite"]= [];
+        results["usersRead"]= [];
+        
         var access = settings[parName]["ontos:access"];
         if (access != undefined) {
             for (var acc in access) {
@@ -340,8 +338,7 @@ module.factory("GraphService", function ($http, $q, Config, ConfigurationService
     // add a named graph in the store
     var addGraph = function (parNamedGraph) {
         // create the metadata for the graph
-        console.log("json for creating graph");
-        console.log(JSON.stringify(parNamedGraph));
+        
         var namedgraph = {
             "rdf:type": ["sd:NamedGraph"],
             "sd:name": [parNamedGraph.name],
@@ -540,6 +537,39 @@ module.factory("GraphService", function ($http, $q, Config, ConfigurationService
         });
     };
 
+    // after some data updated into the graph, its metadata needs to be updated
+    var updateChange = function(metadata){
+        
+        return $http.get("rest/graphs/countTriples/"+metadata.graph).then(
+            function(response){
+
+                var triples = response.data.triples;
+                var uri = Ns.shorten(metadata.graph);
+                var settings = Config.getSettings();
+                var graph = settings[settings[uri]["sd:graph"]];
+
+                graph["dcterms:modified"][0] = metadata.modified;
+                if(graph["dcterms:author"] == undefined)
+                    graph["dcterms:author"] = [];
+                if(graph["dcterms:author"].indexOf(metadata.author) == -1)
+                    graph["dcterms:author"].push(metadata.author);
+                if(graph["dcterms:source"] == undefined)
+                    graph["dcterms:source"] = [];
+                if(graph["dcterms:source"].indexOf(metadata.source) == -1)
+                    graph["dcterms:source"].push(metadata.source);
+                graph["void:triples"] = [];
+                graph["void:triples"].push(triples);
+
+                console.log(graph);
+
+                return Config.write().then(function(response){
+                    return getGraphJson(uri, Config.getSettings());
+                });
+
+            });
+
+    };
+
     return {
         readNamedGraphs: readNamedGraphs,
         getAccessibleGraphs: getAccessibleGraphs,
@@ -557,7 +587,8 @@ module.factory("GraphService", function ($http, $q, Config, ConfigurationService
         getNoAccessMode: getNoAccessMode,
         // these are new duplicated
         getNamedGraphCS: getNamedGraphCS,
-        getUserGraphs: getUserGraphs
+        getUserGraphs: getUserGraphs,
+        updateChange:updateChange
     };
 
 });

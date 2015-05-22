@@ -10,8 +10,10 @@ import java.util.Map;
 import javax.servlet.ServletContext;
 import javax.ws.rs.CookieParam;
 import javax.ws.rs.FormParam;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Cookie;
@@ -23,10 +25,12 @@ import org.apache.log4j.Logger;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import eu.geoknow.generator.common.Queries;
 import eu.geoknow.generator.configuration.FrameworkConfiguration;
 import eu.geoknow.generator.rdf.GraphGroupManager;
 import eu.geoknow.generator.rdf.RdfStoreManager;
 import eu.geoknow.generator.rdf.RdfStoreManagerImpl;
+import eu.geoknow.generator.rdf.SecureRdfStoreManagerImpl;
 import eu.geoknow.generator.users.FrameworkUserManager;
 import eu.geoknow.generator.users.UserManager;
 import eu.geoknow.generator.users.UserProfile;
@@ -144,6 +148,8 @@ public class Graphs {
     }
   }
 
+
+
   @POST
   @Path("/updateGraph")
   @Produces(MediaType.APPLICATION_JSON)
@@ -183,6 +189,44 @@ public class Graphs {
       return Response.status(Response.Status.OK).entity(result).build();
     } catch (Exception e) {
       log.error("Failed to update graph " + graph + " permissions", e);
+      return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+    }
+  }
+
+
+  @GET
+  @Path("/countTriples/{uri : .+}")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response countTriples(@PathParam("uri") String uri,
+      @CookieParam(value = "user") Cookie userc, @CookieParam(value = "token") String token) {
+
+    FrameworkUserManager frameworkUserManager;
+    UserProfile user;
+    try {
+      frameworkUserManager = FrameworkConfiguration.getInstance().getFrameworkUserManager();
+      // authenticates the user, throw exception if fail
+      user = frameworkUserManager.validate(userc, token);
+      if (user == null) {
+        return Response.status(Response.Status.UNAUTHORIZED).entity("Invalid credentials").build();
+      }
+
+    } catch (Exception e) {
+      log.error(e);
+      e.printStackTrace();
+      return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+    }
+
+    try {
+      SecureRdfStoreManagerImpl rdfStoreManager =
+          FrameworkConfiguration.getInstance().getSystemRdfStoreManager();
+
+      // delete old user permissions
+      int triples = Queries.countGraphTriples(uri, rdfStoreManager);
+
+      String result = "{\"triples\" : " + triples + "}";
+      return Response.status(Response.Status.OK).entity(result).build();
+    } catch (Exception e) {
+      log.error("Failed to count triples graph " + uri + " permissions", e);
       return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
     }
   }

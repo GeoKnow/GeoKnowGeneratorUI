@@ -42,12 +42,19 @@ function StackMenuCtrl($scope, AccountService) {
          {name: 'FAGI-gis', route:'#/workbench/linking-and-fusing/fagi-gis', url:'/workbench/linking-and-fusing/fagi-gis', requiredServices:[] }
          ]
 		  },
-		{
+		  {
 			 title: "Classification and Enrichment",
 			 id:"classification-and-enrichment",
 			 items: [
 			   {name: 'Deer', route:'#/workbench/classification-and-enrichment/deer', url:'/workbench/classification-and-enrichment/deer', requiredServices:[] }]
-		  }
+		  },
+      {
+       title: "Evolution and Repair",
+       id:"evolution-and-repair",
+       items: [
+         {name: 'Create Change Request', route:'#/workbench/evolution-and-repair/coevolution-create', url:'/workbench/evolution-and-repair/coevolution-create', requiredServices:[] },
+         {name: 'Apply Change Request', route:'#/workbench/evolution-and-repair/coevolution-apply', url:'/workbench/evolution-and-repair/coevolution-apply', requiredServices:[] }]
+      }
 	  ];
 
     $scope.showItem = function(item) {

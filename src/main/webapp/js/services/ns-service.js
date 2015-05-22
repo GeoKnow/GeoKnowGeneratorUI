@@ -36,7 +36,7 @@ module.factory('Ns', function (Helpers) {
 		"sider"		: "http://www4.wiwiss.fu-berlin.de/sider/resource/sider/",
 		"diseasome" : "http://www4.wiwiss.fu-berlin.de/diseasome/resource/diseasome/",
 		"gv"			: "http://geoknow.eu/coevolution/graphversioning/", 
-		"gvg"			: "http://geoknow.eu/coevolution/graphversioning/graphset",
+		"gvg"			: "http://geoknow.eu/coevolution/graphversioning/graphset/",
 		"cec"			: "http://geoknow.eu/coevolution/change/"
 
 	};
@@ -101,14 +101,12 @@ module.factory('Ns', function (Helpers) {
     lengthen : function(v){
     	var value = v.split(":");
     	var uri = "";
-    	console.log(value);
     	if(value[0]=="")
     		uri = prefixes[":"] + value[1];
     	else if(prefixes[value[0]] != undefined)
-    		uri = prefixes[value[0]] + v[1];
+    		uri = prefixes[value[0]] + value[1];
     	else
     		uri = v;
-    	console.log(uri);
     	return uri;
     },
 
@@ -116,10 +114,10 @@ module.factory('Ns', function (Helpers) {
 			if(prefixes[prefix]==undefined){
 				prefixes[prefix] = namespace;
 				buildNamespaces();
+				console.log(prefix + " added to " + namespace);
 			}
-			else
+			else if(prefixes[prefix] != namespace)
 				console.log("WARNING: prefix " + prefix + " already exist for " + prefixes[prefix] + ", couldn't asign " + namespace );
-			console.log(prefixes);
 		},
 
 		// return an array of prefix, namespace of the provided arr prefixes list

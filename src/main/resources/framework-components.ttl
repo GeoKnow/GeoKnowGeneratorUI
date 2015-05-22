@@ -161,7 +161,7 @@
       rdfs:label "Public-Private Data Coevolution"^^xsd:string ;
       lds:providesService :CoevolutionService ;
       dcterms:hasVersion "1.0.0"^^xsd:string ;
-      foaf:homepage <http://geoknow-generator.aws.semweb.unister.de/coevolution-service/> .
+      foaf:homepage <http://geoknow-generator.aws.semweb.unister.de:8080/coevolution-service/> .
 
 :CoevolutionService
       a       lds:PublicationService ;

@@ -5,6 +5,21 @@ var module = angular.module('app.co-evolution-service', []);
 module.factory("CoevolutionService", function ($http, $q, ComponentsService, Ns, ConfigurationService) {
 
 
+  var componentUri ="http://generator.geoknow.eu/resource/Coevolution";
+  var serviceUri = "http://generator.geoknow.eu/resource/CoevolutionService";
+  var serviceUrl = "";
+
+  ComponentsService.getService(serviceUri).then(
+    //success
+    function(service){
+      serviceUrl = service.serviceUrl;
+      console.log(serviceUrl);
+    }, 
+    function(response){
+      flash.error="Component not configured: " +ServerErrorResponse.getMessage(response);
+    });
+  
+
   var groups = [];
   
   var service = {

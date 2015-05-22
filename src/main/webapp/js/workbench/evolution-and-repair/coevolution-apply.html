@@ -1,0 +1,49 @@
+<div class="contents" ng-controller="CoevolutionCtrl">
+
+	<component-header></component-header>
+
+	<h4 class="green bold">Apply Change Request</h4>
+	
+	<!-- Import from LOCAL sparql  -->
+	<form class="form-horizontal InputForm" role="form" name="changeForm" novalidate>
+		
+		<div class="form-group">
+			<label for="graph" class="col-xs-2 control-label">Context </label>
+			<div class="input-group col-sm-8">
+				<input type="text" id="context" name="context" class="form-control" ng-model="change.context" regex-validate="url" required>
+			</div>
+		</div>
+		<div class="form-group">
+			<label for="graph" class="col-xs-2 control-label">Graph </label>
+			<div class="input-group col-sm-8">
+				<div class="input-group-btn">
+					<button type="button" class="btn btn-link reset" ng-click="refreshGraphList()">
+						<i class="glyphicon glyphicon-refresh" aria-hidden="false"></i>
+					</button>
+				</div>
+				<select id="targetGraph" class="form-control" ng-model="change.targetGraph" ng-options="namedgraph.name as graphLabel(namedgraph.name,namedgraph.graph.label) for namedgraph in namedGraphs" required></select>
+			</div>
+		</div>
+
+		<div class="form-group">
+			<label for="graph" class="col-xs-2 control-label">Filters </label>
+			<div class="input-group col-sm-8">
+				<input type="text" class="form-control" ng-model="change.filter" placeholder="dcterms:author <author-uri>">
+				<div class="input-group-btn">
+					<button type="button" class="btn btn-link reset" ng-click="">
+						<i class="glyphicon glyphicon-plus" aria-hidden="false"></i>
+					</button>
+				</div>
+			</div>
+		</div>
+
+
+	  <div class="form-group">
+			<div class="col-sm-2"></div>
+	  	<div class="input-group col-sm-8">
+      	<button class="btn btn-success" ng-click="" ng-disabled="changeForm.$invalid || isImporting()">Apply Change Request</button>
+     	</div>
+    </div>
+	</form>
+
+</div>

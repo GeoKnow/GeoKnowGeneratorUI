@@ -1,10 +1,12 @@
 'use strict';
 
 function ModalGraphCtrl($scope, $http, $modalInstance, currentNamedGraph, versionedGroup, ConfigurationService, GraphService, AccountService, Helpers, cfpLoadingBar, Ns) {
+
   $scope.isNew = function() {
     if (currentNamedGraph == null) {
       return true;
     } else {
+      console.log(currentNamedGraph)
       return false;
     }
   }
@@ -12,7 +14,7 @@ function ModalGraphCtrl($scope, $http, $modalInstance, currentNamedGraph, versio
 
   $scope.uriBase = ConfigurationService.getUriBase();
   if(versionedGroup!= undefined)
-    $scope.uriBase = Ns.getNamespace(versionedGroup.identifier);
+    $scope.uriBase = versionedGroup.uri;
   
   $scope.namedgraph = {
     name: "",
@@ -22,7 +24,7 @@ function ModalGraphCtrl($scope, $http, $modalInstance, currentNamedGraph, versio
       description: "",
       modified: "",
       label: "",
-      graphset:""
+      graphset:"",
     },
     owner: "",
     publicAccess: "",

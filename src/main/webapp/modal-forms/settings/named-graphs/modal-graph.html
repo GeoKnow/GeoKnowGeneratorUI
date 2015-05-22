@@ -67,6 +67,27 @@
           </div>
         </div>
         
+        <div class="form-group" ng-show="namedgraph.graph.issued!=''">
+          <label class="col-xs-2 control-label">{{namedgraph.graph.issued}}</label>
+          <div class="col-xs-10">
+            <p class="form-control-static" >{{s}}</p>
+          </div>
+        </div>
+
+        <div class="form-group" ng-show="namedgraph.graph.author!=''">
+          <label class="col-xs-2 control-label">Authors</label>
+          <div class="col-xs-10">
+            <p class="form-control-static" ng-repeat="s in namedgraph.graph.author">{{s}}</p>
+          </div>
+        </div>
+
+        <div class="form-group" ng-show="namedgraph.graph.source!=''">
+          <label class="col-xs-2 control-label">Sources</label>
+          <div class="col-xs-10">
+            <p class="form-control-static" ng-repeat="s in namedgraph.graph.source">{{s}}</p>
+          </div>
+        </div>
+
           <div class="form-group" >
               <label class="col-xs-2 control-label">Access</label>
               <div class="col-xs-10">

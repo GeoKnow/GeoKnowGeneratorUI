@@ -4,7 +4,8 @@ function ModalVersionGroupsCtrl($scope, $modalInstance, uriBase, modaltitle, res
 	
 	$scope.uriBase = uriBase;
 	$scope.modaltitle = modaltitle;
-	
+
+
 	if(resource == null)
 		$scope.resource = {
 			identifier 			: "" , 
@@ -15,9 +16,6 @@ function ModalVersionGroupsCtrl($scope, $modalInstance, uriBase, modaltitle, res
 		$scope.resource = resource;
 	
 	$scope.ok = function () {
-		
-		$scope.resource.created = Helpers.getCurrentDate();
-
 	  var input = angular.copy($scope.resource);
 	  $modalInstance.close(input);
 	};
