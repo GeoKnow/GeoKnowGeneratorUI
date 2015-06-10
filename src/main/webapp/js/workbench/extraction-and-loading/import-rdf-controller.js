@@ -25,7 +25,6 @@ var ImportFormCtrl = function($scope, $http, ConfigurationService, flash, Accoun
   $scope.refreshGraphList = function() {
     GraphService.getAccessibleGraphs(true, false, true).then(function(graphs) {
       $scope.namedGraphs = graphs;
-      console.log($scope.namedGraphs);
     });
   };	
   // initialise some required fields
@@ -73,8 +72,8 @@ var ImportFormCtrl = function($scope, $http, ConfigurationService, flash, Accoun
   //   $scope.updateSparqlCopyQuery();
   // });
 
-  $scope.graphLabel=function (id, label) {
-    return label+ " <" + id + ">";
+  $scope.describeGraph=function (ngraph) {
+    return ngraph.name + " - " + ngraph.graph.label ;
   }
 		
   $scope.updateForm = function() {
@@ -120,7 +119,6 @@ var ImportFormCtrl = function($scope, $http, ConfigurationService, flash, Accoun
         }).progress(function (evt) {
             var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
             flash.success='progress: ' + parseInt(100.0 * evt.loaded / evt.total) + '% file :'+ evt.config.file.name;
-            console.log('progress: ' + progressPercentage + '% ' + evt.config.file.name);
         }).success(function (data, status, headers, config) {
           $scope.importRdf.source = config.file.name;
           //uploadedFiles=config.file.name;
@@ -170,13 +168,13 @@ var ImportFormCtrl = function($scope, $http, ConfigurationService, flash, Accoun
         var imported = response.data.import;
 
         var meta = { 
-          graph :   imported.targetGraph, 
+          namedGraph :   imported.targetGraph, 
           source:   $scope.importRdf.source, 
-          author :  currentAccount.getAccountURI(),
-          modified: Helpers.getCurrentDate() 
+          contributor :  Ns.lengthen(currentAccount.getAccountURI()),
+          date: Helpers.getCurrentDate() 
         };
-
-        GraphService.updateChange(meta).then(
+        // update the metadata of the graph
+        GraphService.addContribution(meta).then(
           function(response){
             console.log(response);
             flash.success = "successfully imported " + imported.triples + " triples";
@@ -186,6 +184,7 @@ var ImportFormCtrl = function($scope, $http, ConfigurationService, flash, Accoun
             flash.error = ServerErrorResponse.getMessage(response);
             importing = false;
           });
+
       }, 
       function(response) {
         flash.error = ServerErrorResponse.getMessage(response);

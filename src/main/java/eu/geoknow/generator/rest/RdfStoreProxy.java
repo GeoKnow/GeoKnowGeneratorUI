@@ -1,5 +1,7 @@
 package eu.geoknow.generator.rest;
 
+import java.io.IOException;
+
 import javax.servlet.ServletContext;
 import javax.ws.rs.CookieParam;
 import javax.ws.rs.FormParam;
@@ -10,10 +12,13 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.xml.ws.http.HTTPException;
 
 import org.apache.log4j.Logger;
 
 import eu.geoknow.generator.configuration.FrameworkConfiguration;
+import eu.geoknow.generator.exceptions.NotAuthorizedException;
+import eu.geoknow.generator.exceptions.UnsupportedAuthenticationType;
 import eu.geoknow.generator.rdf.RdfStoreManager;
 import eu.geoknow.generator.users.FrameworkUserManager;
 import eu.geoknow.generator.users.UserProfile;
@@ -93,9 +98,21 @@ public class RdfStoreProxy {
 
       String result = rdfStoreManager.execute(query, responseFormat);
       return Response.status(Response.Status.OK).entity(result).build();
-    } catch (Exception e) {
+    } catch (HTTPException e) {
       log.error("Failed to execute SPARQL query", e);
       return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+    } catch (UnsupportedAuthenticationType e) {
+      log.error("Failed to authenticate", e);
+      return Response.status(Response.Status.EXPECTATION_FAILED).entity(e.getMessage()).build();
+    } catch (IOException e) {
+      log.error("Failed to authenticate", e);
+      return Response.status(Response.Status.EXPECTATION_FAILED).entity(e.getMessage()).build();
+    } catch (NotAuthorizedException e) {
+      log.error("Failed to get settings", e);
+      return e.getResponse();
+    } catch (Exception e) {
+      log.error("Failed to get settings", e);
+      return Response.status(Response.Status.EXPECTATION_FAILED).entity(e.getMessage()).build();
     }
   }
 

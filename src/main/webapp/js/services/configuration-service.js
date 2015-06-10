@@ -30,11 +30,12 @@ module.factory('ConfigurationService', function ($q, Config, $http, $location, f
                         Ns.add(":", Config.getNS());
                         Config.read().then(function(settings){
                             defer.resolve(settings);
+                        }, function(response){
+                            flash.error = ServerErrorResponse.getMessage(response);
                         });
 
                     }, function(response){
-                        var message = ServerErrorResponse.getMessage(response);
-                        flash.error = message;
+                        flash.error = ServerErrorResponse.getMessage(response);
                     	})
                 }else{
                 	

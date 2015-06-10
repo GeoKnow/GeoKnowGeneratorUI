@@ -20,6 +20,20 @@ module.factory("CoevolutionService", function ($http, ComponentsService) {
 
     promise: promise,
 
+    applyChanges : function(parameters){
+      console.log(parameters);
+      return $http({
+        url: serviceUrl+"rest/api/application/graph",
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        params : parameters
+      });
+
+    },
+
+
     getComponent : function(){
       return ComponentsService.getComponent(componentUri).then(
         function(response){
@@ -68,6 +82,14 @@ module.factory("CoevolutionService", function ($http, ComponentsService) {
         url: serviceUrl+"rest/api/graphs/graphset/" + id + "/versions",
         method: "GET"
       });
+    },
+
+    getConflictResolutionStrategies : function(){
+      return ["IgnoreConflict", "IgnoreEntireChange", "IgnoreChangeForConflictingPredicate", "ForceChange", "MergeChange"];
+    },
+    
+    getConflictResolutionDefaultStrategy :function(){
+      return "IgnoreConflict";
     }
 	};
 

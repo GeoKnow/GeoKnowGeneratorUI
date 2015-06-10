@@ -7,13 +7,31 @@ function GraphCtrl($scope, $http, $modal, flash, Config, Ns, ConfigurationServic
   $scope.uriBase = ConfigurationService.getUriBase();
   $scope.versionGroups = [];
 
+  var getGroupbyIdentifier = function(identifier) {
+    for(var i in $scope.versionGroups){
+      if ($scope.versionGroups[i].identifier == identifier)
+        return $scope.versionGroups[i];
+    }
+    return undefined;
+  };
+
   var refreshUserGraphs = function() {
     GraphService.getUserGraphs(AccountService.getAccount().getAccountURI(), true).then(
       function (graphs){
         $scope.namedgraphs = graphs;
+        // add the graphs to a graphset if they belong to one
+        for(var i in $scope.namedgraphs){
+          if($scope.namedgraphs[i].graph.graphset != ""){
+            var vg = getGroupbyIdentifier($scope.namedgraphs[i].graph.graphset);
+            if(vg != undefined){
+              if(vg.graphs.indexOf($scope.namedgraphs[i].name)<0)
+                vg.graphs.push($scope.namedgraphs[i].name);
+            }
+          }
+        }
       },
       function(response){
-            flash.error = ServerErrorResponse.getMessage(response);
+        flash.error = ServerErrorResponse.getMessage(response);
       });
   };
 
@@ -37,38 +55,32 @@ function GraphCtrl($scope, $http, $modal, flash, Config, Ns, ConfigurationServic
       });
   };
 
-  var saveGraph = function(namedgraph, newGraph, group) {
+  var saveGraph = function(namedgraph, newGraph) {
 
     var response;
-    // the identifier is the prefix of the namespace, and this prefix was added
-    // to the ns-service at the creation/get of the groups
-    if(group != null)
-      namedgraph.name = group.identifier + ":" + namedgraph.name;
+    
+    if(namedgraph.graph.graphset != "")
+      namedgraph.name = namedgraph.graph.graphset + ":" + namedgraph.name;
     else
       namedgraph.name = ":" + namedgraph.name;
 
-    if (newGraph)
+    if (newGraph){
+      // the identifier is the prefix of the namespace, and this prefix was added
+      // to the ns-service at the creation/get of the groups
       response = GraphService.addGraph(namedgraph);
+    }
     else {
       if (namedgraph.owner == AccountService.getAccount().getAccountURI())
         response = GraphService.updateGraph(namedgraph);
       else {
-        response = GraphService.updateForeignGraph(namedgraph).then(function(response) {
-          refreshAllGraphs();
-        });
+        response = GraphService.updateForeignGraph(namedgraph);
       }
     }
     
     response.then(
       //success
       function() {
-        // add the graph to a group if not null
-        if(group!=null){
-          $scope.saveVersionedGraph(namedgraph.name, group);
-          $scope.refreshVersionGroups();
-        }
-        refreshUserGraphs();
-        refreshAllGraphs();
+        refreshAll();
       },
       //error
       function(response) {
@@ -98,7 +110,7 @@ function GraphCtrl($scope, $http, $modal, flash, Config, Ns, ConfigurationServic
       }
     });
     modalInstance.result.then(function(responseGraph) {
-      saveGraph(responseGraph, true, group);
+      saveGraph(responseGraph, true);
     });
   };
 
@@ -149,24 +161,32 @@ function GraphCtrl($scope, $http, $modal, flash, Config, Ns, ConfigurationServic
 
   };
 
-  $scope.delete = function(graphName) {
-    GraphService.deleteGraph(graphName).then(
+  $scope.issue = function(graphName){
+    GraphService.publish(graphName).then(
       function(response) {
         refreshUserGraphs();
         refreshAllGraphs();
         refreshGraphGroups();
       }, 
       function(response){
-            flash.error = ServerErrorResponse.getMessage(response);
+        flash.error = ServerErrorResponse.getMessage(response);
+      });
+  };
+
+  $scope.delete = function(graphName) {
+    GraphService.deleteGraph(graphName).then(
+      function(response) {
+        refreshAll();
+      }, 
+      function(response){
+        flash.error = ServerErrorResponse.getMessage(response);
       });
   };
 
   $scope.deleteForeign = function(graphName) {
     GraphService.deleteForeignGraph(graphName).then(
       function(response) {
-        refreshUserGraphs();
-        refreshAllGraphs();
-        refreshGraphGroups();
+        refreshAll();
       }, 
       function(response){
             flash.error = ServerErrorResponse.getMessage(response);
@@ -209,7 +229,7 @@ function GraphCtrl($scope, $http, $modal, flash, Config, Ns, ConfigurationServic
         $scope.graphgroups = result;
       },
       function(response){
-            flash.error = ServerErrorResponse.getMessage(response);
+        flash.error = ServerErrorResponse.getMessage(response);
       });
   };
 
@@ -233,7 +253,7 @@ function GraphCtrl($scope, $http, $modal, flash, Config, Ns, ConfigurationServic
     modalInstance.result.then(function(graphgroup) {
       GraphGroupService.addGraphGroup(graphgroup).then(
         function(result) {
-          refreshGraphGroups();
+          refreshAll();
         },
         function(response){
             flash.error = ServerErrorResponse.getMessage(response);
@@ -262,7 +282,7 @@ function GraphCtrl($scope, $http, $modal, flash, Config, Ns, ConfigurationServic
     modalInstance.result.then(function(graphgroup) {
       GraphGroupService.updateGraphGroup(graphgroup).then(
         function(result) {
-          refreshGraphGroups();
+          refreshAll();
         },
         function(response){
             flash.error = ServerErrorResponse.getMessage(response);
@@ -273,10 +293,10 @@ function GraphCtrl($scope, $http, $modal, flash, Config, Ns, ConfigurationServic
   $scope.deleteGroup = function(groupName) {
     GraphGroupService.deleteGraphGroup(groupName).then(
       function(result) {
-        refreshGraphGroups();
+        refreshAll();
       },
       function(response){
-            flash.error = ServerErrorResponse.getMessage(response);
+        flash.error = ServerErrorResponse.getMessage(response);
       });
   };
 
@@ -298,7 +318,9 @@ function GraphCtrl($scope, $http, $modal, flash, Config, Ns, ConfigurationServic
         CoevolutionService.getGroup(id).then(
           function(vgroup){
             vgroup["uri"] = Ns.getNamespace(vgroup.identifier);
+            vgroup["graphs"] = [];
             vgroups.push(vgroup);
+
           });
       }
       $scope.versionGroups = vgroups;  
@@ -340,7 +362,7 @@ function GraphCtrl($scope, $http, $modal, flash, Config, Ns, ConfigurationServic
     modalInstance.result.then(function(response) {
       CoevolutionService.createGroup(response).then(
         function(response){
-          $scope.refreshVersionGroups();
+          refreshAll();
         },
         function(response){
           flash.error = ServerErrorResponse.getMessage(response);
@@ -352,40 +374,30 @@ function GraphCtrl($scope, $http, $modal, flash, Config, Ns, ConfigurationServic
     console.log(vgroup);
     CoevolutionService.deleteGroup(vgroup.identifier).then(
       function(response){
-        $scope.refreshVersionGroups();
+        refreshAll();
       },
       function(response){
           flash.error = ServerErrorResponse.getMessage(response);
       });
   };  
-  
 
-  $scope.saveVersionedGraph = function(graphName, group){
-    
-    // THis is not going to be done, because is already in the generator graph management
-    // CoevolutionService.addVersion(group.identifier, graphName).then(
-    //     function(response){
-    //       $scope.refreshVersionGroups();
-    //     },
-    //     function(response){
-    //         flash.error = ServerErrorResponse.getMessage(response);
-    //     });
+  var refreshAll = function(){
+    // Initialize all tables
+    // need to refresh version groups before to have namespaces registered
+    $scope.refreshVersionGroups().then(
+
+      function(response){
+        refreshAllGraphs();
+        refreshUserGraphs();
+        refreshGraphGroups();
+        refreshAccessibleGraphs();  
+      },
+      function(response){
+            flash.error = ServerErrorResponse.getMessage(response);
+      });
   };
-
-  // Initialize all tables
-  // need to refresh version groups before to have namespaces registered
-  $scope.refreshVersionGroups().then(
-
-    function(response){
-      refreshAllGraphs();
-      refreshUserGraphs();
-      refreshGraphGroups();
-      refreshAccessibleGraphs();  
-    },
-    function(response){
-          flash.error = ServerErrorResponse.getMessage(response);
-    });
   
+  refreshAll();
 
 
 }

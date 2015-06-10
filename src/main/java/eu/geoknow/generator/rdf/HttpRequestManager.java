@@ -5,6 +5,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.util.List;
@@ -13,6 +14,9 @@ import javax.xml.ws.http.HTTPException;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.log4j.Logger;
+
+import eu.geoknow.generator.exceptions.NotAuthorizedException;
+import eu.geoknow.generator.exceptions.UnsupportedAuthenticationType;
 
 public class HttpRequestManager {
 
@@ -32,7 +36,7 @@ public class HttpRequestManager {
   }
 
   public static String executePost(String url, String urlParameters, String username,
-      String password) throws Exception {
+      String password) throws IOException, UnsupportedAuthenticationType {
     // TODO: May be try to do Authorized post by default first ??? to avoid
     // doing two queries? are all the queries made by the generator will use
     // the
@@ -57,13 +61,18 @@ public class HttpRequestManager {
               log.error(connection.getResponseCode() + "\n\t " + connection.getResponseMessage()
                   + "\n\t url:" + url + "\n\t params:" + decodedUrlParameters);
               throw new HTTPException(responseCode);
+            case 401: // Unauthorised
+              log.error(connection.getResponseCode() + "\n\t " + connection.getResponseMessage()
+                  + "\n\t url:" + url + "\n\t params:" + decodedUrlParameters);
+              throw new NotAuthorizedException(connection.getResponseMessage());
+
             default:
               log.error(connection.getResponseCode() + "\n\t " + connection.getResponseMessage()
                   + "\n\t url:" + url + "\n\t params:" + decodedUrlParameters);
               throw new HTTPException(responseCode);
           }
         } else
-          throw new Exception("Unsupported authentication type: "
+          throw new UnsupportedAuthenticationType("Unsupported authentication type: "
               + wwwAuthenticateHeader.getAuthenticationScheme());
       case 400: // bad request
         log.error(connection.getResponseCode() + "\n\t " + connection.getResponseMessage()
@@ -101,25 +110,42 @@ public class HttpRequestManager {
 
   private static HttpURLConnection sendAuthorizedPost(String url, String urlParameters,
       WWWAuthenticateHeader wwwAuthenticateHeader, String username, String password)
-      throws Exception {
-    URL targetURL = new URL(url);
-    HttpURLConnection connection = (HttpURLConnection) targetURL.openConnection();
-    connection.setDoOutput(true);
-    connection.setDoInput(true);
-    connection.setInstanceFollowRedirects(false);
-    connection.setRequestMethod("POST");
-    connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-    connection.setRequestProperty("charset", "utf-8");
-    connection.setRequestProperty("Content-Length",
-        "" + Integer.toString(urlParameters.getBytes().length));
-    connection.setUseCaches(false);
-    connection.setRequestProperty("Authorization",
-        getDigestAuthorizationProperty(url, wwwAuthenticateHeader, username, password, "POST"));
-    DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
-    wr.writeBytes(urlParameters);
-    wr.flush();
-    wr.close();
-    return connection;
+      throws UnsupportedAuthenticationType, IOException {
+    try {
+      URL targetURL;
+      targetURL = new URL(url);
+
+      HttpURLConnection connection = (HttpURLConnection) targetURL.openConnection();
+      connection.setDoOutput(true);
+      connection.setDoInput(true);
+      connection.setInstanceFollowRedirects(false);
+      connection.setRequestMethod("POST");
+      connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+      connection.setRequestProperty("charset", "utf-8");
+      connection.setRequestProperty("Content-Length",
+          "" + Integer.toString(urlParameters.getBytes().length));
+      connection.setUseCaches(false);
+      connection.setRequestProperty("Authorization",
+          getDigestAuthorizationProperty(url, wwwAuthenticateHeader, username, password, "POST"));
+      DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
+      wr.writeBytes(urlParameters);
+      wr.flush();
+      wr.close();
+      return connection;
+
+    } catch (MalformedURLException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+      throw new MalformedURLException(e.getMessage());
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+      throw new IOException(e);
+    } catch (Exception e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+      throw new UnsupportedAuthenticationType(e.getMessage());
+    }
   }
 
   private static WWWAuthenticateHeader getWWWAuthenticationHeader(HttpURLConnection connection) {

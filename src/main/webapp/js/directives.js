@@ -5,7 +5,7 @@ var module = angular.module('app.directives', []);
 /*
 This directive will render a header for a component integration page
 */
-app.directive("componentHeader", function(){
+module.directive("componentHeader", function(){
   return {
     restrict: 'E', 
     templateUrl: 'js/workbench/partials/component-header.html'
@@ -16,7 +16,7 @@ app.directive("componentHeader", function(){
 * Modal iFrame directive is to show component tools in a
 * modal window that is the size of the browser's window
 */
-app.directive("modalIframe", function ($compile) {
+module.directive("modalIframe", function ($compile) {
   return {
     template: '<iframe  id="mod-frame" src="{{url}}"></iframe>',
     restrict: 'E',
@@ -59,7 +59,7 @@ app.directive("modalIframe", function ($compile) {
   };
 });
 
-app.directive('ngConfirmClick', [
+module.directive('ngConfirmClick', [
   function() {
     return {
         restrict: 'A',
@@ -67,7 +67,7 @@ app.directive('ngConfirmClick', [
             element.bind('click', function() {
                 var message = attrs.ngConfirmMessage;
                 if (message && confirm(message)) {
-                    scope.$apply(attrs.ngConfirmClick);
+                    scope.$modulely(attrs.ngConfirmClick);
                 }
             });
             scope.$on('$destroy', function() {
@@ -79,7 +79,7 @@ app.directive('ngConfirmClick', [
 ]);
 
 //directive to fix angularjs autofill issue (update form model on autofill)
-app.directive('autofillable', function ($timeout) {
+module.directive('autofillable', function ($timeout) {
     return {
         restrict: 'A',
         require: 'ngModel',
@@ -97,7 +97,7 @@ app.directive('autofillable', function ($timeout) {
 });
 
 //directive to set focus in modal dialogs
-app.directive('modalFocus', function ($timeout) {
+module.directive('modalFocus', function ($timeout) {
     return {
         restrict: 'A',
         link: function (scope, element, attrs) {
@@ -121,7 +121,7 @@ app.directive('modalFocus', function ($timeout) {
     };
 });
 
-app.directive("confirmField", function() {
+module.directive("confirmField", function() {
     return {
         require: "ngModel",
         link: function(scope, elem, attrs, ctrl) {
@@ -150,7 +150,7 @@ app.directive("confirmField", function() {
 *
 ***************************************************************************************************/
 
-app.directive("geoliftModule", function ($compile) {
+module.directive("geoliftModule", function ($compile) {
 	  var count=0;
 	  return {
 	    link: function (scope, elm, attr) {
@@ -169,7 +169,7 @@ app.directive("geoliftModule", function ($compile) {
 	  	};
 	});
 
-app.directive("geoliftParam", function ($compile) {
+module.directive("geoliftParam", function ($compile) {
 	  var count=0;
 	  return {
 	    link: function (scope, elm, attr) {
@@ -188,7 +188,7 @@ app.directive("geoliftParam", function ($compile) {
 	  	}; 
 	});
 
-app.directive("geoliftValue", function ($compile) {
+module.directive("geoliftValue", function ($compile) {
 	  var count=0;
 	  return {
 	    link: function (scope, elm, attr) {
@@ -207,7 +207,7 @@ app.directive("geoliftValue", function ($compile) {
 	  	};
 	});
 
-app.directive("downloadResult", function ($compile) {
+module.directive("downloadResult", function ($compile) {
 	  return {
 		template: '<a class="btn btn-sm btn-success" target="_self" href="/GeoLift-Downloads/result.ttl" download="result.ttl">Download</a>',
 		restrict: 'E'
@@ -217,7 +217,7 @@ app.directive("downloadResult", function ($compile) {
 /**
 * Form validation directives
 */
-app.directive('regexValidate', function() {
+module.directive('regexValidate', function() {
     var expressions = [];
     expressions['url']            =  /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/;
     expressions['partialUrl']     =  /^([\w-]+)+([\w-]+\/?)*\/$/ ;
@@ -243,7 +243,7 @@ app.directive('regexValidate', function() {
 });
 
 
-app.directive('uniqueIdentifier', ['$compile', 'ConfigurationService', function($compile, ConfigurationService){
+module.directive('uniqueIdentifier', ['$compile', 'ConfigurationService', function($compile, ConfigurationService){
     return {
         restrict: 'A',
         require: 'ngModel',
@@ -276,7 +276,7 @@ app.directive('uniqueIdentifier', ['$compile', 'ConfigurationService', function(
     };
  }]);
 
-app.directive('uniqueUserName', ['$compile', 'UsersService', function($compile, UsersService){
+module.directive('uniqueUserName', ['$compile', 'UsersService', function($compile, UsersService){
      return {
          restrict: 'A',
          require: 'ngModel',
@@ -290,7 +290,7 @@ app.directive('uniqueUserName', ['$compile', 'UsersService', function($compile, 
      };
  }]);
 
-app.directive('uniqueEmail', ['$compile', 'UsersService', function($compile, UsersService){
+module.directive('uniqueEmail', ['$compile', 'UsersService', function($compile, UsersService){
      return {
          restrict: 'A',
          require: 'ngModel',

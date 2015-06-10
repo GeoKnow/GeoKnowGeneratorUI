@@ -12,6 +12,7 @@ import javax.ws.rs.CookieParam;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -24,9 +25,13 @@ import org.apache.log4j.Logger;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 
 import eu.geoknow.generator.common.Queries;
 import eu.geoknow.generator.configuration.FrameworkConfiguration;
+import eu.geoknow.generator.graphs.GraphsManager;
+import eu.geoknow.generator.graphs.beans.Contribution;
+import eu.geoknow.generator.graphs.beans.NamedGraph;
 import eu.geoknow.generator.rdf.GraphGroupManager;
 import eu.geoknow.generator.rdf.RdfStoreManager;
 import eu.geoknow.generator.rdf.RdfStoreManagerImpl;
@@ -148,7 +153,49 @@ public class Graphs {
     }
   }
 
+  /**
+   * This function is for updating metadata after a operation in the graph
+   * 
+   * @param userc
+   * @param token
+   * @return
+   */
 
+  @PUT
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response addContribution(@CookieParam(value = "user") Cookie userc, @CookieParam(
+      value = "token") String token, Contribution contribution) {
+
+    FrameworkUserManager frameworkUserManager;
+    UserProfile user;
+    try {
+      frameworkUserManager = FrameworkConfiguration.getInstance().getFrameworkUserManager();
+      // authenticates the user, throw exception if fail
+      user = frameworkUserManager.validate(userc, token);
+      if (user == null) {
+        return Response.status(Response.Status.UNAUTHORIZED).entity("Invalid credentials").build();
+      }
+
+    } catch (Exception e) {
+      log.error(e);
+      e.printStackTrace();
+      return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+    }
+
+    try {
+      GraphsManager manager = new GraphsManager();
+      NamedGraph graph = manager.addContribution(contribution);
+
+      Gson gson = new Gson();
+      String json = "{ \"namedgraph\" : " + gson.toJson(graph) + "}";
+      return Response.status(Response.Status.OK).entity(json).type(MediaType.APPLICATION_JSON)
+          .build();
+
+    } catch (Exception e) {
+      log.error(e);
+      return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+    }
+  }
 
   @POST
   @Path("/updateGraph")
@@ -611,6 +658,7 @@ public class Graphs {
       return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
     }
   }
+
 
   private void setGraphPermissions(String graph, String permissionsString,
       UserManager rdfStoreUserManager) throws Exception {

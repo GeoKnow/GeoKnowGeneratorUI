@@ -47,7 +47,6 @@ var LimesCtrl = function($scope, $http, ConfigurationService, ComponentsService,
 	var uploadError = false;
 	var uploadedFiles = null;
 	
-
 	// Arrays for comparisons
 	$scope.allItems = [];
 	$scope.storeArray = [];

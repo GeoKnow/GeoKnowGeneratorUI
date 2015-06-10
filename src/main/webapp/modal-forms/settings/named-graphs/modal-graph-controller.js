@@ -6,15 +6,9 @@ function ModalGraphCtrl($scope, $http, $modalInstance, currentNamedGraph, versio
     if (currentNamedGraph == null) {
       return true;
     } else {
-      console.log(currentNamedGraph)
       return false;
     }
   }
-  console.log(versionedGroup);
-
-  $scope.uriBase = ConfigurationService.getUriBase();
-  if(versionedGroup!= undefined)
-    $scope.uriBase = versionedGroup.uri;
   
   $scope.namedgraph = {
     name: "",
@@ -25,6 +19,9 @@ function ModalGraphCtrl($scope, $http, $modalInstance, currentNamedGraph, versio
       modified: "",
       label: "",
       graphset:"",
+      source: [],
+      author: [],
+      issued : ""
     },
     owner: "",
     publicAccess: "",
@@ -67,6 +64,15 @@ function ModalGraphCtrl($scope, $http, $modalInstance, currentNamedGraph, versio
   //if a new named graph gets created
   if ($scope.isNew()) {
     $scope.modaltitle = "New Graph";
+
+    console.log(versionedGroup);
+
+    $scope.uriBase = ConfigurationService.getUriBase();
+    if(versionedGroup!= undefined){
+      $scope.namedgraph.graph.graphset=versionedGroup.identifier;
+      $scope.uriBase = versionedGroup.uri;
+    }
+
     var s_now = Helpers.getCurrentDate();
     var defaultEndpoint = ConfigurationService.getSPARQLEndpoint();
     $scope.namedgraph.graph.created = s_now;
@@ -74,13 +80,18 @@ function ModalGraphCtrl($scope, $http, $modalInstance, currentNamedGraph, versio
     $scope.namedgraph.graph.endpoint = defaultEndpoint;
     $scope.namedgraph.publicAccess = GraphService.getNoAccessMode();
     $scope.namedgraph.owner = AccountService.getAccount().getAccountURI();
-    if(versionedGroup!= undefined)
-      $scope.namedgraph.graph.graphset=versionedGroup.identifier;
+      
   } else {
     //if and existing named graph gets modified	  	
     $scope.modaltitle = "Edit Graph";
     $scope.namedgraph = angular.copy(currentNamedGraph);
-    $scope.namedgraph.name = $scope.namedgraph.name.replace(':', '');
+    //$scope.namedgraph.name = $scope.namedgraph.name.replace(':', '');
+    console.log($scope.namedgraph);
+    var splited = Ns.getParts($scope.namedgraph.name);
+    console.log(splited);
+    $scope.uriBase = splited[0];
+    $scope.namedgraph.name = splited[1];
+
     $scope.namedgraph.owner = AccountService.getAccount().getAccountURI();
     $scope.namedgraph.usersRead = [];
     $scope.namedgraph.usersWrite = [];

@@ -79,9 +79,19 @@ module.factory('Ns', function (Helpers) {
       return false;
     },
 
+    getParts : function(v){
+			var value = v.split(":");
+    	var uri = value[0];
+    	if(value[0]=="")
+    		uri = prefixes[":"];
+    	else if(prefixes[value[0]] != undefined)
+    		uri = prefixes[value[0]];
+    	return [uri,value[1]];
+    },
+
 		// Replaces the long name space by the prefix
     shorten : function(v){
-        var value = v.value==undefined ? v : v.value;
+        var value = v.value == undefined ? v : v.value;
 
         if (!v.type || v.type == "uri")
         {

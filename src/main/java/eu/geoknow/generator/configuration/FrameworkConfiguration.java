@@ -54,6 +54,7 @@ public class FrameworkConfiguration {
   private String emailPassword = "";
 
   private String resourceNS = "";
+  private String defaultDataset = "";
 
   // in this file all main configs are stored
   private final static String configurationFile = "framework-configuration.ttl";
@@ -309,9 +310,33 @@ public class FrameworkConfiguration {
       qexec.close();
       log.info("Spring Batch URI:" + instance.getSpringBatchUri());
 
+      /*
+       * This query execution was added on May 7th, 2015 by Jonas the default-dataset Uri is needed
+       * for graph management. If refactor this class, keep that in mind! also attribute
+       * "defaultDataset" and getter/setter should be checked when merging code. need also in
+       * components ttl: :LDWorkbench lds:providesService :LDWorkbenchService
+       */
+
+      query =
+          " SELECT ?defaultDataset WHERE {" + "<" + instance.getFrameworkUri() + "> <"
+              + SD.defaultDataset + "> ?defaultDataset. " + "}";
+      qexec = QueryExecutionFactory.create(query, getConfigurationModel());
+
+      results = qexec.execSelect();
+      if (!results.hasNext()) {
+        instance = null;
+        throw new NullPointerException("Invalid initial parameter required at:\n" + query);
+      }
+      for (; results.hasNext();) {
+        QuerySolution soln = results.next();
+        instance.setDefaultDataset((soln.get("defaultDataset").toString()));
+      }
+      qexec.close();
+
       // create the file path for the flag
       instance.initFile = new File(instance.frameworkDataDir, "init.txt");
     }
+
 
     return instance;
   }
@@ -541,6 +566,14 @@ public class FrameworkConfiguration {
 
   public void setHomepage(String homepage) {
     this.homepage = homepage;
+  }
+
+  public String getDefaultDataset() {
+    return defaultDataset;
+  }
+
+  public void setDefaultDataset(String defaultDataset) {
+    this.defaultDataset = defaultDataset;
   }
 
   public HashMap<String, String> getSystemGraphs() {

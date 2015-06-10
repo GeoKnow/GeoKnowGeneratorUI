@@ -307,7 +307,9 @@ angular.module("app.configuration", [])
                 for (var i in arr)
                 {
                     var o = arr[i];
-                    if (typeof o === "string")
+                    if (typeof o === "number")
+                        data += wrap(s) + " " + wrap(p) + " " + o + " ." + EOL;
+                    else if (typeof o === "string")
                         data += wrap(s) + " " + wrap(p) + " " + wrap(o) + " ." + EOL;
                     else
                     {
@@ -340,53 +342,7 @@ angular.module("app.configuration", [])
              return request("rest/RdfStoreProxy/rewriteGraph", requestData);
     };
 
-    var makeTriples = function(pSettings){
-        
-        var wrap = function(s)
-        {
-            if(/^https?:\/\//.test(s))
-                return "<" + s + ">";
-            else if(/^_:b/.test(s))
-                return s;
-            else if(Ns.isUri(s)){
-                // get the prefix for the query
-                var p = s.substr(0, s.indexOf(':'));
-                return "<" + Ns.getNamespace(p) + s + ">";
-            }
-            else
-            // TODO: we have also to validate the datatype!
-                return '"' + s + '"';
-        };
-
-        var walk = function(s, map)
-        {
-            for (var p in map)
-            {
-                var arr = map[p];
-                for (var i in arr)
-                {
-                    var o = arr[i];
-                    if (typeof o === "string")
-                        triples += wrap(s) + " " + wrap(p) + " " + wrap(o) + " ." + EOL;
-                    else
-                    {
-                        var bnode = "_:b" + ++bnodeIndex;
-                        triples += wrap(s) + " " + wrap(p) + " " + bnode + " ." + EOL;
-                        walk(bnode, o);
-                    }
-                }
-            }
-        };
-
-        var triples = "",
-            bnodeIndex = 0;
-
-        for (var s in pSettings)
-            walk(s, pSettings[s]);
-
-        return triples;
-    };
-
+    
     var dropGraph = function(name)
     {
         var requestData = {
@@ -455,7 +411,6 @@ angular.module("app.configuration", [])
         dropGraph               : dropGraph,
         parseSparqlResults      : parseSparqlResults,
         setSpringBatchUri       : setSpringBatchUri,
-        getSpringBatchUri       : getSpringBatchUri,
-        makeTriples             : makeTriples
+        getSpringBatchUri       : getSpringBatchUri
     };
 });

@@ -52,8 +52,8 @@ function StackMenuCtrl($scope, AccountService) {
        title: "Evolution and Repair",
        id:"evolution-and-repair",
        items: [
-         {name: 'Create Change Request', route:'#/workbench/evolution-and-repair/coevolution-create', url:'/workbench/evolution-and-repair/coevolution-create', requiredServices:[] },
-         {name: 'Apply Change Request', route:'#/workbench/evolution-and-repair/coevolution-apply', url:'/workbench/evolution-and-repair/coevolution-apply', requiredServices:[] }]
+         // {name: 'Create Change Request', route:'#/workbench/evolution-and-repair/coevolution-create', url:'/workbench/evolution-and-repair/coevolution-create', requiredServices:[] },
+         {name: 'Public-Private Data Coevolution', route:'#/workbench/evolution-and-repair/coevolution-apply', url:'/workbench/evolution-and-repair/coevolution-apply', requiredServices:[] }]
       }
 	  ];
 

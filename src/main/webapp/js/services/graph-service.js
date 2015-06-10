@@ -25,18 +25,27 @@ module.factory("GraphService", function ($http, $q, Config, ConfigurationService
     var getGraphJson = function(uri, source){
         
         var namedGraph  =  source[uri];
+        var graph = source[namedGraph["sd:graph"]];
+        // catch unrecognised namespaces
+        var vgraphset= "";
+        if( graph["gv:hasGraphSet"] != undefined &&
+            graph["gv:hasGraphSet"][0] != ""){
+            vgraphset = graph["gv:hasGraphSet"][0];
+            Ns.add(vgraphset, Ns.getNamespace("gvg")+vgraphset+"/");
+        }
+
         var res = {
             name  : namedGraph["sd:name"][0]
             , graph : {
-                label : source[namedGraph["sd:graph"]]["rdfs:label"][0]
-                , description : source[namedGraph["sd:graph"]]["dcterms:description"][0]
-                , created : source[namedGraph["sd:graph"]]["dcterms:created"][0]
-                , modified : source[namedGraph["sd:graph"]]["dcterms:modified"][0]
-                , graphset : (source[namedGraph["sd:graph"]]["gv:hasGraphSet"]  == undefined)? '' : source[namedGraph["sd:graph"]]["gv:hasGraphSet"][0]
-                , author : (source[namedGraph["sd:graph"]]["dcterms:author"]  == undefined)? '' : source[namedGraph["sd:graph"]]["dcterms:author"]
-                , source : (source[namedGraph["sd:graph"]]["dcterms:source"] == undefined)? '' : source[namedGraph["sd:graph"]]["dcterms:source"]
-                , triples : (source[namedGraph["sd:graph"]]["void:triples"] == undefined)? 0 : source[namedGraph["sd:graph"]]["void:triples"][0]
-                , issued : (source[namedGraph["sd:graph"]]["dcterms:issued"] == undefined)? '' : source[namedGraph["sd:graph"]]["dcterms:issued"][0]
+                label : graph["rdfs:label"][0]
+                , description : graph["dcterms:description"][0]
+                , created  : graph["dcterms:created"][0]
+                , modified : ((graph["dcterms:modified"]==undefined)? '': graph["dcterms:modified"][0])
+                , graphset : vgraphset
+                , contributor   : ((graph["dcterms:contributor"]  == undefined)? [] : graph["dcterms:contributor"])
+                , source   : ((graph["dcterms:source"] == undefined)? [] : graph["dcterms:source"])
+                , triples  : ((graph["void:triples"] == undefined)? 0 : graph["void:triples"][0])
+                , issued   : ((graph["dcterms:issued"] == undefined)? '' : graph["dcterms:issued"][0])
             }
         };
         return res;
@@ -90,26 +99,21 @@ module.factory("GraphService", function ($http, $q, Config, ConfigurationService
                             break;
                     }
                 }
+                
+                var graph = data[namedGraph["sd:graph"]];
+                
+                if (onlyWritable && graph["dcterms:issued"]!= undefined)
+                    continue;
                 if (accessMode == null || onlyWritable && accessMode == "acl:Read")
                     continue;
 
                 //add result
-                var meta = getGraphJson(resource, data)
-                console.log(meta);
-
-                var res = {
-                    name  : namedGraph["sd:name"][0]
-                    , graph : {
-                        label : data[namedGraph["sd:graph"]]["rdfs:label"][0]
-                        , description : data[namedGraph["sd:graph"]]["dcterms:description"][0]
-                        , modified : data[namedGraph["sd:graph"]]["dcterms:modified"][0]
-                        , created : data[namedGraph["sd:graph"]]["dcterms:created"][0]
-                        , graphset : data[namedGraph["sd:graph"]]["gv:hasGraphSet"][0]
-                    }
-                    , access : accessMode
-                };
+                var res = getGraphJson(resource, data);
+                res["access"] = accessMode;
+                
                 results.push(res);
             }
+            console.log(results);
             return results;
         });
     };
@@ -122,23 +126,7 @@ module.factory("GraphService", function ($http, $q, Config, ConfigurationService
                 // filter named graphs
                 if (graph["rdf:type"] == "sd:NamedGraph") {
 
-                    var meta = getGraphJson(resource, data)
-                    console.log(meta);
-
-                    var res = {
-                        name: graph["sd:name"][0],
-                        graph: {
-                            label: data[graph["sd:graph"]]["rdfs:label"][0],
-                            description: data[graph["sd:graph"]]["dcterms:description"][0],
-                            modified: data[graph["sd:graph"]]["dcterms:modified"][0],
-                            created: data[graph["sd:graph"]]["dcterms:created"][0] ,
-                            graphset : data[graph["sd:graph"]]["gv:hasGraphSet"][0]
-                        },
-                        owner: null,
-                        publicAccess: getNoAccessMode(),
-                        usersWrite: [],
-                        usersRead: []
-                    };
+                    var res = getGraphJson(resource, data);
 
                     var access = graph["ontos:access"];
                     if (access != undefined) {
@@ -158,7 +146,6 @@ module.factory("GraphService", function ($http, $q, Config, ConfigurationService
                         }
                     }
                     if (graph["acl:owner"] != undefined){
-                        
                         res.owner = graph["acl:owner"][0];
                     }
                     results.push(res);
@@ -440,13 +427,23 @@ module.factory("GraphService", function ($http, $q, Config, ConfigurationService
 
     // saves a named graph in the store
     var updateGraph = function (parNamedGraph) {
+        console.log(parNamedGraph);
+        console.log(Config.getSettings());
         var namedgraph = Config.getSettings()[parNamedGraph.name];
         var graph = Config.getSettings()[parNamedGraph.name + "Graph"];
+
         graph["rdfs:label"][0] = parNamedGraph.graph.label;
         graph["dcterms:description"][0] = parNamedGraph.graph.description;
         graph["dcterms:modified"][0] = parNamedGraph.graph.modified;
         graph["dcterms:created"][0] = parNamedGraph.graph.created;
-        graph["gv:hasGraphSet"][0] = (parNamedGraph.graph.graphset == undefined ? [] : [parNamedGraph.graph.graphset])
+        graph["gv:hasGraphSet"][0] = (parNamedGraph.graph.graphset == undefined ? [] : parNamedGraph.graph.graphset)
+
+        if(parNamedGraph.graph.issued != ""){
+            if(graph["dcterms:issued"]== undefined)
+                graph["dcterms:issued"]=[parNamedGraph.graph.issued];
+        }
+
+        console.log(Config.getSettings());
 
         var permissions = null;
         if (AccountService.getAccount().getUsername() != undefined) {
@@ -504,6 +501,8 @@ module.factory("GraphService", function ($http, $q, Config, ConfigurationService
                 });
             }
         }
+
+
         if (permissions != null) {
             var requestData = {
                 format: "application/sparql-results+json",
@@ -537,37 +536,37 @@ module.factory("GraphService", function ($http, $q, Config, ConfigurationService
         });
     };
 
+
     // after some data updated into the graph, its metadata needs to be updated
-    var updateChange = function(metadata){
-        
-        return $http.get("rest/graphs/countTriples/"+metadata.graph).then(
+    var addContribution = function(contribution){
+        console.log(contribution);
+        return $http.put("rest/graphs", contribution).then(
             function(response){
+                return response.data.namedgraph;
+            });
+    };
 
+
+// after some data updated into the graph, its metadata needs to be updated
+    var publish = function(graphName){
+        console.log(graphName);
+        var uri = Ns.lengthen(graphName);
+        console.log(uri);
+        return $http.get("rest/graphs/countTriples/"+uri).then(
+            function(response){
                 var triples = response.data.triples;
-                var uri = Ns.shorten(metadata.graph);
                 var settings = Config.getSettings();
-                var graph = settings[settings[uri]["sd:graph"]];
+                var graph = settings[settings[graphName]["sd:graph"]];
 
-                graph["dcterms:modified"][0] = metadata.modified;
-                if(graph["dcterms:author"] == undefined)
-                    graph["dcterms:author"] = [];
-                if(graph["dcterms:author"].indexOf(metadata.author) == -1)
-                    graph["dcterms:author"].push(metadata.author);
-                if(graph["dcterms:source"] == undefined)
-                    graph["dcterms:source"] = [];
-                if(graph["dcterms:source"].indexOf(metadata.source) == -1)
-                    graph["dcterms:source"].push(metadata.source);
-                graph["void:triples"] = [];
-                graph["void:triples"].push(triples);
+                if(graph["dcterms:issued"]== undefined)
+                    graph["dcterms:issued"] = [Helpers.getCurrentDate()];
+                graph["void:triples"] = [triples];
 
                 console.log(graph);
 
-                return Config.write().then(function(response){
-                    return getGraphJson(uri, Config.getSettings());
-                });
+                return Config.write();
 
             });
-
     };
 
     return {
@@ -588,7 +587,8 @@ module.factory("GraphService", function ($http, $q, Config, ConfigurationService
         // these are new duplicated
         getNamedGraphCS: getNamedGraphCS,
         getUserGraphs: getUserGraphs,
-        updateChange:updateChange
+        publish:publish,
+        addContribution:addContribution
     };
 
 });
