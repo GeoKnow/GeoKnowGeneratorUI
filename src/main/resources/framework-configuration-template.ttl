@@ -40,7 +40,7 @@
 
 :EmailService
   a       lds:EmailService ;
-  dcterms:description "Provides functionality to send email, especially to send login information."^^xsd:string ;
+  dcterms:description "Provides functionality to send email notifications to users, and especially to send login information."^^xsd:string ;
   lds:password "***REMOVED***"^^xsd:string ;
   lds:user "***REMOVED***"^^xsd:string ;
   foaf:mbox <mailto:***REMOVED***> ;
@@ -50,7 +50,7 @@
 
 :PublishingService
   a       lds:PublicationService ;
-  dcterms:description "Provides functionalit to upload data to a target graph varius graphs and to do a versioning."^^xsd:string ;
+  dcterms:description "Provides functionality to upload data to a target graph from several graphs and to do versioning."^^xsd:string ;
   lds:serviceUrl <http://localhost:8080/generator/rest/publish> . 
 
 

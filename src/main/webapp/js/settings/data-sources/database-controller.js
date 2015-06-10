@@ -1,6 +1,6 @@
 'use strict';
 
-function DatabaseCtrl($scope, $modal, ConfigurationService){
+function DatabaseCtrl($scope, $modal, ConfigurationService, ServerErrorResponse){
 	
 	
     ConfigurationService.getSettings().then(

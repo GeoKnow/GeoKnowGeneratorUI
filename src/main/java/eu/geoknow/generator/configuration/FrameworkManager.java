@@ -1,9 +1,11 @@
 package eu.geoknow.generator.configuration;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -78,7 +80,7 @@ public class FrameworkManager {
     Service service = new Service();
     service.setUri(uri);
 
-    String query = "SELECT ?service ?property ?object WHERE { <" + uri + "> ?property ?object . }";
+    String query = "SELECT ?property ?object WHERE { <" + uri + "> ?property ?object . }";
     String result = storeManager.execute(query, MediaType.SPARQL_JSON_RESPONSE_FORMAT);
 
     ObjectMapper mapper = new ObjectMapper();
@@ -95,5 +97,65 @@ public class FrameworkManager {
       ComponentManager.setServiceProperty(service, property, object);
     }
     return service;
+  }
+
+  /**
+   * Get the list of integrated components
+   * 
+   * @return List<String> compoments uris
+   * @throws Exception
+   */
+  public List<String> getIntegratedComponents() throws Exception {
+
+    String query =
+        "SELECT ?component FROM <" + config.getSettingsGraph() + "> WHERE { ?workbench <"
+            + LDIS.integrates.getURI() + "> ?component }";
+
+    String result = storeManager.execute(query, MediaType.SPARQL_JSON_RESPONSE_FORMAT);
+
+    List<String> components = new ArrayList<String>();
+    ObjectMapper mapper = new ObjectMapper();
+    JsonNode rootNode = mapper.readTree(result);
+    Iterator<JsonNode> bindingsIter = rootNode.path("results").path("bindings").elements();
+    while (bindingsIter.hasNext()) {
+      JsonNode bindingNode = bindingsIter.next();
+
+      components.add(bindingNode.get("component").path("value").textValue());
+    }
+    return components;
+  }
+
+  /**
+   * Add a component to the workbench
+   * 
+   * @param uri
+   * @throws Exception
+   */
+  public void setComponentsIntegration(String uri) throws Exception {
+    String query =
+        "INSERT DATA INTO <" + config.getSettingsGraph() + ">  { ?workbench <"
+            + LDIS.integrates.getURI() + "> <" + uri + "> }";
+
+    log.debug(query);
+    String result = storeManager.execute(query, MediaType.SPARQL_JSON_RESPONSE_FORMAT);
+    log.debug(result);
+
+  }
+
+  /**
+   * remove a component from the workbench
+   * 
+   * @param uri
+   * @throws Exception
+   */
+  public void removeComponentsIntegration(String uri) throws Exception {
+    String query =
+        "DELETE FROM <" + config.getSettingsGraph() + "> { ?workbench <" + LDIS.integrates.getURI()
+            + "> ?component } WHERE { ?workbench <" + LDIS.integrates.getURI() + "> <" + uri
+            + "> }";
+    log.debug(query);
+    String result = storeManager.execute(query, MediaType.SPARQL_JSON_RESPONSE_FORMAT);
+    log.debug(result);
+
   }
 }

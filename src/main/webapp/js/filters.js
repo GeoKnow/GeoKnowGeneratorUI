@@ -7,12 +7,7 @@ var module = angular.module('app.filters', []);
 */
 module.filter('shortenURI', function(Ns) {
   return function(uri) {
-    console.log(uri);
-	  var prefixes = Ns.getPrefixes();
-	  for(var pre in prefixes){
-		  if(uri.indexOf(prefixes[pre]) > -1) return uri.replace(prefixes[pre], pre+":"); 
-	  }
-    return uri; 
+    return Ns.shorten(uri); 
   };
 }); 
 

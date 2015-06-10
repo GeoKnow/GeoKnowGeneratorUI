@@ -103,8 +103,6 @@ public class ComponentManager {
         String property = bindingNode.get("sproperty").path("value").textValue();
         String object = bindingNode.get("sobject").path("value").textValue();
 
-        log.debug(curi);
-        log.debug(suri);
         if (!components.containsKey(curi)) {
           Component c = new Component();
           c.setUri(curi);

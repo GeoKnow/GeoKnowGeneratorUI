@@ -138,8 +138,10 @@ module.factory("GraphService", function ($http, $q, Config, ConfigurationService
                                     res.publicAccess = accessMode;
                             } else { //user access
                                 if (accessMode == "acl:Write") {
+                                    if(res.usersWrite == undefined) res["usersWrite"]=[];
                                     res.usersWrite.push(access[acc]["acl:agent"][0]);
                                 } else {
+                                    if(res.usersRead == undefined) res["usersRead"]=[];
                                     res.usersRead.push(access[acc]["acl:agent"][0]);
                                 }
                             }

@@ -58,6 +58,13 @@ module.factory('ConfigurationService', function ($q, Config, $http, $location, f
                 });
         },
 
+        getMeta : function(){
+            return { 
+                uri : Config.getFrameworkUri(), 
+                label : "GeoKnow Generator Workbench",
+                homepage : FRAMEWORK_HOMEPAGE,
+                version : "1.5.0"};
+        }
         setSPARQLEndpoint: function (endpoint) {
             Config.setEndpoint(endpoint);
         },
@@ -135,6 +142,23 @@ module.factory('ConfigurationService', function ($q, Config, $http, $location, f
                     return response.data.service;
             }); 
         },
+
+        getIntegratedComponents :function(){
+            return $http.get("rest/config/components").then( 
+                // success
+                function (response){
+                    return response.data.components;
+            }); 
+        },
+
+        integrateComponent :function(uri){
+            return $http.post("rest/config/components/"+uri); 
+        },
+
+        removeComponent :function(uri){
+            return $http.delete("rest/config/components/"+uri); 
+        },
+
         getResourcesType: function (type) {
             var results = [];
             var elements = Config.select("rdf:type", type);

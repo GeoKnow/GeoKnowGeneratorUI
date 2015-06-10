@@ -2,9 +2,11 @@ package eu.geoknow.generator.rest;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.List;
 
 import javax.servlet.ServletContext;
 import javax.ws.rs.CookieParam;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -189,6 +191,125 @@ public class Configuration {
     }
   }
 
+
+  /**
+   * Get a list of integrated components
+   * 
+   * @param userc
+   * @param token
+   * @return
+   */
+  @GET
+  @Path("/components")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response getIntegratedComponents(@CookieParam(value = "user") Cookie userc, @CookieParam(
+      value = "token") String token) {
+
+    UserProfile user;
+    try {
+      FrameworkUserManager frameworkUserManager =
+          FrameworkConfiguration.getInstance().getFrameworkUserManager();
+      // authenticates the user, throw exception if fail
+      user = frameworkUserManager.validate(userc, token);
+      if (user == null) {
+        return Response.status(Response.Status.UNAUTHORIZED).entity("Invalid credentials").build();
+      }
+    } catch (Exception e) {
+      log.error(e);
+      return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+    }
+
+    try {
+      FrameworkManager manager = new FrameworkManager();
+      List<String> components = manager.getIntegratedComponents();
+      Gson gson = new Gson();
+      String json = "{ \"components\" : " + gson.toJson(components) + "}";
+      return Response.status(Response.Status.OK).entity(json).type(MediaType.APPLICATION_JSON)
+          .build();
+    } catch (Exception e) {
+      log.error(e);
+      return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+    }
+  }
+
+  /**
+   * Integrate a component to the workbench
+   * 
+   * @param userc
+   * @param token
+   * @param uri
+   * @return
+   */
+  @POST
+  @Path("/components/{uri : .+}")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response integrateComponent(@CookieParam(value = "user") Cookie userc, @CookieParam(
+      value = "token") String token, @PathParam("uri") String uri) {
+
+    UserProfile user;
+    try {
+      FrameworkUserManager frameworkUserManager =
+          FrameworkConfiguration.getInstance().getFrameworkUserManager();
+      // authenticates the user, throw exception if fail
+      user = frameworkUserManager.validate(userc, token);
+      if (user == null) {
+        return Response.status(Response.Status.UNAUTHORIZED).entity("Invalid credentials").build();
+      }
+    } catch (Exception e) {
+      log.error(e);
+      return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+    }
+
+    try {
+      FrameworkManager manager = new FrameworkManager();
+      manager.setComponentsIntegration(uri);
+
+      return Response.status(Response.Status.OK).build();
+    } catch (Exception e) {
+      log.error(e);
+      return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+    }
+  }
+
+  /**
+   * Remove a component from the workbench
+   * 
+   * @param userc
+   * @param token
+   * @param uri
+   * @return
+   */
+  @DELETE
+  @Path("/components/{uri : .+}")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response removeComponent(@CookieParam(value = "user") Cookie userc, @CookieParam(
+      value = "token") String token, @PathParam("uri") String uri) {
+
+    UserProfile user;
+    try {
+      FrameworkUserManager frameworkUserManager =
+          FrameworkConfiguration.getInstance().getFrameworkUserManager();
+      // authenticates the user, throw exception if fail
+      user = frameworkUserManager.validate(userc, token);
+      if (user == null) {
+        return Response.status(Response.Status.UNAUTHORIZED).entity("Invalid credentials").build();
+      }
+    } catch (Exception e) {
+      log.error(e);
+      return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+    }
+
+    try {
+      FrameworkManager manager = new FrameworkManager();
+      manager.removeComponentsIntegration(uri);
+
+      return Response.status(Response.Status.OK).build();
+    } catch (Exception e) {
+      log.error(e);
+      return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+    }
+  }
+
   /**
    * Retun the data of the given built-in service
    * 
@@ -232,7 +353,8 @@ public class Configuration {
   }
 
   /**
-   * Get the status of the setup
+   * Ask if a resource exists, it is mainly used for creating new resources, we want to ckeck that
+   * the uri provided by the user is not already existing
    * 
    * @return true/false
    */

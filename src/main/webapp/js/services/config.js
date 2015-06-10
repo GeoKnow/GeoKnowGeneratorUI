@@ -279,21 +279,23 @@ angular.module("app.configuration", [])
     
         var wrap = function(s)
         {
-            if(/^https?:\/\//.test(s))
+            if(/^https?:\/\/|^mailto:/.test(s))
                 return "<" + s + ">";
             else if(/^_:b/.test(s))
                 return s;
-            else if(Ns.isUri(s)){
+            else if(s.indexOf(':') >= 0 ){
                 // get the prefix for the query
-                var p = s.substr(0, s.indexOf(':'));
-                p = (p == "" ? ":" : p);
-                if(PREFIXES.indexOf(p) == -1) 
-                    PREFIXES.push(p);
-                return s;
+                var parts = Ns.getParts(s);
+                if(parts != null){
+                    var p = Ns.getPrefix(parts[0]);
+                    p = ( (p!= ":")? p.replace(":","") : p );
+                    if(PREFIXES.indexOf(p) == -1)
+                        PREFIXES.push(p);
+                    return s;
+                }
             }
-            else
-            // TODO: we have also to validate the datatype!
-                return '"' + s + '"';
+            
+            return '"' + s + '"';
         };
 
         var data = "",
@@ -323,6 +325,8 @@ angular.module("app.configuration", [])
 
         for (var s in settings)
             walk(s, settings[s]);
+
+        console.log(PREFIXES);
 
         var requestData = {
         		 format: "application/sparql-results+json",

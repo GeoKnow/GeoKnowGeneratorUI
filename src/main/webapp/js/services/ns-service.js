@@ -81,6 +81,9 @@ module.factory('Ns', function (Helpers) {
 
     getParts : function(v){
 			var value = v.split(":");
+			// v is not a uri
+			if(value.length!=2)
+				return null;
     	var uri = value[0];
     	if(value[0]=="")
     		uri = prefixes[":"];

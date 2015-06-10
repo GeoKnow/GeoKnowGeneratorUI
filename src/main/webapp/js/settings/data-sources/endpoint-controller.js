@@ -1,7 +1,7 @@
 'use strict';
 
 
-function EndpointCtrl($scope, $modal, ConfigurationService,  AccountService){
+function EndpointCtrl($scope, $modal, ConfigurationService, AccountService, ServerErrorResponse){
 	
 	
     ConfigurationService.getSettings().then(

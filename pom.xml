@@ -4,7 +4,7 @@
 	<groupId>eu.geoknow</groupId>
 	<artifactId>generator</artifactId>
 	<packaging>war</packaging>
-	<version>1.1.0</version>
+	<version>2.0.0</version>
 	<name>GeoKnow Generator</name>
 
 	<properties>
@@ -205,7 +205,7 @@
 				<artifactId>tomcat7-maven-plugin</artifactId>
 				<version>2.2</version>
 				<configuration>
-					<server>coev</server>
+					<server>localhost</server>
 					<url>${tomcat.deploy.url}</url>
 					<path>/${project.build.finalName}</path>
 					<update>true</update>

@@ -4,34 +4,57 @@ The GeoKnow Generator provides workbench that integrates of tools developed with
 
 ### Requirements
 
-* [Virtuoso 7.1](https://github.com/openlink/virtuoso-opensource) triple store is required for most of the GeoKnow software tools integrated in this Workbench. 
-* [Spring-batch-admin-generatror](https://github.com/GeoKnow/spring-batch-admin). For the moment this is required only for LIMES-Service in order to perform batch jobs, but it is planned to migrate some other coponents to be executed using this tool. 
+The Workbench absolutely requires the following software:
 
+* Tomcat 7
+* [Virtuoso 7.1](https://github.com/openlink/virtuoso-opensource) triple store is required for most of the GeoKnow software tools integrated in this Workbench. 
+* [Spring-batch-admin-generatror](https://github.com/GeoKnow/spring-batch-admin). It is used by some components in order to perform batch jobs, such as Limes-Service, ImportRDF and Deer-Service. 
+
+Since the workbench integrates several Linked Data tools, it is upto the user to insall and enable these components. The integrated tools are:
+
+* [Limes-Service](https://github.com/GeoKnow/LIMES-Service) 
+* [Facete](https://github.com/GeoKnow/Facete2)
+* [Sparqlify](https://github.com/AKSW/Sparqlify)
+* [Deer-Service](https://github.com/GeoKnow/DEER-Service)
+* [TripleGeo-Service](https://github.com/GeoKnow/TripleGeo-Service)
+* [FAGI-gis](https://github.com/GeoKnow/FAGI-gis)
+* [Mappify](https://github.com/GeoKnow/Mappify)
+* [OntoWiki](https://github.com/AKSW/OntoWiki)
+* [Coevolution](https://github.com/GeoKnow/Coevolution)
 
 ## Install
 
-* __From Debian package__: The GeoKnow Generator UI is available as a debuian package, to install follow [these](http://stack.linkeddata.org/documentation/installation-of-a-local-generator-demonstrator/) instructions. This is a preconfigured application that assumes that a triple store is installed in the localhost.
+* __From Debian package__: The GeoKnow Generator UI is available as a debuian package, to install follow [these](http://stack.linkeddata.org/documentation/installation-of-a-local-generator-demonstrator/) instructions. 
 * __Form source__: Follow the configuration instructions below, and use `maven pacakge` to package the souces in a war file and deploy it on a servlet container. 
 
 The Generator Workbencg will not install any integrated component from the stack and you require to install each one. You can choose to use again Debian packages following [these](http://stack.linkeddata.org/documentation/installation-of-a-local-generator-demonstrator/) instructions, or following instructions from each developer's component installation guides.
 
 ## Configuration
 
-### Application configuration
+If you install the Workbench from sources you need to create the configuration files. If you installed from the Debian package, these files are already provided to work in the local host, and you can skip this configuration. 
 
-1. Open the `src/main/resources/framework-configuration-template.ttl` and provide for:
-	
-	* GeoKnowGenerator foaf:homepage URL if the application is going to be accessed from a different place than the localhost, 
-	* VirtuosoConductor lds:serviceUrl, lds:user, lds:password and lds:connectionString,
-	* VirtuosoAuthSPARQLEndpoint void:sparqlEndpoint, lds:serviceUrl, and desired user/password for the workbench user, wich will be created at setup.
-	* VirtuosoEndpoint : void:sparqlEndpoint and lds:serviceUrl, 
-	* Admin foaf:mbox, which will belong to tha initial administrator user account. By default a admin user with password is created, and an email has to be provided in the configuration. 
-
-2. Open the `src/main/resources/framework-components.ttl` and make sure URLs for alll stack components are accurate.
-
-3. In order to let other users to register into the system, you need to edit `src/main/webapp/WEB-INF/web.xml` and provide the ***REMOVED*** data that is required for email notifications.
+1. Create a directory for the application data e.g. /var/generator 
+2. This directory have to be writable by the tomcat user, so you have to do something like:
 		
-### Application Setup and Reset
+		chown -R tomcat:tomcat /var/generator
+		
+3. Adapt the framework configuration files located at src/main/resources. You need to remove the '-template' word from the file name.
+	* **framework-configuration-template.ttl**: contains workbech required directories and variabled configuration and the configuration of services offered by the workbench. In this file you have to provide:
+		* ontos:frameworkDataDir, provide the path of the directory created in step 1.
+		* GeoKnowGenerator foaf:homepage URL if the application is going to be accessed from a different place than the localhost.
+		* Provide in the :EmailService the corresponding configuration of an email account that will be used to notify newly registered users.
+	
+	* **framework-components-template.ttl**: contains configuration of external tools that are integrated in the workbench. In this file you have to provide:
+		* VirtuosoConductor lds:serviceUrl, lds:user, lds:password and lds:connectionString,
+		* VirtuosoAuthSPARQLEndpoint void:sparqlEndpoint, lds:serviceUrl, and desired user/password for the workbench user, wich will be created at setup.
+		* VirtuosoEndpoint : void:sparqlEndpoint and lds:serviceUrl, 
+
+	* **framework-roles-template.ttl**: contains an initial specifications of roles. You can leave this file as is.
+	* **framework-users-template.ttl**: contais the users that will be created at setup, and that can be used to login into the application. You can change the username and paswords and add more users.
+	* **framework-datasources-template.ttl**: contains an inital configuration of datasources. 
+
+		
+## Setup and Reset
 
 To initalize the application the user is only required to navigate to the URL where the application has being deployed and a setup page will be shown. 
 
