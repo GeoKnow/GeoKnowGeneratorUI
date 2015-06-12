@@ -3,6 +3,7 @@ package eu.geoknow.generator.rest;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletContext;
 import javax.ws.rs.CookieParam;
@@ -221,9 +222,12 @@ public class Configuration {
 
     try {
       FrameworkManager manager = new FrameworkManager();
-      List<String> components = manager.getIntegratedComponents();
+      List<Map<String, String>> integrated = manager.getIntegratedComponents();
+      List<String> required = manager.getRequiredComponents();
       Gson gson = new Gson();
-      String json = "{ \"components\" : " + gson.toJson(components) + "}";
+      String json =
+          "{ \"integrated\" : " + gson.toJson(integrated) + ", \"required\" : "
+              + gson.toJson(required) + "}";
       return Response.status(Response.Status.OK).entity(json).type(MediaType.APPLICATION_JSON)
           .build();
     } catch (Exception e) {

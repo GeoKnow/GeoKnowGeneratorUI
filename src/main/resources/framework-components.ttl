@@ -30,8 +30,8 @@
   a  lds:StorageService ;
   rdfs:label "Virtuoso Conductor" ;
   lds:password "dba"^^xsd:string ;
-  lds:serviceUrl <http://10.0.0.82:8890/conductor> ;
-  lds:connectionString "jdbc:virtuoso://10.0.0.82:1111/"^^xsd:string;
+  lds:serviceUrl <http://192.168.2.22:8890/conductor> ;
+  lds:connectionString "jdbc:virtuoso://192.168.2.22:1111/"^^xsd:string;
   lds:user   "dba"^^xsd:string .
 
 # #######################################################################################
@@ -40,31 +40,43 @@
 
 :VirtuosoAuthSPARQLEndpoint
   a       lds:SecuredSPARQLEndPointService;
-  rdfs:label "Virtuoso Authentication SPARQLEndpoint" ;
+  rdfs:label "Virtuoso Auth-SPARQLEndpoint" ;
   lds:password "generator"^^xsd:string ;
-  lds:serviceUrl <http://10.0.0.82:8890/sparql-auth> ;
-  void:sparqlEndpoint <http://10.0.0.82:8890/sparql-auth> ;
+  lds:serviceUrl <http://192.168.2.22:8890/sparql-auth> ;
+  void:sparqlEndpoint <http://192.168.2.22:8890/sparql-auth> ;
   lds:user   "generator"^^xsd:string .
 
 :VirtuosoEndpoint
   a       lds:SPARQLEndPointService;
   rdfs:label "Virtuoso Public Endpoint" ;
-  void:sparqlEndpoint <http://10.0.0.82:8890/sparql-auth> ;
-  lds:serviceUrl <http://10.0.0.82:8890/sparql> .
+  void:sparqlEndpoint <http://192.168.2.22:8890/sparql-auth> ;
+  lds:serviceUrl <http://192.168.2.22:8890/sparql> .
 
 :SpringBatch
-      a       lds:StackComponent ;
-      rdfs:label "Spring Batch Admin"^^xsd:string ;
-      lds:providesService :SpringBatchService ;
-      foaf:homepage <http://localhost:8080/spring-batch-admin-geoknow/> ;
-      dcterms:hasVersion "1.0"^^xsd:string .
+  a       lds:StackComponent ;
+  rdfs:label "Spring Batch Admin"^^xsd:string ;
+  lds:providesService :SpringBatchService ;
+  foaf:homepage <http://localhost:8080/spring-batch-admin-geoknow/> ;
+  dcterms:hasVersion "1.0"^^xsd:string .
 
 :SpringBatchService
       a       lds:WorkflowService ;
-      rdfs:label "SpringBatch Service" ;
+      rdfs:label "SpringBatch" ;
       dcterms:description "Provides functionality to create scheduled jobs and workflows."^^xsd:string ;
       lds:serviceUrl <http://localhost:8080/spring-batch-admin-geoknow/> ;
       ontos:springBatchAdminJobsDir "/Users/alejandragarciarojas/Services/tomcat/webapps/spring-batch-admin-geoknow/WEB-INF/classes/META-INF/batch-jobs/"^^xsd:string .
+
+:RdfImport
+  a       lds:StackComponent ;
+  rdfs:label "Rdf Import"^^xsd:string ;
+  lds:providesService :RdfImportService ;
+  foaf:homepage <http://localhost:8080/generator/rest/import-rdf> ;
+  dcterms:hasVersion "1.0"^^xsd:string .
+
+:RdfImportService
+      a       lds:ExtractionService ;
+      rdfs:label "RDF Import" ;
+      lds:serviceUrl <http://localhost:8080/generator/rest/import-rdf/> .
 
 :Sparqlify
       a       lds:StackComponent ;
@@ -74,8 +86,8 @@
       foaf:homepage <http://aksw.org/Projects/Sparqlify.html> .
 
 :SparqlifyService
-      a       lds:ExplorationService ;
-      rdfs:label "Sparqlify Service" ;
+      a       lds:ExtractionService ;
+      rdfs:label "Sparqlify" ;
       lds:serviceUrl <http://localhost:8080/sparqlify/> .
 
 :Facete
@@ -86,18 +98,18 @@
       foaf:homepage <http://aksw.org/Projects/Facete.html> .
 :FaceteService
       a       lds:ExplorationService ;
-      rdfs:label "Facete Service" ;
+      rdfs:label "Facete" ;
       lds:serviceUrl <http://cstadler.aksw.org/facete2/> .
 
 :Limes
       a       lds:StackComponent ;
-      rdfs:label "Limes Linking Service"^^xsd:string ;
+      rdfs:label "Limes Linking"^^xsd:string ;
       lds:providesService :LimesService;
       dcterms:hasVersion "0.6.4"^^xsd:string ;
       foaf:homepage <http://aksw.org/Projects/LIMES.html> .
 :LimesService
       a       lds:InterlinkingService ;
-      rdfs:label "Limes Service" ;
+      rdfs:label "Limes" ;
       lds:serviceUrl <http://localhost:8080/limes-service> .
 
 :TripleGeo
@@ -108,7 +120,7 @@
       foaf:homepage <https://web.imis.athena-innovation.gr/redmine/projects/geoknow_public/wiki/TripleGeo> .
 :TripleGeoService
       a       lds:ExtractionService ;
-      rdfs:label "Triple-Geo Service" ;
+      rdfs:label "Triple-Geo" ;
       lds:serviceUrl <http://localhost:8080/TripleGeo-Service> .
 
 :DEER
@@ -119,7 +131,7 @@
       foaf:homepage <https://github.com/AKSW/DEER> .
 :DEERService
       a       lds:EnrichmentService ;
-      rdfs:label "Deer Service" ;
+      rdfs:label "Deer" ;
       lds:serviceUrl <http://localhost:8080/deer-Service> .
 
 :OntoWiki
@@ -130,7 +142,7 @@
       foaf:homepage <http://aksw.org/Projects/OntoWiki.html> .
 :OntoWikiService
       a       lds:AuthoringService ;
-      rdfs:label "OntoWiki Service" ;
+      rdfs:label "OntoWiki" ;
       lds:serviceUrl <http://localhost/ontowiki> .
 
 :Mappify
@@ -141,7 +153,7 @@
       foaf:homepage <https://github.com/GeoKnow/Mappify> .
 :MappifyService
       a       lds:ExplorationService ;
-      rdfs:label "Mappify Service" ;
+      rdfs:label "Mappify" ;
       lds:serviceUrl <http://cstadler.aksw.org/mappify2/> .
 	  
 :FagiGis
@@ -152,8 +164,8 @@
       foaf:homepage <https://github.com/GeoKnow/FAGI-gis> .
 
 :FagiGisService
-      a       lds:ExplorationService ;
-      rdfs:label "Fagi-gis Service" ;
+      a       lds:InterlinkingService ;
+      rdfs:label "Fagi-gis" ;
       lds:serviceUrl <http://localhost:8080/FAGI-WebInterface/> .
 
 :Coevolution
@@ -165,5 +177,6 @@
 
 :CoevolutionService
       a       lds:PublicationService ;
+      rdfs:label "Public-Private Data Coevolution"^^xsd:string ;
       lds:serviceUrl <http://geoknow-generator.aws.semweb.unister.de:8080/coevolution-service/> .
 

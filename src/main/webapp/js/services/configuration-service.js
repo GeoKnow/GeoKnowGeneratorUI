@@ -64,7 +64,8 @@ module.factory('ConfigurationService', function ($q, Config, $http, $location, f
                 label : "GeoKnow Generator Workbench",
                 homepage : FRAMEWORK_HOMEPAGE,
                 version : "1.5.0"};
-        }
+        }, 
+
         setSPARQLEndpoint: function (endpoint) {
             Config.setEndpoint(endpoint);
         },
@@ -147,7 +148,7 @@ module.factory('ConfigurationService', function ($q, Config, $http, $location, f
             return $http.get("rest/config/components").then( 
                 // success
                 function (response){
-                    return response.data.components;
+                    return response.data;
             }); 
         },
 
@@ -219,7 +220,7 @@ module.factory('ConfigurationService', function ($q, Config, $http, $location, f
         getAllEndpoints: function () {
             var results = [];
             var elements = Config.select("rdf:type", "ontos:SPARQLEndpoint");
-            console.log(elements);
+            
             for (var resource in elements) {
                 var element = elements[resource];
                 if(element["rdfs:label"]== undefined) continue;
@@ -471,7 +472,7 @@ module.factory('ConfigurationService', function ($q, Config, $http, $location, f
         getRequiredServices: function(url) {
             var routeRestrictions = Config.select("rdf:type", "ontos:RouteRestriction");
             for (var ind in routeRestrictions) {
-                if (routeRestrictions[ind]["ontos:partialUrl"] == url) {
+                if (routeRestrictions[ind]["ontos:route"] == url) {
                     return routeRestrictions[ind]["ontos:requiredService"];
                 }
             }

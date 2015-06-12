@@ -7,6 +7,7 @@
 <table class="table table-striped" ng-controller="ComponentCtrl">
 <thead>
   <tr>
+    <th>Enabled</th>
   	<th>URI</th>
     <th>Name</th>
     <th>Services</th>
@@ -15,14 +16,16 @@
 </thead>
 <tbody>
   <tr ng-repeat="component in components">
+    <td><input type="checkbox" ng-show="isNotRequired(component.uri)" ng-checked="isIntegrated(component.uri)" ng-click="toggleComponent(component.uri)"> </td>
   	<td>{{component.uri | shortenURI }}</td>
-    <td><a href="{{component.website}}" target="_blanc">{{component.label}}</a></td>
+    <td><a href="{{component.homepage}}" target="_blanc">{{component.label}}</a></td>
     <td>
       <div ng-repeat="(key, value) in component.services">
         <dl>
-          <dt><input type="checkbox" checked="isIntegrated(value.uri)" ng-click="toggleService(value.uri)"> {{value.uri}}</dt>
-          <dd>{{value.type}}</dd>
-          <dd><a href="{{value.serviceUrl}}" target="_blanc">{{value.serviceUrl}}</a></dd>
+          <dt>{{value.uri | shortenURI  }} a {{value.type | shortenURI }}</dd>
+          <dd>
+            <button type="button" class="btn btn-default btn-xs" ng-click="changeServiceUrl(value);"><span class="glyphicon glyphicon-edit"></span></button>
+           <a href="{{value.serviceUrl}}" target="_blanc">{{value.serviceUrl}}</a></dd>
         </dl>
       </div>
     </td>

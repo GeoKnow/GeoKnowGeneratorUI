@@ -1,44 +1,25 @@
 'use strict';
 
-function ComponentCtrl($scope, ComponentsService, ConfigurationService, ServerErrorResponse){
+function ComponentCtrl($scope, $modal, flash, ComponentsService, ConfigurationService, ServerErrorResponse){
 
-	var workbenchMeta;
-	ConfigurationService.getSettings().then(function(response){
-		workbenchMeta = ConfigurationService.getMeta();	
-		console.log(workbenchMeta);
-	})
-	
+	$scope.integratedComponents = [];
+	$scope.requiredComponents = [];
 	var init = function(){
 		// get all exisiting services
 		ComponentsService.getAllComponents().then(
 			//success
 			function(components){
-
-				console.log(components);
 				$scope.components = components;
-
 				ConfigurationService.getIntegratedComponents().then(
-					function(iservs){
-						$scope.integratedServices = iservs;
-						console.log(iservs);
-
-						// get the workbench services
-						ConfigurationService.getWorkbenchServices().then(
-							//success
-							function(services){
-								console.log(services);
-								workbenchMeta["services"] = services;
-								$scope.components.push(workbenchMeta);
-							},
-							//error
-							function(response){
-								flash.error = ServerErrorResponse.getMessage(response);
-							});
+					function(resp){
+						console.log(resp);
+						$scope.integratedComponents = resp.integrated;
+						$scope.requiredComponents = resp.required;
+						
 					},
 					function(response){
 						flash.error = ServerErrorResponse.getMessage(response);
 					});
-
 			},
 			// fail 
 			function(response){
@@ -46,18 +27,62 @@ function ComponentCtrl($scope, ComponentsService, ConfigurationService, ServerEr
 			});
 	};
 
-	$scope.isConfigurable=function(uri){
-		for(workbenchMeta)
+	init();
+
+	$scope.isNotRequired=function(uri){
+		return ($scope.requiredComponents.indexOf(uri) == -1);
 	}
 
 	$scope.isIntegrated=function(uri){
-		return ($scope.integratedServices.indexOf(uri))>=0);
+		for(var i in $scope.integratedComponents)
+			if($scope.integratedComponents[i].uri==uri)
+				return true;
+		return false;
 	}
 
-	$scope.toggleService=function(uri){
+	$scope.toggleComponent=function(uri){
+		var promise;
 		if($scope.isIntegrated(uri))
-		ConfigurationService.integrateComponent
+			promise = ConfigurationService.removeComponent(uri);
+		else
+			promise = ConfigurationService.integrateComponent(uri);
+
+		promise.then(
+			function(response){
+				init();
+			}, 
+			function(response){
+				flash.error = ServerErrorResponse.getMessage(response);
+				return false;
+			});
 	}
 
-	init();
+	$scope.changeServiceUrl= function(service){
+		 var modalInstance = $modal.open({
+      templateUrl: 'modal-forms/settings/components/modal-component-service.html',
+      controller: 'ModalComponentServiceCtrl',
+      backdrop: 'static',
+      size: 'lg',
+      resolve: {
+        resource: function() {
+          return service;
+        },
+        modaltitle: function(){
+          return "Update";
+        }
+      }
+    });
+    modalInstance.result.then(function(vService) {
+      ComponentsService.updateService(vService).then(
+	      	function(response){
+					init();
+				}, 
+				function(response){
+					flash.error = ServerErrorResponse.getMessage(response);
+					return false;
+				});
+    });
+	}
+
+	
 }

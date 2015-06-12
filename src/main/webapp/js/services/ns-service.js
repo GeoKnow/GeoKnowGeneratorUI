@@ -1,4 +1,4 @@
-'use strict';
+	'use strict';
 
 var module = angular.module('app.ns-service', []);
 
@@ -36,7 +36,7 @@ module.factory('Ns', function (Helpers) {
 		"sider"		: "http://www4.wiwiss.fu-berlin.de/sider/resource/sider/",
 		"diseasome" : "http://www4.wiwiss.fu-berlin.de/diseasome/resource/diseasome/",
 		"gv"			: "http://geoknow.eu/coevolution/graphversioning/", 
-		"gvg"			: "http://geoknow.eu/coevolution/graphversioning/graphset/",
+		"gvg"			: "http://generator.geoknow.eu/resource/graphset",
 		"cec"			: "http://geoknow.eu/coevolution/change/"
 
 	};

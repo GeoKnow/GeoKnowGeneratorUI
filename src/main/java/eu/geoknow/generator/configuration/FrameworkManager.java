@@ -12,7 +12,9 @@ import org.apache.log4j.Logger;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.hp.hpl.jena.vocabulary.RDFS;
 import com.ontos.ldiw.vocabulary.LDIS;
+import com.ontos.ldiw.vocabulary.LDIWO;
 
 import eu.geoknow.generator.common.MediaType;
 import eu.geoknow.generator.component.ComponentManager;
@@ -105,11 +107,46 @@ public class FrameworkManager {
    * @return List<String> compoments uris
    * @throws Exception
    */
-  public List<String> getIntegratedComponents() throws Exception {
+  public List<Map<String, String>> getIntegratedComponents() throws Exception {
 
     String query =
-        "SELECT ?component FROM <" + config.getSettingsGraph() + "> WHERE { ?workbench <"
-            + LDIS.integrates.getURI() + "> ?component }";
+        "SELECT ?component ?route ?type ?label FROM <" + config.getSettingsGraph() + "> FROM  <"
+            + config.getComponentsGraph() + "> WHERE { <" + config.getFrameworkUri() + "> <"
+            + LDIS.integrates.getURI() + "> ?component . ?component <"
+            + LDIS.providesService.getURI() + "> ?service. ?service a ?type . ?service <"
+            + RDFS.label.getURI() + "> ?label . ?restriction <" + LDIWO.requiresService.getURI()
+            + "> ?service . ?restriction <" + LDIWO.route.getURI() + "> ?route }";
+
+    log.debug(query);
+    String result = storeManager.execute(query, MediaType.SPARQL_JSON_RESPONSE_FORMAT);
+
+    List<Map<String, String>> components = new ArrayList<Map<String, String>>();
+    ObjectMapper mapper = new ObjectMapper();
+    JsonNode rootNode = mapper.readTree(result);
+    Iterator<JsonNode> bindingsIter = rootNode.path("results").path("bindings").elements();
+    while (bindingsIter.hasNext()) {
+      JsonNode bindingNode = bindingsIter.next();
+      Map<String, String> component = new HashMap<String, String>();
+      component.put("uri", bindingNode.get("component").path("value").textValue());
+      component.put("route", bindingNode.get("route").path("value").textValue());
+      component.put("type", bindingNode.get("type").path("value").textValue());
+      component.put("label", bindingNode.get("label").path("value").textValue());
+      components.add(component);
+    }
+    return components;
+  }
+
+  /**
+   * Get the list of required components
+   * 
+   * @return List<String> compoments uris
+   * @throws Exception
+   */
+  public List<String> getRequiredComponents() throws Exception {
+
+    String query =
+        "SELECT ?component FROM <" + config.getSettingsGraph() + "> WHERE { <"
+            + config.getFrameworkUri() + "> <" + LDIS.requires.getURI() + "> ?component }";
 
     String result = storeManager.execute(query, MediaType.SPARQL_JSON_RESPONSE_FORMAT);
 
@@ -133,8 +170,8 @@ public class FrameworkManager {
    */
   public void setComponentsIntegration(String uri) throws Exception {
     String query =
-        "INSERT DATA INTO <" + config.getSettingsGraph() + ">  { ?workbench <"
-            + LDIS.integrates.getURI() + "> <" + uri + "> }";
+        "INSERT DATA INTO <" + config.getSettingsGraph() + ">  { <" + config.getFrameworkUri()
+            + "> <" + LDIS.integrates.getURI() + "> <" + uri + "> }";
 
     log.debug(query);
     String result = storeManager.execute(query, MediaType.SPARQL_JSON_RESPONSE_FORMAT);
@@ -150,9 +187,8 @@ public class FrameworkManager {
    */
   public void removeComponentsIntegration(String uri) throws Exception {
     String query =
-        "DELETE FROM <" + config.getSettingsGraph() + "> { ?workbench <" + LDIS.integrates.getURI()
-            + "> ?component } WHERE { ?workbench <" + LDIS.integrates.getURI() + "> <" + uri
-            + "> }";
+        "DELETE DATA FROM <" + config.getSettingsGraph() + "> { <" + config.getFrameworkUri()
+            + "> <" + LDIS.integrates.getURI() + "> <" + uri + "> } ";
     log.debug(query);
     String result = storeManager.execute(query, MediaType.SPARQL_JSON_RESPONSE_FORMAT);
     log.debug(result);

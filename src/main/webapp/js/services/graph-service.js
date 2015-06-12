@@ -31,7 +31,7 @@ module.factory("GraphService", function ($http, $q, Config, ConfigurationService
         if( graph["gv:hasGraphSet"] != undefined &&
             graph["gv:hasGraphSet"][0] != ""){
             vgraphset = graph["gv:hasGraphSet"][0];
-            Ns.add(vgraphset, Ns.getNamespace("gvg")+vgraphset+"/");
+            Ns.add(vgraphset, ConfigurationService.getUriBase()+vgraphset+"/"); 
         }
 
         var res = {
@@ -113,7 +113,7 @@ module.factory("GraphService", function ($http, $q, Config, ConfigurationService
                 
                 results.push(res);
             }
-            console.log(results);
+            
             return results;
         });
     };

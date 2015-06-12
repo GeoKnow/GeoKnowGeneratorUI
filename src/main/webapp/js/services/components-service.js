@@ -45,9 +45,6 @@ module.factory('ComponentsService', function ($http, $q) {
 					return response.data.service;
 	    });
 		},
-/*
-
-Not implemented yet
 
 		updateService : function(service){
 			var request = {
@@ -62,6 +59,9 @@ Not implemented yet
 				return response.data.service;
 			});
 		}, 
+/*
+
+Not implemented yet
 
 		addService : function(service){
 			var request = {

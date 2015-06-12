@@ -361,7 +361,7 @@
 :route
       rdf:type owl:DatatypeProperty ;
       rdfs:domain :Tool ;
-      rdfs:label "route "@en ;
+      rdfs:label "route"@en ;
       rdfs:range xsd:string .
 
 :sessionToken

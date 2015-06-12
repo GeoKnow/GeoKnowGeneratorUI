@@ -58,55 +58,65 @@
 # Following triples describe required services for routes. It is used in conditional routing.
 # #######################################################################################
 
-
 :RolesRouteRestriction
       a     ontos:RouteRestriction;
-      ontos:partialUrl "/settings/roles"^^xsd:string;
-      ontos:requiredService :UserManagerService .
+      ontos:route "/settings/roles"^^xsd:string;
+      ontos:requiresService :UserManagerService .
+
+:RdfImportRouteRestriction
+      a     ontos:RouteRestriction;
+      ontos:route "/workbench/extraction-and-loading/import-rdf"^^xsd:string;
+      ontos:requiresService :RdfImportService .
     
 :SparqlifyRouteRestriction
       a     ontos:RouteRestriction;
-      ontos:partialUrl "/workbench/extraction-and-loading/sparqlify"^^xsd:string;
-      ontos:requiredService :SparqlifyService .
+      ontos:route "/workbench/extraction-and-loading/sparqlify"^^xsd:string;
+      ontos:requiresService :SparqlifyService .
 
 :TripleGeoRouteRestriction
       a     ontos:RouteRestriction;
-      ontos:partialUrl "/workbench/extraction-and-loading/triplegeo"^^xsd:string;
-      ontos:requiredService :TripleGeoService .
+      ontos:route "/workbench/extraction-and-loading/triplegeo"^^xsd:string;
+      ontos:requiresService :TripleGeoService .
 
 :D2RQGeoRouteRestriction
       a     ontos:RouteRestriction;
-      ontos:partialUrl "/workbench/extraction-and-loading/d2rq"^^xsd:string;
-      ontos:requiredService :D2RQService .
+      ontos:route "/workbench/extraction-and-loading/d2rq"^^xsd:string;
+      ontos:requiresService :D2RQService .
 
 :FaceteRouteRestriction
       a     ontos:RouteRestriction;
-      ontos:partialUrl "/workbench/search-querying-and-exploration/facete"^^xsd:string;
-      ontos:requiredService :FaceteService .
+      ontos:route "/workbench/search-querying-and-exploration/facete"^^xsd:string;
+      ontos:requiresService :FaceteService .
     
 :MappifyRouteRestriction
       a     ontos:RouteRestriction;
-      ontos:partialUrl "/workbench/search-querying-and-exploration/mappify"^^xsd:string;
-      ontos:requiredService :MappifyService .
+      ontos:route "/workbench/search-querying-and-exploration/mappify"^^xsd:string;
+      ontos:requiresService :MappifyService .
     
 :OntoWikiRouteRestriction
       a     ontos:RouteRestriction;
-      ontos:partialUrl "/workbench/manual-revision-and-authoring/ontowiki"^^xsd:string;
-      ontos:requiredService :OntoWikiService .
+      ontos:route "/workbench/manual-revision-and-authoring/ontowiki"^^xsd:string;
+      ontos:requiresService :OntoWikiService .
     
 :LIMESRouteRestriction
       a     ontos:RouteRestriction;
-      ontos:partialUrl "/workbench/linking-and-fusing/limes"^^xsd:string;
-      ontos:requiredService :LimesService .
+      ontos:route "/workbench/linking-and-fusing/limes"^^xsd:string;
+      ontos:requiresService :LimesService .
     
-:DEERRouteRestriction
-      a     ontos:RouteRestriction;
-      ontos:partialUrl "/workbench/classification-and-enrichment/deer"^^xsd:string;
-      ontos:requiredService :DEERService .
 
 :DeerRouteRestriction
       a     ontos:RouteRestriction;
-      ontos:partialUrl "/workbench/classification-and-enrichment/deer"^^xsd:string;
-      ontos:requiredService :DeerService .
+      ontos:route "/workbench/classification-and-enrichment/deer"^^xsd:string;
+      ontos:requiresService :DEERService .
 
+:FagiRouteRestriction
+      a     ontos:RouteRestriction;
+      ontos:route "/workbench/linking-and-fusing/fagi-gis"^^xsd:string;
+      ontos:requiresService :FagiGisService .
+
+
+:CoevRouteRestriction
+      a     ontos:RouteRestriction;
+      ontos:route "//workbench/evolution-and-repair/coevolution-apply"^^xsd:string;
+      ontos:requiresService :CoevolutionService .
   

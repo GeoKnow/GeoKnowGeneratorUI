@@ -312,8 +312,10 @@ function GraphCtrl($scope, $http, $modal, flash, Config, Ns, ConfigurationServic
     function(identifiers){
       var vgroups=[];
       for(var i in identifiers){
+        console.log(identifiers[i]);
         var namespace = identifiers[i] + "/";
-        var id = identifiers[i].replace(Ns.getNamespace("gvg"),"");
+        // var id = identifiers[i].replace(Ns.getNamespace("gvg"),"");
+        var id = identifiers[i].substring(identifiers[i].lastIndexOf('/')+1, identifiers[i].length);
         Ns.add(id, namespace);
         CoevolutionService.getGroup(id).then(
           function(vgroup){
@@ -354,7 +356,7 @@ function GraphCtrl($scope, $http, $modal, flash, Config, Ns, ConfigurationServic
           return null;
         }, 
         uriBase : function(){
-          return ConfigurationService.getUriBase();
+          return Ns.getNamespace("gvg");
         }
       }
     });

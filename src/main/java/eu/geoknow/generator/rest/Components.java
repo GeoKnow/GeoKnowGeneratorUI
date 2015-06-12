@@ -151,6 +151,62 @@ public class Components {
     }
   }
 
+
+  /**
+   * Updates the data of a service
+   * 
+   * @param userc
+   * @param token
+   * @param component {@link Component} in JSON format
+   * @return {@link Component} in JSON format object
+   */
+  @PUT
+  @Path("/services")
+  @Produces(MediaType.APPLICATION_JSON)
+  @Consumes(MediaType.APPLICATION_JSON)
+  public Response updateService(@CookieParam(value = "user") Cookie userc, @CookieParam(
+      value = "token") String token, Service service) {
+
+    FrameworkUserManager frameworkUserManager;
+    UserProfile user;
+    try {
+      frameworkUserManager = FrameworkConfiguration.getInstance().getFrameworkUserManager();
+      // authenticates the user, throw exception if fail
+      user = frameworkUserManager.validate(userc, token);
+      if (user == null) {
+        return Response.status(Response.Status.UNAUTHORIZED).entity("Invalid credentials").build();
+      }
+      // check that the user is admin so he can update the component
+      if (!frameworkUserManager.isAdmin(user.getAccountURI())) {
+        return Response.status(Response.Status.UNAUTHORIZED).entity("Admin role required").build();
+      }
+
+    } catch (Exception e) {
+      log.error(e);
+      e.printStackTrace();
+      return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+    }
+
+    try {
+      // the system user will perform the changes to the Store
+      ComponentManager manager =
+          new ComponentManager(FrameworkConfiguration.getInstance().getSystemRdfStoreManager());
+      Service s = manager.updateService(service);
+      Gson gson = new Gson();
+      String json = "{\"service\" : " + gson.toJson(s) + "}";
+      log.info(json);
+      return Response.status(Response.Status.OK).entity(json).type(MediaType.APPLICATION_JSON)
+          .build();
+
+    } catch (ResourceNotFoundException e) {
+      log.error(e);
+      return Response.status(Response.Status.CONFLICT).entity(e.getMessage()).build();
+    } catch (SPARQLEndpointException | IOException | InformationMissingException e) {
+      log.error(e);
+      return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+    }
+  }
+
   /**
    * Get the components integrated in the system. Any registered user can read this data.
    * 

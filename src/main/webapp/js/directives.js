@@ -67,7 +67,7 @@ module.directive('ngConfirmClick', [
             element.bind('click', function() {
                 var message = attrs.ngConfirmMessage;
                 if (message && confirm(message)) {
-                    scope.$modulely(attrs.ngConfirmClick);
+                   scope.$apply(attrs.ngConfirmClick);
                 }
             });
             scope.$on('$destroy', function() {

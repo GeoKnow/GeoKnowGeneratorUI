@@ -22,7 +22,7 @@ dcterms:hasVersion
 :     rdf:type owl:Ontology ;
       dcterms:contributor "Alejandra Garcia Rojas"^^xsd:string ;
       dcterms:descripton "Schema for integrating Software components from the Linked Data Stack"@en ;
-      owl:versionInfo "0.1.1"^^xsd:string .
+      owl:versionInfo "0.1.2"^^xsd:string .
 
 :AnalysisService
       rdf:type owl:Class ;
@@ -141,7 +141,13 @@ dcterms:hasVersion
 
 :integrates
       rdf:type owl:ObjectProperty ;
+      rdfs:comment "A component integrates another component"@en ;
       rdfs:label "integrates"@en .
+      
+:requires
+      rdf:type owl:ObjectProperty ;
+      rdfs:comment "A component depends on another component to work"@en ;
+      rdfs:label "requires"@en .
 
 :password
       rdf:type rdf:Property ;
@@ -150,7 +156,7 @@ dcterms:hasVersion
 
 :providesService
       rdf:type owl:ObjectProperty ;
-      rdfs:comment "A component in the stack provides a service of a givent type"@en ;
+      rdfs:comment "A component in the stack provides a service of a given type"@en ;
       rdfs:domain :StackComponent ;
       rdfs:label "Provides Service"@en ;
       rdfs:range :ComponentService .
