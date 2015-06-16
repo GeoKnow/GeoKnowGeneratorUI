@@ -29,7 +29,7 @@
 						<i class="glyphicon glyphicon-refresh" aria-hidden="false"></i>
 					</button>
 				</div>
-				<select id="targetGraph" class="form-control" ng-model="importRdf.targetGraph" ng-options="namedgraph.name as describeGraph(namedgraph) for namedgraph in namedGraphs" required></select>
+				<select id="targetGraph" class="form-control" ng-model="importRdf.targetGraph" ng-options="namedgraph.name as describeGraph(namedgraph) for namedgraph in writableGraphs" required></select>
 			</div>
     </div>
 	  <div class="form-group">
@@ -62,7 +62,7 @@
 						<i class="glyphicon glyphicon-refresh" aria-hidden="false"></i>
 					</button>
 				</div>
-				<select id="targetGraph" class="form-control" ng-model="importRdf.targetGraph" ng-options="namedgraph.name as describeGraph(namedgraph) for namedgraph in namedGraphs" required></select>
+				<select id="targetGraph" class="form-control" ng-model="importRdf.targetGraph" ng-options="namedgraph.name as describeGraph(namedgraph) for namedgraph in writableGraphs" required></select>
 			</div>
 		</div>
 	  <div class="form-group">
@@ -101,7 +101,7 @@
 						<i class="glyphicon glyphicon-refresh" aria-hidden="false"></i>
 					</button>
 				</div>
-				<select id="targetGraph" class="form-control" ng-model="importRdf.targetGraph" ng-options="namedgraph.name as describeGraph(namedgraph) for namedgraph in namedGraphs" required></select>
+				<select id="targetGraph" class="form-control" ng-model="importRdf.targetGraph" ng-options="namedgraph.name as describeGraph(namedgraph) for namedgraph in writableGraphs" required></select>
 			</div>
 		</div>
 	  <div class="form-group">
@@ -125,7 +125,7 @@
 						<i class="glyphicon glyphicon-refresh" aria-hidden="false"></i>
 					</button>
 				</div>
-				<select id="sourceGraph" class="form-control" ng-model="importRdf.source" ng-options="namedgraph.name as describeGraph(namedgraph) for namedgraph in namedGraphs" required></select>
+				<select id="sourceGraph" class="form-control" ng-model="importRdf.source" ng-options="namedgraph.name as describeGraph(namedgraph) for namedgraph in readableGraphs" required></select>
 			</div>
 		</div>
 		<div class="form-group">
@@ -136,7 +136,7 @@
 						<i class="glyphicon glyphicon-refresh" aria-hidden="false"></i>
 					</button>
 				</div>
-				<select id="targetGraph" class="form-control" ng-model="importRdf.targetGraph" ng-options="namedgraph.name as describeGraph(namedgraph) for namedgraph in namedGraphs" required></select>
+				<select id="targetGraph" class="form-control" ng-model="importRdf.targetGraph" ng-options="namedgraph.name as describeGraph(namedgraph) for namedgraph in writableGraphs" required></select>
 			</div>
 		</div>
 

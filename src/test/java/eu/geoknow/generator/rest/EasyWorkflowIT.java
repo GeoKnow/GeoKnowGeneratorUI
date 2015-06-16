@@ -9,6 +9,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -24,6 +25,9 @@ import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.path.json.JsonPath;
 import com.jayway.restassured.response.Response;
 import com.jayway.restassured.response.ValidatableResponse;
+
+import eu.geoknow.generator.configuration.FrameworkConfiguration;
+import eu.geoknow.generator.exceptions.InformationMissingException;
 
 /**
  * Tests a very simple 3 step workflow that pings google
@@ -114,12 +118,13 @@ public class EasyWorkflowIT {
 
 
   @BeforeClass
-  public static void init() {
+  public static void init() throws IOException, InformationMissingException {
 
-    RestAssured.baseURI = "http://localhost";
+    RestAssured.baseURI = FrameworkConfiguration.getInstance().getHomepage();
+    log.info("testing server: " + RestAssured.baseURI);
     RestAssured.port = 8080;
     // TODO: find a way to parametrise this basePath
-    RestAssured.basePath = "/generator";
+    RestAssured.basePath = "";
 
     ValidatableResponse auth =
         given().param("mode", "login").param("username", "testing")

@@ -23,7 +23,6 @@ function StackMenuCtrl($scope, AccountService, ConfigurationService, Ns) {
   
   ConfigurationService.getIntegratedComponents().then(
     function(resp){
-      console.log(resp);
       var tools = resp.integrated;
       for(var i in tools){
         var category = tools[i].type.replace("http://stack.linkeddata.org/ldis-schema/",'');
@@ -34,7 +33,6 @@ function StackMenuCtrl($scope, AccountService, ConfigurationService, Ns) {
           requiredServices:[] };
         categoryToMenu[category].items.push(item);
       }
-      console.log(categoryToMenu);
 
       $scope.groups = [];
       for(var i in categoryToMenu)

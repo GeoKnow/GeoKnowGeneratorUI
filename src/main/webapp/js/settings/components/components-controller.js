@@ -12,10 +12,8 @@ function ComponentCtrl($scope, $modal, flash, ComponentsService, ConfigurationSe
 				$scope.components = components;
 				ConfigurationService.getIntegratedComponents().then(
 					function(resp){
-						console.log(resp);
 						$scope.integratedComponents = resp.integrated;
 						$scope.requiredComponents = resp.required;
-						
 					},
 					function(response){
 						flash.error = ServerErrorResponse.getMessage(response);

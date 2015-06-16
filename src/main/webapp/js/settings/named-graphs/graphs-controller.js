@@ -309,24 +309,25 @@ function GraphCtrl($scope, $http, $modal, flash, Config, Ns, ConfigurationServic
   $scope.refreshVersionGroups = function(){
     return CoevolutionService.getGroups().then(
     //success
-    function(identifiers){
-      var vgroups=[];
-      for(var i in identifiers){
-        console.log(identifiers[i]);
-        var namespace = identifiers[i] + "/";
-        // var id = identifiers[i].replace(Ns.getNamespace("gvg"),"");
-        var id = identifiers[i].substring(identifiers[i].lastIndexOf('/')+1, identifiers[i].length);
-        Ns.add(id, namespace);
-        CoevolutionService.getGroup(id).then(
-          function(vgroup){
-            vgroup["uri"] = Ns.getNamespace(vgroup.identifier);
-            vgroup["graphs"] = [];
-            vgroups.push(vgroup);
+    function(response){
+      // var vgroups=[];
+      // for(var i in identifiers){
+      //   console.log(identifiers[i]);
+      //   var namespace = identifiers[i] + "/";
+      //   // var id = identifiers[i].replace(Ns.getNamespace("gvg"),"");
+      //   var id = identifiers[i].substring(identifiers[i].lastIndexOf('/')+1, identifiers[i].length);
+      //   Ns.add(id, namespace);
+      //   CoevolutionService.getGroup(id).then(
+      //     function(vgroup){
+      //       vgroup["uri"] = Ns.getNamespace(vgroup.identifier);
+      //       vgroup["graphs"] = [];
+      //       vgroups.push(vgroup);
 
-          });
-      }
-      $scope.versionGroups = vgroups;  
-      return Config.read(); 
+      //     });
+      // }
+      // $scope.versionGroups = vgroups;  
+      // return Config.read(); 
+      $scope.versionGroups = response;
     },
     //fail
     function (response){

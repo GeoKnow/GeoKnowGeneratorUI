@@ -27,7 +27,7 @@
       <td>{{vg.label}}</td>
       <td>{{vg.description}}</td>
       <td>{{vg.uri}}</td>
-      <td>{{vg.created}}</td>
+      <td>{{vg.created | formatDate}}</td>
       <td>
           <ul class="list-unstyled">
             <li ng-repeat="vgg in vg.graphs">{{vgg}}</li>
@@ -68,9 +68,9 @@
       <td>{{namedgraph.graph.label}}</td>
       <td>{{namedgraph.name}}</td>
       <td>{{namedgraph.graph.triples}}</td>
-      <td>{{namedgraph.graph.created}}</td>
-      <td>{{namedgraph.graph.modified}}</td>
-      <td>{{namedgraph.graph.issued}}</td>
+      <td>{{namedgraph.graph.created | formatDate}}</td>
+      <td>{{namedgraph.graph.modified | formatDate}}</td>
+      <td>{{namedgraph.graph.issued | formatDate}}</td>
       <td>{{accessModes[namedgraph.publicAccess]}}</td>
       <td>
           <ul class="list-unstyled">

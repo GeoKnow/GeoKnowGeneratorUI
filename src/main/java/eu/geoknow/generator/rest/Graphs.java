@@ -1,7 +1,10 @@
 package eu.geoknow.generator.rest;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Collection;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -183,6 +186,13 @@ public class Graphs {
     }
 
     try {
+      if (contribution.getDate() == null) {
+        // 2015-06-12T14:35:00
+        Calendar cal = GregorianCalendar.getInstance();
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        format.setCalendar(cal);
+        contribution.setDate(format.format(cal.getTime()));
+      }
       GraphsManager manager = new GraphsManager();
       NamedGraph graph = manager.addContribution(contribution);
 

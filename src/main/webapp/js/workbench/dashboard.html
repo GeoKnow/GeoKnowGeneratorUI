@@ -30,19 +30,17 @@
     <th>Description</th>
     <th>Created</th>
     <th>Execution Count</th>
-<!--     <th>Launchable</th>
-    <th>Incrementable</th> -->
+    <th>Target</th>
     </tr>
 		</thead>
 		<tbody ng-repeat="job in jobs" ng-init="jobIndex = $index">
    	<tr data-toggle="collapse" data-target="#{{job.name}}" class="accordion-toggle" ng-click="getJobDetail(jobIndex)">
     <td>{{job.name}}</td>
     <td>{{job.description}}</td>
-    <td>{{job.cereated}}</td>
+    <td>{{job.created | formatDate }}</td>
     <td>{{job.executionCount}}</td>
-<!--     <td>{{job.launchable}}</td>
-    <td>{{job.incrementable}}</td> -->
-  	</tr>
+    <td>{{job.targetGraph | shortenURI }}</td>
+    </tr>
     <tr>
     <td colspan="6" class="hiddenRow" >
       <div class="accordian-body collapse" id="{{job.name}}"> 

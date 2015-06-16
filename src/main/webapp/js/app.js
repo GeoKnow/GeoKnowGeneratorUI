@@ -81,11 +81,10 @@ app.config(function($routeSegmentProvider, $routeProvider)
             resolve: {
                         settings : function (ConfigurationService){
                              return ConfigurationService.getSettings();
+                        },
+                        CoevolutionServiceInit : function(CoevolutionService){
+                            return CoevolutionService.promise;
                         }
-                    // }
-                    //     userInfo : function(UsersService) {
-                    //     return UsersService.readUserNamesEmails();
-                    // }
                 }
             })
             .within()

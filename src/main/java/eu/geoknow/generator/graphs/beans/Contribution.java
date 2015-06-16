@@ -1,5 +1,7 @@
 package eu.geoknow.generator.graphs.beans;
 
+import org.hibernate.validator.constraints.NotEmpty;
+
 
 /**
  * This bean is for adding information about the changes made to a graph
@@ -9,9 +11,12 @@ package eu.geoknow.generator.graphs.beans;
  */
 public class Contribution {
 
+  @NotEmpty
   private String namedGraph;
   private String date;
+  @NotEmpty
   private String source;
+  @NotEmpty
   private String contributor;
 
 

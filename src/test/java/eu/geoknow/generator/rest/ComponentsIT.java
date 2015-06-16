@@ -3,6 +3,7 @@ package eu.geoknow.generator.rest;
 import static com.jayway.restassured.RestAssured.given;
 import static org.junit.Assert.assertEquals;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,6 +14,9 @@ import org.junit.Test;
 import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.response.Response;
 import com.jayway.restassured.response.ValidatableResponse;
+
+import eu.geoknow.generator.configuration.FrameworkConfiguration;
+import eu.geoknow.generator.exceptions.InformationMissingException;
 
 /**
  * Integration test of the REST interface for Components Management
@@ -28,12 +32,13 @@ public class ComponentsIT {
 
 
   @BeforeClass
-  public static void init() {
+  public static void init() throws IOException, InformationMissingException {
 
-    RestAssured.baseURI = "http://localhost";
+    RestAssured.baseURI = FrameworkConfiguration.getInstance().getHomepage();
+    log.info("testing server: " + RestAssured.baseURI);
     RestAssured.port = 8080;
     // TODO: find a way to parametrise this basePath
-    RestAssured.basePath = "/generator";
+    RestAssured.basePath = "";
 
     ValidatableResponse auth =
         given().param("mode", "login").param("username", "testing")

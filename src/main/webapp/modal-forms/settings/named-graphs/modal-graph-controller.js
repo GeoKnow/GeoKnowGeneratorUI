@@ -65,8 +65,6 @@ function ModalGraphCtrl($scope, $http, $modalInstance, currentNamedGraph, versio
   if ($scope.isNew()) {
     $scope.modaltitle = "New Graph";
 
-    console.log(versionedGroup);
-
     $scope.uriBase = ConfigurationService.getUriBase();
     if(versionedGroup!= undefined){
       $scope.namedgraph.graph.graphset=versionedGroup.identifier;
@@ -86,9 +84,8 @@ function ModalGraphCtrl($scope, $http, $modalInstance, currentNamedGraph, versio
     $scope.modaltitle = "Edit Graph";
     $scope.namedgraph = angular.copy(currentNamedGraph);
     //$scope.namedgraph.name = $scope.namedgraph.name.replace(':', '');
-    console.log($scope.namedgraph);
+
     var splited = Ns.getParts($scope.namedgraph.name);
-    console.log(splited);
     $scope.uriBase = splited[0];
     $scope.namedgraph.name = splited[1];
 

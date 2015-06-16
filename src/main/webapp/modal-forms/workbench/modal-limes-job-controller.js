@@ -1,6 +1,6 @@
 'use strict';
 
-function ModalLimesJobCtrl($scope, $modalInstance, GraphService) {
+function ModalLimesJobCtrl($scope, $modalInstance, GraphService, Ns) {
 
 	  $scope.job = {
 	    name : "",
@@ -23,7 +23,8 @@ function ModalLimesJobCtrl($scope, $modalInstance, GraphService) {
 		  
 		  var today = new Date();
 		  $scope.job.name = $scope.job.label.replace(/[^a-zA-Z0-9]/g,'') + today.valueOf();
-		  
+		  $scope.job.namedgraph = Ns.lengthen($scope.job.namedgraph);
+
 	    var input= angular.copy($scope.job)
 	    $modalInstance.close(input);
 	  };

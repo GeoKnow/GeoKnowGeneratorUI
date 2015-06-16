@@ -5,7 +5,10 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
@@ -46,11 +49,15 @@ import org.apache.log4j.Logger;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.ontos.ldiw.vocabulary.LDIWO;
 
 import eu.geoknow.generator.configuration.FrameworkConfiguration;
 import eu.geoknow.generator.exceptions.InformationMissingException;
+import eu.geoknow.generator.graphs.GraphsManager;
+import eu.geoknow.generator.graphs.beans.Contribution;
+import eu.geoknow.generator.graphs.beans.NamedGraph;
 import eu.geoknow.generator.rdf.SecureRdfStoreManagerImpl;
 import eu.geoknow.generator.users.FrameworkUserManager;
 import eu.geoknow.generator.users.UserProfile;
@@ -148,31 +155,14 @@ public class AuthorizedSessions {
       MultivaluedMap<String, String> formParams) throws Exception {
 
     String username = "";
-    /*
-     * retrieves form user that created that session and the rdfUser and paswword for that user
-     */
     try {
-      String query =
-          "PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>" + "\n" + "SELECT ?user FROM <"
-              + sessionsGraph + "> WHERE { ?user " + " <" + LDIWO.sessionToken + "> \""
-              + sessionToken + "\"^^xsd:string .}";
-
-      String result = frameworkRdfStoreManager.execute(query, jsonResponseFormat);
-
-      ObjectMapper mapper = new ObjectMapper();
-      JsonNode rootNode = mapper.readTree(result);
-      Iterator<JsonNode> bindingsIter = rootNode.path("results").path("bindings").elements();
-
-      if (bindingsIter.hasNext()) {
-        JsonNode bindingNode = bindingsIter.next();
-        username = bindingNode.get("user").path("value").textValue();
-      }
-
+      username = getUser(sessionToken);
     } catch (Exception e) {
       log.error(e);
       e.printStackTrace();
       return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
     }
+
     log.debug("user:" + username + "-");
     if (username.equals(""))
       return Response.status(Response.Status.NOT_FOUND).build();
@@ -223,6 +213,30 @@ public class AuthorizedSessions {
 
   }
 
+  private String getUser(String sessionToken) throws Exception {
+    /*
+     * retrieves form user that created that session and the rdfUser and paswword for that user
+     */
+    String username = "";
+    String query =
+        "PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>" + "\n" + "SELECT ?user FROM <"
+            + sessionsGraph + "> WHERE { ?user " + " <" + LDIWO.sessionToken + "> \""
+            + sessionToken + "\"^^xsd:string .}";
+
+    String result = frameworkRdfStoreManager.execute(query, jsonResponseFormat);
+
+    ObjectMapper mapper = new ObjectMapper();
+    JsonNode rootNode = mapper.readTree(result);
+    Iterator<JsonNode> bindingsIter = rootNode.path("results").path("bindings").elements();
+
+    if (bindingsIter.hasNext()) {
+      JsonNode bindingNode = bindingsIter.next();
+      username = bindingNode.get("user").path("value").textValue();
+    }
+    return username;
+
+  }
+
   @DELETE
   @Path("{sessionToken}")
   public Response delete(@PathParam("sessionToken") String sessionToken, @CookieParam(
@@ -256,5 +270,56 @@ public class AuthorizedSessions {
     }
 
     return Response.status(Response.Status.NO_CONTENT).build();
+  }
+
+  /**
+   * Update the metadata of a contributiuon
+   * 
+   * @param sessionToken
+   * @param userc
+   * @param token
+   * @return
+   */
+  @PUT
+  @Path("{sessionToken}")
+  public Response addContribution(@PathParam("sessionToken") String sessionToken,
+      Contribution contribution) {
+
+    /*
+     * Check that the session exists
+     */
+    String username = "";
+    try {
+      username = getUser(sessionToken);
+    } catch (Exception e) {
+      log.error(e);
+      e.printStackTrace();
+      return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+    }
+
+    log.debug("user:" + username + "-");
+    if (username.equals(""))
+      return Response.status(Response.Status.UNAUTHORIZED).build();
+
+    try {
+      if (contribution.getDate() == null) {
+        // 2015-06-12T14:35:00
+        Calendar cal = GregorianCalendar.getInstance();
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        format.setCalendar(cal);
+        contribution.setDate(format.format(cal.getTime()));
+      }
+      GraphsManager manager = new GraphsManager();
+      NamedGraph graph = manager.addContribution(contribution);
+
+      Gson gson = new Gson();
+      String json = "{ \"namedgraph\" : " + gson.toJson(graph) + "}";
+      return Response.status(Response.Status.OK).entity(json).type(MediaType.APPLICATION_JSON)
+          .build();
+
+    } catch (Exception e) {
+      log.error(e);
+      return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+    }
   }
 }

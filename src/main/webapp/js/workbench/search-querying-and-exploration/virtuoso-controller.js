@@ -5,7 +5,7 @@
 * Virtuoso Controller
 *
 ***************************************************************************************************/
-app.controller('VirtuosoCtrl', function($scope, ConfigurationService, ComponentsService, AccountService, GraphService, GraphGroupService) {
+app.controller('VirtuosoCtrl', function($scope, ConfigurationService, ComponentsService, AccountService, GraphService, GraphGroupService, Ns) {
 
 	var componentUri ="http://generator.geoknow.eu/resource/Virtuoso";
 	var serviceUri = "http://generator.geoknow.eu/resource/VirtuosoAuthSPARQLEndpoint";
@@ -35,8 +35,6 @@ app.controller('VirtuosoCtrl', function($scope, ConfigurationService, Components
      	    GraphGroupService.getAllGraphGroups(true).then(function(groups) {
      	        ngraphs = ngraphs.concat(groups);
      	        $scope.namedGraphs = ngraphs;
-     	        // set $scope.url variable
-     	        
      	    });
      	});
 	};
@@ -44,13 +42,13 @@ app.controller('VirtuosoCtrl', function($scope, ConfigurationService, Components
 	$scope.updateServiceParams = function(){
 	    if (AccountService.getAccount().getUsername()==null) { //user is not authorized
 	      $scope.url= $scope.virtuoso.service +
-	            '?default-graph-uri=' + encodeURIComponent( $scope.virtuoso.dataset.replace(':',ConfigurationService.getUriBase()))+
+	            '?default-graph-uri=' + encodeURIComponent( Ns.lengthen($scope.virtuoso.dataset))+
 	            '&qtxt=select+distinct+%3FConcept+where+%7B%5B%5D+a+%3FConcept%7D+LIMIT+100'
 	            '&format=text%2Fhtml' +
 	            '&timeout=30000';
 	    } else {
         $scope.url= 'VirtuosoProxy' +
-                    '?default-graph-uri=' + encodeURIComponent($scope.virtuoso.dataset.replace(':',ConfigurationService.getUriBase())) +
+                    '?default-graph-uri=' + encodeURIComponent(Ns.lengthen($scope.virtuoso.dataset)) +
                     '&qtxt=select+distinct+%3FConcept+where+%7B%5B%5D+a+%3FConcept%7D+LIMIT+100' +
                     '&format=text%2Fhtml' +
                     '&timeout=30000';

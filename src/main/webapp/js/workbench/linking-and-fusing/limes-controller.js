@@ -9,6 +9,7 @@ var LimesCtrl = function($scope, $http, ConfigurationService, ComponentsService,
 
 	var componentUri ="http://generator.geoknow.eu/resource/Limes";
 	var serviceUri = "http://generator.geoknow.eu/resource/LimesService";
+	var workbenchHP = "";
 
 	ComponentsService.getComponent(componentUri).then(
 		//success
@@ -17,6 +18,10 @@ var LimesCtrl = function($scope, $http, ConfigurationService, ComponentsService,
 			$scope.service = ComponentsService.getComponentService(serviceUri, $scope.component);
 			if($scope.service== null)
 				flash.error="Service not configured: " +serviceUri;	
+
+			workbenchHP = ConfigurationService.getFrameworkHomepage();
+			if (workbenchHP.substr(-1) != '/') 
+				workbenchHP += '/';
 		}, 
 		function(response){
 			flash.error="Limes component not configured: " +ServerErrorResponse.getMessage(response);
@@ -34,15 +39,13 @@ var LimesCtrl = function($scope, $http, ConfigurationService, ComponentsService,
 
 	$scope.endpoints = ConfigurationService.getAllEndpoints();
 	$scope.uriBase = ConfigurationService.getUriBase();
-
-	var workbench = ConfigurationService.getFrameworkHomepage();
+	
 	$scope.configOptions = true;
 	$scope.inputForm = true;
 	$scope.deleteProp = false;
 
 	var configFilesDir="data/limes-config-files/";
 	var services = "";
-	var workbench = "";
 	var importing = false;
 	var uploadError = false;
 	var uploadedFiles = null;
@@ -258,11 +261,7 @@ var LimesCtrl = function($scope, $http, ConfigurationService, ComponentsService,
 				*/
       	return AuthSessionService.createSession().then(function(response){
       		
-					var workbenchHP = ConfigurationService.getFrameworkHomepage();
-					if (workbenchHP.substr(-1) != '/') 
-						workbenchHP += '/';
-      		
-      		var atuhEndpoint = workbenchHP + response.data.endpoint;
+					var atuhEndpoint = workbenchHP + response.data.endpoint;
       		params.saveendpoint = atuhEndpoint;
 	      		// overwrite endpoints if source or target uses the private endpoint
 					if($scope.limes.source.endpoint == ConfigurationService.getSPARQLEndpoint() ||
@@ -270,12 +269,12 @@ var LimesCtrl = function($scope, $http, ConfigurationService, ComponentsService,
 						if($scope.limes.source.endpoint == ConfigurationService.getSPARQLEndpoint()){
 							params.source.endpoint = atuhEndpoint;
 							if($scope.limes.source.graph != null)
-								params.source.graph = $scope.limes.source.graph.replace(':', ConfigurationService.getUriBase());
+								params.source.graph = Ns.lengthen($scope.limes.source.graph);
 						}
 						if($scope.limes.target.endpoint == ConfigurationService.getSPARQLEndpoint()){
 							params.target.endpoint = atuhEndpoint;								
 							if($scope.limes.TargetGraph != null)
-								params.target.graph = $scope.limes.target.graph.replace(':', ConfigurationService.getUriBase());
+								params.target.graph = Ns.lengthen($scope.limes.target.graph);
 						}
 					};
 				});
@@ -295,11 +294,11 @@ var LimesCtrl = function($scope, $http, ConfigurationService, ComponentsService,
 					//create information for publishing step
         	//create body from params
         	var publishDataBody = "endpointUri="+params.saveendpoint
-        		+ "&targetGraphUri="+jobDesc.namedgraph.replace(':', ConfigurationService.getUriBase())
+        		+ "&targetGraphUri="+jobDesc.namedgraph
         		+ "&inputGraphArray="+'[{"graph":"'+params.acceptgraph+'", "delete":"true"}';
         	
         	if(jobDesc.additionalSources){
-        		publishDataBody+=', {"graph":"'+jobDesc.namedgraph.replace(':', ConfigurationService.getUriBase())+'", "delete":"false"}';
+        		publishDataBody+=', {"graph":"'+jobDesc.namedgraph+'", "delete":"false"}';
         	} 
         	
         	publishDataBody+=']'
@@ -309,20 +308,30 @@ var LimesCtrl = function($scope, $http, ConfigurationService, ComponentsService,
         		+ "&userName="+AccountService.getAccount().getUsername();
         	
         	if(params.output=="TAB") {params.saveendpoint="";}
-		          	
+		      
+		      // configure contribution update step    	
+		      var contributionUpdateBody = {
+		      	namedGraph   : Ns.lengthen(jobDesc.namedgraph),
+    				source       : jobDesc.description +" (job - " + jobDesc.name + ")",
+    				contributor  : componentUri
+		      };
+		      
+
 					var steps = '['
 						+ '{"service":"'+pubService.serviceUrl+'/createTempGraph","contenttype":"application/x-www-form-urlencoded", "method":"POST", "body":"'+encodeURI(createAcceptGraphBody)+'", "numberOfOrder":1},'
 						+ '{"service":"'+pubService.serviceUrl+'/createTempGraph","contenttype":"application/x-www-form-urlencoded", "method":"POST", "body":"'+encodeURI(createReviewGraphBody)+'", "numberOfOrder":2},'
 		        + '{"service":"'+ $scope.service.serviceUrl+'","contenttype":"application/json", "method":"POST", "body": "'+encodeURI(JSON.stringify(params))+'" , "numberOfOrder":3},'
-            + '{"service":"'+pubService.serviceUrl+'","contenttype":"application/x-www-form-urlencoded", "method":"POST", "body":"'+encodeURI(publishDataBody)+'", "numberOfOrder":4}'
+            + '{"service":"'+pubService.serviceUrl+'","contenttype":"application/x-www-form-urlencoded", "method":"POST", "body":"'+encodeURI(publishDataBody)+'", "numberOfOrder":4},'
+            + '{"service":"'+ params.saveendpoint  + '","contenttype":"application/json", "method":"PUT", "body":"'+encodeURI(JSON.stringify(contributionUpdateBody))+'", "numberOfOrder":5}'
             +']';
-					
+
+
 					JobService.addMultiServiceJob(
 							jobDesc.name, 
 							jobDesc.label, 
 							jobDesc.description, 
 							eval(steps), 
-							jobDesc.namedgraph.replace(':', ConfigurationService.getUriBase()))
+							Ns.lengthen(jobDesc.namedgraph))
 					.then(function(response){
 						$scope.$parent.updateJobs();
 						flash.success = "Job successfully added can be executed from the dashboard";

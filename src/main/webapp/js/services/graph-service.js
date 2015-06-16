@@ -2,7 +2,7 @@
 
 var module = angular.module('app.graph-service', []);
 
-module.factory("GraphService", function ($http, $q, Config, ConfigurationService, AccountService, Helpers, Ns) {
+module.factory("GraphService", function ($http, $q, Config, ConfigurationService, AccountService, Helpers, CoevolutionService, Ns) {
     var accessModes = {
         ":No": "No",
         "acl:Read": "Read",
@@ -23,7 +23,6 @@ module.factory("GraphService", function ($http, $q, Config, ConfigurationService
     var namedGraphsLoaded = false;
 
     var getGraphJson = function(uri, source){
-        
         var namedGraph  =  source[uri];
         var graph = source[namedGraph["sd:graph"]];
         // catch unrecognised namespaces
@@ -31,7 +30,8 @@ module.factory("GraphService", function ($http, $q, Config, ConfigurationService
         if( graph["gv:hasGraphSet"] != undefined &&
             graph["gv:hasGraphSet"][0] != ""){
             vgraphset = graph["gv:hasGraphSet"][0];
-            Ns.add(vgraphset, ConfigurationService.getUriBase()+vgraphset+"/"); 
+            if(Ns.getNamespace(vgraphset)== undefined)
+                Ns.add(vgraphset, ConfigurationService.getUriBase()+vgraphset+"/"); 
         }
 
         var res = {
@@ -51,21 +51,35 @@ module.factory("GraphService", function ($http, $q, Config, ConfigurationService
         return res;
     };
     var readNamedGraphs = function (reload) {
-        if (namedGraphsLoaded && !reload) {
-            var deferred = $q.defer();
-            deferred.resolve(namedGraphs);
-            return deferred.promise;
-        } else {
-            var requestData = {
-                format: "application/sparql-results+json",
-                username: AccountService.getAccount().getUsername()
-            };
-            return $http.post("rest/graphs/getAllGraphsSparql", $.param(requestData)).then(function (result) {
-                namedGraphs = Config.parseSparqlResults(result.data);
-                namedGraphsLoaded = true;
-                return namedGraphs;
+        return CoevolutionService.getGroups().then(
+            // success
+            function(response){
+                var requestData = {
+                    format: "application/sparql-results+json",
+                    username: AccountService.getAccount().getUsername()
+                };
+                return $http.post("rest/graphs/getAllGraphsSparql", $.param(requestData)).then(function (result) {
+                    namedGraphs = Config.parseSparqlResults(result.data);
+                    namedGraphsLoaded = true;
+
+                    return namedGraphs;
+                });
             });
-        }
+        // if (namedGraphsLoaded && !reload) {
+        //     var deferred = $q.defer();
+        //     deferred.resolve(namedGraphs);
+        //     return deferred.promise;
+        // } else {
+        //     var requestData = {
+        //         format: "application/sparql-results+json",
+        //         username: AccountService.getAccount().getUsername()
+        //     };
+        //     return $http.post("rest/graphs/getAllGraphsSparql", $.param(requestData)).then(function (result) {
+        //         namedGraphs = Config.parseSparqlResults(result.data);
+        //         namedGraphsLoaded = true;
+        //         return namedGraphs;
+        //     });
+        // }
     };
 
     var getAccessibleGraphs = function (onlyWritable, skipOwn, reload) {

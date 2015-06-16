@@ -122,8 +122,7 @@ public class JobsManager {
             + "> ?targetGraph ;" + "<" + LDIWO.xmlDefinition.getURI() + "> ?xml . " + "}";
     log.debug(query);
 
-    String result =
-        frameworkRdfStoreManager.execute(query, MediaType.SPARQL_JSON_RESPONSE_FORMAT);
+    String result = frameworkRdfStoreManager.execute(query, MediaType.SPARQL_JSON_RESPONSE_FORMAT);
     log.debug(result);
     ObjectMapper mapper = new ObjectMapper();
     JsonNode rootNode = mapper.readTree(result);
@@ -306,8 +305,7 @@ public class JobsManager {
             + "> ?created }";
     log.debug(query);
 
-    String result =
-        frameworkRdfStoreManager.execute(query, MediaType.SPARQL_JSON_RESPONSE_FORMAT);
+    String result = frameworkRdfStoreManager.execute(query, MediaType.SPARQL_JSON_RESPONSE_FORMAT);
     log.debug(result);
     ObjectMapper mapper = new ObjectMapper();
     JsonNode rootNode = mapper.readTree(result);
@@ -335,7 +333,7 @@ public class JobsManager {
 
     if (job.getJobInstances().size() > 0) {
       Set<Integer> instances = job.getJobInstances().keySet();
-      log.debug(instances.size() + "instances ");
+      log.debug(instances.size() + " instances ");
       Iterator<Integer> it = instances.iterator();
 
       while (it.hasNext()) {
@@ -418,8 +416,7 @@ public class JobsManager {
         "ASK { GRAPH <" + jobsGraph + "> {<" + uriBase + jobName + "> <" + DCTerms.creator.getURI()
             + "> <" + userUri + "> }}";
     log.debug(query);
-    String result =
-        frameworkRdfStoreManager.execute(query, MediaType.SPARQL_JSON_RESPONSE_FORMAT);
+    String result = frameworkRdfStoreManager.execute(query, MediaType.SPARQL_JSON_RESPONSE_FORMAT);
 
     ObjectMapper mapper = new ObjectMapper();
     JsonNode rootNode = mapper.readTree(result);

@@ -23,8 +23,12 @@ var ImportFormCtrl = function($scope, $http, ConfigurationService, flash, Accoun
   ];
 
   $scope.refreshGraphList = function() {
+    GraphService.getAccessibleGraphs(false, false, true).then(function(graphs) {
+      $scope.readableGraphs = graphs;
+    });
+
     GraphService.getAccessibleGraphs(true, false, true).then(function(graphs) {
-      $scope.namedGraphs = graphs;
+      $scope.writableGraphs = graphs;
     });
   };	
   // initialise some required fields

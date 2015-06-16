@@ -49,14 +49,14 @@
       <div ng-show="!isNew()">
         <label class="col-xs-2 control-label">Date created</label>
         <div class="col-xs-10">
-          <p class="form-control-static">{{namedgraph.graph.created}}</p>
+          <p class="form-control-static">{{namedgraph.graph.created  | formatDate}}</p>
         </div>
       </div>
       
       <div ng-show="!isNew()">
         <label class="col-xs-2 control-label">Date modified</label>
         <div class="col-xs-10">
-          <p class="form-control-static">{{namedgraph.graph.modified}}</p>
+          <p class="form-control-static">{{namedgraph.graph.modified  | formatDate}}</p>
         </div>
       </div>
       
@@ -70,7 +70,7 @@
       <div ng-show="namedgraph.graph.issued!=''">
         <label class="col-xs-2 control-label">Issued</label>
         <div class="col-xs-10">
-          <p class="form-control-static" >{{namedgraph.graph.issued}}</p>
+          <p class="form-control-static" >{{namedgraph.graph.issued  | formatDate}}</p>
         </div>
       </div>
 

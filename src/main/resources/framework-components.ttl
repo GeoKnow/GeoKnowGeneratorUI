@@ -30,8 +30,8 @@
   a  lds:StorageService ;
   rdfs:label "Virtuoso Conductor" ;
   lds:password "dba"^^xsd:string ;
-  lds:serviceUrl <http://192.168.2.22:8890/conductor> ;
-  lds:connectionString "jdbc:virtuoso://192.168.2.22:1111/"^^xsd:string;
+  lds:serviceUrl <http://localhost:8890/conductor> ;
+  lds:connectionString "jdbc:virtuoso://localhost:1111/"^^xsd:string;
   lds:user   "dba"^^xsd:string .
 
 # #######################################################################################
@@ -42,15 +42,15 @@
   a       lds:SecuredSPARQLEndPointService;
   rdfs:label "Virtuoso Auth-SPARQLEndpoint" ;
   lds:password "generator"^^xsd:string ;
-  lds:serviceUrl <http://192.168.2.22:8890/sparql-auth> ;
-  void:sparqlEndpoint <http://192.168.2.22:8890/sparql-auth> ;
+  lds:serviceUrl <http://localhost:8890/sparql-auth> ;
+  void:sparqlEndpoint <http://localhost:8890/sparql-auth> ;
   lds:user   "generator"^^xsd:string .
 
 :VirtuosoEndpoint
   a       lds:SPARQLEndPointService;
   rdfs:label "Virtuoso Public Endpoint" ;
-  void:sparqlEndpoint <http://192.168.2.22:8890/sparql-auth> ;
-  lds:serviceUrl <http://192.168.2.22:8890/sparql> .
+  void:sparqlEndpoint <http://localhost:8890/sparql-auth> ;
+  lds:serviceUrl <http://localhost:8890/sparql> .
 
 :SpringBatch
   a       lds:StackComponent ;
@@ -64,7 +64,7 @@
       rdfs:label "SpringBatch" ;
       dcterms:description "Provides functionality to create scheduled jobs and workflows."^^xsd:string ;
       lds:serviceUrl <http://localhost:8080/spring-batch-admin-geoknow/> ;
-      ontos:springBatchAdminJobsDir "/Users/alejandragarciarojas/Services/tomcat/webapps/spring-batch-admin-geoknow/WEB-INF/classes/META-INF/batch-jobs/"^^xsd:string .
+      ontos:springBatchAdminJobsDir "/var/generator/jobs/"^^xsd:string .
 
 :RdfImport
   a       lds:StackComponent ;

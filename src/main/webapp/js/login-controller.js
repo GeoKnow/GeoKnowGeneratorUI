@@ -1,6 +1,6 @@
 'use strict';
 
-function LoginCtrl($scope, $modal, flash, AccountService, LoginService, ServerErrorResponse, Base64, RolesService, ConfigurationService, AuthenticationErrorResponse) {
+function LoginCtrl($scope, $modal, $location, flash, AccountService, LoginService, ServerErrorResponse, Base64, RolesService, ConfigurationService, AuthenticationErrorResponse) {
 
   initialize();
 
@@ -28,11 +28,11 @@ function LoginCtrl($scope, $modal, flash, AccountService, LoginService, ServerEr
         // retrive default role if no user logged in
         if ($scope.currentAccount.getRole() == undefined) {
           RolesService.getNotLoggedInRole().then(function(response) {
-            console.log(response);
-            $scope.currentAccount.setRole(response);
-          });
+              $scope.currentAccount.setRole(response);
+              console.log($scope.currentAccount);
+            });
         }
-
+        
         $scope.isUserAuthenticated = function() {
           return AccountService.getAccount().getUsername() != undefined;
         };
@@ -40,12 +40,14 @@ function LoginCtrl($scope, $modal, flash, AccountService, LoginService, ServerEr
         $scope.isAdminLogged = function() {
           return AccountService.getAccount().isAdmin();
         };
-        // error 
+
       },
+      //error
       function(response) {
         flash.error = ServerErrorResponse.getMessage(response);
-    });
+      });
   }
+
 
   $scope.signUp = function(){
     var modalInstance = $modal.open({
@@ -81,7 +83,8 @@ function LoginCtrl($scope, $modal, flash, AccountService, LoginService, ServerEr
     LoginService.logout()
       .then(function(data) {
         $scope.currentAccount = data;
-        initialize();
+        $location.path("/");
+        // initialize();
       });
   };
 

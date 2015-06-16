@@ -30,7 +30,7 @@
        <div class="form-group" ng-if="jobnamedgraphs.length>0">
 	         <label class="col-xs-2 control-label">Target graph</label>
 	         <div class="col-xs-7">
-	             <select chosen id="graph" class="form-control" ng-model="job.namedgraph" ng-options="ng.name as ng.graph.label + ': '+ ng.graph.description for ng in jobnamedgraphs" required>
+	             <select chosen id="graph" class="form-control" ng-model="job.namedgraph" ng-options="ng.name as ng.name for ng in jobnamedgraphs" required>
 	             <option value='' disabled></option></select>
 	             <div class="error" ng-show="jobForm.graph.$dirty && jobForm.graph.$invalid">Invalid field:
 	                 <span ng-show="jobForm.graph.$error.required">Provide a name for the graph</span>

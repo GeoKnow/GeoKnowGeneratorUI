@@ -67,6 +67,9 @@ public class BatchAdminClient {
   /**
    * Retrieves the execution detail of an execution.
    * 
+   * 
+   * http://generator.geoknow.eu:8080/spring-batch-admin-geoknow/jobs/executions/0.json?
+   * 
    * @param jobName name of the job
    * @param executionNum number of the job execution it is not the ID
    * @param springBatchServiceUri the URI of Spring Batch Admin
@@ -80,9 +83,11 @@ public class BatchAdminClient {
       IOException, ServiceNotAvailableException, ServiceInternalServerError {
     // first, we need to get the resource with ID. the URI is:
     // http://localhost:8080/spring-batch-admin-geoknow/jobs/jobName/execNumber.json
+    log.debug(springBatchServiceUri + "/jobs/" + jobName + "/" + executionNum + ".json");
     HttpGet jobInstance =
         new HttpGet(springBatchServiceUri + "/jobs/" + jobName + "/" + executionNum + ".json");
     String jsonString = apiRequest(jobInstance);
+    log.debug(jsonString);
     // create Java object
     ObjectMapper mapper = new ObjectMapper();
     JobInstanceWrapper jobInst = mapper.readValue(jsonString, JobInstanceWrapper.class);

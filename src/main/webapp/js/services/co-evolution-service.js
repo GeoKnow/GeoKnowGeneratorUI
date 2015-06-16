@@ -2,7 +2,7 @@
 
 var module = angular.module('app.co-evolution-service', []);
 
-module.factory("CoevolutionService", function ($http, ComponentsService) {
+module.factory("CoevolutionService", function ($http, ComponentsService, Ns, Config) {
 
   var componentUri = "http://generator.geoknow.eu/resource/Coevolution";
   var serviceUri = "http://generator.geoknow.eu/resource/CoevolutionService";
@@ -15,6 +15,16 @@ module.factory("CoevolutionService", function ($http, ComponentsService) {
       console.log(serviceUrl);
       return serviceUrl;
     });
+
+  var getGroup = function(id){
+    return $http({
+        url: serviceUrl+"rest/api/graphs/graphset/"+id,
+        method: "GET",
+        }).then( 
+          function(response){
+            return response.data;
+          });
+  };
 
 	var service = {
 
@@ -51,19 +61,31 @@ module.factory("CoevolutionService", function ($http, ComponentsService) {
         method: "GET"
       }).then(
         function(response){
-          return response.data;
-        }
-      );
+          var identifiers = response.data;
+          var vgroups=[];
+          for(var i in identifiers){
+            var namespace = identifiers[i] + "/";
+            // var id = identifiers[i].replace(Ns.getNamespace("gvg"),"");
+            var id = identifiers[i].substring(identifiers[i].lastIndexOf('/')+1, identifiers[i].length);
+            Ns.add(id, namespace);
+            getGroup(id).then(
+              function(vgroup){
+                vgroup["uri"] = Ns.getNamespace(vgroup.identifier);
+                vgroup["graphs"] = [];
+                vgroups.push(vgroup);
+
+              });
+          }
+          return Config.read().then(
+            function(){
+              return vgroups; 
+            });
+          
+        });
     },
 
     getGroup : function(id) {
-      return $http({
-        url: serviceUrl+"rest/api/graphs/graphset/"+id,
-        method: "GET",
-        }).then( 
-          function(response){
-            return response.data;
-          });
+      return getGroup(id);
     },
 
     createGroup : function(group) {

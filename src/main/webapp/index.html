@@ -70,22 +70,19 @@
             </li>
           </ul>
           
-
           <ul class="nav navbar-nav navbar-right">
-
 
             <li class="navbar-text" ng-if="isUserAuthenticated() && $root.isSystemSetUp">
               Logged in as <strong>{{currentAccount.username}}</strong>
             </li>
 
             <li ng-if="isUserAuthenticated() && $root.isSystemSetUp">
-              <a href="" ng-click="logout()">
+              <a href=""  ng-click="logout()">
                 <div class="glyphicon glyphicon-log-out"></div>Logout</a>
             </li>
             
             <li ng-if="!isUserAuthenticated() && $root.isSystemSetUp">
-              <a href="" ng-click="signUp()">
-                <div class="glyphicon glyphicon-log-in"></div> Sing Up </a>
+              <a href="" ng-click="signUp()">Sing Up </a>
             </li>
             
 
@@ -93,7 +90,7 @@
               <a href="" ng-click="login()">
                 <div class="glyphicon glyphicon-log-in"></div> Log In </a>
             </li>
-          </ul>
+          </ul> 
         </div><!-- /.navbar-collapse -->
       </div><!-- /.container-fluid -->
     </nav>

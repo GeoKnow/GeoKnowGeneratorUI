@@ -20,7 +20,6 @@ module.factory("UsersService", function($http, Config, flash, ServerErrorRespons
           users = response.data;
           userNames = [];
           emails = [];
-          console.log(users);  
           var ns = Config.getFrameworkOntologyNS();
           for (var ind in users) {
               users[ind].profile.accountURI = users[ind].profile.accountURI.replace(Config.getNS(), ":");
