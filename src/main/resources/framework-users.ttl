@@ -18,7 +18,7 @@
   a ontos:Account;
   foaf:accountName "admin"^^xsd:string;
   lds:password "admin"^^xsd:string;
-  foaf:mbox <mailto:admin@geoknow.eu>;
+  foaf:mbox <mailto:pr@geoknow.eu>;
   ontos:role :Administrator.
 
 # do not modify this user, is for integration testing, and can be deleted if the Workbench installation succeed

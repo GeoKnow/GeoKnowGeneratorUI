@@ -53,10 +53,32 @@
   dcterms:description "Provides functionality to upload data to a target graph from several graphs and to do versioning."^^xsd:string ;
   lds:serviceUrl <http://localhost:8080/generator/rest/publish> . 
 
+##################################################################
+# Required default-dataset
+##################################################################
 
+:default-dataset 
+  a sd:Dataset;
+  rdfs:label "Default dataset";
+  dcterms:description "This is the endpoint default dataset"^^xsd:string;
+  sd:defaultGraph :defaultNamedGraph;
+  .
+
+:defaultNamedGraph
+  sd:name <http://localhost:8890/DAV>;
+  sd:graph :default .
+:default
+  a sd:Graph, void:Dataset;
+  rdfs:label "default"^^xsd:string;
+  dcterms:title "default"^^xsd:string;
+  dcterms:description "Default graph"^^xsd:string 
+  .
+  
 ########### ROUTES RESTRICTIONS DESCRIPTION #######################################################
 # Following triples describe required services for routes. It is used in conditional routing.
 # #######################################################################################
+ 
+
 
 :RolesRouteRestriction
       a     ontos:RouteRestriction;
@@ -77,11 +99,6 @@
       a     ontos:RouteRestriction;
       ontos:route "/workbench/extraction-and-loading/triplegeo"^^xsd:string;
       ontos:requiresService :TripleGeoService .
-
-:D2RQGeoRouteRestriction
-      a     ontos:RouteRestriction;
-      ontos:route "/workbench/extraction-and-loading/d2rq"^^xsd:string;
-      ontos:requiresService :D2RQService .
 
 :FaceteRouteRestriction
       a     ontos:RouteRestriction;
@@ -117,6 +134,5 @@
 
 :CoevRouteRestriction
       a     ontos:RouteRestriction;
-      ontos:route "//workbench/evolution-and-repair/coevolution-apply"^^xsd:string;
+      ontos:route "/workbench/evolution-and-repair/coevolution-apply"^^xsd:string;
       ontos:requiresService :CoevolutionService .
-  
