@@ -1,0 +1,4 @@
+release date=16:13 16.06.2015,version=1.2.0,urgency=low,by=Alejandra Garcia-Rojas M <alejandra.garciarojas@ontos.com>,distribution=dstack-nightly
+ * Coevolution service integration
+ * Component management refactoring
+ * Substantial refactored code

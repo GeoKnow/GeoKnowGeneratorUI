@@ -2,7 +2,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>eu.geoknow</groupId>
-	<artifactId>generator</artifactId>
+	<artifactId>geoknow-generator-ui</artifactId>
 	<packaging>war</packaging>
 	<version>1.2.0</version>
 	<name>GeoKnow Generator</name>
@@ -210,6 +210,38 @@
 					<path>/${project.build.finalName}</path>
 					<update>true</update>
 				</configuration>
+			</plugin>
+
+			<!-- For creating the debian package -->
+			<plugin>
+			  <artifactId>jdeb</artifactId>
+			  <groupId>org.vafer</groupId>
+			  <version>1.3</version>
+			  <executions>
+			    <execution>
+			      <phase>package</phase>
+			      <goals>
+			        <goal>jdeb</goal>
+			      </goals>
+			      <configuration>
+			      	
+			      	<deb>${project.build.directory}/${artifactId}_${version}_all.deb</deb>
+			      	<changesOut>${project.build.directory}/${artifactId}_${version}_all.changes</changesOut>
+
+				      <dataSet>
+				        <data>
+				          <src>${project.build.directory}/${project.build.finalName}.war</src>
+				          <type>file</type>
+				          <mapper>
+				            <type>perm</type>
+				            <prefix>/var/lib/tomcat7/webapps</prefix>
+				          </mapper>
+				        </data>
+				      </dataSet>
+				      <changesOut></changesOut>
+			    	</configuration>
+			 		</execution>
+				</executions>
 			</plugin>
 
 			<!-- To generate JAVA classes of the ontology models
