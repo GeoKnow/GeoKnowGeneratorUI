@@ -1,9 +1,0 @@
-#!/bin/sh
-
-#DEBHELPER#
-
-set -e
-
-USER="tomcat7"
-
-chown -R ${USER}:${USER} /etc/generator

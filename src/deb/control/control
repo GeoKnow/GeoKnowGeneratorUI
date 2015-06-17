@@ -3,7 +3,7 @@ Version: 1.2.0
 Section: web
 Priority: extra
 Architecture: all
-Depends: openjdk-8-jdk, tomcat7, spring-batch-admin-geoknow, ${misc:Depends}
+Depends: oracle-java8-installer, tomcat7
 Maintainer: Alejandra Garcia-Rojas M <alejandra.garciarojas@ontos.com>
 Distribution: development
 Homepage: http://stack.linkeddata.org/getting-started/geoknow-generator/

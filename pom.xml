@@ -40,6 +40,14 @@
 			<version>2.5</version>
 			<scope>provided</scope>
 		</dependency>
+
+    <dependency>
+        <groupId>javax.el</groupId>
+        <artifactId>javax.el-api</artifactId>
+        <version>2.2.4</version>
+        <scope>provided</scope>
+    </dependency>
+
 		<dependency>
 			<groupId>commons-fileupload</groupId>
 			<artifactId>commons-fileupload</artifactId>
@@ -161,7 +169,7 @@
 	</dependencies>
 
 	<build>
-		<finalName>${project.artifactId}</finalName>
+		<finalName>generator</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -199,7 +207,7 @@
 				</executions>
 			</plugin>
 
-			<!-- Maven Tomcat Plugin mvn tomcat7:deplouy|redeploy -->
+			<!-- Maven Tomcat Plugin mvn tomcat7:deploy|redeploy -->
 			<plugin>
 				<groupId>org.apache.tomcat.maven</groupId>
 				<artifactId>tomcat7-maven-plugin</artifactId>
@@ -225,11 +233,23 @@
 			      </goals>
 			      <configuration>
 			      	
-			      	<deb>${project.build.directory}/${artifactId}_${version}_all.deb</deb>
-			      	<changesOut>${project.build.directory}/${artifactId}_${version}_all.changes</changesOut>
+			      	<deb>${project.build.directory}/${project.artifactId}_${project.version}_all.deb</deb>
+			      	<changesOut>${project.build.directory}/${project.artifactId}_${project.version}_all.changes</changesOut>
 
-				      <dataSet>
-				        <data>
+				<dataSet>
+					<data>
+						<type>template</type>
+						<paths>
+							<path>/jobs</path>
+       						</paths>
+						<mapper>
+                                    			<type>perm</type>
+				 			<prefix>/var/generator</prefix>					
+                                    			<user>tomcat7</user>
+                                    			<group>tomcat7</group>
+                                  		</mapper>
+    					</data> 
+                                        <data>
 				          <src>${project.build.directory}/${project.build.finalName}.war</src>
 				          <type>file</type>
 				          <mapper>
