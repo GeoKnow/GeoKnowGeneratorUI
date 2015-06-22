@@ -57,12 +57,12 @@ public class FrameworkConfiguration {
   private String defaultDataset = "";
 
   // in this file all main configs are stored
-  private final static String configurationFile = "framework-configuration.ttl";
-  private final static String datasourcesFile = "framework-datasources.ttl";
-  private final static String componentsFile = "framework-components.ttl";
-  private final static String usersFile = "framework-users.ttl";
-  private final static String sysgraphsFile = "framework-system-graphs.ttl";
-  private final static String rolesFile = "framework-roles.ttl";
+  private final static String configurationFile = "system-configuration.ttl";
+  private final static String datasourcesFile = "system-datasources.ttl";
+  private final static String componentsFile = "system-components.ttl";
+  private final static String usersFile = "system-users.ttl";
+  private final static String sysgraphsFile = "system-graphs.ttl";
+  private final static String rolesFile = "system-roles.ttl";
 
   private static Model configurationModel = null;
   private static Model datasourceModel = null;
@@ -76,6 +76,7 @@ public class FrameworkConfiguration {
   // This special user is not created or configured on Workbench setup, it
   // should be configured previously in RDF store.
   // Configuration details depends on concrete RDF store.
+
   private String rdfStoreAdmin = "";
   private String rdfStoreAdminPassword = "";
   private String virtuosoJdbcConnString = "";
