@@ -27,7 +27,7 @@ Since the workbench integrates several Linked Data tools, it is upto the user to
 * __From Debian package__: The GeoKnow Generator UI is available as a debuian package, to install follow [these](http://stack.linkeddata.org/getting-started/geoknow-generator/) instructions. 
 * __Form source__: Follow the configuration instructions below, and use `maven pacakge` to package the souces in a war file and deploy it on a servlet container. 
 
-The Generator Workbencg will not install any integrated component from the stack and you require to install each one. You can choose to use again Debian packages following [these](http://stack.linkeddata.org/documentation/installation-of-a-local-generator-demonstrator/) instructions, or following instructions from each developer's component installation guides.
+The Generator Workbencg will not install any integrated component from the stack and you require to install each one. You can choose to use again Debian packages, or following instructions from each developer's component installation guides.
 
 ## Configuration
 
