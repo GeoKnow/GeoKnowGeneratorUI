@@ -101,18 +101,48 @@ public class FrameworkManager {
     return service;
   }
 
+
+  public Map<String, ArrayList<String>> getRouteRestrictions() throws Exception {
+    String query =
+        "SELECT ?route ?service  FROM  <" + config.getComponentsGraph() + "> WHERE { "
+            + "?restriction a <http://ldiw.ontos.com/ontology/RouteRestriction> ."
+            + "?restriction <" + LDIWO.route.getURI() + "> ?route ." + "?restriction <"
+            + LDIWO.requiresService.getURI() + "> ?service .}";
+
+    log.debug(query);
+    String result = storeManager.execute(query, MediaType.SPARQL_JSON_RESPONSE_FORMAT);
+
+    Map<String, ArrayList<String>> routes = new HashMap<String, ArrayList<String>>();
+    ObjectMapper mapper = new ObjectMapper();
+    JsonNode rootNode = mapper.readTree(result);
+    Iterator<JsonNode> bindingsIter = rootNode.path("results").path("bindings").elements();
+    while (bindingsIter.hasNext()) {
+      JsonNode bindingNode = bindingsIter.next();
+      String route = bindingNode.get("route").path("value").textValue();
+      String service = bindingNode.get("service").path("value").textValue();
+      if (!routes.containsKey(route)) {
+        ArrayList<String> services = new ArrayList<String>();
+        routes.put(route, services);
+      }
+      routes.get(route).add(service);
+
+    }
+    return routes;
+
+  }
+
   /**
    * Get the list of integrated components
    * 
    * @return List<String> compoments uris
    * @throws Exception
    */
-  public List<Map<String, String>> getIntegratedComponents() throws Exception {
+  public Collection<Map<String, Object>> getIntegratedComponents() throws Exception {
 
     String query =
-        "SELECT ?component ?route ?type ?label FROM <" + config.getSettingsGraph() + "> FROM  <"
-            + config.getComponentsGraph() + "> WHERE { <" + config.getFrameworkUri() + "> <"
-            + LDIS.integrates.getURI() + "> ?component . ?component <"
+        "SELECT ?component ?service ?route ?type ?label FROM <" + config.getSettingsGraph()
+            + "> FROM  <" + config.getComponentsGraph() + "> WHERE { <" + config.getFrameworkUri()
+            + "> <" + LDIS.integrates.getURI() + "> ?component . ?component <"
             + LDIS.providesService.getURI() + "> ?service. ?service a ?type . ?service <"
             + RDFS.label.getURI() + "> ?label . ?restriction <" + LDIWO.requiresService.getURI()
             + "> ?service . ?restriction <" + LDIWO.route.getURI() + "> ?route }";
@@ -120,20 +150,31 @@ public class FrameworkManager {
     log.debug(query);
     String result = storeManager.execute(query, MediaType.SPARQL_JSON_RESPONSE_FORMAT);
 
-    List<Map<String, String>> components = new ArrayList<Map<String, String>>();
+    Map<String, Map<String, Object>> components = new HashMap<String, Map<String, Object>>();
+    // List<Map<String, String>> components = new ArrayList<Map<String, String>>();
     ObjectMapper mapper = new ObjectMapper();
     JsonNode rootNode = mapper.readTree(result);
     Iterator<JsonNode> bindingsIter = rootNode.path("results").path("bindings").elements();
     while (bindingsIter.hasNext()) {
       JsonNode bindingNode = bindingsIter.next();
-      Map<String, String> component = new HashMap<String, String>();
-      component.put("uri", bindingNode.get("component").path("value").textValue());
-      component.put("route", bindingNode.get("route").path("value").textValue());
-      component.put("type", bindingNode.get("type").path("value").textValue());
-      component.put("label", bindingNode.get("label").path("value").textValue());
-      components.add(component);
+      String uri = bindingNode.get("component").path("value").textValue();
+      String service = bindingNode.get("service").path("value").textValue();
+      if (!components.containsKey(uri)) {
+        Map<String, Object> component = new HashMap<String, Object>();
+        component.put("uri", uri);
+        component.put("route", bindingNode.get("route").path("value").textValue());
+        component.put("type", bindingNode.get("type").path("value").textValue());
+        component.put("label", bindingNode.get("label").path("value").textValue());
+        ArrayList<String> services = new ArrayList<String>();
+        services.add(service);
+        component.put("requires", services);
+        components.put(uri, component);
+      } else {
+        ((ArrayList<String>) components.get(uri).get("requires")).add(service);
+      }
+
     }
-    return components;
+    return components.values();
   }
 
   /**
@@ -194,4 +235,6 @@ public class FrameworkManager {
     log.debug(result);
 
   }
+
+
 }

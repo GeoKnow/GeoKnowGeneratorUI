@@ -1,6 +1,7 @@
 package eu.geoknow.generator.rest;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -207,9 +208,9 @@ public class Configuration {
       value = "token") String token) {
 
     UserProfile user;
+    FrameworkUserManager frameworkUserManager;
     try {
-      FrameworkUserManager frameworkUserManager =
-          FrameworkConfiguration.getInstance().getFrameworkUserManager();
+      frameworkUserManager = FrameworkConfiguration.getInstance().getFrameworkUserManager();
       // authenticates the user, throw exception if fail
       user = frameworkUserManager.validate(userc, token);
       if (user == null) {
@@ -222,8 +223,16 @@ public class Configuration {
 
     try {
       FrameworkManager manager = new FrameworkManager();
-      List<Map<String, String>> integrated = manager.getIntegratedComponents();
+      Collection<Map<String, Object>> integrated = manager.getIntegratedComponents();
       List<String> required = manager.getRequiredComponents();
+
+      // Now have to filter the results, depending on the user'r role
+      /*
+       * if (!frameworkUserManager.isAdmin(user.getAccountURI())) { for (String s :
+       * user.getRole().getServices()) {
+       * 
+       * } }
+       */
       Gson gson = new Gson();
       String json =
           "{ \"integrated\" : " + gson.toJson(integrated) + ", \"required\" : "
@@ -386,6 +395,47 @@ public class Configuration {
           Queries.resourceExists(uri, FrameworkConfiguration.getInstance()
               .getSystemRdfStoreManager());
       String json = "{ \"response\" : " + res + "}";
+      return Response.status(Response.Status.OK).entity(json).type(MediaType.APPLICATION_JSON)
+          .build();
+    } catch (Exception e) {
+      log.error(e);
+      return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+    }
+  }
+
+  /**
+   * Get a list of integrated components
+   * 
+   * @param userc
+   * @param token
+   * @return
+   */
+  @GET
+  @Path("/routes")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response getRouteRestrictions(@CookieParam(value = "user") Cookie userc, @CookieParam(
+      value = "token") String token) {
+
+    UserProfile user;
+    FrameworkUserManager frameworkUserManager;
+    try {
+      frameworkUserManager = FrameworkConfiguration.getInstance().getFrameworkUserManager();
+      // authenticates the user, throw exception if fail
+      user = frameworkUserManager.validate(userc, token);
+      if (user == null) {
+        return Response.status(Response.Status.UNAUTHORIZED).entity("Invalid credentials").build();
+      }
+    } catch (Exception e) {
+      log.error(e);
+      return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+    }
+
+    try {
+      FrameworkManager manager = new FrameworkManager();
+      Map<String, ArrayList<String>> routes = manager.getRouteRestrictions();
+
+      Gson gson = new Gson();
+      String json = "{ \"restrictions\" : " + gson.toJson(routes) + "}";
       return Response.status(Response.Status.OK).entity(json).type(MediaType.APPLICATION_JSON)
           .build();
     } catch (Exception e) {

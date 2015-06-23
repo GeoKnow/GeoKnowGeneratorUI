@@ -30,7 +30,7 @@ function StackMenuCtrl($scope, AccountService, ConfigurationService, Ns) {
           name: tools[i].label, 
           route:'#' + tools[i].route ,  
           url: tools[i].route, 
-          requiredServices:[] };
+          requiredServices: tools[i].requires };
         categoryToMenu[category].items.push(item);
       }
 

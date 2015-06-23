@@ -442,41 +442,15 @@ module.factory('ConfigurationService', function ($q, Config, $http, $location, f
         	 Config.write();
              return true;
         },
-        
-        
-        /**
-         * COMPONENTS functions
-         */
-        // TODO: @Alejandra add categories to the ontology and get them with the config service
-        getComponentCategories: function () {
-            return {
-                categories: [{
-                    name: "Extraction and Loading",
-                    id: "extraction-and-loading"
-                }, {
-                    name: "Querying and Exploration",
-                    id: "querying-and-exploration"
-                }, {
-                    name: "Authoring",
-                    id: "authoring"
-                }, {
-                    name: "Linking",
-                    id: "linking"
-                }, {
-                    name: "Enriching and Data Cleaning",
-                    id: "enriching-and-cleaning"
-                }]
-            };
-        },
 
-        getRequiredServices: function(url) {
-            var routeRestrictions = Config.select("rdf:type", "ontos:RouteRestriction");
-            for (var ind in routeRestrictions) {
-                if (routeRestrictions[ind]["ontos:route"] == url) {
-                    return routeRestrictions[ind]["ontos:requiredService"];
-                }
-            }
-            return null;
+        getRequiredServices: function(route) {
+            return $http.get('rest/config/routes').then(function(response){
+                var restrictions = response.data;
+                if(restrictions[route] != undefined)
+                    return restrictions[route];
+                else // if the route is not in the restrictions, then is not restricted
+                    return null;
+            });
         }
 
     };

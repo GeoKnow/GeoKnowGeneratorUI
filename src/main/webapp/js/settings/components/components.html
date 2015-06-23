@@ -7,7 +7,7 @@
 <table class="table table-striped" ng-controller="ComponentCtrl">
 <thead>
   <tr>
-    <th>Enabled</th>
+    <!-- <th ng-if="isAdminLogged()" >Enabled</th> -->
   	<th>URI</th>
     <th>Name</th>
     <th>Services</th>
@@ -16,7 +16,7 @@
 </thead>
 <tbody>
   <tr ng-repeat="component in components">
-    <td><input type="checkbox" ng-show="isNotRequired(component.uri)" ng-checked="isIntegrated(component.uri)" ng-click="toggleComponent(component.uri)"> </td>
+    <td ng-if="isAdminLogged()" ><input type="checkbox" ng-show="isNotRequired(component.uri)" ng-checked="isIntegrated(component.uri)" ng-click="toggleComponent(component.uri)"> </td>
   	<td>{{component.uri | shortenURI }}</td>
     <td><a href="{{component.homepage}}" target="_blanc">{{component.label}}</a></td>
     <td>
@@ -24,7 +24,7 @@
         <dl>
           <dt>{{value.uri | shortenURI  }} a {{value.type | shortenURI }}</dd>
           <dd>
-            <button type="button" class="btn btn-default btn-xs" ng-click="changeServiceUrl(value);"><span class="glyphicon glyphicon-edit"></span></button>
+            <button ng-if="isAdminLogged()" type="button" class="btn btn-default btn-xs" ng-click="changeServiceUrl(value);"><span class="glyphicon glyphicon-edit"></span></button>
            <a href="{{value.serviceUrl}}" target="_blanc">{{value.serviceUrl}}</a></dd>
         </dl>
       </div>

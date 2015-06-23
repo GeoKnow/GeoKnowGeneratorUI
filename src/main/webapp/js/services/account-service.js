@@ -22,7 +22,7 @@ module.factory("AccountService", function ( $cookieStore, $http, ConfigurationSe
             this.role.uri = this.role.uri.replace(ConfigurationService.getUriBase(), ":");
             var roleServices = [];
             for (var ind in this.role.services) 
-                roleServices.push(this.role.services[ind].replace(ConfigurationService.getUriBase(), ":"));
+                roleServices.push(this.role.services[ind]);
             this.role.services = roleServices;
         }
     };

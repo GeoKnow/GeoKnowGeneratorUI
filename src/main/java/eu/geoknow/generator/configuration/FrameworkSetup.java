@@ -69,7 +69,10 @@ public class FrameworkSetup {
 
     // if setup is already done but not reset is wanted, exit here
     if (config.isSetUp() && !reset) {
-      log.debug("System is already initialized. Reset " + reset);
+      log.debug("System is already initialized, and reset is " + reset
+          + ". Will update components data... ");
+      frameworkRdfStoreManager.dropGraph(config.getComponentsGraph());
+      setupComponentsGraph();
       return;
     }
     // if setup already done and reset is want, delete flag and delete

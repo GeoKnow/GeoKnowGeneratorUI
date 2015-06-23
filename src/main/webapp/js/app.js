@@ -208,25 +208,36 @@ app.config(function($routeSegmentProvider, $routeProvider)
             });
         } else if (!$rootScope.isSystemSetUp) {
             $location.path('/system-setup');
-        } else if (AccountService.getAccount().getAccountURI() != undefined && next.$$route) { //check route permissions
-            var requiredServices = ConfigurationService.getRequiredServices(next.$$route.originalPath);
-            if (requiredServices==null) return;
+        } else if (AccountService.getAccount().getAccountURI() != undefined && next.$$route) { 
+
+            // if user is admin, has allrigths to all routes
             if (AccountService.getAccount().isAdmin()) return;
-            var role = AccountService.getAccount().getRole();
-            if (role==undefined) {
-                $location.path("/access-denied");
-            } else {
-                var allowedServices = role.services;
-                console.log(allowedServices);
-                console.log(requiredServices);
-                for (var ind in requiredServices) {
-                    if (allowedServices.indexOf(requiredServices[ind])==-1) {
+
+            //check route permissions
+            ConfigurationService.getRequiredServices(next.$$route.originalPath).then(
+                //success
+                function(requiredServices){
+                    // if required services is null means that no service is required, and can be accessed
+                    if (requiredServices==null) return;
+                    // else, check that required services martches the services allowed to the role
+                    var role = AccountService.getAccount().getRole();
+                    if (role==undefined) {
                         $location.path("/access-denied");
-                        return;
+                    } else {
+                        var allowedServices = role.services;
+                        for (var ind in requiredServices) {
+                            if (allowedServices.indexOf(requiredServices[ind])==-1) {
+                                $location.path("/access-denied");
+                                return;
+                            }
+                        }
                     }
-                }
-            }
-        }else {
+                },
+                //error
+                function(response){
+                    flash.error = ServerErrorResponse.getMessage(response);
+                });
+        }else{
             $location.path("/");
         }
     });
