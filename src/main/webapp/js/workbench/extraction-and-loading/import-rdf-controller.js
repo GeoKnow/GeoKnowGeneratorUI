@@ -22,15 +22,6 @@ var ImportFormCtrl = function($scope, $http, ConfigurationService, flash, Accoun
     {value:'localQuery', label:'Local'}
   ];
 
-  $scope.refreshGraphList = function() {
-    GraphService.getAccessibleGraphs(false, false, true).then(function(graphs) {
-      $scope.readableGraphs = graphs;
-    });
-
-    GraphService.getAccessibleGraphs(true, false, true).then(function(graphs) {
-      $scope.writableGraphs = graphs;
-    });
-  };	
   // initialise some required fields
   var initialise = function(){
 
@@ -39,7 +30,7 @@ var ImportFormCtrl = function($scope, $http, ConfigurationService, flash, Accoun
     importing = false;
     uploadedFiles = null;
 
-    $scope.refreshGraphList();
+    
     $scope.endpoints = ConfigurationService.getAllEndpoints();
     $scope.uploadMessage = '';
 
@@ -47,8 +38,21 @@ var ImportFormCtrl = function($scope, $http, ConfigurationService, flash, Accoun
 
     // source can be : file, url, endpoint or graph
     $scope.importRdf = { 
-      targetGraph:"" , 
       source : "" };
+   
+    //scope variables used in the target-graph direcitve
+    $scope.target = { 
+      label : "Target Graph",
+      graph : "" };
+    $scope.newTarget ={
+      prefix : "RdfImport" ,
+      label : "",
+      description : ""
+    };
+    //scope variable is for the source-graph direcitve
+    $scope.source = { 
+      label : "Source Graph",
+      graph : "" };
 
     $scope.importEndpoint = {sparqlQuery : "CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o } "};
     $scope.importLocal = { action : "ADD", sparqlQuery : "ADD"};
@@ -63,7 +67,7 @@ var ImportFormCtrl = function($scope, $http, ConfigurationService, flash, Accoun
 
   $scope.updateSparqlCopyQuery = function(){
     if($scope.importLocal.action == 'QUERY'){
-      $scope.importLocal.sparqlQuery = "INSERT { GRAPH <" + Ns.lengthen($scope.importRdf.targetGraph) + "> {?s ?p ?o}} " 
+      $scope.importLocal.sparqlQuery = "INSERT { GRAPH <" + Ns.lengthen($scope.target.graph) + "> {?s ?p ?o}} " 
                       + "WHERE {GRAPH <" + Ns.lengthen($scope.importRdf.source) + "> {?s ?p ?o}}";
       return true;
     }
@@ -72,12 +76,37 @@ var ImportFormCtrl = function($scope, $http, ConfigurationService, flash, Accoun
     return false;
   };
 
-  // $scope.$watch('importLocal.action', function () {
-  //   $scope.updateSparqlCopyQuery();
-  // });
-
-  $scope.describeGraph=function (ngraph) {
-    return ngraph.name + " - " + ngraph.graph.label ;
+  $scope.updateNewTargetInfo = function(){
+    if($scope.sourceType.value == 'file'){
+      $scope.newTarget ={
+        prefix : "RdfImport" ,
+        label : "Import from file ",
+        description : "Import from file "+$scope.importRdf.source,
+      };
+    }
+    else if($scope.sourceType.value == 'url'){
+      $scope.newTarget ={
+        prefix : "RdfImport" ,
+        label : "Import from url",
+        description : "Import from url "+$scope.importRdf.source,
+      };
+    }
+    else if($scope.sourceType.value == 'externalQuery'){
+      $scope.newTarget ={
+        prefix : "RdfImport" ,
+        label : "Import from endpoint",
+        description : "Import from endpoint "+$scope.importRdf.source,
+      };
+    }
+    else if($scope.sourceType.value == 'localQuery'){
+      $scope.importRdf.source = $scope.source.graph;
+       $scope.newTarget ={
+        prefix : "RdfImport" ,
+        label : "Import from graph",
+        description : "Import from graph "+$scope.importRdf.source,
+      };
+    }
+   
   }
 		
   $scope.updateForm = function() {
@@ -98,6 +127,7 @@ var ImportFormCtrl = function($scope, $http, ConfigurationService, flash, Accoun
 		  $scope.urlElements = false;
   		$scope.externalQueryElements = true;
       $scope.localQueryElements = false;
+      
     }
     else if($scope.sourceType.value == 'localQuery'){
       $scope.fileElements = false;  
@@ -107,7 +137,9 @@ var ImportFormCtrl = function($scope, $http, ConfigurationService, flash, Accoun
     }
   };
 	
-
+  /**
+   For File Import
+   **/
   $scope.$watch('importFile.files', function () {
     if($scope.importFile != undefined )
       $scope.upload($scope.importFile.files);
@@ -125,7 +157,7 @@ var ImportFormCtrl = function($scope, $http, ConfigurationService, flash, Accoun
             flash.success='progress: ' + parseInt(100.0 * evt.loaded / evt.total) + '% file :'+ evt.config.file.name;
         }).success(function (data, status, headers, config) {
           $scope.importRdf.source = config.file.name;
-          //uploadedFiles=config.file.name;
+          $scope.updateNewTargetInfo();
         });
       }
     }
@@ -145,6 +177,7 @@ var ImportFormCtrl = function($scope, $http, ConfigurationService, flash, Accoun
     return invalid;
   };
 
+  /** Main importing function **/
   $scope.import = function(){
     // validate the input fields accoding to the import type
     var parameters;
@@ -152,16 +185,14 @@ var ImportFormCtrl = function($scope, $http, ConfigurationService, flash, Accoun
     var importPromise;
     var source;
 
-    console.log($scope.importRdf);
-
     if($scope.sourceType.value == 'file')
-      importPromise = ImportRdfService.importFromFile($scope.importRdf.source, $scope.importRdf.targetGraph);
+      importPromise = ImportRdfService.importFromFile($scope.importRdf.source, $scope.target.graph);
     else if($scope.sourceType.value == 'url')
-      importPromise = ImportRdfService.importFromUrl($scope.importRdf.source, $scope.importRdf.targetGraph);
+      importPromise = ImportRdfService.importFromUrl($scope.importRdf.source, $scope.target.graph);
     else if($scope.sourceType.value == 'externalQuery')
-      importPromise =  ImportRdfService.importFromEndpoint(scope.importEndpoint.sparqlQuery, $scope.importRdf.source, $scope.importRdf.targetGraph);
+      importPromise =  ImportRdfService.importFromEndpoint(scope.importEndpoint.sparqlQuery, $scope.importRdf.source, $scope.target.graph);
     else if($scope.sourceType.value == 'localQuery')
-      importPromise =  ImportRdfService.importFromLocal($scope.importRdf.source, $scope.importRdf.targetGraph, $scope.importLocal.sparqlQuery);
+      importPromise =  ImportRdfService.importFromLocal($scope.importRdf.source, $scope.target.graph, $scope.importLocal.sparqlQuery);
     
     importPromise.then(
       //success
@@ -202,6 +233,7 @@ var ImportFormCtrl = function($scope, $http, ConfigurationService, flash, Accoun
     
     initialise();
 
+    $scope.importFile.files = [];
     $scope.urlForm.$setPristine();
     $scope.fileForm.$setPristine();
     $scope.endpointForm.$setPristine();
@@ -209,8 +241,5 @@ var ImportFormCtrl = function($scope, $http, ConfigurationService, flash, Accoun
 
   };
 
-  $scope.$watch( function () { return currentAccount.getUsername(); }, function () {
-    $scope.refreshGraphList();
-  });
 
 };

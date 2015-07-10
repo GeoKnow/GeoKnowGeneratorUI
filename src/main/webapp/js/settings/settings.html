@@ -17,7 +17,7 @@
 	  
     <h3 class="green bold">Generator Settings</h3>
 
-	<!-- <table class="table table-bordered" ng-if="currentAccount.username" style="width:60%"> -->
+	
 		<table class="table table-bordered" style="width:60%">
     	<tr>
         <td>URI Base:</td><td>{{settings.uriBase}}</td>
@@ -29,58 +29,6 @@
         <td>Endpoint:</td><td>{{settings.endpointService}}</td>
         </tr>
     </table>
-<!--  			<div class="form-group">
-		    <label class="col-xs-2" for="uriBase">Uri base</label>
-		    <div class="col-xs-10">
-		       <input type="text" class="form-control" name="uriBase" id="uriBase" ng-model="settings.uribase" required regex-validate="uri">
-		        <div class="error"  ng-show="settingsForm.uriBase.$dirty && settingsForm.uriBase.$invalid">Invalid:
-              <span ng-show="settingsForm.uriBase.$error.required || settingsForm.uriBase.$error.regexValidate ">Specify a valid URI</span>
-            </div>
-		  	</div>
-		  </div>
-
- 			<div class="form-group">
-		    <label class="col-xs-2" for="settingsGraph">Settings graph</label>
-		    <div class="col-xs-10">
-		       <p>{{settings.settingsGraph}} </p>
-		       <div class="error">
-		       	** this graph should exist on the seleced endpoint and have the configuration files loaded
-           </div>
-		  	</div>
-		  </div>
-
-		<form name="settingsForm" class="form-horizontal InputForm col-xs-11"  role="form" novalidate>
-
-		  <div class="form-group">
-		    <label class="col-xs-2" for="availableEndponts">Generator Endpoint</label>
-		    <div class="col-xs-10">
-		       <select id="availableEndponts" class="form-control" ng-model="settings.endpointService" 
-	      				ng-options="c.serviceUrl as c.serviceUrl for c in endpointServices" required>
-		      </select> 
-		  	</div>
-		  </div>
- 		  <div class="form-group">
-		    <label class="col-xs-2" for="optionsRadios">Export Current Settings</label>
-		    <div class="col-xs-10">
-		      <input type="radio" name="optionsRadios" id="optionsRadios1" value="xml/rdf">RDF/XML
-				  <input type="radio" name="optionsRadios" id="optionsRadios2" value="option2">NTriples
-		    </div>
-		  </div>
-
-		  <div class="form-group">
-    		<div class="col-lg-offset-2 col-xs-10">
-      		<button class="btn btn-success" ng-click="export()" >Export</button>
-    		</div>
-  		</div>	 
-
-  		<div class="form-group">
-    		<div class="col-lg-offset-2 col-xs-10">
-      		<button class="btn btn-success" ng-click="update()" ng-disabled="settingsForm.$invalid || isUnchanged(settings)">Save</button>
-    		</div>
-  		</div>
-		</form>
- -->
-
 	</div>
 
 </div>

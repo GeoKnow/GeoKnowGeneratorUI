@@ -220,16 +220,15 @@ module.factory('ConfigurationService', function ($q, Config, $http, $location, f
         getAllEndpoints: function () {
             var results = [];
             var elements = Config.select("rdf:type", "ontos:SPARQLEndpoint");
-            
+            console.log(elements);
             for (var resource in elements) {
                 var element = elements[resource];
                 if(element["rdfs:label"]== undefined) continue;
-
                 var lendpoint = element["void:sparqlEndpoint"][0]
-                if(resource==":VirtuosoAuthSPARQLEndpoint")
-                    lendpoint = Config.getAuthEndpoint();
-                else if(resource==":VirtuosoEndpoint")
-                    lendpoint = Config.getEndpoint();
+                // if(resource==":VirtuosoAuthSPARQLEndpoint")
+                //     lendpoint = Config.getAuthEndpoint();
+                // else if(resource==":VirtuosoEndpoint")
+                //     lendpoint = Config.getEndpoint();
                 results.push({
                     uri: resource,
                     label: element["rdfs:label"][0],
@@ -237,6 +236,14 @@ module.factory('ConfigurationService', function ($q, Config, $http, $location, f
                     homepage: element["foaf:homepage"] == undefined ? "" : element["foaf:homepage"][0]
                 });
             }
+
+            // add the local 
+            results.push({
+                    uri: ":VirtuosoAuthSPARQLEndpoint",
+                    label: "Local",
+                    endpoint: Config.getAuthEndpoint(),
+                    homepage: ""
+                });
 
             return results;
         },

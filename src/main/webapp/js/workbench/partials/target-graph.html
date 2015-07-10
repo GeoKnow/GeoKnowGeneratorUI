@@ -1,0 +1,11 @@
+<div class="row">  
+  <label for="targetGraph" class="col-xs-2 control-label" >Target Graph</label>
+  <div class="col-xs-8">
+    <select id="targetGraph" class="form-control" ng-model="target.graph" ng-options="namedgraph.name as describeGraph(namedgraph) for namedgraph in writableGraphs" ng-change="targetChanged()" required>
+    </select>
+  </div>
+  <div class="col-xs-2">
+    <a class="btn btn-default" ng-click="createTargetGraph();" >New Graph</a>
+  </div>
+</div>
+<br/>

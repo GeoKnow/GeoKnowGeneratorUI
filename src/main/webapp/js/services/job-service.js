@@ -2,7 +2,7 @@
 
 var module = angular.module('app.job-service', []);
 
-module.factory('JobService', function ($http, $q) {
+module.factory('JobService', function ($http, $q, flash, ServerErrorResponse) {
 
 	var jobService = {
 
@@ -11,7 +11,11 @@ module.factory('JobService', function ($http, $q) {
 				// success
 				function (response){
 					return response.data.jobs;
-	    });
+				},
+				//error
+				function(response){ 
+            flash.error = ServerErrorResponse.getMessage(response);
+				});
 		},
 
 		getJob : function(jobName){
@@ -20,6 +24,10 @@ module.factory('JobService', function ($http, $q) {
 				// success
 				function (response){
 					return response.data;
+				},
+				//error
+				function(response){ 
+            flash.error = ServerErrorResponse.getMessage(response);
 	    	});	
 		},
 
@@ -28,6 +36,10 @@ module.factory('JobService', function ($http, $q) {
 				// success
 				function (response){
 					return response.data;
+				},
+				//error
+				function(response){ 
+            flash.error = ServerErrorResponse.getMessage(response);
 	    	});
 		},
 		
@@ -53,9 +65,15 @@ module.factory('JobService', function ($http, $q) {
 				body : JSON.stringify(pbody)
 			};
 			console.log(data);
-			return $http.put("rest/jobs", data).then( function (response){
+			return $http.put("rest/jobs", data).then(
+				//success
+				function (response){
 					return response.data;
-	    });
+				},
+				//error
+				function(response){ 
+           flash.error = ServerErrorResponse.getMessage(response);
+	    	});
 		},
 		
 		/**
@@ -79,14 +97,18 @@ module.factory('JobService', function ($http, $q) {
 			};
 			console.log(data);
 			
-			return $http.put("rest/jobs", data).then( function (response){
+			return $http.put("rest/jobs", data).then( 
+				//sucess
+				function (response){
 					return response.data;
-	    });
+					},
+				//error
+				function(response){ 
+          flash.error = ServerErrorResponse.getMessage(response);
+	    	});
 		}
 
 	};
-
-	
 
 	return jobService;
 

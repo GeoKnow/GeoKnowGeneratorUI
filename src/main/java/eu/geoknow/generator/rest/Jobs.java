@@ -96,7 +96,7 @@ public class Jobs {
       return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
     }
     try {
-
+      log.debug("delete job" + jobName);
       if (jmanager.deleteJob(jobName, user))
         return Response.status(Response.Status.NO_CONTENT).build();
       else

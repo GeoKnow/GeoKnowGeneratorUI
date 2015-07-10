@@ -24,6 +24,7 @@ var app = angular.module('app', ['ngRoute',
                                  'route-segment',
                                  'view-segment', 
                                  'ngFileUpload',
+                                 'http-auth-interceptor',
                                  'angular-flash.service', 
                                  'angular-flash.flash-alert-directive',
                                  'angular-loading-bar']);
@@ -185,13 +186,34 @@ app.config(function($routeSegmentProvider, $routeProvider)
     if (!$httpProvider.defaults.headers.get) {
         $httpProvider.defaults.headers.get = {};    
     }
+    if (!$httpProvider.defaults.headers.post) {
+        $httpProvider.defaults.headers.post = {};    
+    }
+    if (!$httpProvider.defaults.headers.put) {
+        $httpProvider.defaults.headers.put = {};    
+    }
+     $httpProvider.defaults.cache = false;
+     
     //disable IE ajax request caching
-    $httpProvider.defaults.headers.get['If-Modified-Since'] = '0';
-    $httpProvider.defaults.headers.get['Cache-Control'] = 'no-cache'; 
-    $httpProvider.defaults.headers.get['Pragma'] = 'no-cache';
+    $httpProvider.defaults.headers.get['Cache-Control'] = 'no-cache';
+    $httpProvider.defaults.headers.get['Cache-Control'] = 'no-store';
+    $httpProvider.defaults.headers.get['Pragma'] = 'no-cache'; 
+    $httpProvider.defaults.headers.get['Expires'] = '0'; 
+    $httpProvider.defaults.headers.get['If-Modified-Since'] = '0';    
     
+    $httpProvider.defaults.headers.post['Cache-Control'] = 'no-cache';
+    $httpProvider.defaults.headers.post['Cache-Control'] = 'no-store';
+    $httpProvider.defaults.headers.post['Pragma'] = 'no-cache'; 
+    $httpProvider.defaults.headers.post['Expires'] = '0'; 
+    $httpProvider.defaults.headers.post['If-Modified-Since'] = '0';
     
+    $httpProvider.defaults.headers.put['Cache-Control'] = 'no-cache';
+    $httpProvider.defaults.headers.put['Cache-Control'] = 'no-store';
+    $httpProvider.defaults.headers.put['Pragma'] = 'no-cache';
+    $httpProvider.defaults.headers.put['Expires'] = '0'; 
+    $httpProvider.defaults.headers.put['If-Modified-Since'] = '0';   
 })
+
 .run(function($rootScope, $location, $http, AccountService, ConfigurationService, flash, ServerErrorResponse) {
     
     //redirect to system-setup page if system is not set up

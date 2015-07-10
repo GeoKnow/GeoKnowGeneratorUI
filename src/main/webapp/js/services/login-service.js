@@ -2,8 +2,9 @@
 
 var module = angular.module('app.login-service', []);
 
-module.factory("LoginService", function ($http, $location, $cookieStore, AccountService, ConfigurationService, Base64, flash, ServerErrorResponse) {
+module.factory("LoginService", function ($http, $location, $cookies, AccountService, ConfigurationService, Base64, flash, ServerErrorResponse) {
 
+    
     var login = function (username, password) {
 
         var username = Base64.decode(username);
@@ -20,14 +21,16 @@ module.factory("LoginService", function ($http, $location, $cookieStore, Account
             data: $.param(postData),
             contentType: "application/x-www-form-urlencoded"
         }).then(function (response) {
-        	console.log(response);
-        	return AccountService.create(
-                response.data.username, 
-                response.data.accountURI,
-                response.data.email, 
-                response.data.role,
-                response.data.settingsGraph);
-        }, function (response) {
+            
+             return AccountService.create(
+                     response.data.username, 
+                     response.data.accountURI,
+                     response.data.email, 
+                     response.data.role,
+                     response.data.settingsGraph);
+
+        }, 
+        function(response){ 
             flash.error = ServerErrorResponse.getMessage(response);
         });
     };
@@ -43,13 +46,15 @@ module.factory("LoginService", function ($http, $location, $cookieStore, Account
             data: $.param(postData),
             contentType: "application/x-www-form-urlencoded"
         }).then(function (response) {
-        	document.execCommand("ClearAuthenticationCache");
+            document.execCommand("ClearAuthenticationCache");
             ConfigurationService.restoreDefaultSettingsGraph();
-            $location.path("/");
+            
+            $location.path("/#/home");
             return AccountService.clearAccount();
+            
 
         }, function (response) {
-        	flash.error = ServerErrorResponse.getMessage(response);
+            flash.error = ServerErrorResponse.getMessage(response);
             
         });
     };

@@ -2,6 +2,8 @@
 
 function ModalGraphCtrl($scope, $http, $modalInstance, currentNamedGraph, versionedGroup, ConfigurationService, GraphService, AccountService, Helpers, cfpLoadingBar, Ns) {
 
+  console.log(currentNamedGraph);
+  
   $scope.isNew = function() {
     if (currentNamedGraph == null) {
       return true;
@@ -20,7 +22,7 @@ function ModalGraphCtrl($scope, $http, $modalInstance, currentNamedGraph, versio
       label: "",
       graphset:"",
       source: [],
-      author: [],
+      contributor: [],
       issued : ""
     },
     owner: "",

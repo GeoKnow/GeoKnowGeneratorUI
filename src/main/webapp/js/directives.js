@@ -2,6 +2,87 @@
 
 var module = angular.module('app.directives', []);
 
+/**
+This requres that the parent scope defines in its scope:
+  - newTarget {prefix, label, description}
+  - target.graph
+*/
+module.directive('targetGraph', ['$parse', 'GraphService', function($parse, GraphService){
+  return {
+    restrict: 'E', 
+    templateUrl: 'js/workbench/partials/target-graph.html',
+    scope: true,
+    link : function ($scope, elem, attrs, ctrl) {
+
+      $scope.refreshWritableGraphs = function() {
+        return GraphService.getAccessibleGraphs(true, false, true).then(function(graphs) {
+          $scope.writableGraphs = graphs;
+        });
+      };
+
+      $scope.describeGraph=function (ngraph) {
+        return  ngraph.graph.label + " | " + ngraph.name;
+      }
+
+      $scope.createTargetGraph = function(){
+        // create a new graph to save data
+        var name  = $scope.newTarget.prefix + "_" + new Date().getTime();
+        var label = $scope.newTarget.label;
+        var description = $scope.newTarget.description;
+        console.log($scope.newTarget);
+        GraphService.addSimpleGraph(name, label, description).then(function(response){
+          $scope.refreshWritableGraphs().then(function(){
+            $scope.target.graph = ":"+name;
+          })
+        });
+      };
+
+      // notify that the input changed
+      $scope.targetChanged = function(){
+        var invoker = $parse(attrs.targetChanged);
+        invoker($scope);
+      }
+
+      $scope.refreshWritableGraphs();
+    }
+  };
+}]);
+
+/**
+This requres that the parent scope defines in its scope:
+  $scope.source = {label, graph}
+  
+*/
+module.directive('sourceGraph', ['$parse', 'GraphService', function($parse, GraphService){
+  return {
+    restrict: 'E', 
+    templateUrl: 'js/workbench/partials/source-graph.html',
+    scope: true,
+    link : function ($scope, elem, attrs, ctrl) {
+
+      $scope.refreshReadableGraphs = function() {
+        return GraphService.getAccessibleGraphs(false, false, true).then(function(graphs) {
+          $scope.readableGraphs = graphs;
+        });
+      };
+
+      $scope.describeGraph=function (ngraph) {
+        return  ngraph.graph.label + " | " + ngraph.name;
+      }
+
+      // notify that the input changed
+      $scope.sourceChanged = function(){
+        var invoker = $parse(attrs.sourceChanged);
+        invoker($scope);
+      }
+
+      $scope.refreshReadableGraphs();
+    }
+  };
+}]);
+
+/**
+
 /*
 This directive will render a header for a component integration page
 */

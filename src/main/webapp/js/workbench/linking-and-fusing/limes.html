@@ -5,29 +5,23 @@
   <p>Link Discovery Framework for Metric Spaces</p>
   <p>To get started either upload a configuration file, choose an example, or fill in the options form.</p>
   <form class="form-inline InputForm col-xs-11" role="form" ng-show="inputForm">
-    <button type="button" class="btn btn-link reset" ng-click="clearForm()">
-      <i class="glyphicon glyphicon-refresh" aria-hidden="false"></i>
-    </button>
+    
     <div class="row">
       <div class="col-xs-12">
         <h5 class="green bold">LIMES Configuration</h5>
       </div>
     </div>
+
     <br>
+    <button type="button" class="btn btn-link reset" ng-click="clearForm()">
+      <i class="glyphicon glyphicon-refresh" aria-hidden="false"></i>
+    </button>
     <div ng-show="configOptions">
-      <div class="row" ng-controller="ImportFormCtrl">
+      <div class="row"> 
         <label for="inputFile" class="col-xs-2 control-label">Upload a LIMES Configuration File (XML)</label>
         <div class="col-xs-8">
-          <input id="lefile" class="form-control input-sm" type="file" ng-file-select="loadLimesXML($files)" 
-            multiple name="fileName" accept=".xml" style="display:none">
-          <div class="error" ng-show="uploadedError()">Invalid:
-            <span>{{uploadMessage}}</span>
-          </div>
-          <div class="input-append">
-            <input id="dummyInput" class="input-sm pull-left col-xs-9" type="text" onclick="$('input[id=lefile]').click();">
-            <a class="btn btn-sm btn-success btn-large pull-left col-xs-3" onclick="$('input[id=lefile]').click();">Browse</a>
-          </div>
-        </div>
+          <input type="file" ngf-select ngf-change="loadLimesXML($files)"   />
+        </div> 
       </div>
       <div class="row">
         <script type="text/javascript">
@@ -76,16 +70,14 @@
           <label for="SourceServiceURI">Endpoint URL</label>
         </div>
         <div class="col-xs-4">
-          <!-- <input class="form-control input-sm" id="SourceServiceURI" ng-model="limes.SourceServiceURI"></input> -->
           <select id="SourceServiceURI" class="form-control" ng-model="limes.source.endpoint" 
             ng-change="updateSourceGraphs()" ng-options="c.endpoint as c.label for c in endpoints" required>
           </select>
         </div>
-        <div class="col-xs-2">
+        <div class="col-xs-2" >
           <label for="TargetServiceURI">Endpoint URL</label>
         </div>
         <div class="col-xs-4">
-          <!-- <input class="form-control input-sm" id="TargetServiceURI" ng-model="limes.TargetServiceURI"></input> -->
           <select id="TargetServiceURI" class="form-control" ng-model="limes.target.endpoint" 
             ng-change="updateTargetGraphs()" ng-options="c.endpoint as c.label for c in endpoints" required>
           </select>
@@ -93,19 +85,32 @@
       </div>
       <br>
       <div class="row">
-        <div class="col-xs-2">
+        <div class="col-xs-2" ng-show="sourceLocal()">
           <label for="SourceServiceURI">Graph</label>
         </div>
-        <div class="col-xs-4">
-          <select id="SourceGraph" class="form-control" ng-model="limes.source.graph" ng-options="namedgraph.name as namedgraph.name for namedgraph in namedSourceGraphs" required>
+        <div class="col-xs-4" ng-show="sourceLocal()">
+          <select id="SourceGraph" class="form-control" ng-model="limes.source.graph" ng-options="namedgraph.name as describeGraph(namedgraph) for namedgraph in namedSourceGraphs">
+            <option value=""></option>
           </select>
+          <span class="input-group-btn">
+                <button type="button" class="btn btn-link reset" ng-click="updateSourceGraphs()">
+                    <i class="glyphicon glyphicon-refresh" aria-hidden="false"></i>
+                </button>
+            </span>
         </div>
-        <div class="col-xs-2">
+
+        <div class="col-xs-2" ng-show="targetLocal()">
           <label for="TargetGraph">Graph</label>
         </div>
-        <div class="col-xs-4">
-          <select id="TargetGraph" class="form-control" ng-model="limes.target.graph" ng-options="namedgraph.name as namedgraph.name for namedgraph in namedTargetGraphs" required>
+        <div class="col-xs-4" ng-show="targetLocal()">
+          <select id="TargetGraph" class="form-control" ng-model="limes.target.graph" ng-options="namedgraph.name as describeGraph(namedgraph) for namedgraph in namedTargetGraphs">
+            <option value=""></option>
           </select>
+          <span class="input-group-btn">
+                <button type="button" class="btn btn-link reset" ng-click="updateTargetGraphs()">
+                    <i class="glyphicon glyphicon-refresh" aria-hidden="false"></i>
+                </button>
+            </span>
         </div>
       </div>
       <br>

@@ -121,35 +121,34 @@ var LimesCtrl = function($scope, $http, ConfigurationService, ComponentsService,
 		$scope.examples = null;
 	};
 
-  $scope.updateSourceGraphs = function(){
-  	console.log($scope.limes.target.endpoint + "==" + ConfigurationService.getSPARQLEndpoint());
-  	// wait for model to update
-  	$timeout(function () {
-  		console.log($scope.limes.target.endpoint + "==" + ConfigurationService.getSPARQLEndpoint());
-  		if( $scope.limes.source.endpoint == ConfigurationService.getSPARQLEndpoint()){
-  			console.log("get gtraphs");
-				GraphService.getAccessibleGraphs(false, false, true).then(function(graphs) {
-    			$scope.namedSourceGraphs = graphs;
-    		});
-			}
-			else
-				$scope.namedSourceGraphs = {};
-    }, 500);
+	$scope.describeGraph=function (ngraph) {
+    // return  ngraph.graph.label + " | " + ngraph.name;
+    return  ngraph.graph.label;
+  }
 
+	$scope.targetLocal =  function(){
+		return $scope.limes.target.endpoint == ConfigurationService.getSPARQLEndpoint();
+	}
+	$scope.sourceLocal =  function(){
+		return $scope.limes.source.endpoint == ConfigurationService.getSPARQLEndpoint();
+	}
+
+  $scope.updateSourceGraphs = function(){
+
+  	GraphService.getAccessibleGraphs(false, false, true).then(function(graphs) {
+      $scope.namedSourceGraphs = graphs;
+    });
   	
   };
+  $scope.updateSourceGraphs();
 
   $scope.updateTargetGraphs = function(){
-  	console.log($scope.limes.target.endpoint + "==" + ConfigurationService.getSPARQLEndpoint());
-  	if( $scope.limes.target.endpoint == ConfigurationService.getSPARQLEndpoint()){
-  		console.log("get gtraphs");
-			GraphService.getAccessibleGraphs(false, false, true).then(function(graphs) {
-    		$scope.namedTargetGraphs = graphs;
-    	});
-		}
-		else
-			$scope.namedTargetGraphs = {};
+
+  	 GraphService.getAccessibleGraphs(false, false, true).then(function(graphs) {
+      $scope.namedTargetGraphs = graphs;
+    });
   };
+  $scope.updateTargetGraphs();
 	
 	$scope.fillForm = function(file){
 		
@@ -164,10 +163,13 @@ var LimesCtrl = function($scope, $http, ConfigurationService, ComponentsService,
 
 	var fillForm = function(content){
 
+		console.log(content);
+
  		var x2js = new X2JS();				
 		var conf = x2js.xml_str2json(content);
+
 	  $scope.limes.execution = conf.LIMES.EXECUTION;
-	  $scope.limes.granularity = conf.LIMES.GRANULARITY;
+	  $scope.limes.granularity = (conf.LIMES.GRANULARITY!=undefined ? "" : conf.LIMES.GRANULARITY);
 	  $scope.limes.output = conf.LIMES.OUTPUT;
 	  $scope.limes.metric = conf.LIMES.METRIC;			
   	$scope.limes.source.id = conf.LIMES.SOURCE.ID;
@@ -214,23 +216,31 @@ var LimesCtrl = function($scope, $http, ConfigurationService, ComponentsService,
   		};
   		$scope.limes.prefix.push(p);
   	}
+
 	}
 	
-	$scope.loadLimesXML = function($files){
-		for (var i = 0; i < $files.length; i++) {
-		  var $file = $files[i];
-	  	var reader = new FileReader();
-			reader.onloadstart = function(e) {
-	    	console.log('loading');
-	  	};
-		  reader.onloadend = function(evt) {
-	    	if (evt.target.readyState == FileReader.DONE) { 
-	     		fillForm(evt.target.result);
-	     	}
-	  	};
-	  	reader.readAsText($file, "utf-8");
+	$scope.loadLimesXML = function(files){
+		
+		console.log(files);
 
-		}
+		if (files && files.length) {
+      for (var i = 0; i < files.length; i++) {
+        var file = files[i];
+        console.log(file);
+        var reader = new FileReader();
+				reader.onloadstart = function(e) {
+		    	console.log('loading');
+		  	};
+			  reader.onloadend = function(evt) {
+		    	if (evt.target.readyState == FileReader.DONE) { 
+		     		fillForm(evt.target.result);
+		     		$scope.$apply();
+		     	}
+		  	};
+		  	reader.readAsText(file, "utf-8");
+      }
+    }
+
 	};
 
 	$scope.registerJob = function(){

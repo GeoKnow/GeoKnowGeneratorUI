@@ -43,8 +43,6 @@ import eu.geoknow.generator.utils.Utils;
 import eu.geoknow.generator.workflow.beans.JobExecution;
 import eu.geoknow.generator.workflow.beans.JobExecutionWrapper;
 import eu.geoknow.generator.workflow.beans.JobExecutions;
-import eu.geoknow.generator.workflow.beans.JobExecutionsWrapper;
-import eu.geoknow.generator.workflow.beans.JobInstanceWrapper;
 import eu.geoknow.generator.workflow.beans.JobWraper;
 import eu.geoknow.generator.workflow.beans.JobsRegistered;
 import eu.geoknow.generator.workflow.beans.Registration;
@@ -78,25 +76,29 @@ public class BatchAdminClient {
    * @throws ServiceInternalServerError
    * @throws Exception
    */
-  public static JobExecutionWrapper getExecutionDetail(String jobName, String executionNum,
+  public static JobExecutionWrapper getExecutionDetail(String jobName, String jobInstanceId,
       String springBatchServiceUri) throws ResourceNotFoundException, UnknownException,
       IOException, ServiceNotAvailableException, ServiceInternalServerError {
     // first, we need to get the resource with ID. the URI is:
-    // http://localhost:8080/spring-batch-admin-geoknow/jobs/jobName/execNumber.json
-    log.debug(springBatchServiceUri + "/jobs/" + jobName + "/" + executionNum + ".json");
+    // http://localhost:8080/spring-batch-admin-geoknow/jobs/jobName/jobInstanceId.json
+    log.debug(springBatchServiceUri + "/jobs/" + jobName + "/" + jobInstanceId + ".json");
     HttpGet jobInstance =
-        new HttpGet(springBatchServiceUri + "/jobs/" + jobName + "/" + executionNum + ".json");
+        new HttpGet(springBatchServiceUri + "/jobs/" + jobName + "/" + jobInstanceId + ".json");
     String jsonString = apiRequest(jobInstance);
     log.debug(jsonString);
     // create Java object
     ObjectMapper mapper = new ObjectMapper();
-    JobInstanceWrapper jobInst = mapper.readValue(jsonString, JobInstanceWrapper.class);
-    List<JobExecution> executionList =
-        jobInst.getJobInstance().getJobExecutions().getJobExecutions();
+    JobExecutions jobExecutions = mapper.readValue(jsonString, JobExecutions.class);
+
+    // List<JobExecution> executionList =
+    // jobInst.getJobInstance().getJobExecutions().getJobExecutions();
+    // List<JobExecution> executionList =
+    // jobExecutions.getJobInstance().getJobExecutions().getJobExecutions();
+
     // now, use first element (it has only one) to get the resource in the
     // execution, to get the
     // wrapper
-    HttpGet JobExecution = new HttpGet(executionList.get(0).getResource());
+    HttpGet JobExecution = new HttpGet(jobExecutions.getJobExecutions().get(0).getResource());
     jsonString = apiRequest(JobExecution);
     // create the required wrapper
     Gson gson = new Gson();
@@ -141,8 +143,8 @@ public class BatchAdminClient {
     String jsonString = apiRequest(getExecutions);
     // create Java object
     ObjectMapper mapper = new ObjectMapper();
-    JobExecutionsWrapper executions = mapper.readValue(jsonString, JobExecutionsWrapper.class);
-    return executions.getJobExecutions();
+    JobExecutions executions = mapper.readValue(jsonString, JobExecutions.class);
+    return executions;
   }
 
   /**
@@ -163,9 +165,12 @@ public class BatchAdminClient {
         new HttpGet(springBatchServiceUri + "/jobs/" + jobName + "/" + instanceId
             + "/executions.json");
     String jsonString = apiRequest(getExecutions);
+    log.debug(jsonString);
     ObjectMapper mapper = new ObjectMapper();
-    JobInstanceWrapper jobInst = mapper.readValue(jsonString, JobInstanceWrapper.class);
-    return jobInst.getJobInstance().getJobExecutions();
+    // JobInstanceWrapper jobInst = mapper.readValue(jsonString, JobInstanceWrapper.class);
+    // return jobInst.getJobInstance().getJobExecutions();
+    JobExecutions jobExecutions = mapper.readValue(jsonString, JobExecutions.class);
+    return jobExecutions;
   }
 
   /**
@@ -246,6 +251,7 @@ public class BatchAdminClient {
       ServiceNotAvailableException, ServiceInternalServerError {
     HttpGet getJob = new HttpGet(springBatchServiceUri + "/jobs/" + jobName + ".json");
     String jsonString = apiRequest(getJob);
+    log.debug(jsonString);
     Gson gson = new Gson();
     JobWraper job = gson.fromJson(jsonString, JobWraper.class);
     return job.getJob();

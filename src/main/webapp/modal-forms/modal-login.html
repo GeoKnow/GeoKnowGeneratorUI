@@ -1,30 +1,51 @@
 
 <div class="modal-content">
-<form name="loginForm" class="form-horizontal InputForm" role="form" novalidate>
+<form name="loginForm" class="form-horizontal InputForm" role="form"  novalidate>
   <div class="modal-header">
-    <h3 class="modal-title green bold">Login</h3>
+      <h3 class="modal-title  green bold">{{modaltitle}}</h3>
   </div>
   <div class="modal-body">
-		<div class="form-group">
-      <div class="col-lg-10">
-        <input type="text" class="form-control" id="login"  ng-model="login.username" placeholder="Username or e-mail" autofillable required>
-        <div class="error" ng-show="loginForm.login.$dirty && loginForm.login.$invalid">part of text shown below form field when it\u0027s value is invalid or missed (for required fields):
-          <span ng-show="loginForm.login.$error.required" >_username-missed-message_</span>
-        </div>
-      </div>
-    </div>
+  
     <div class="form-group">
       <div class="col-lg-10">
-        <input type="password" class="form-control" id="password" ng-model="login.password" placeholder="Password" autofillable required>
-        <div class="error" ng-show="loginForm.password.$dirty && loginForm.password.$invalid">_invalid-field-message_:
-          <span ng-show="loginForm.password.$error.required" >_password-missed-message_</span>
-        </div>  
+
+        
+        <input type="text" placeholder="Username or e-mail" class="form-control col-xs-10" name="login" ng-model="login.username" required>
+        <div class="error" ng-show="loginForm.login.$dirty && loginForm.login.$invalid">Invalid:
+          <span ng-show="loginForm.login.$error.required" >Username or e-mail required</span>
+         
+        </div>
+
       </div>
-    </div> 
+    </div>
+    <div class="form-group" ng-if="!forgot">
+      <div class="col-lg-10">
+        
+        <input type="password" ng-if="!forgot" placeholder="Password" class="form-control col-xs-10" name="password" ng-model="login.password" required>
+        
+        <div class="error" ng-if="!forgot" ng-show="loginForm.password.$dirty && loginForm.password.$invalid">Invalid:
+           <span ng-show="loginForm.password.$error.required">Password required</span>
+        </div>
+        
+      </div>
+    </div>
+    <div  class="form-group" ng-if="!forgot">
+      <div class="col-lg-10">
+        <a href ng-click="forgotPw()">Forgot password?</a>
+      </div>
+    </div>
   </div>
   <div class="modal-footer">
-      <button class="btn btn-success" ng-click="ok()" ng-disabled="loginForm.$invalid" >Login</button>
-     	<button class="btn btn-default" ng-click="cancel()" >Cancel</button>
+    <!-- 
+    AGRM: I removed autofill directives from input fields, for soome reason the validation was not working
+      <tt>login:  {{loginForm.login.$error}}</tt><br/>
+      <tt>passw:  {{loginForm.password.$error}}</tt><br/>
+      <tt>myForm.$valid = {{loginForm.$valid}}</tt><br/>
+      <tt>myForm.$error = {{loginForm.$error}}</tt><br/>
+ -->
+    <button class="btn btn-success" ng-click="ok()" ng-disabled="loginForm.$invalid" >OK</button>
+    <button class="btn btn-default" ng-click="cancel()">Cancel</button>
   </div>
 </form>
 </div>
+

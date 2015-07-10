@@ -279,7 +279,9 @@ angular.module("app.configuration", [])
     
         var wrap = function(s)
         {
-            if(/^https?:\/\/|^mailto:/.test(s))
+            if(s.indexOf(' ') > 0) // ugly hack if contains spaces must a stri be a string
+                return '"' + s + '"';
+            else if(/^https?:\/\/|^mailto:/.test(s))
                 return "<" + s + ">";
             else if(/^_:b/.test(s))
                 return s;
@@ -326,20 +328,11 @@ angular.module("app.configuration", [])
         for (var s in settings)
             walk(s, settings[s]);
 
-        console.log(PREFIXES);
-
         var requestData = {
         		 format: "application/sparql-results+json",
                  graph: SETTINGS_GRAPH,
                  data: data,
                  prefixes: Ns.getQueryPrefixes(PREFIXES),
-//                 query: Ns.getQueryPrefixes(PREFIXES) + EOL
-//                         + "DROP SILENT GRAPH <"   + SETTINGS_GRAPH + ">" + EOL
-//                         + "CREATE SILENT GRAPH <" + SETTINGS_GRAPH + ">" + EOL
-//                         + "INSERT INTO <" + SETTINGS_GRAPH + ">" + EOL
-//                         + "{" + EOL
-//                         +        data
-//                         + "}",
                  mode: "settings"
              };
              console.log(requestData);
@@ -351,8 +344,7 @@ angular.module("app.configuration", [])
     {
         var requestData = {
             format: "application/sparql-results+json",
-            graph: name,
-            //username: AccountService.getAccount().getUsername() //AccountService not available for config because of looped dependency
+            graph: name
         }
         return request("rest/graphs/dropGraph", requestData);
     };

@@ -423,7 +423,7 @@ module.factory("GraphService", function ($http, $q, Config, ConfigurationService
             permissions: JSON.stringify(permissions),
             username: AccountService.getAccount().getUsername(), 
         }
-        console.log(requestData);
+        
         var promise = $http.post("rest/graphs/createGraph", $.param(requestData)).then(
             // success
             function (response) {
@@ -434,7 +434,7 @@ module.factory("GraphService", function ($http, $q, Config, ConfigurationService
                 if(settings[":default-dataset"]["sd:namedGraph"] == undefined)
                     settings[":default-dataset"]["sd:namedGraph"] = [];
                 settings[":default-dataset"]["sd:namedGraph"].push(parNamedGraph.name);
-                console.log(settings)
+                
                 return Config.write();
             });
         return promise;
@@ -555,7 +555,7 @@ module.factory("GraphService", function ($http, $q, Config, ConfigurationService
 
     // after some data updated into the graph, its metadata needs to be updated
     var addContribution = function(contribution){
-        console.log(contribution);
+        
         return $http.put("rest/graphs", contribution).then(
             function(response){
                 return response.data.namedgraph;
@@ -577,8 +577,6 @@ module.factory("GraphService", function ($http, $q, Config, ConfigurationService
                 if(graph["dcterms:issued"]== undefined)
                     graph["dcterms:issued"] = [Helpers.getCurrentDate()];
                 graph["void:triples"] = [triples];
-
-                console.log(graph);
 
                 return Config.write();
 

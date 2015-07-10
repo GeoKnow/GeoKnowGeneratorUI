@@ -6,7 +6,6 @@ import java.io.PrintWriter;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Locale;
 import java.util.UUID;
 
 import javax.mail.MessagingException;
@@ -16,9 +15,6 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.core.Response;
-
-import org.apache.log4j.Logger;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -29,7 +25,6 @@ import eu.geoknow.generator.users.UserProfile;
 import eu.geoknow.generator.utils.EmailSender;
 import eu.geoknow.generator.utils.HttpUtils;
 import eu.geoknow.generator.utils.RandomStringGenerator;
-
 
 /**
  * Servlet provides some authentication functions: login, logout, register new user, restore
@@ -47,9 +42,6 @@ public class AuthenticationServlet extends HttpServlet {
    * 
    */
   private static final long serialVersionUID = 1L;
-
-  private static final Logger log = Logger.getLogger(AuthenticationServlet.class);
-
   private FrameworkUserManager frameworkUserManager;
 
   @Override
@@ -76,10 +68,6 @@ public class AuthenticationServlet extends HttpServlet {
       throws ServletException, IOException {
     String mode = request.getParameter("mode");
 
-    String language = request.getParameter("lang");
-    if (language == null)
-      language = "en";
-    Locale locale = new Locale(language);
 
     PrintWriter out = response.getWriter();
 
@@ -90,8 +78,8 @@ public class AuthenticationServlet extends HttpServlet {
       // check username and password
       boolean correctCredentials = false;
       try {
-
-        correctCredentials = frameworkUserManager.checkPassword(username, password);
+        if (username != null && !username.isEmpty())
+          correctCredentials = frameworkUserManager.checkPassword(username, password);
       } catch (Exception e) {
         e.printStackTrace();
         response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
@@ -99,7 +87,7 @@ public class AuthenticationServlet extends HttpServlet {
       }
 
       if (!correctCredentials) {
-        response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+        response.sendError(HttpServletResponse.SC_OK);
         return;
       }
 
@@ -122,8 +110,6 @@ public class AuthenticationServlet extends HttpServlet {
         userProfile = frameworkUserManager.getUserProfile(username);
         // send request with session token and user profile
 
-        log.debug(userProfile.getRole().getName());
-
         ObjectMapper objectMapper = new ObjectMapper();
         String responseStr = objectMapper.writeValueAsString(userProfile);
 
@@ -142,7 +128,8 @@ public class AuthenticationServlet extends HttpServlet {
       String username = request.getParameter("username");
       // remove user session tokens
       try {
-        frameworkUserManager.removeAllSessionTokens(username);
+        if (username != null && !username.isEmpty())
+          frameworkUserManager.removeAllSessionTokens(username);
         // remove session token from cookies
         Cookie tokenCookie = new Cookie("token", "");
         Cookie userCookie = new Cookie("user", "");
@@ -157,32 +144,33 @@ public class AuthenticationServlet extends HttpServlet {
     } else if ("create".equals(mode)) {
 
       String username = request.getParameter("username");
-      String email = request.getParameter("email");
+      String emailTo = request.getParameter("email");
       // check if user already exists
       boolean userExists = false;
       try {
-        userExists = frameworkUserManager.checkUserExists(username, email);
+        userExists = frameworkUserManager.checkUserExists(username, emailTo);
       } catch (Exception e) {
         e.printStackTrace();
       }
       if (userExists) {
-        response.setStatus(Response.Status.CONFLICT.ordinal());
-        out.print("User already exists");
+        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        response.setHeader("content-type", "application/json");
+        out.print("{\"code\" : \"1\", \"message\" : \"User already exists\"}");
         return;
       }
       // create user
       String password = new RandomStringGenerator().generateBasic(6);
 
       try {
-        frameworkUserManager.createUser(username, password, email);
+        frameworkUserManager.createUser(username, password, emailTo);
 
 
         EmailSender emailSender = FrameworkConfiguration.getInstance().getDefaultEmailSender();
-
-        emailSender.send(email, "GeoKnow registration", "Your login: " + username + ", password: "
-            + password);
+        emailSender.send(emailTo, "GeoKnow registration", "Your login: " + username
+            + ", password: " + password);
         String responseStr =
-            "{\"message\" : \"Your password will be sent to your e-mail address " + email + " \"}";
+            "{\"message\" : \"Your password will be sent to your e-mail address " + emailTo
+                + " \"}";
         response.getWriter().print(responseStr);
 
       } catch (MessagingException e) {
@@ -204,13 +192,13 @@ public class AuthenticationServlet extends HttpServlet {
       try {
         valid = frameworkUserManager.checkToken(username, token);
         if (!valid) {
-          response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "invalid token " + token
+          response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "invalid token " + token
               + " for user " + username);
         } else {
           // check old password
           boolean isCorrect = frameworkUserManager.checkPassword(username, oldPassword);
           if (!isCorrect) {
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             out.print("{\"code\" : \"2\", \"message\" : \"Incorrect old password\"}");
             return;
           }
@@ -221,12 +209,11 @@ public class AuthenticationServlet extends HttpServlet {
           // send new password to user
           UserProfile userProfile = frameworkUserManager.getUserProfile(username);
           if (userProfile == null) {
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "User profile "
-                + username + " not found");
+            response.sendError(HttpServletResponse.SC_NOT_FOUND, "User profile " + username
+                + " not found");
             return;
           }
           FrameworkConfiguration frameworkConfiguration = FrameworkConfiguration.getInstance();
-
           EmailSender emailSender = frameworkConfiguration.getDefaultEmailSender();
           emailSender.send(userProfile.getEmail(), "GeoKnow change password",
               "Your password was changed. Your login: " + username + ", new password: "
@@ -248,7 +235,7 @@ public class AuthenticationServlet extends HttpServlet {
       try {
         userProfile = frameworkUserManager.getUserProfile(username);
         if (userProfile == null) {
-          response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+          response.setStatus(HttpServletResponse.SC_NOT_FOUND);
           out.print("{\"code\" : \"3\", \"message\" : \"User doesn't exists\"}");
           return;
         }
@@ -258,9 +245,7 @@ public class AuthenticationServlet extends HttpServlet {
 
         // send new password to user
         FrameworkConfiguration frameworkConfiguration = FrameworkConfiguration.getInstance();
-
         EmailSender emailSender = frameworkConfiguration.getDefaultEmailSender();
-
         emailSender.send(userProfile.getEmail(), "GeoKnow registration", "Your login: " + username
             + ", password: " + password);
         String responseStr =
@@ -292,7 +277,9 @@ public class AuthenticationServlet extends HttpServlet {
         accounts.add(p.getAccountURI());
       String responseStr = new ObjectMapper().writeValueAsString(accounts);
       response.getWriter().print(responseStr);
+
     } else {
+
       // throw new ServletException("Unexpected mode: " + mode);
       response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Unexpected mode: " + mode);
 

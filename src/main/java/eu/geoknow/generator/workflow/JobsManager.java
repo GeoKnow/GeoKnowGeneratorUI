@@ -123,7 +123,7 @@ public class JobsManager {
     log.debug(query);
 
     String result = frameworkRdfStoreManager.execute(query, MediaType.SPARQL_JSON_RESPONSE_FORMAT);
-    log.debug(result);
+
     ObjectMapper mapper = new ObjectMapper();
     JsonNode rootNode = mapper.readTree(result);
     Iterator<JsonNode> bindingsIter = rootNode.path("results").path("bindings").elements();

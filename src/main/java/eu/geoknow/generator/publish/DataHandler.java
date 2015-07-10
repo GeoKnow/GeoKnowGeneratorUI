@@ -4,9 +4,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.SQLException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.UUID;
@@ -39,6 +40,7 @@ import eu.geoknow.generator.users.UserManager.GraphPermissions;
 import eu.geoknow.generator.users.VirtuosoUserManager;
 import eu.geoknow.generator.utils.Utils;
 
+
 /**
  * Class which does the data handling for the REST API.
  * 
@@ -51,8 +53,14 @@ public class DataHandler {
   private static final String jsonResponseFormat = "application/sparql-results+json";
   private PublishingConfiguration config;
   private String statefulUri;
-  private LocalDateTime dateTime;
-  private LocalDate date;
+  // private LocalDateTime dateTime;
+  // private LocalDate date;
+  private Date date;
+
+  // 2007-12-03.
+  SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-M-dd");
+  // 2007-12-03T10:15:30.
+  SimpleDateFormat dateTimeFormat = new SimpleDateFormat("yy-M-dd'T'HH:mm:ss");
   private SecureRdfStoreManagerImpl frameworkRdfStoreManager;
 
   /**
@@ -69,8 +77,9 @@ public class DataHandler {
     // create current data and date since both are requierd for metadata and
     // eventually for the
     // stateful graph
-    this.date = LocalDate.now();
-    this.dateTime = LocalDateTime.now();
+    this.date = GregorianCalendar.getInstance().getTime();
+    // this.date = LocalDate.now();
+    // this.dateTime = LocalDateTime.now();
     try {
       frameworkRdfStoreManager = FrameworkConfiguration.getInstance().getSystemRdfStoreManager();
     } catch (IOException e) {
@@ -171,13 +180,15 @@ public class DataHandler {
     if (!stateful.endsWith("/")) {
       stateful += "/";
     }
-    stateful += this.date.toString();
+    // stateful += this.date.toString();
+    stateful += dateFormat.format(this.date);
     if (graphExists(stateful)) {
       stateful = config.getTargetGraphUri();
       if (!stateful.endsWith("/")) {
         stateful += "/";
       }
-      stateful += this.dateTime.toString();
+      // stateful += this.dateTime.toString();
+      stateful += dateTimeFormat.format(this.date);
     }
     // create the graph
     createGraph(stateful);
@@ -433,7 +444,7 @@ public class DataHandler {
 
     query +=
         "<" + config.getTargetGraphUri() + "> <" + DCTerms.created.getURI() + "> \""
-            + this.dateTime.toString() + "\"^^<" + XSD.dateTime.getURI() + "> .} }";
+            + dateTimeFormat.format(this.date) + "\"^^<" + XSD.dateTime.getURI() + "> .} }";
     try {
       frameworkRdfStoreManager.execute(query, jsonResponseFormat);
     } catch (Exception e) {

@@ -336,8 +336,8 @@ public class FrameworkUserManager implements UserManager {
             + "> {?account gkg:passwordSha1Hash \"" + DigestUtils.sha1Hex(password) + "\"} } "
             + " WHERE { " + " {GRAPH <" + frameworkConfig.getAccountsGraph()
             + "> {?account foaf:accountName \"" + usernameOrEmail
-            + "\" . OPTIONAL { ?account gkg:passwordSha1Hash ?o . } } } " + " UNION " + " GRAPH <"
-            + frameworkConfig.getAccountsGraph() + "> { ?account foaf:mbox <mailto:"
+            + "\" . OPTIONAL { ?account gkg:passwordSha1Hash ?o . } } } " + " UNION { "
+            + " GRAPH <" + frameworkConfig.getAccountsGraph() + "> { ?account foaf:mbox <mailto:"
             + usernameOrEmail + "> . OPTIONAL { ?account gkg:passwordSha1Hash ?o . } } } " + " }";
     // TODO: replace 2 queries with this query when OntoQuad will support
     // DELETE {...} INSERT {...} WHERE {...} queries
@@ -351,6 +351,8 @@ public class FrameworkUserManager implements UserManager {
     // " UNION "
     // + " { ?account foaf:mbox <mailto:" + usernameOrEmail
     // + "> . OPTIONAL { ?account gkg:passwordSha1Hash ?o . } } " + " }";
+    log.debug(deleteQuery);
+    log.debug(insertQuery);
     rdfStoreManager.execute(deleteQuery, jsonResponseFormat);
     rdfStoreManager.execute(insertQuery, jsonResponseFormat);
 
@@ -374,6 +376,7 @@ public class FrameworkUserManager implements UserManager {
             + "\" . ?account gkg:passwordSha1Hash ?passwordHash . } " + " UNION "
             + " {?account foaf:mbox <mailto:" + usernameOrEmail
             + "> . ?account gkg:passwordSha1Hash ?passwordHash . } " + "}";
+    log.debug(query);
     String result = rdfStoreManager.execute(query, jsonResponseFormat);
     ObjectMapper mapper = new ObjectMapper();
     JsonNode rootNode = mapper.readTree(result);
@@ -382,6 +385,7 @@ public class FrameworkUserManager implements UserManager {
       return false;
     JsonNode bindingNode = bindingsIter.next();
     String correctPasswordHash = bindingNode.path("passwordHash").path("value").textValue();
+    log.debug(DigestUtils.sha1Hex(password) + " vs " + correctPasswordHash);
     return DigestUtils.sha1Hex(password).equals(correctPasswordHash);
   }
 
