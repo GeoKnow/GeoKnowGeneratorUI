@@ -3,15 +3,15 @@
 function DashboardCtrl($scope, JobService, ComponentsService, $http) {
  
   var sbaUri ="http://generator.geoknow.eu/resource/SpringBatch";
-  var sbaServiceUri = "http://generator.geoknow.eu/resource/SpringBatchService";
+  var serviceUri = "http://generator.geoknow.eu/resource/SpringBatchService";
 
   ComponentsService.getComponent(sbaUri).then(
     //success
     function(response){
       $scope.sba = response;
-      $scope.sbaService = ComponentsService.getComponentService(sbaServiceUri, $scope.sba);
-      if($scope.sbaService== null)
-        flash.error="Service not configured: " +sbaServiceUri; 
+      $scope.service = ComponentsService.getComponentService(serviceUri, $scope.sba);
+      if($scope.service== null)
+        flash.error="Service not configured: " +serviceUri; 
     }, 
     function(response){
       flash.error="Component not configured: " +ServerErrorResponse.getMessage(response);

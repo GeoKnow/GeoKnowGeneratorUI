@@ -14,8 +14,8 @@ app.controller('FagiGisCtrl', function($q, $scope, ConfigurationService, Compone
 		//success
 		function(response){
 			$scope.component = response;
-			$scope.sevice = ComponentsService.getComponentService(serviceUri, $scope.component);
-			if($scope.sevice== null)
+			$scope.service = ComponentsService.getComponentService(serviceUri, $scope.component);
+			if($scope.service== null)
 				flash.error="Service not configured: " +serviceUri;	
 		}, 
 		function(response){
@@ -36,7 +36,7 @@ app.controller('FagiGisCtrl', function($q, $scope, ConfigurationService, Compone
 	};
 	
 	$scope.openService = function(){
-		window.open($scope.sevice.serviceUrl);
+		window.open($scope.service.serviceUrl);
     return false;
 	}
   
@@ -68,7 +68,7 @@ app.controller('FagiGisCtrl', function($q, $scope, ConfigurationService, Compone
 			return;
 
 		createAuthEndpoint().then(function(authEndpoint){
-			$scope.url= $scope.sevice.serviceUrl +
+			$scope.url= $scope.service.serviceUrl +
 					'?endpoint-a=' + encodeURIComponent($scope.fagi.endpointA == $scope.endpoint? authEndpoint : $scope.fagi.endpointA ) +
 					'&endpoint-b=' + encodeURIComponent($scope.fagi.endpointB == $scope.endpoint? authEndpoint : $scope.fagi.endpointB ) +
 					'&dataset-a='  + encodeURIComponent($scope.fagi.datasetA!=""? $scope.fagi.datasetA.replace(':',ConfigurationService.getUriBase()):"") +

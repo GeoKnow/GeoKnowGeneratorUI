@@ -15,8 +15,8 @@ var TripleGeoCtrl = function($scope, $http, ConfigurationService, ComponentsServ
 		//success
 		function(response){
 			$scope.component = response;
-			$scope.sevice = ComponentsService.getComponentService(serviceUri, $scope.component);
-			if($scope.sevice== null)
+			$scope.service = ComponentsService.getComponentService(serviceUri, $scope.component);
+			if($scope.service== null)
 				flash.error="Service not configured: " +serviceUri;	
 		}, 
 		function(response){

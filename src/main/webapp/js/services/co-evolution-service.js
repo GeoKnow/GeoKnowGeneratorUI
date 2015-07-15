@@ -12,8 +12,7 @@ module.factory("CoevolutionService", function ($http, ComponentsService, Ns, Con
     //success
     function(service){
       serviceUrl = service.serviceUrl;
-      console.log(serviceUrl);
-      return serviceUrl;
+      return service;
     });
 
   var getGroup = function(id){

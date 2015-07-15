@@ -85,28 +85,28 @@
       </div>
       <br>
       <div class="row">
-        <div class="col-xs-2" ng-show="sourceLocal()">
-          <label for="SourceServiceURI">Graph</label>
+        <div class="col-xs-2" >
+          <label for="SourceServiceURI" ng-show="sourceLocal()" >Graph</label>
         </div>
-        <div class="col-xs-4" ng-show="sourceLocal()">
-          <select id="SourceGraph" class="form-control" ng-model="limes.source.graph" ng-options="namedgraph.name as describeGraph(namedgraph) for namedgraph in namedSourceGraphs">
+        <div class="col-xs-4" >
+          <select  ng-show="sourceLocal()" id="SourceGraph" class="form-control" ng-model="limes.source.graph" ng-options="namedgraph.name as describeGraph(namedgraph) for namedgraph in namedSourceGraphs">
             <option value=""></option>
           </select>
-          <span class="input-group-btn">
+          <span ng-show="sourceLocal()" class="input-group-btn">
                 <button type="button" class="btn btn-link reset" ng-click="updateSourceGraphs()">
                     <i class="glyphicon glyphicon-refresh" aria-hidden="false"></i>
                 </button>
             </span>
         </div>
 
-        <div class="col-xs-2" ng-show="targetLocal()">
-          <label for="TargetGraph">Graph</label>
+        <div class="col-xs-2" >
+          <label for="TargetGraph" ng-show="targetLocal()" >Graph</label>
         </div>
-        <div class="col-xs-4" ng-show="targetLocal()">
-          <select id="TargetGraph" class="form-control" ng-model="limes.target.graph" ng-options="namedgraph.name as describeGraph(namedgraph) for namedgraph in namedTargetGraphs">
+        <div class="col-xs-4">
+          <select ng-show="targetLocal()" id="TargetGraph" class="form-control" ng-model="limes.target.graph" ng-options="namedgraph.name as describeGraph(namedgraph) for namedgraph in namedTargetGraphs">
             <option value=""></option>
           </select>
-          <span class="input-group-btn">
+          <span ng-show="targetLocal()" class="input-group-btn">
                 <button type="button" class="btn btn-link reset" ng-click="updateTargetGraphs()">
                     <i class="glyphicon glyphicon-refresh" aria-hidden="false"></i>
                 </button>
@@ -268,6 +268,7 @@
       </div>
       <br>
     </div>
+    
     <div class="row">
       <div class="col-xs-2"></div>
       <div class="col-xs-2">

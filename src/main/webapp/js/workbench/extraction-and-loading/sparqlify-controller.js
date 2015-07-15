@@ -15,8 +15,8 @@ app.controller('SparqlifyCtrl', function($scope, ComponentsService) {
 		//success
 		function(response){
 			$scope.component = response;
-			$scope.sevice = ComponentsService.getComponentService(serviceUri, $scope.component);
-			if($scope.sevice== null)
+			$scope.service = ComponentsService.getComponentService(serviceUri, $scope.component);
+			if($scope.service== null)
 				flash.error="Service not configured: " +serviceUri;	
 		}, 
 		function(response){
@@ -24,7 +24,7 @@ app.controller('SparqlifyCtrl', function($scope, ComponentsService) {
 		});
 
 	$scope.openService = function(){
-		window.open($scope.sevice.serviceUrl);
+		window.open($scope.service.serviceUrl);
     return false;
 	}
 

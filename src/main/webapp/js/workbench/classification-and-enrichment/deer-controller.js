@@ -15,9 +15,9 @@ var DeerCtrl = function($scope, $http, ConfigurationService, ComponentsService, 
 		//success
 		function(response){
 			$scope.component = response;
-			$scope.sevice = ComponentsService.getComponentService(serviceUri, $scope.component);
-			if($scope.sevice== null)
-				flash.error="Service not configured: " +serviceUrl;	
+			$scope.service = ComponentsService.getComponentService(serviceUri, $scope.component);
+			if($scope.service== null)
+				flash.error="Service not configured: " + serviceUri;	
 		}, 
 		function(response){
 			flash.error="Component not configured: " +ServerErrorResponse.getMessage(response);
@@ -560,7 +560,7 @@ var DeerCtrl = function($scope, $http, ConfigurationService, ComponentsService, 
 			  		
 				$http({
 					method: "POST",
-					url: serviceUrl+"/LoadFile",
+					url: $scope.service.serviceUrl+"/LoadFile",
 					params: {
 						configFile : configFile,
 						dataFile: dataFile}
@@ -641,7 +641,7 @@ var DeerCtrl = function($scope, $http, ConfigurationService, ComponentsService, 
 		$scope.reviewForm = false;
 		
 		$http({
-			url: serviceUrl+"/GeoLiftRun",
+			url: $scope.service.serviceUrl+"/GeoLiftRun",
 	        method: "POST",
 	        params: params,
 	        headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' }
@@ -658,7 +658,7 @@ var DeerCtrl = function($scope, $http, ConfigurationService, ComponentsService, 
 	  $scope.showProgress = true;
 	  	
 		$http({
-			url: serviceUrl+"/GeoLiftReview",
+			url: $scope.service.serviceUrl+"/GeoLiftReview",
 	        method: "POST",
 	        dataType: "json",
 	        contentType: "application/json; charset=utf-8"
@@ -690,7 +690,7 @@ var DeerCtrl = function($scope, $http, ConfigurationService, ComponentsService, 
 	 	};
 		
 		$http({
-			url: serviceUrl+"/ImportRDF",
+			url: $scope.service.serviceUrl+"/ImportRDF",
 	    method: "POST",
 	    dataType: "json",
 	    params: parameters,

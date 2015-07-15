@@ -80,7 +80,7 @@ var ImportFormCtrl = function($scope, $http, ConfigurationService, flash, Accoun
     if($scope.sourceType.value == 'file'){
       $scope.newTarget ={
         prefix : "RdfImport" ,
-        label : "Import from file ",
+        label : $scope.importRdf.source,
         description : "Import from file "+$scope.importRdf.source,
       };
     }

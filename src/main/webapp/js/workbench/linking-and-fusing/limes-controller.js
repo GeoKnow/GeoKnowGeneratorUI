@@ -69,7 +69,7 @@ var LimesCtrl = function($scope, $http, ConfigurationService, ComponentsService,
 	$scope.options = { 	
 		output: 	["N3", "TAB", "TTL"],
 		execType: ["", "Simple", "FILTER", "OneToOne"],
-		granularity: ["", "1", "2", "3", "4" ]
+		granularity: [1, 2, 3, 4]
 	};
 	
 	var limesParams =  {
@@ -89,7 +89,7 @@ var LimesCtrl = function($scope, $http, ConfigurationService, ComponentsService,
 	    var : "",
 	    pagesize : "",
 	    restriction : "",
-	    type : "",
+	    type : "SPARQL",
 	    property : [""]
 		},
 		target : {
@@ -99,7 +99,7 @@ var LimesCtrl = function($scope, $http, ConfigurationService, ComponentsService,
 	    var : "",
 	    pagesize : "",
 	    restriction : "",
-	    type : "",
+	    type : "SPARQL",
 	    property : [""]
 		},
 		acceptance : {
@@ -162,14 +162,14 @@ var LimesCtrl = function($scope, $http, ConfigurationService, ComponentsService,
 	};
 
 	var fillForm = function(content){
-
-		console.log(content);
-
+		
  		var x2js = new X2JS();				
 		var conf = x2js.xml_str2json(content);
 
+		console.log(conf.LIMES.GRANULARITY);
+
 	  $scope.limes.execution = conf.LIMES.EXECUTION;
-	  $scope.limes.granularity = (conf.LIMES.GRANULARITY!=undefined ? "" : conf.LIMES.GRANULARITY);
+	  $scope.limes.granularity = (conf.LIMES.GRANULARITY!=undefined ? conf.LIMES.GRANULARITY : 1);
 	  $scope.limes.output = conf.LIMES.OUTPUT;
 	  $scope.limes.metric = conf.LIMES.METRIC;			
   	$scope.limes.source.id = conf.LIMES.SOURCE.ID;
@@ -178,7 +178,8 @@ var LimesCtrl = function($scope, $http, ConfigurationService, ComponentsService,
   	$scope.limes.source.var = conf.LIMES.SOURCE.VAR;
   	$scope.limes.source.pagesize = conf.LIMES.SOURCE.PAGESIZE;
   	$scope.limes.source.restriction = conf.LIMES.SOURCE.RESTRICTION;
-  	$scope.limes.source.type = conf.LIMES.SOURCE.TYPE;
+  	// in fact, for the moment Type will always be SPARQL in the generator
+  	// $scope.limes.source.type = conf.LIMES.SOURCE.TYPE;
   	$scope.limes.source.property = [];
 		if(typeof conf.LIMES.SOURCE.PROPERTY === 'string' ) 
     	$scope.limes.source.property.push(conf.LIMES.SOURCE.PROPERTY);
@@ -194,7 +195,8 @@ var LimesCtrl = function($scope, $http, ConfigurationService, ComponentsService,
   	$scope.limes.target.var = conf.LIMES.TARGET.VAR;
   	$scope.limes.target.pagesize = conf.LIMES.TARGET.PAGESIZE;
   	$scope.limes.target.restriction = conf.LIMES.TARGET.RESTRICTION;
-  	$scope.limes.target.type = conf.LIMES.TARGET.TYPE;
+  	// in fact, for the moment Type will always be SPARQL in the generator
+  	// $scope.limes.target.type = conf.LIMES.TARGET.TYPE;
   	$scope.limes.target.property = [];
   	if(typeof conf.LIMES.TARGET.PROPERTY === 'string' ) 
   		$scope.limes.target.property.push(conf.LIMES.TARGET.PROPERTY);
@@ -283,7 +285,7 @@ var LimesCtrl = function($scope, $http, ConfigurationService, ComponentsService,
 						}
 						if($scope.limes.target.endpoint == ConfigurationService.getSPARQLEndpoint()){
 							params.target.endpoint = atuhEndpoint;								
-							if($scope.limes.TargetGraph != null)
+							if($scope.limes.target.graph != null)
 								params.target.graph = Ns.lengthen($scope.limes.target.graph);
 						}
 					};

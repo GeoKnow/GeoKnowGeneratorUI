@@ -1,12 +1,17 @@
 'use strict';
 
-var CoevolutionCtrl = function($scope, $http, Ns, CoevolutionService, flash, ServerErrorResponse, GraphService){
-	
+var CoevolutionCtrl = function($scope, $http, Ns, CoevolutionService, ComponentsService, flash, ServerErrorResponse, GraphService){
+
+
+	var serviceUri = "http://generator.geoknow.eu/resource/CoevolutionService";
 	CoevolutionService.getComponent().then(
 		//success
 		function(response){
 			$scope.component = response;
-			$scope.sevice = CoevolutionService.serviceUrl;
+			$scope.service = ComponentsService.getComponentService(serviceUri, $scope.component);
+			if($scope.service== null)
+				flash.error="Service not configured: " + serviceUri;	
+
 			$scope.refreshGraphs();
 			$scope.conflictResolutionStrategies = CoevolutionService.getConflictResolutionStrategies();			
 			init();
