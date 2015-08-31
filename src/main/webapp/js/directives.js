@@ -49,11 +49,10 @@ module.directive('targetGraph', ['$parse', 'GraphService', function($parse, Grap
 }]);
 
 /**
-This requres that the parent scope defines in its scope:
-  $scope.source = {label, graph}
-  
+* This directive requres that the parent scope defines in its scope:
+* $scope.source = {label, graph}
 */
-module.directive('sourceGraph', ['$parse', 'GraphService', function($parse, GraphService){
+module.directive('sourceGraph', ['$parse', 'GraphService', 'GraphGroupService', function($parse, GraphService, GraphGroupService){
   return {
     restrict: 'E', 
     templateUrl: 'js/workbench/partials/source-graph.html',
@@ -61,8 +60,15 @@ module.directive('sourceGraph', ['$parse', 'GraphService', function($parse, Grap
     link : function ($scope, elem, attrs, ctrl) {
 
       $scope.refreshReadableGraphs = function() {
+        // return GraphService.getAccessibleGraphs(false, false, true).then(function(graphs) {
+        //   $scope.readableGraphs = graphs;
+        // });
         return GraphService.getAccessibleGraphs(false, false, true).then(function(graphs) {
-          $scope.readableGraphs = graphs;
+            var ngraphs = graphs;
+            GraphGroupService.getAllGraphGroups(true).then(function(groups) {
+               ngraphs = ngraphs.concat(groups);
+               $scope.readableGraphs = ngraphs;
+           });
         });
       };
 

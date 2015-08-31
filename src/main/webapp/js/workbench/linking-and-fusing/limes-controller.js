@@ -7,17 +7,17 @@
 
 var LimesCtrl = function($scope, $http, ConfigurationService, ComponentsService, JobService, AuthSessionService, flash, ServerErrorResponse, $window, GraphService, AccountService, Ns, $modal, $timeout){	
 
-	var componentUri ="http://generator.geoknow.eu/resource/Limes";
-	var serviceUri = "http://generator.geoknow.eu/resource/LimesService";
+	var componentId ="Limes";
+	var serviceId = "LimesService";
 	var workbenchHP = "";
 
-	ComponentsService.getComponent(componentUri).then(
+	ComponentsService.getComponent(componentId).then(
 		//success
 		function(response){
 			$scope.component = response;
-			$scope.service = ComponentsService.getComponentService(serviceUri, $scope.component);
+			$scope.service = ComponentsService.getComponentService(serviceId, $scope.component);
 			if($scope.service== null)
-				flash.error="Service not configured: " +serviceUri;	
+				flash.error="Service not configured: " +serviceId;	
 
 			workbenchHP = ConfigurationService.getFrameworkHomepage();
 			if (workbenchHP.substr(-1) != '/') 
@@ -29,7 +29,7 @@ var LimesCtrl = function($scope, $http, ConfigurationService, ComponentsService,
 
 	// retreive the publication service url
 	var pubService;
-	ConfigurationService.getWorkbenchService("http://generator.geoknow.eu/resource/PublishingService").then(
+	ConfigurationService.getWorkbenchService("PublishingService").then(
 		function(response){
 			pubService = response;
 		},
@@ -325,7 +325,7 @@ var LimesCtrl = function($scope, $http, ConfigurationService, ComponentsService,
 		      var contributionUpdateBody = {
 		      	namedGraph   : Ns.lengthen(jobDesc.namedgraph),
     				source       : jobDesc.description +" (job - " + jobDesc.name + ")",
-    				contributor  : componentUri
+    				contributor  : componentId
 		      };
 		      
 

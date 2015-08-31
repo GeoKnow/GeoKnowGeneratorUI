@@ -3,14 +3,14 @@
 var CoevolutionCtrl = function($scope, $http, Ns, CoevolutionService, ComponentsService, flash, ServerErrorResponse, GraphService){
 
 
-	var serviceUri = "http://generator.geoknow.eu/resource/CoevolutionService";
+	var serviceId = "CoevolutionService";
 	CoevolutionService.getComponent().then(
 		//success
 		function(response){
 			$scope.component = response;
-			$scope.service = ComponentsService.getComponentService(serviceUri, $scope.component);
+			$scope.service = ComponentsService.getComponentService(serviceId, $scope.component);
 			if($scope.service== null)
-				flash.error="Service not configured: " + serviceUri;	
+				flash.error="Service not configured: " + serviceId;	
 
 			$scope.refreshGraphs();
 			$scope.conflictResolutionStrategies = CoevolutionService.getConflictResolutionStrategies();			

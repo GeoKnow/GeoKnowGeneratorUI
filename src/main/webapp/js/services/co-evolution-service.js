@@ -4,11 +4,11 @@ var module = angular.module('app.co-evolution-service', []);
 
 module.factory("CoevolutionService", function ($http, ComponentsService, Ns, Config) {
 
-  var componentUri = "http://generator.geoknow.eu/resource/Coevolution";
-  var serviceUri = "http://generator.geoknow.eu/resource/CoevolutionService";
+  var componentId = "Coevolution";
+  var serviceId = "CoevolutionService";
   var serviceUrl = "";
 
-  var promise = ComponentsService.getService(serviceUri).then(
+  var promise = ComponentsService.getService(serviceId).then(
     //success
     function(service){
       serviceUrl = service.serviceUrl;
@@ -44,7 +44,7 @@ module.factory("CoevolutionService", function ($http, ComponentsService, Ns, Con
 
 
     getComponent : function(){
-      return ComponentsService.getComponent(componentUri).then(
+      return ComponentsService.getComponent(componentId).then(
         function(response){
           return response;
         });

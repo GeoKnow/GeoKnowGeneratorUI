@@ -264,9 +264,9 @@ public class Components {
    * @return JSON
    */
   @GET
-  @Path("/{uri : .+}")
-  @Produces(MediaType.APPLICATION_JSON)
-  public Response getComponent(@PathParam("uri") String uri,
+  @Path("/{id : .+}")
+  @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
+  public Response getComponent(@PathParam("id") String id,
       @CookieParam(value = "user") Cookie userc, @CookieParam(value = "token") String token) {
 
     FrameworkUserManager frameworkUserManager;
@@ -288,7 +288,7 @@ public class Components {
     try {
       ComponentManager manager =
           new ComponentManager(FrameworkConfiguration.getInstance().getSystemRdfStoreManager());
-      Component component = manager.getComponent(uri);
+      Component component = manager.getComponent(id);
       // in fact not all properties should be accessible by any user
       if (!frameworkUserManager.isAdmin(user.getAccountURI())) {
         for (Service s : component.getServices())
@@ -301,10 +301,12 @@ public class Components {
 
     } catch (ResourceNotFoundException e) {
       log.error(e);
-      return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
+      return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage())
+          .type(MediaType.TEXT_PLAIN).build();
     } catch (Exception e) {
       log.error(e);
-      return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+      return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage())
+          .type(MediaType.TEXT_PLAIN).build();
     }
 
   }

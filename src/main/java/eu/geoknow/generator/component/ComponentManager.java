@@ -145,16 +145,17 @@ public class ComponentManager {
   /**
    * Get the component data
    * 
-   * @param uri
+   * @param id
    * @return Component or null if not found
    * @throws SPARQLEndpointException
    * @throws IOException
    * @throws ResourceNotFoundException
    */
-  public Component getComponent(String uri) throws SPARQLEndpointException, IOException,
+  public Component getComponent(String id) throws SPARQLEndpointException, IOException,
       ResourceNotFoundException {
     Component component = null;
-
+    String uri = config.getResourceNamespace() + id;
+    log.debug(config.getResourceNamespace());
     try {
 
       // get all components and the services list
@@ -497,8 +498,8 @@ public class ComponentManager {
    * @throws SPARQLEndpointException
    * @throws IOException
    */
-  public Service getService(String uri) throws SPARQLEndpointException, IOException {
-
+  public Service getService(String id) throws SPARQLEndpointException, IOException {
+    String uri = config.getResourceNamespace() + id;
     Service service = new Service();
     service.setUri(uri);
     try {
