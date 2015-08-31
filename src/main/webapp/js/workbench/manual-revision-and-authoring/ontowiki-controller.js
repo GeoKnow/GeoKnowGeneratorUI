@@ -7,14 +7,14 @@
 
 app.controller('OntoWikiCtrl', function($scope, ComponentsService) {
 
-	var componentUri ="http://generator.geoknow.eu/resource/OntoWiki";
-	var serviceUri = "http://generator.geoknow.eu/resource/OntoWikiService";
+	var componentId ="OntoWiki";
+	var serviceId = "OntoWikiService";
 
-	ComponentsService.getComponent(componentUri).then(
+	ComponentsService.getComponent(componentId).then(
 		//success
 		function(response){
 			$scope.component = response;
-			$scope.service = ComponentsService.getComponentService(serviceUri, $scope.component);
+			$scope.service = ComponentsService.getComponentService(serviceId, $scope.component);
 			if($scope.service== null)
 				flash.error="Service not configured: " +serviceUrl;	
 		}, 

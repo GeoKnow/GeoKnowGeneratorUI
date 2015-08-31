@@ -2,7 +2,8 @@
 
 var module = angular.module('app.components-service', []);
 
-module.factory('ComponentsService', function ($http, $q) {
+module.factory('ComponentsService', function ($http, $q, ConfigurationService) {
+
 
 	var service = {
 
@@ -15,14 +16,16 @@ module.factory('ComponentsService', function ($http, $q) {
 		},
 
 		getComponent: function(id){
-			return $http.get("rest/components/"+id).then( 
+			return $http.get("rest/components/" + id).then( 
 				// success
 				function (response){
 					return response.data.component;
 	    	});	
 		},
 		// parse the component data to find a service
-		getComponentService : function(uri, component){
+		getComponentService : function(id, component){
+			var uri = ConfigurationService.getUriBase() + id;
+			console.log(uri);	
 			for(var i in component.services){
 				if (component.services[i].uri == uri)
 					return component.services[i];
@@ -38,8 +41,8 @@ module.factory('ComponentsService', function ($http, $q) {
 	    });
 		},
 
-		getService: function(uri){
-			return $http.get("rest/services/"+uri).then( 
+		getService: function(id){
+			return $http.get("rest/services/"+id).then( 
 				// success
 				function (response){
 					return response.data.service;

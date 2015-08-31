@@ -8,16 +8,16 @@
 app.controller('SparqlifyCtrl', function($scope, ComponentsService) {
 	//Settings for Sparqlilfy
 
-	var componentUri ="http://generator.geoknow.eu/resource/Sparqlify";
-	var serviceUri = "http://generator.geoknow.eu/resource/SparqlifyService";
+	var componentId ="Sparqlify";
+	var serviceId = "SparqlifyService";
 
-	ComponentsService.getComponent(componentUri).then(
+	ComponentsService.getComponent(componentId).then(
 		//success
 		function(response){
 			$scope.component = response;
-			$scope.service = ComponentsService.getComponentService(serviceUri, $scope.component);
+			$scope.service = ComponentsService.getComponentService(serviceId, $scope.component);
 			if($scope.service== null)
-				flash.error="Service not configured: " +serviceUri;	
+				flash.error="Service not configured: " +serviceId;	
 		}, 
 		function(response){
 			flash.error="Component not configured: " +ServerErrorResponse.getMessage(response);

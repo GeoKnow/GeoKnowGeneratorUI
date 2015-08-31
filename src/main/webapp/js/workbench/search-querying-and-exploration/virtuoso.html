@@ -1,36 +1,32 @@
-<div  class="contents" ng-controller="VirtuosoCtrl">
+<div ng-controller="VirtuosoCtrl">
 
   <component-header></component-header>
 
-  <div class="col-lg-8">
+  <h4>Launch Virtuoso endpoint Interface</h4>
 
-    <h4>Launch SPARQLEndPoint Services</h4>
 
-    <form name="virtuosoForm" class="form-horizontal InputForm" role="form" novalidate>
-      <div class="form-group">
-        <label for="Endpoint">Endpoint</label>
+    
+
+  <form name="virtuosoForm" class="form-horizontal InputForm" role="form"  novalidate>
+
+    <div class="form-group">
+      <label for="Endpoint" class="col-xs-2 control-label">Endpoint</label>
+      <div class="input-group col-sm-8">
         <input type="url" class="form-control" id="Endpoint" disabled="disabled" ng-model="virtuoso.service"></input>
       </div>
-      <div class="form-group">
-        <label for="DataSet">DataSet</label>
-        <div class="input-group">
-            <select id="DataSet" class="form-control" ng-model="virtuoso.dataset" ng-change="updateServiceParams()"
-            ng-options="namedgraph.name as namedgraph.name for namedgraph in namedGraphs" required></select>
-            <span class="input-group-btn">
-                <button type="button" class="btn btn-link reset" ng-click="refreshGraphList()">
-                    <i class="glyphicon glyphicon-refresh" aria-hidden="false"></i>
-                </button>
-            </span>
-        </div>
-      </div>
-      <div class="form-group">
-        <a class="btn btn-success btn-large" target="_blanc" href="{{url}}">Launch</a>
-      </div>
-   
-      <!-- <a class="btn btn-success btn-large" data-toggle="modal" ng-click="openModal();">Launch</a> -->
-    </form>
+    </div>
 
-  </div>
+
+    <source-graph source-changed="updateServiceParams()"></source-graph>
+
+
+    <div class="form-group">
+      <div class="col-sm-2"></div>
+      <a class="btn btn-success btn-large" target="_blanc" href="{{url}}">Launch</a>
+      </div>
+    </div>
+
+  </form>
    
 </div>
 

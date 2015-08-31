@@ -9,16 +9,16 @@ app.controller('FaceteFormCtrl', function($scope, ConfigurationService, Componen
 	//Settings for Facete
 
 
-	var componentUri ="http://generator.geoknow.eu/resource/Facete";
-	var serviceUri = "http://generator.geoknow.eu/resource/FaceteService";
+	var componentId ="Facete";
+	var serviceId = "FaceteService";
 
-	ComponentsService.getComponent(componentUri).then(
+	ComponentsService.getComponent(componentId).then(
 		//success
 		function(response){
 			$scope.component = response;
-			$scope.sevice = ComponentsService.getComponentService(serviceUri, $scope.component);
+			$scope.sevice = ComponentsService.getComponentService(serviceId, $scope.component);
 			if($scope.sevice== null)
-				flash.error="Service not configured: " +serviceUri;	
+				flash.error="Service not configured: " +serviceId;	
 			$scope.url= $scope.sevice.serviceUrl + 
 				'?service-uri='+ encodeURIComponent($scope.facete.service) +
     		'&default-graph-uri=';

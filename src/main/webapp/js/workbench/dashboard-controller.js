@@ -1,17 +1,17 @@
 'use strict';
 
-function DashboardCtrl($scope, JobService, ComponentsService, $http) {
+function DashboardCtrl($scope, JobService, ComponentsService, $http, flash, ServerErrorResponse) {
  
-  var sbaUri ="http://generator.geoknow.eu/resource/SpringBatch";
-  var serviceUri = "http://generator.geoknow.eu/resource/SpringBatchService";
+  var sbaId ="SpringBatch";
+  var serviceId = "SpringBatchService";
 
-  ComponentsService.getComponent(sbaUri).then(
+  ComponentsService.getComponent(sbaId).then(
     //success
     function(response){
       $scope.sba = response;
-      $scope.service = ComponentsService.getComponentService(serviceUri, $scope.sba);
+      $scope.service = ComponentsService.getComponentService(serviceId, $scope.sba);
       if($scope.service== null)
-        flash.error="Service not configured: " +serviceUri; 
+        flash.error="Service not configured: " +serviceId; 
     }, 
     function(response){
       flash.error="Component not configured: " +ServerErrorResponse.getMessage(response);

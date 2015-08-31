@@ -7,16 +7,16 @@
 
 app.controller('FagiGisCtrl', function($q, $scope, ConfigurationService, ComponentsService, GraphService, AuthSessionService) {
 
-	var componentUri ="http://generator.geoknow.eu/resource/FagiGis";
-	var serviceUri = "http://generator.geoknow.eu/resource/FagiGisService";
+	var componentId ="FagiGis";
+	var serviceId = "FagiGisService";
 
-	ComponentsService.getComponent(componentUri).then(
+	ComponentsService.getComponent(componentId).then(
 		//success
 		function(response){
 			$scope.component = response;
-			$scope.service = ComponentsService.getComponentService(serviceUri, $scope.component);
+			$scope.service = ComponentsService.getComponentService(serviceId, $scope.component);
 			if($scope.service== null)
-				flash.error="Service not configured: " +serviceUri;	
+				flash.error="Service not configured: " +serviceId;	
 		}, 
 		function(response){
 			flash.error="Component not configured: " +ServerErrorResponse.getMessage(response);
