@@ -65,21 +65,6 @@ module.factory("GraphService", function ($http, $q, Config, ConfigurationService
                     return namedGraphs;
                 });
             });
-        // if (namedGraphsLoaded && !reload) {
-        //     var deferred = $q.defer();
-        //     deferred.resolve(namedGraphs);
-        //     return deferred.promise;
-        // } else {
-        //     var requestData = {
-        //         format: "application/sparql-results+json",
-        //         username: AccountService.getAccount().getUsername()
-        //     };
-        //     return $http.post("rest/graphs/getAllGraphsSparql", $.param(requestData)).then(function (result) {
-        //         namedGraphs = Config.parseSparqlResults(result.data);
-        //         namedGraphsLoaded = true;
-        //         return namedGraphs;
-        //     });
-        // }
     };
 
     var getAccessibleGraphs = function (onlyWritable, skipOwn, reload) {

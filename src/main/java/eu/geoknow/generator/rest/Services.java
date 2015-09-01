@@ -40,10 +40,10 @@ public class Services {
    * @return JSON
    */
   @GET
-  @Path("/{uri : .+}")
+  @Path("/{id : .+}")
   @Produces(MediaType.APPLICATION_JSON)
-  public Response getService(@PathParam("uri") String uri,
-      @CookieParam(value = "user") Cookie userc, @CookieParam(value = "token") String token) {
+  public Response getService(@PathParam("id") String id, @CookieParam(value = "user") Cookie userc,
+      @CookieParam(value = "token") String token) {
 
     FrameworkUserManager frameworkUserManager;
     UserProfile user;
@@ -65,7 +65,7 @@ public class Services {
       ComponentManager manager =
           new ComponentManager(FrameworkConfiguration.getInstance().getSystemRdfStoreManager());
 
-      Service service = manager.getService(uri);
+      Service service = manager.getService(id);
       // in fact not all properties should be accessible by any user
       if (!frameworkUserManager.isAdmin(user.getAccountURI())) {
         service.getProperties().clear();

@@ -1,0 +1,75 @@
+<div class="col-lg-8" ng-controller="DataSimulatorCtrl">
+
+  <component-header></component-header>
+
+  <form class="form-horizontal InputForm" role="form" name="simulatorForm" novalidate>
+  	
+		<div class="form-group">
+      <label for="startDate" class="col-xs-2 control-label" >Start date</label>
+      <div class="col-xs-8">
+				<div class="dropdown">
+				  <a class="dropdown-toggle" id="startDate" role="button" data-toggle="dropdown" data-target="#" href="#">
+				    <div class="input-group"><input type="text" class="form-control" mo-change-proxy="dateRange.startDate" mo-date-input="YYYY-MM-DD" data-ng-model="dateRange.startDate"><span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+				    </div>
+				  </a>
+				  <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+				    <datetimepicker data-ng-model="dateRange.startDate"  data-datetimepicker-config="{ minView:'day', dropdownSelector: '#startDate' }"/>
+				  </ul>
+				</div>
+				<div class="error" ng-show="simulatorForm.start.$dirty && simulatorForm.start.$invalid">Invalid:
+    			<span ng-show="simulatorForm.start.$error.required"> Missing start date</span>
+      	</div>
+    	</div>
+    	
+    </div>
+
+
+    <div class="form-group">
+      <label for="endDate" class="col-xs-2 control-label" >End date</label>
+      <div class="col-xs-8">
+				<div class="dropdown">
+				  <a class="dropdown-toggle" id="endDate" role="button" data-toggle="dropdown" data-target="#" href="#">
+				    <div class="input-group"><input type="text" class="form-control" mo-change-proxy="dateRange.endDate" mo-date-input="YYYY-MM-DD" data-ng-model="dateRange.endDate"><span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+				    </div>
+				  </a>
+				  <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+				    <datetimepicker data-ng-model="dateRange.endDate" data-datetimepicker-config="{ minView:'day', dropdownSelector: '#endDate' }"/>
+				  </ul>
+				</div>
+				<div class="error" ng-show="simulatorForm.start.$dirty && simulatorForm.start.$invalid">Invalid:
+    			<span ng-show="simulatorForm.start.$error.required"> Missing end date</span>
+      	</div>
+    	</div>
+    </div>
+
+    <source-graph source-changed="updateProductsList()"></source-graph>
+
+		<div class="form-group" ng-show="source.graph!=''">
+			<div class="col-sm-2"></div>
+			<div class="col-sm-8">
+		  	<select id="products" name="products" class="form-control" ng-model="simulation.productUri" ng-options="c.label for c in products" required></select>
+	  	</div>
+		</div>
+
+		<target-graph></target-graph>
+
+		<div class="form-group">
+			<div class="col-xs-2">
+        <label for="interval">Interval</label>  
+      </div>
+      <div class="col-xs-8">
+        <input type="text" class="form-control" id="interval" disabled="disabled" ng-model="simulation.interval" required></input>
+      </div>
+    </div>
+
+  	<div class="form-group">
+			<div class="col-sm-2"></div>
+	  	<div class="input-group col-sm-8">
+      	<button class="btn btn-success" ng-click="startDataSimulator()" ng-disabled="simulatorForm.$invalid">Start Data Simulator</button>
+     	</div>
+    </div>
+
+ 
+  </form>
+
+</div>

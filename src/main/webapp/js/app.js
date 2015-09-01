@@ -14,6 +14,7 @@ var app = angular.module('app', ['ngRoute',
                                  'app.roles-service',
                                  'app.datasources-service',
                                  'app.co-evolution-service',
+                                 'app.data-simulator-service',
                                  'app.import-rdf-service',
                                  'app.login-service',
                                  'app.users-service',
@@ -27,6 +28,8 @@ var app = angular.module('app', ['ngRoute',
                                  'http-auth-interceptor',
                                  'angular-flash.service', 
                                  'angular-flash.flash-alert-directive',
+                                 'angularMoment',
+                                 'ui.bootstrap.datetimepicker',
                                  'angular-loading-bar']);
 
 
@@ -50,6 +53,7 @@ app.config(function($routeSegmentProvider, $routeProvider)
         .when('/settings/components', 'settings.components')
         .when('/settings/roles', 'settings.roles')
         .when('/workbench/extraction-and-loading/import-rdf', 'workbench.import-rdf')
+        .when('/workbench/extraction-and-loading/data-simulator', 'workbench.data-simulator')
         .when('/workbench/extraction-and-loading/sparqlify', 'workbench.sparqlify')
         .when('/workbench/extraction-and-loading/triplegeo', 'workbench.triplegeo')
         .when('/workbench/extraction-and-loading/triplegeo-result', 'workbench.triplegeo-result')
@@ -80,17 +84,24 @@ app.config(function($routeSegmentProvider, $routeProvider)
         .segment('workbench', {
             templateUrl :'js/workbench/dashboard.html',
             resolve: {
-                        settings : function (ConfigurationService){
-                             return ConfigurationService.getSettings();
-                        },
-                        CoevolutionServiceInit : function(CoevolutionService){
-                            return CoevolutionService.promise;
+                        init : function (ConfigurationService, CoevolutionService, DataSimulatorService){
+                            return ConfigurationService.getSettings().then(function(settings){
+                                return CoevolutionService.promise.then(function(response){
+                                    return DataSimulatorService.promise;
+                                });
+                            });
                         }
+                        // ,
+                        // CoevolutionServiceInit : function(CoevolutionService){
+                        //     return CoevolutionService.promise;
+                        // }
                 }
             })
             .within()
                 .segment('import-rdf', {
                     templateUrl: 'js/workbench/extraction-and-loading/import-rdf.html' })
+                .segment('data-simulator', {
+                    templateUrl: 'js/workbench/extraction-and-loading/data-simulator.html' })
                 .segment('sparqlify', {
                     templateUrl: 'js/workbench/extraction-and-loading/sparqlify.html' })
                 .segment('triplegeo', {

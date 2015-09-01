@@ -270,7 +270,6 @@ angular.module("app.configuration", [])
             return settings;
         });
 
-        return deferred.promise;
     };
 
     var write = function()
@@ -335,8 +334,8 @@ angular.module("app.configuration", [])
                  prefixes: Ns.getQueryPrefixes(PREFIXES),
                  mode: "settings"
              };
-             console.log(requestData);
-             return request("rest/RdfStoreProxy/rewriteGraph", requestData);
+        console.log(requestData);
+        return request("rest/RdfStoreProxy/rewriteGraph", requestData);
     };
 
     

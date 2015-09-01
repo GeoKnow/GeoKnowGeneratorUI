@@ -82,7 +82,7 @@ public class AuthenticationServlet extends HttpServlet {
           correctCredentials = frameworkUserManager.checkPassword(username, password);
       } catch (Exception e) {
         e.printStackTrace();
-        response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
         return;
       }
 

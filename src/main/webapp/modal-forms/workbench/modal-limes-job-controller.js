@@ -1,9 +1,9 @@
 'use strict';
 
-function ModalLimesJobCtrl($scope, $modalInstance, GraphService, Ns) {
+function ModalLimesJobCtrl($scope, $modalInstance, GraphService, Ns, modaltitle, jobService) {
 
 
-	  $scope.modaltitle="New Limes Job";
+	  $scope.modaltitle=modaltitle;
 
 	  $scope.job = {
 	    name : "",
@@ -17,7 +17,7 @@ function ModalLimesJobCtrl($scope, $modalInstance, GraphService, Ns) {
 	  //scope variables used in the target-graph direcitve
 		$scope.target = { graph : ""};
 	  $scope.newTarget ={
-	  	prefix : "LimesLinks" ,
+	  	prefix : jobService.replace(" ","") ,
 	  	label : "",
 	  	description : ""
 	  };
@@ -38,11 +38,11 @@ function ModalLimesJobCtrl($scope, $modalInstance, GraphService, Ns) {
 	  };
 
 	  $scope.updateNewTargetLabel = function () {
-	  	$scope.newTarget.label = "Links from " + $scope.job.label;
+	  	$scope.newTarget.label = jobService+ " from " + $scope.job.label;
 	  };
 
 	  $scope.updateNewTargetDescription = function () {
-	  	$scope.newTarget.description = "Links from " + $scope.job.description;
+	  	$scope.newTarget.description = "Resulct of "+  jobService+ " : " + $scope.job.description;
 	  };
 
 	}

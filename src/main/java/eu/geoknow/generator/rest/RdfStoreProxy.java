@@ -48,7 +48,7 @@ public class RdfStoreProxy {
   @POST
   @Produces(MediaType.APPLICATION_JSON)
   public Response executeQuery(@Context ServletContext context, @CookieParam("token") String token,
-      @FormParam("username") String username, @FormParam("query") String query,
+      @CookieParam(value = "user") Cookie userc, @FormParam("query") String query,
       @FormParam("mode") String mode, @FormParam("format") String responseFormat) {
     FrameworkConfiguration frameworkConfiguration;
     try {
@@ -57,9 +57,12 @@ public class RdfStoreProxy {
       RdfStoreManager frameworkRdfStoreManager = frameworkConfiguration.getSystemRdfStoreManager();
 
       log.debug("mode: " + mode);
-      log.debug("username: " + username);
+
 
       RdfStoreManager rdfStoreManager;
+
+      UserProfile user = frameworkConfiguration.getFrameworkUserManager().validate(userc, token);
+
       if ("settings".equals(mode)) {
         // read user settings graph - use framework admin user for that
         // purpose
@@ -82,20 +85,17 @@ public class RdfStoreProxy {
           log.info("Use admin rdf store manager");
           rdfStoreManager = frameworkRdfStoreManager;
         }
-      } else if (username != null && !username.isEmpty()) { // execute
-                                                            // query using
-                                                            // given user
-                                                            // credentials
-        boolean valid = frameworkUserManager.checkToken(username, token);
-        if (!valid)
-          return Response.status(Response.Status.FORBIDDEN).entity("User token is invalid").build();
+      } else if (user != null) { // execute
+                                 // query using
+                                 // given user
+                                 // credentials
         log.info("Use user rdf manager");
-        rdfStoreManager = frameworkUserManager.getRdfStoreManager(username);
+        rdfStoreManager = frameworkUserManager.getRdfStoreManager(user.getUsername());
       } else { // no username provided => use public endpoint
         log.info("Use public rdf manager");
         rdfStoreManager = frameworkConfiguration.getPublicRdfStoreManager();
       }
-
+      log.debug(query);
       String result = rdfStoreManager.execute(query, responseFormat);
       return Response.status(Response.Status.OK).entity(result).build();
     } catch (HTTPException e) {

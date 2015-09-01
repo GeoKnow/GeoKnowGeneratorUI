@@ -253,7 +253,15 @@ var LimesCtrl = function($scope, $http, ConfigurationService, ComponentsService,
     var modalInstance = $modal.open({
     	templateUrl: 'modal-forms/workbench/modal-limes-job.html',
     	controller: 'ModalLimesJobCtrl',
-    	size: 'lg'
+    	size: 'lg',
+    	resolve: {
+        modaltitle: function() {
+          return "New Limes Job";
+        },
+        jobService: function(){
+          return "Limes-Service";
+        }
+      }
     });
 
     // reads user's answer

@@ -1,4 +1,4 @@
-@prefix :        <http://generator.geoknow.eu/resource/> .
+@prefix :        <http://www.xybermotive.com/resource/> .
 @prefix dcterms:  <http://purl.org/dc/terms/> .
 @prefix lds:     <http://stack.linkeddata.org/ldis-schema/> .
 @prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
