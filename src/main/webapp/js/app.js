@@ -56,6 +56,7 @@ app.config(function($routeSegmentProvider, $routeProvider)
         .when('/workbench/search-querying-and-exploration/virtuoso', 'workbench.virtuoso')
         .when('/workbench/search-querying-and-exploration/facete', 'workbench.facete')
         .when('/workbench/search-querying-and-exploration/mappify', 'workbench.mappify')
+        .when('/workbench/search-querying-and-exploration/esta-ld', 'workbench.esta-ld')
         .when('/workbench/manual-revision-and-authoring/ontowiki', 'workbench.ontowiki')
         .when('/workbench/linking-and-fusing/limes', 'workbench.limes')
         .when('/workbench/linking-and-fusing/fagi-gis', 'workbench.fagi-gis')
@@ -101,6 +102,8 @@ app.config(function($routeSegmentProvider, $routeProvider)
                     templateUrl: 'js/workbench/search-querying-and-exploration/facete.html'})
                 .segment('mappify', {
                     templateUrl: 'js/workbench/search-querying-and-exploration/mappify.html'})
+                .segment('esta-ld', {
+                    templateUrl: 'js/workbench/search-querying-and-exploration/esta-ld.html'})
                 .segment('virtuoso', {
                     templateUrl: 'js/workbench/search-querying-and-exploration/virtuoso.html'})
                 .segment('ontowiki', {
