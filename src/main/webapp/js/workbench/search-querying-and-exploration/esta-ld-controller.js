@@ -20,8 +20,8 @@ app.controller('EstaLdCtrl', function($scope, ConfigurationService, ComponentsSe
 			if($scope.sevice== null)
 				flash.error="Service not configured: " +serviceId;	
 			$scope.url= $scope.sevice.serviceUrl + 
-				'?service-uri='+ encodeURIComponent($scope.estald.service) +
-    		'&default-graph-uri=';
+				'?endpoint='+ encodeURIComponent($scope.estald.service) +
+    		'&graph=';
 		}, 
 		function(response){
 			flash.error="Component not configured: " +ServerErrorResponse.getMessage(response);
@@ -32,6 +32,7 @@ app.controller('EstaLdCtrl', function($scope, ConfigurationService, ComponentsSe
       label : "Source Graph",
       graph : "" };
 
+	//TODO: this may be an authorised session
 	$scope.estald = {
   	service   : ConfigurationService.getSPARQLEndpoint(),
    	dataset   : "",
@@ -40,8 +41,8 @@ app.controller('EstaLdCtrl', function($scope, ConfigurationService, ComponentsSe
 
 	$scope.updateServiceParams = function(){
 		$scope.url= $scope.sevice.serviceUrl + 
-			'?service-uri='				+ encodeURIComponent($scope.estald.service) +
-      '&default-graph-uri=' + encodeURIComponent($scope.estald.dataset.replace(':',ConfigurationService.getUriBase()));
+			'?endpoint=' + encodeURIComponent($scope.estald.service) +
+      '&graph=' + encodeURIComponent($scope.estald.dataset.replace(':',ConfigurationService.getUriBase()));
     console.log($scope.url);
 	};
 
