@@ -1,7 +1,6 @@
 #Framework configuration files
-/src/main/webapp/WEB-INF/web.xml
 /src/main/resources/framework-configuration.ttl
-/src/main/resources/framework-components-local.ttl
+/src/main/resources/framework-components.ttl
 
 #Mac
 .DS_Store
