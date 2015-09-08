@@ -39,20 +39,20 @@
         <label for="DatasetA">Graph</label>
       </div>
       <div class="col-xs-4">
-        <select id="DatasetA" class="form-control" ng-model="fagi.datasetA" ng-options="namedgraph.name as namedgraph.name for namedgraph in namedGraphsA" ng-change="updateServiceParams();">
+        <select id="DatasetA" class="form-control" ng-model="fagi.datasetA" ng-options="namedgraph.name as describeGraph(namedgraph) for namedgraph in namedGraphsA" ng-change="updateServiceParams();">
         </select>
       </div>
       <div class="col-xs-2">
         <label for="DatasetB">Graph</label>
       </div>
       <div class="col-xs-4">
-        <select id="DatasetB" class="form-control" ng-model="fagi.datasetB" ng-options="namedgraph.name as namedgraph.name for namedgraph in namedGraphsB" ng-change="updateServiceParams();">
+        <select id="DatasetB" class="form-control" ng-model="fagi.datasetB" ng-options="namedgraph.name as describeGraph(namedgraph) for namedgraph in namedGraphsB" ng-change="updateServiceParams();">
         </select>
       </div>
     </div>
     <br/>
 
-    <div class="row">
+     <div class="row">
       <div class="col-xs-2">
         <label for="Database">Database</label>
       </div>
@@ -62,7 +62,7 @@
         </select>
       </div>
     </div>
-    <br/>
+    <br/> 
 
     <div class="row">
       <div class="col-xs-2">
@@ -84,11 +84,6 @@
       </div>
       <div class="col-xs-2">
         <a class="btn btn-default btn-large" ng-click="createTargetGraph();" >Create New Dataset</a>
-        <!-- <span class="input-group-btn">
-          <button type="button" class="btn btn-link reset" ng-click="refreshGraphList()">
-             <i class="glyphicon glyphicon-refresh" aria-hidden="false"></i>
-          </button>
-        </span> -->
       </div>
     </div>
     <br/>
@@ -96,7 +91,7 @@
     <div class="row">
       <div class="col-xs-2"></div>
       <div class="col-xs-2">
-        <a class="btn btn-success btn-large" ng-click="openService();">Launch Service</a>
+        <a class="btn btn-success btn-large" ng-disabled="fagiForm.$invalid" ng-click="openService();">Launch Service</a>
       </div>      
     </div>
     <br/>

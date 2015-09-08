@@ -3,7 +3,7 @@ Version: 1.2.0
 Section: web
 Priority: extra
 Architecture: all
-Depends: tomcat7,limes-service,deer-service,virtuoso-opensource,spring-batch-admin-geoknow,sparqlify-tomcat7,facete2-tomcat7,triplegeo-service,coevolution,esta-ld,fagi-gis
+Depends: virtuoso-opensource,spring-batch-admin-geoknow,coevolution-debian-package,limes-service,deer-service,triplegeo-service,esta-ld
 Maintainer: Alejandra Garcia-Rojas M <alejandra.garciarojas@ontos.com>
 Distribution: ldstack-nightly
 Homepage: http://stack.linkeddata.org/getting-started/geoknow-generator/
