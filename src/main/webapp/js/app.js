@@ -27,7 +27,8 @@ var app = angular.module('app', ['ngRoute',
                                  'http-auth-interceptor',
                                  'angular-flash.service', 
                                  'angular-flash.flash-alert-directive',
-                                 'angular-loading-bar']);
+                                 'angular-loading-bar',
+                                 'ngJoyRide']);
 
 
 app.config(function($routeSegmentProvider, $routeProvider)

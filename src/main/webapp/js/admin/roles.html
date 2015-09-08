@@ -1,56 +1,66 @@
-<h3 class="green bold">Roles Management</h3>
+
 
 <div ng-controller="UserRolesCtrl">
-    <div class="row">
-        <div class="col-lg-4">
-            <label class="col-lg-4">Default role</label>
-            <div class="col-lg-8">
-                <select class="form-control" ng-model="defaultRole.uri" ng-options="role.uri as role.name for role in roles | orderBy:'name'" ng-change="setDefaultRole()"></select>
+
+    <div id="setroles">
+
+        <h3 class="green bold">Roles Management</h3>
+
+        <div class="row">
+            <div class="col-lg-4">
+                <label class="col-lg-4">Default role</label>
+                <div class="col-lg-8">
+                    <select class="form-control" ng-model="defaultRole.uri" ng-options="role.uri as role.name for role in roles | orderBy:'name'" ng-change="setDefaultRole()"></select>
+                </div>
             </div>
         </div>
-    </div>
-    <br/>
-    <div class="row">
-        <div class="col-lg-4">
-            <label class="col-lg-4">Not logged in role</label>
-            <div class="col-lg-8">
-                <select class="form-control" ng-model="notLoggedInRole.uri" ng-options="role.uri as role.name for role in roles | orderBy:'name'" ng-change="setNotLoggedInRole()"></select>
+        <br/>
+        <div class="row">
+            <div class="col-lg-4">
+                <label class="col-lg-4">Not logged in role</label>
+                <div class="col-lg-8">
+                    <select class="form-control" ng-model="notLoggedInRole.uri" ng-options="role.uri as role.name for role in roles | orderBy:'name'" ng-change="setNotLoggedInRole()"></select>
+                </div>
             </div>
         </div>
+
     </div>
 
     <br/>
 
-    <button type="button" class="btn btn-success btn-large" ng-click="newRole();">Add role</button>
+    <div id="roles">
+        <button type="button" class="btn btn-success btn-large" ng-click="newRole();">Add role</button>
 
-    <h4>
-        <span class="btn-group">
-            <button type="button" class="btn btn-link reset" ng-click="refreshRoles()">
-                <i class="glyphicon glyphicon-refresh" aria-hidden="true"></i>
-            </button>
-        </span>
-        Roles
-    </h4>
-    <div class="table-fixed-outer">
-        <div class="table-fixed-inner">
-            <table class="table table-fixed">
-                <tr>
-                    <td class="col-header"></td>
-                    <th ng-repeat="role in roles" align="center">
-                        <button type="button" class="btn btn-default btn-xs" ng-disabled="roleUndeletable(role)" ng-confirm-click="deleteRole(role)" ng-confirm-message="Are you sure you want to delete role {{role.name}}?">
-                            <span class="glyphicon glyphicon-trash"></span>
-                        </button>
-                        {{role.name}}
-                    </th>
-                </tr>
-                <tr ng-repeat="s in services">
-                    <th class="col-header" tooltip="{{s.description}}">{{s.label}}</th>
-                    <td ng-repeat="role in roles" align="center">
-                        <input type="checkbox" ng-disabled="roleUnchangeable(role)" ng-checked="serviceAllowed(s, role)" ng-click="toggleService(s, role)"/>
-                    </td>
-                </tr>
-            </table>
+        <h4>
+            <span class="btn-group">
+                <button type="button" class="btn btn-link reset" ng-click="refreshRoles()">
+                    <i class="glyphicon glyphicon-refresh" aria-hidden="true"></i>
+                </button>
+            </span>
+            Roles
+        </h4>
+        <div class="table-fixed-outer">
+            <div class="table-fixed-inner">
+                <table class="table table-fixed">
+                    <tr>
+                        <td class="col-header"></td>
+                        <th ng-repeat="role in roles" align="center">
+                            <button type="button" class="btn btn-default btn-xs" ng-disabled="roleUndeletable(role)" ng-confirm-click="deleteRole(role)" ng-confirm-message="Are you sure you want to delete role {{role.name}}?">
+                                <span class="glyphicon glyphicon-trash"></span>
+                            </button>
+                            {{role.name}}
+                        </th>
+                    </tr>
+                    <tr ng-repeat="s in services">
+                        <th class="col-header" tooltip="{{s.description}}">{{s.label}}</th>
+                        <td ng-repeat="role in roles" align="center">
+                            <input type="checkbox" ng-disabled="roleUnchangeable(role)" ng-checked="serviceAllowed(s, role)" ng-click="toggleService(s, role)"/>
+                        </td>
+                    </tr>
+                </table>
+            </div>
         </div>
+
     </div>
 
     <br/>
@@ -59,34 +69,35 @@
     <br/>
 
     <!-- button type="button" class="btn btn-success btn-large" ng-click="newUser();">Add user</button -->
-
-    <h4>
-        <span class="btn-group">
-            <button type="button" class="btn btn-link reset" ng-click="refreshUsers()">
-                <i class="glyphicon glyphicon-refresh" aria-hidden="true"></i>
-            </button>
-        </span>
-        Users
-    </h4>
-    <div class="table-fixed-outer">
-        <div class="table-fixed-inner">
-            <table class="table table-fixed">
-                <tr>
-                    <td class="col-header"></td>
-                    <th ng-repeat="role in roles">{{role.name}}</th>
-                </tr>
-                <tr ng-repeat="user in users">
-                    <th class="col-header">
-                        <button type="button" class="btn btn-default btn-xs" ng-show="!isCurrentUser(user)" ng-confirm-click="deleteUser(user)" ng-confirm-message="Are you sure you want to delete user {{user.profile.username}}?">
-                            <span class="glyphicon glyphicon-trash"></span>
-                        </button>
-                        {{user.profile.username}}
-                    </th>
-                    <td ng-repeat="role in roles" ng-disabled="roleUnchangeable(user.profile.role.uri)">
-                        <input type="radio" name="{{user.profile.accountURI}}" ng-value="role.uri"  ng-checked="hasRole(user,role)" ng-click="toggleRole(user, role)"/>
-                    </td>
-                </tr>
-            </table>
+    <div id="users">
+        <h4>
+            <span class="btn-group">
+                <button type="button" class="btn btn-link reset" ng-click="refreshUsers()">
+                    <i class="glyphicon glyphicon-refresh" aria-hidden="true"></i>
+                </button>
+            </span>
+            Users
+        </h4>
+        <div class="table-fixed-outer">
+            <div class="table-fixed-inner">
+                <table class="table table-fixed">
+                    <tr>
+                        <td class="col-header"></td>
+                        <th ng-repeat="role in roles">{{role.name}}</th>
+                    </tr>
+                    <tr ng-repeat="user in users">
+                        <th class="col-header">
+                            <button type="button" class="btn btn-default btn-xs" ng-show="!isCurrentUser(user)" ng-confirm-click="deleteUser(user)" ng-confirm-message="Are you sure you want to delete user {{user.profile.username}}?">
+                                <span class="glyphicon glyphicon-trash"></span>
+                            </button>
+                            {{user.profile.username}}
+                        </th>
+                        <td ng-repeat="role in roles" ng-disabled="roleUnchangeable(user.profile.role.uri)">
+                            <input type="radio" name="{{user.profile.accountURI}}" ng-value="role.uri"  ng-checked="hasRole(user,role)" ng-click="toggleRole(user, role)"/>
+                        </td>
+                    </tr>
+                </table>
+            </div>
         </div>
     </div>
 

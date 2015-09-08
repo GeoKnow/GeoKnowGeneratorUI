@@ -1,16 +1,16 @@
 'use strict';
 
-function SettingsMenuCtrl($scope, AccountService) {
+function SettingsMenuCtrl($scope, AccountService, $location) {
   
   $scope.oneAtATime = true;
   // these data can be replaced later with the configuration
   $scope.items = [
-  	{ name: "Data Sources", route:'#/settings/data-sources', url:'/settings/data-sources', requiredServices:[] },
-  	{ name: "Named Graphs  ", route:'#/settings/named-graphs', url:'/settings/named-graphs', requiredServices:[] },
+  	{ name: "Data Sources",id:'sidebardatasources', route:'#/settings/data-sources', url:'/settings/data-sources', requiredServices:[] },
+  	{ name: "Named Graphs ", id:'sidebarnamedgraphs', route:'#/settings/named-graphs', url:'/settings/named-graphs', requiredServices:[] },
     // { name: "Namespaces", route:'#/settings/namespaces', url:'/settings/namespaces', requiredServices:[] },
-  	{ name: "Components", route:'#/settings/components', url:'/settings/components', requiredServices:[] },
+  	{ name: "Components",id:'sidebarcomponents', route:'#/settings/components', url:'/settings/components', requiredServices:[] },
     //{ name: "Users", route:'#/settings/users', url:'/settings/users', requiredServices:[":UserManagerService"] },
-    { name: "Roles Management", route:'#/settings/roles', url:'/settings/roles', requiredServices:[":UserManagerService"] }
+    { name: "Roles Management",id:'sidebarroles', route:'#/settings/roles', url:'/settings/roles', requiredServices:[":UserManagerService"] }
   ];
 
   $scope.showItem = function(item) {
@@ -23,6 +23,9 @@ function SettingsMenuCtrl($scope, AccountService) {
             return false;
     }
     return true;
+  };
+  $scope.routeTo = function(route){
+    $location.path(route);
   };
 }
 

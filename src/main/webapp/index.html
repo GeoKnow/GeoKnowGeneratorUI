@@ -13,6 +13,7 @@
   <link href="lib/bootstrap/3.3.4/css/bootstrap-theme.min.css" rel="stylesheet" />
   <link href="lib/bootstrap-slider/bootstrap-slider.css" rel="stylesheet" />
   <link href="lib/angular-loading-bar/loading-bar.css" rel="stylesheet">
+  <link href="lib/ng-joyride/ng-joyride.css" rel="stylesheet">
   <link href="css/app.css" rel="stylesheet" />
   <link rel="icon" type="image/png" href="img/favicon.png">
 
@@ -56,21 +57,25 @@
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
           <ul class="nav navbar-nav" ng-if="isUserAuthenticated()">
-            <li ng-class="getClass('/workbench')">
-              <a href="#/workbench">
+            <li ng-class="getClass('/workbench')" id="navbarWorkbench">
+              <a href="" ng-click="routeTo('/workbench')">
                 <div class="glyphicon glyphicon-cog"></div> Workbench </a>
             </li>
-            <li ng-class="getClass('/settings')">
-              <a href="#/settings">
+            <li ng-class="getClass('/settings')" id="navbarSettings">
+              <a href="" ng-click="routeTo('/settings')">
                 <div class="glyphicon glyphicon-wrench"></div> Settings </a>
             </li>
-            <li ng-class="getClass('/account')">
-              <a href="#/account">
+            <li ng-class="getClass('/account')" id="navbarAccount">
+              <a href="" ng-click="routeTo('/account')">
                 <div class="glyphicon glyphicon-user"></div> Account </a>
             </li>
           </ul>
           
-          <ul class="nav navbar-nav navbar-right">
+          <ul class="nav navbar-nav navbar-right" id="navbarLogout">
+
+              <li class="navbar-text" ng-if="isUserAuthenticated() && $root.isSystemSetUp && !ngJoyride">
+                  <button type="button" class="btn btn-success btn-xs" ng-click="ngJoyride=true" ng-joy-ride="ngJoyride" config="joyrideConf" on-finish="ngJoyride=false" on-skip="ngJoyride=false">Start Tour</button>
+              </li>
 
             <li class="navbar-text" ng-if="isUserAuthenticated() && $root.isSystemSetUp">
               Logged in as <strong>{{currentAccount.username}}</strong>
@@ -80,6 +85,10 @@
               <a href=""  ng-click="logout()">
                 <div class="glyphicon glyphicon-log-out"></div>Logout</a>
             </li>
+
+              <li class="navbar-text" ng-if="!isUserAuthenticated() && $root.isSystemSetUp">
+                  <button type="button" class="btn btn-success btn-xs" ng-click="startDemo()">Demo Login</button>
+              </li>
             
             <li ng-if="!isUserAuthenticated() && $root.isSystemSetUp">
               <a href="" ng-click="register()"><div class="glyphicon glyphicon-log-out"></div>Sign Up</a>
@@ -149,6 +158,7 @@
   <script src="lib/xml2json.min.js"></script>
   <script src="lib/angular-flash/angular-flash.min.js"></script>
   <script src="lib/angular-loading-bar/loading-bar.js"></script>
+  <script src="lib/ng-joyride/ng-joyride.js"></script>
 <!-- 
   <script src="lib/angular-file-upload-master/2.1.1/angular-file-upload-shim.min.js"></script>
   <script src="lib/angular-file-upload-master/2.1.1/angular-file-upload.min.js"></script>

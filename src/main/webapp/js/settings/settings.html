@@ -3,10 +3,10 @@
 	<div class="col-xs-2">
 		
 		<div class="panel-group" id="accordion" ng-controller="SettingsMenuCtrl">
-		  <div class="panel panel-default" ng-repeat="item in items" ng-show="showItem(item)">
-			  <div class="panel-heading" ng-controller="SidebarCtrl">
+		  <div class="panel panel-default" ng-repeat="item in items" ng-show="showItem(item)" id="{{item.id}}">
+			  <div class="panel-heading" ng-controller="SidebarCtrl" >
 				  <h5 ng-class="{selected:isSelected('{{item.url}}')}" class="panel-title">
-			        <a class="accordion-toggle" href="{{item.route}}">{{item.name}}</a>
+			        <a class="accordion-toggle" href="" ng-click="routeTo(item.url)">{{item.name}}</a>
 			      </h5>
 			  </div>
 		  	</div>

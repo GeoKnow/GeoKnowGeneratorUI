@@ -1,7 +1,9 @@
 'use strict';
 app.controller("LoginCtrl",LoginCtrl);
 function LoginCtrl($scope, $modal, $location, flash, authService, cfpLoadingBar, AccountService, LoginService, ServerErrorResponse, Base64, UsersService, ConfigurationService, AuthenticationErrorResponse, RolesService) {   
-  
+
+
+  $scope.ngJoyride = true;
   // handle unauthorized requests with login-modal
   var loginWindowShown=false;
   $scope.$on('event:auth-loginRequired', function(event, response) {
