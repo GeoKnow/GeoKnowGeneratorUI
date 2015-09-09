@@ -149,7 +149,7 @@ app.controller('NavbarCtrl', function($scope, $location) {
                 },
                 {
                     type: "function",
-                    fn: function(){ $('#extraction-loading').collapse('toggle');}
+                    fn: function(){ $('#extraction-loading').collapse('show');}
                 },
                 {
                     type: "element",
@@ -161,7 +161,7 @@ app.controller('NavbarCtrl', function($scope, $location) {
                 },
                 {
                     type: "function",
-                    fn: function(){ $('#extraction-loading').collapse('toggle'); $('#search-querying-and-exploration').collapse('toggle')}
+                    fn: function(){ $('#extraction-loading').collapse('hide'); $('#search-querying-and-exploration').collapse('show')}
                 },
                 {
                     type: "element",
@@ -173,7 +173,7 @@ app.controller('NavbarCtrl', function($scope, $location) {
                 },
                 {
                     type: "function",
-                    fn: function(){ $('#search-querying-and-exploration').collapse('toggle'); $('#manual-revision-and-authoring').collapse('toggle')}
+                    fn: function(){ $('#search-querying-and-exploration').collapse('hide'); $('#manual-revision-and-authoring').collapse('show')}
                 },
                 {
                     type: "element",
@@ -185,7 +185,7 @@ app.controller('NavbarCtrl', function($scope, $location) {
                 },
                 {
                     type: "function",
-                    fn: function(){ $('#manual-revision-and-authoring').collapse('toggle'); $('#linking-and-fusing').collapse('toggle')}
+                    fn: function(){ $('#manual-revision-and-authoring').collapse('hide'); $('#linking-and-fusing').collapse('show')}
                 },
                 {
                     type: "element",
@@ -298,7 +298,8 @@ app.controller('NavbarCtrl', function($scope, $location) {
                     text: 'Here you see all integrated Components and you can manage them.',
                     placement: "left",
                     scroll: true
-                },
+                }
+            /**ONLY ADMINS
                 {
                     type: "element",
                     selector: "#sidebarroles",
@@ -334,7 +335,7 @@ app.controller('NavbarCtrl', function($scope, $location) {
                     text: 'The user Management is also done in here. But just by Admins. Not sure, if visible in demo user page.',
                     placement: "top",
                     scroll: true
-                }],
+                }**/],
             account: [{
                 type: "location_change",
                 path: "/account"

@@ -6,6 +6,7 @@ import java.io.PrintWriter;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.UUID;
 
 import javax.mail.MessagingException;
@@ -21,6 +22,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.geoknow.generator.configuration.FrameworkConfiguration;
 import eu.geoknow.generator.users.FrameworkUserManager;
 import eu.geoknow.generator.users.PasswordStore;
+import eu.geoknow.generator.users.RoleType;
 import eu.geoknow.generator.users.UserProfile;
 import eu.geoknow.generator.utils.EmailSender;
 import eu.geoknow.generator.utils.HttpUtils;
@@ -278,7 +280,73 @@ public class AuthenticationServlet extends HttpServlet {
       String responseStr = new ObjectMapper().writeValueAsString(accounts);
       response.getWriter().print(responseStr);
 
-    } else {
+      } else if ("demo_start".equals(mode)) {
+        
+        long now = new Date().getTime();
+        int rnd = (int) (((Math.random()) * 100) + 1);
+        String value = String.valueOf(rnd)+String.valueOf(now).substring(String.valueOf(now).length()-4);
+        String username = "demo"+value;
+        String emailTo = username+"@demogenerator.geoknow.eu";
+        
+     // check if user already exists
+        boolean userExists = false;
+        try {
+          userExists = frameworkUserManager.checkUserExists(username, emailTo);
+        } catch (Exception e) {
+          e.printStackTrace();
+        }
+        if (userExists) {
+          int rnd2 = (int) (((Math.random()) * 100) + 1);
+          username = username+String.valueOf(rnd2);
+          emailTo = username+"@demogenerator.geoknow.eu";
+        }
+        // create user
+        String password = new RandomStringGenerator().generateBasic(6);
+
+        try {
+          frameworkUserManager.createUser(username, password, emailTo);
+          frameworkUserManager.setRole(username, "http://generator.geoknow.eu/resource/BasicUser");
+
+          
+          String responseStr =
+                  "{\"username\" : \"" + username + "\","
+                  + "\"password\" : \"" + password + "\","
+                  + "\"email\" : \"" + emailTo + "\"}";
+          response.getWriter().print(responseStr);
+
+        } catch (MessagingException e) {
+          e.printStackTrace();
+          response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+        } catch (Exception e) {
+          e.printStackTrace();
+          response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+        }
+        
+      
+
+      } else if ("demo_end".equals(mode)) {
+        
+        
+        String username = request.getParameter("username");
+        // remove user session tokens
+        try {
+          if (username != null && !username.isEmpty())
+            //frameworkUserManager.removeAllSessionTokens(username);
+          frameworkUserManager.dropUser(username);
+          // remove session token from cookies
+          Cookie tokenCookie = new Cookie("token", "");
+          Cookie userCookie = new Cookie("user", "");
+          tokenCookie.setMaxAge(0);
+          userCookie.setMaxAge(0);
+
+        } catch (Exception e) {
+          e.printStackTrace();
+          response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+        }
+        
+       
+
+     } else {
 
       // throw new ServletException("Unexpected mode: " + mode);
       response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Unexpected mode: " + mode);

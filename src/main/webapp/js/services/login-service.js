@@ -40,23 +40,45 @@ module.factory("LoginService", function ($http, $location, $cookies, AccountServ
             username: AccountService.getAccount().getUsername(),
             mode: "logout"
         }
+        //stop demo mode - delete and logout
+        if(AccountService.getAccount().getEmail().indexOf("@demogenerator.geoknow.eu")>-1){
+
+            postData.mode="demo_end";
+
+        }
+
+            return $http({
+                url: "AuthenticationServlet",
+                method: "POST",
+                data: $.param(postData),
+                contentType: "application/x-www-form-urlencoded"
+            }).then(function (response) {
+                document.execCommand("ClearAuthenticationCache");
+                ConfigurationService.restoreDefaultSettingsGraph();
+
+                $location.path("/#/home");
+                return AccountService.clearAccount();
+
+
+            }, function (response) {
+                flash.error = ServerErrorResponse.getMessage(response);
+
+            });
+
+    };
+
+    var startDemo = function(){
+        var postData = {
+            mode: "demo_start"
+        };
         return $http({
             url: "AuthenticationServlet",
             method: "POST",
             data: $.param(postData),
             contentType: "application/x-www-form-urlencoded"
-        }).then(function (response) {
-            document.execCommand("ClearAuthenticationCache");
-            ConfigurationService.restoreDefaultSettingsGraph();
-            
-            $location.path("/#/home");
-            return AccountService.clearAccount();
-            
-
-        }, function (response) {
-            flash.error = ServerErrorResponse.getMessage(response);
-            
         });
+
+
     };
 
     var createAccount = function (username, email) {
@@ -101,9 +123,14 @@ module.factory("LoginService", function ($http, $location, $cookies, AccountServ
         });
     };
 
+
+
+
+
     return {
         login: login,
         logout: logout,
+        startDemo:  startDemo,
         createAccount: createAccount,
         changePassword: changePassword,
         restorePassword: restorePassword

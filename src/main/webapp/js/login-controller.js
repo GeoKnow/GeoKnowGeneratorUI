@@ -132,6 +132,36 @@ function LoginCtrl($scope, $modal, $location, flash, authService, cfpLoadingBar,
               initialize();
             });
     };
+
+
+  $scope.startDemo = function(){
+
+    LoginService.startDemo().then(function(response){
+      var login = response.data;
+      LoginService.login(Base64.encode(login.username), Base64.encode(login.password)).then(
+          //success
+          function(data) {
+            $scope.currentAccount = data;
+            console.log(data);
+            if($scope.currentAccount.getUsername() != undefined){
+              initialize();
+              //flash.success = "Login Successful";
+
+            }else{
+              flash.error = "User or password are not correct";
+            }
+
+            authService.loginConfirmed();
+          },
+          // error
+          function(response) {
+            authService.loginCancelled();
+          });
+    });
+
+  };
+
+
    
 
   $scope.register = function(){
