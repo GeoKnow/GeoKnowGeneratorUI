@@ -56,6 +56,7 @@ app.controller('FagiGisCtrl', function($q, $scope, ConfigurationService, Compone
 					'&virtuoso-port='+ encodeURIComponent($scope.fagi.database.dbPort) +
 					'&target-endpoint='+ encodeURIComponent(authEndpoint) +
 					'&target-dataset='+ encodeURIComponent($scope.fagi.targetGraph.replace(':',ConfigurationService.getUriBase())) ;
+			console.log("endpoint" + authEndpoint);
 			console.log(url);
 			window.open(url);
 		});

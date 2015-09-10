@@ -166,7 +166,7 @@
 :FagiGisService
       a       lds:InterlinkingService ;
       rdfs:label "Fagi-gis" ;
-      lds:serviceUrl <http://localhost:8080/FAGI-WebInterface/> .
+      lds:serviceUrl <http://localhost:8080/fagi-gis-service/> .
 
 :Coevolution
       a       lds:StackComponent ;
@@ -179,6 +179,18 @@
       a       lds:PublicationService ;
       rdfs:label "Public-Private Data Coevolution"^^xsd:string ;
       lds:serviceUrl <http://localhost:8080/coevolution-service/> .
+
+:esta-ld
+  a       lds:StackComponent ;
+  rdfs:label "ESTA-LD"^^xsd:string ;
+  lds:providesService :esta-ld-service ;
+  foaf:homepage <https://github.com/GeoKnow/ESTA-LD> ;
+  dcterms:hasVersion "1.0"^^xsd:string .
+
+:esta-ld-service
+      a       lds:ExplorationService ;
+      rdfs:label "ESTA-LD" ;
+      lds:serviceUrl <http://localhost:8080/ESTA-LD/> .
 
 
 ########### ROUTES RESTRICTIONS DESCRIPTION #######################################################

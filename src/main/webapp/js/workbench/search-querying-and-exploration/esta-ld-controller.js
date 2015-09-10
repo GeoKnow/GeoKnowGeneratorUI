@@ -48,11 +48,13 @@ app.controller('EstaLdCtrl', function($scope, ConfigurationService, ComponentsSe
 
 			return AuthSessionService.createSession().then(function(response){
       		
-				var atuhEndpoint = workbenchHP + response.data.endpoint;
+				var authEndpoint = workbenchHP + response.data.endpoint;
 				var url = $scope.sevice.serviceUrl + 
-								'?endpoint=' + encodeURIComponent(atuhEndpoint) +
+								'?endpoint=' + encodeURIComponent(authEndpoint) +
       					'&graph=' + encodeURIComponent($scope.source.graph.replace(':',ConfigurationService.getUriBase()));
     		
+    		console.log("endpoint: " + authEndpoint);
+    		console.log("graph: " + $scope.source.graph.replace(':',ConfigurationService.getUriBase()));
     		console.log(url);
 
 				window.open(url);
