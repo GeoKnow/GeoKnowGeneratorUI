@@ -21,7 +21,7 @@
 
 :BasicUser
   rdf:type ontos:Role ;
-  rdfs:label "Basic User"@en ;
+  rdfs:label "Basic User for Demo"@en ;
   ontos:isNotLoggedIn "false"^^xsd:boolean ;
   ontos:isDefault "true"^^xsd:boolean .
 

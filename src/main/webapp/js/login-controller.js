@@ -50,15 +50,13 @@ function LoginCtrl($scope, $modal, $location, flash, authService, cfpLoadingBar,
       
       $scope.currentAccount = AccountService.getAccount();
 
-      console.log($scope.currentAccount);
-      
-      
       // retrive default role if no user logged in
       if(AccountService.getAccount().getRole() == undefined){
         RolesService.getNotLoggedInRole().then(function(response) {
           $scope.currentAccount.setRole(response);
         });
-      }
+      }else
+        console.log(AccountService.getAccount());
     
     });
   }
@@ -102,9 +100,8 @@ function LoginCtrl($scope, $modal, $location, flash, authService, cfpLoadingBar,
           //success
           function(data) {
             $scope.currentAccount = data;
-            console.log(data);
             if($scope.currentAccount.getUsername() != undefined){
-              initialize();
+              //initialize();
               //flash.success = "Login Successful";
 
             }else{
@@ -138,13 +135,14 @@ function LoginCtrl($scope, $modal, $location, flash, authService, cfpLoadingBar,
 
     LoginService.startDemo().then(function(response){
       var login = response.data;
+      console.log(login);
       LoginService.login(Base64.encode(login.username), Base64.encode(login.password)).then(
           //success
           function(data) {
             $scope.currentAccount = data;
-            console.log(data);
+            console.log($scope.currentAccount);
             if($scope.currentAccount.getUsername() != undefined){
-              initialize();
+              //initialize();
               //flash.success = "Login Successful";
 
             }else{
@@ -193,5 +191,5 @@ function LoginCtrl($scope, $modal, $location, flash, authService, cfpLoadingBar,
   };
 
 
-    initialize();
+  initialize();
 }

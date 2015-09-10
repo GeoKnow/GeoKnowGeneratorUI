@@ -93,7 +93,7 @@ app.controller('NavbarCtrl', function($scope, $location) {
 
 
     $scope.ngJoyride = false;
-  $scope.joyrideConf =[];
+    $scope.joyrideConf =[];
     $scope.createJoyrideConfig = function(key){
 
         var config ={
@@ -106,7 +106,7 @@ app.controller('NavbarCtrl', function($scope, $location) {
                     type: "element",
                     selector: "#navbarWorkbench",
                     heading: "Navigation",
-                    text: "The workbench allows you to handle all data imports and provides a collection of tools to work with the Linked Open Data lifecycle.",
+                    text: "The <strong>Workbench</strong> provides a collection of tools to work with the Linked Data lifecycle.",
                     placement: "bottom",
                     scroll: true,
                     curtainClass: 'nothing'
@@ -115,7 +115,7 @@ app.controller('NavbarCtrl', function($scope, $location) {
                     type: "element",
                     selector: "#navbarSettings",
                     heading: "Navigation",
-                    text: "In the settings you can manage data sources, like SPARQL endpoints and databases, graphs, components and roles.",
+                    text: "In <strong>Settings</strong> you can manage data sources, like SPARQL endpoints and databases, graphs, components, roles and users.",
                     placement: "bottom",
                     scroll: true
                 },
@@ -123,7 +123,7 @@ app.controller('NavbarCtrl', function($scope, $location) {
                     type: "element",
                     selector: "#navbarAccount",
                     heading: "Navigation",
-                    text: "Here all your account information are provided. You can also change your password in here.",
+                    text: "In <strong>Account</strong> your will find your account information, and you can change your password.",
                     placement: "bottom",
                     scroll: true
                 },
@@ -131,7 +131,7 @@ app.controller('NavbarCtrl', function($scope, $location) {
                     type: "element",
                     selector: "#navbarLogout",
                     heading: "Navigation",
-                    text: "Simply click here to logout and leave the demo.",
+                    text: "Simply click logout to leave the workbench.",
                     placement: "bottom",
                     scroll: true
                 }],
@@ -143,7 +143,7 @@ app.controller('NavbarCtrl', function($scope, $location) {
                     type: "element",
                     selector: "#accordion",
                     heading: "Workbench",
-                    text: "This side menue contains all tools, that are provided to be used in the sense of the linked open data lifecycle. In GeoKnow Generator these tools are especially designed for the work with geospatial data.",
+                    text: "The Workbench menu contains all integrated software tools grouped into the Linked Data lifecycle stages.",
                     placement: "right",
                     scroll: true
                 },
@@ -155,7 +155,11 @@ app.controller('NavbarCtrl', function($scope, $location) {
                     type: "element",
                     selector: "#extraction-loading",
                     heading: "Extraction and Loading",
-                    text: '<p>These Tools are used to extract data from other sources. </p><p><ul style="list-style-type: none;padding: 0px;margin: 0px;"><li><strong>Sparqlify</strong><br/>This tool allows to convert SQL Statements to SPARQL Queries.</li><li><strong>Triple-Geo</strong><br/>This tool allows to import geo-data from databases or shapefiles into a SPARQL store.</li></ul></p>',
+                    text: '<p>Get data into the workbench with: </p><p><ul style="list-style-type: none;padding: 0px;margin: 0px;">'
+                    + '<li><strong>Sparqlify</strong><br/>SPARQL-to-SQL rewriter, enables to query RDBMS with SPARQL</li>'
+                    + '<li><strong>Triple-Geo</strong><br/>Geo-spatial feature extraction of ESRI shapefiles, GML, KML, INSPIRE-aligned, and several geospatially-enabled DBMSs</li>'
+                    + '<li><strong>RDF Import</strong><br/>Load RDF data from files or endpoints.</li>'
+                    + '</ul></p>',
                     placement: "right",
                     scroll: true
                 },
@@ -167,7 +171,12 @@ app.controller('NavbarCtrl', function($scope, $location) {
                     type: "element",
                     selector: "#search-querying-and-exploration",
                     heading: "Search Querying and Exploration",
-                    text: '<p>These Tools are used to query SPARQL endpoints for RDF and especially geospatial data. </p><p><ul style="list-style-type: none;padding: 0px;margin: 0px;"><li><strong>Virtuoso</strong><br/>Provides an Interface to the SPARQL endpoint of the virtuoso database used in the backend.</li><li><strong>Facete</strong><br/>A tool for exploring (geographical) Linked Data datasets on the Web using Facets.</li><li><strong>Mappify</strong><br/>A tool for exploring (geographical) Linked Data datasets on the Web visualized on a map.</li></ul></p>',
+                    text: '<p>Explore or search data with: </p><p><ul style="list-style-type: none;padding: 0px;margin: 0px;">' 
+                    + '<li><strong>Virtuoso</strong><br/>Provides an Interface to the SPARQL endpoint of the virtuoso database used in the backend.</li>' 
+                    + '<li><strong>Facete</strong><br/>A web-based faceted browsing of RDF geospatial data.</li>'
+                    + '<li><strong>Mappify</strong><br/>Map view generator into in HTML/JavaScript snippets.</li>'
+                    + '<li><strong>ESTA-LD</strong><br/>A Exploratory Spatio-Temporal Analysis of Linked Data using data cubes.</li>'
+                    + '</ul></p>',
                     placement: "right",
                     scroll: true
                 },
@@ -179,7 +188,8 @@ app.controller('NavbarCtrl', function($scope, $location) {
                     type: "element",
                     selector: "#manual-revision-and-authoring",
                     heading: "Manual revision and Authoring",
-                    text: '<p>This Section contains Tools for editing and revising data manually.</p><p><ul style="list-style-type: none;padding: 0px;margin: 0px;"><li><strong>OntoWiki</strong><br/>OntoWiki facilitates the visual presentation of a knowledge base as an information map, with different views on instance data. It enables intuitive authoring of semantic content, with an inline editing mode for editing RDF content, similar to WYSIWIG for text documents.</li></ul></p>',
+                    text: '<p>Edit and review data manually:</p><p><ul style="list-style-type: none;padding: 0px;margin: 0px;">'
+                    + '<li><strong>OntoWiki</strong><br/>OntoWiki enables intuitive authoring of semantic content, with an inline editing mode for editing RDF content, similar to WYSIWIG for text documents.</li></ul></p>',
                     placement: "right",
                     scroll: true
                 },
@@ -191,7 +201,38 @@ app.controller('NavbarCtrl', function($scope, $location) {
                     type: "element",
                     selector: "#linking-and-fusing",
                     heading: "Linking and Fusion",
-                    text: '<p>Tools in here can be handy to link and combine data of different sources. </p><p><ul style="list-style-type: none;padding: 0px;margin: 0px;"><li><strong>LIMES</strong><br/>You are able to link resources of different SPARQL Endpoints with a lot of fucked up variables, that nobody understands..</li><li><strong>Fagi-gis</strong><br/>Gives you the might of fusing two endpoints i guess. Github does not really tell what it does and the configuration seems to connect two graphs into a new one.</li></ul></p>',
+                    text: '<p>Tools in here can be handy to link and combine data of different sources. </p><p><ul style="list-style-type: none;padding: 0px;margin: 0px;">'
+                    + '<li><strong>LIMES</strong><br/>Is a link discovery framework for linking datasets, it supports 13 similarity measures of which six are geo-spatial distance measures.</li>'
+                    + '<li><strong>Fagi-gis</strong><br/>Supports fusing geospatial RDF data and metadata from two datasets.</li>'
+                    + '</ul></p>',
+                    placement: "right",
+                    scroll: true
+                },
+                {
+                    type: "function",
+                    fn: function(){ $('#linking-and-fusing').collapse('hide'); $('#classification-and-enrichment').collapse('show')}
+                },
+                {
+                    type: "element",
+                    selector: "#classification-and-enrichment",
+                    heading: "Classification and Enrichment",
+                    text: '<p>Add more semantics to the data with: </p><p><ul style="list-style-type: none;padding: 0px;margin: 0px;">'
+                    + '<li><strong>DEER</strong><br/>Data enrichment with implicit geospatial information through dereferencing, interlinking and NLP.</li>'
+                    + '</ul></p>',
+                    placement: "right",
+                    scroll: true
+                },
+                {
+                    type: "function",
+                    fn: function(){ $('#classification-and-enrichment').collapse('hide'); $('#evolution-and-repair').collapse('show')}
+                },
+                {
+                    type: "element",
+                    selector: "#evolution-and-repair",
+                    heading: "Evolution and Repair",
+                    text: '<p>Fix the data with: </p><p><ul style="list-style-type: none;padding: 0px;margin: 0px;">'
+                    + '<li><strong>Data Coevolution</strong><br/>A service for managing dataset provenance and modifications.</li>'
+                    + '</ul></p>',
                     placement: "right",
                     scroll: true
                 }],
@@ -203,7 +244,7 @@ app.controller('NavbarCtrl', function($scope, $location) {
                     type: "element",
                     selector: "#accordion",
                     heading: "Settings",
-                    text: 'In the settings you can set up a lot of settings.',
+                    text: 'In the settings you can manage different configurable aspects of the workbench.',
                     placement: "right",
                     scroll: true
                 },
@@ -211,7 +252,7 @@ app.controller('NavbarCtrl', function($scope, $location) {
                     type: "element",
                     selector: "#sidebardatasources",
                     heading: "Settings",
-                    text: 'For example data sources...',
+                    text: '<p><strong>Data Sources</strong> can be shared among the workbench users and used by the integrated software components.</p>',
                     placement: "right",
                     scroll: true
                 },
@@ -223,7 +264,7 @@ app.controller('NavbarCtrl', function($scope, $location) {
                     type: "element",
                     selector: "#datasource-endpoint",
                     heading: "Data Sources",
-                    text: 'Manage Endpoints.',
+                    text: 'Add Endpoints and describe them.',
                     placement: "bottom",
                     scroll: true
                 },
@@ -231,7 +272,7 @@ app.controller('NavbarCtrl', function($scope, $location) {
                     type: "element",
                     selector: "#datasource-rdb",
                     heading: "Data Sources",
-                    text: 'Manage RDBs.',
+                    text: 'Add and manage RDBs connections.',
                     placement: "top",
                     scroll: true
                 },
@@ -239,7 +280,7 @@ app.controller('NavbarCtrl', function($scope, $location) {
                     type: "element",
                     selector: "#datasource-license",
                     heading: "Data Sources",
-                    text: 'Manage Data Licenses for usage.',
+                    text: 'Manage Data Licenses for publishing your datasets.',
                     placement: "top",
                     scroll: true
                 },
@@ -247,7 +288,7 @@ app.controller('NavbarCtrl', function($scope, $location) {
                     type: "element",
                     selector: "#sidebarnamedgraphs",
                     heading: "Settings",
-                    text: 'Next there are named graphs...',
+                    text: '<p><strong>Named Graphs</strong> contains a set of triples that can be descrbed with a context, provenance information or other such metadata.</p>',
                     placement: "right",
                     scroll: true
                 },
@@ -259,7 +300,7 @@ app.controller('NavbarCtrl', function($scope, $location) {
                     type: "element",
                     selector: "#graph-sets",
                     heading: "Named Graphs",
-                    text: 'Graph Sets are nice for versioning of graphs.',
+                    text: '<strong>Graph Sets</strong> provide a naming convention for for versioning graphs.',
                     placement: "bottom",
                     scroll: true
                 },
@@ -267,7 +308,7 @@ app.controller('NavbarCtrl', function($scope, $location) {
                     type: "element",
                     selector: "#user-graphs",
                     heading: "Named Graphs",
-                    text: 'The essential object for everything you do within this workbench. It holds the data.',
+                    text: '<strong>Named Graphs</strong> hold the data, and can be described with a context or provenance information. You can have public or private graphs, and even provide specific access to some users.',
                     placement: "top",
                     scroll: true
                 },
@@ -275,7 +316,7 @@ app.controller('NavbarCtrl', function($scope, $location) {
                     type: "element",
                     selector: "#graph-groups",
                     heading: "Named Graphs",
-                    text: 'Graph groups are especially nice for searching and querying or managing (setting access..) multiple graphs at once.',
+                    text: '<strong>Graph groups</strong> are especially nice for searching and querying or managing (setting access..) multiple graphs at once.',
                     placement: "top",
                     scroll: true
                 },
@@ -283,7 +324,7 @@ app.controller('NavbarCtrl', function($scope, $location) {
                     type: "element",
                     selector: "#sidebarcomponents",
                     heading: "Settings",
-                    text: 'Or you can configure your components...',
+                    text: '<strong>Components</strong><br/>Shows the integrated components in the Workbench.',
                     placement: "right",
                     scroll: true
                 },
@@ -295,7 +336,7 @@ app.controller('NavbarCtrl', function($scope, $location) {
                     type: "element",
                     selector: "#components",
                     heading: "Components",
-                    text: 'Here you see all integrated Components and you can manage them.',
+                    text: 'You can see the integrated components into the workbench. And if you were an Administrator you could enable/disable them.',
                     placement: "left",
                     scroll: true
                 }
@@ -344,7 +385,7 @@ app.controller('NavbarCtrl', function($scope, $location) {
                     type: "element",
                     selector: "#accountdata",
                     heading: "Account",
-                    text: 'The user Management is also done in here. But just by Admins. Not sure, if visible in demo user page.',
+                    text: 'The current user data is here. You can change your password.',
                     placement: "bottom",
                     scroll: true
                 }],
