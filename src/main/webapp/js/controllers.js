@@ -210,7 +210,7 @@ app.controller('NavbarCtrl', function($scope, $location) {
                 },
                 {
                     type: "function",
-                    fn: function(){ $('#linking-and-fusing').collapse('hide'); $('#classification-and-enrichment').collapse('show')}
+                    fn: function(next){  if(next){$('#linking-and-fusing').collapse('hide'); $('#classification-and-enrichment').collapse('show');}else{$('#linking-and-fusing').collapse('show'); $('#classification-and-enrichment').collapse('hide');}}
                 },
                 {
                     type: "element",
@@ -224,7 +224,8 @@ app.controller('NavbarCtrl', function($scope, $location) {
                 },
                 {
                     type: "function",
-                    fn: function(){ $('#classification-and-enrichment').collapse('hide'); $('#evolution-and-repair').collapse('show')}
+                    fn: function(next){  if(next){$('#classification-and-enrichment').collapse('hide'); $('#evolution-and-repair').collapse('show');}else{$('#classification-and-enrichment').collapse('show'); $('#evolution-and-repair').collapse('hide');}}
+
                 },
                 {
                     type: "element",
@@ -235,12 +236,6 @@ app.controller('NavbarCtrl', function($scope, $location) {
                     + '</ul></p>',
                     placement: "right",
                     scroll: true
-                },
-                {
-                    type: "function",
-                    fn: function(next){  if(next){$('linking-and-fusing').collapse('hide');}else{
-
-                        }}
                 }],
             settings: [{
                 type: "location_change",
