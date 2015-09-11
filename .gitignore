@@ -9,6 +9,7 @@
 .classpath
 .settings
 .project
+.idea
 
 # Maven
 /target

@@ -85,7 +85,6 @@ module.factory("AccountService", function ( $cookieStore, $http, ConfigurationSe
     Account.getAccount = function () {
         if($cookieStore.get('user') != undefined){
             var s = $cookieStore.get('user');
-            // 
             return new Account(s.username, s.accountURI, s.email, s.role, s.settingsGraph); 
         }
         else
