@@ -1,28 +1,25 @@
-<div class="contents" ng-controller="FaceteFormCtrl">  
+<div ng-controller="FaceteFormCtrl">  
   <component-header></component-header>
 
-  <p>A tool for exploring (geographical) Linked Data datasets on the Web. To get started select a data set from the drop down menu.</p>
-  <form class="form-horizontal InputForm" role="form">
+  <form class="form-horizontal InputForm" role="form"  novalidate>
     <div class="form-group">
-      <label for="Endpoint">Endpoint</label>
-      <input type="url" class="form-control" id="Endpoint" disabled="disabled" ng-model="facete.service"></input>
-    </div>
-    <div class="form-group">
-      <label for="DataSet">DataSet</label>
-      <div class="input-group">
-          <select id="DataSet" class="form-control" ng-model="facete.dataset" ng-change="updateServiceParams()"
-            ng-options="namedgraph.name as namedgraph.name for namedgraph in namedGraphs" required></select>
-          <span class="input-group-btn">
-              <button type="button" class="btn btn-link reset" ng-click="refreshGraphList()">
-                  <i class="glyphicon glyphicon-refresh" aria-hidden="false"></i>
-              </button>
-          </span>
+      <label for="endPoint" class="col-xs-2 control-label">SPARQL EndPoint</label>
+      <div class="input-group col-sm-8">
+        <select id="endPoint" class="form-control" ng-model="source.endpoint" ng-options="c.endpoint as c.label for c in endpoints" required></select>
       </div>
     </div>
+
+
+    <source-graph ng-show="isLocalEndpoint()"></source-graph>
+
     <div class="form-group">
+      <div class="col-sm-2"></div>
       <a class="btn btn-success btn-large" ng-click="openService();">Launch Service</a>
+      </div>
     </div>
+
   </form>
+
 
 </div>
 

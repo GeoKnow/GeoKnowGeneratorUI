@@ -64,6 +64,10 @@ app.config(function($routeSegmentProvider, $routeProvider)
         .when('/workbench/evolution-and-repair/coevolution-create', 'workbench.coevolution-create')
         .when('/workbench/evolution-and-repair/coevolution-apply', 'workbench.coevolution-apply')
 
+        
+        .when('/popup-triplegeo','popup-triplegeo')
+        //.when('/popup-geolift','popup-geolift')
+
         .segment('default', {
             templateUrl: 'default.html',
 

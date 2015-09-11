@@ -56,7 +56,6 @@ app.controller('EstaLdCtrl', function($scope, ConfigurationService, ComponentsSe
     		console.log("endpoint: " + authEndpoint);
     		console.log("graph: " + $scope.source.graph.replace(':',ConfigurationService.getUriBase()));
     		console.log(url);
-
 				window.open(url);
     		return false;
       		
@@ -66,10 +65,8 @@ app.controller('EstaLdCtrl', function($scope, ConfigurationService, ComponentsSe
 			var url = $scope.sevice.serviceUrl + 
 								'?endpoint=' + encodeURIComponent($scope.source.endpoint) +
       					'&graph=' + encodeURIComponent($scope.source.graph.replace(':',ConfigurationService.getUriBase()));
-    		
-    		console.log(url);
-
-				window.open(url);
+    	console.log(url);
+			window.open(url);
 		}
 	}
 	
