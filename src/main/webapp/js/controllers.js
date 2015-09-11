@@ -149,7 +149,7 @@ app.controller('NavbarCtrl', function($scope, $location) {
                 },
                 {
                     type: "function",
-                    fn: function(){ $('#extraction-loading').collapse('show');}
+                    fn: function(next){ if(next){ $('#extraction-loading').collapse('show');}else{$('#extraction-loading').collapse('hide');}}
                 },
                 {
                     type: "element",
@@ -161,7 +161,7 @@ app.controller('NavbarCtrl', function($scope, $location) {
                 },
                 {
                     type: "function",
-                    fn: function(){ $('#extraction-loading').collapse('hide'); $('#search-querying-and-exploration').collapse('show')}
+                    fn: function(next){ if(next){$('#extraction-loading').collapse('hide'); $('#search-querying-and-exploration').collapse('show');}else{$('#extraction-loading').collapse('show'); $('#search-querying-and-exploration').collapse('hide');}}
                 },
                 {
                     type: "element",
@@ -173,7 +173,7 @@ app.controller('NavbarCtrl', function($scope, $location) {
                 },
                 {
                     type: "function",
-                    fn: function(){ $('#search-querying-and-exploration').collapse('hide'); $('#manual-revision-and-authoring').collapse('show')}
+                    fn: function(next){ if(next){$('#search-querying-and-exploration').collapse('hide'); $('#manual-revision-and-authoring').collapse('show');}else{$('#search-querying-and-exploration').collapse('show'); $('#manual-revision-and-authoring').collapse('hide');}}
                 },
                 {
                     type: "element",
@@ -185,7 +185,7 @@ app.controller('NavbarCtrl', function($scope, $location) {
                 },
                 {
                     type: "function",
-                    fn: function(){ $('#manual-revision-and-authoring').collapse('hide'); $('#linking-and-fusing').collapse('show')}
+                    fn: function(next){  if(next){$('#manual-revision-and-authoring').collapse('hide'); $('#linking-and-fusing').collapse('show');}else{$('#manual-revision-and-authoring').collapse('show'); $('#linking-and-fusing').collapse('hide');}}
                 },
                 {
                     type: "element",
@@ -194,6 +194,12 @@ app.controller('NavbarCtrl', function($scope, $location) {
                     text: '<p>Tools in here can be handy to link and combine data of different sources. </p><p><ul style="list-style-type: none;padding: 0px;margin: 0px;"><li><strong>LIMES</strong><br/>You are able to link resources of different SPARQL Endpoints with a lot of fucked up variables, that nobody understands..</li><li><strong>Fagi-gis</strong><br/>Gives you the might of fusing two endpoints i guess. Github does not really tell what it does and the configuration seems to connect two graphs into a new one.</li></ul></p>',
                     placement: "right",
                     scroll: true
+                },
+                {
+                    type: "function",
+                    fn: function(next){  if(next){$('linking-and-fusing').collapse('hide');}else{
+
+                        }}
                 }],
             settings: [{
                 type: "location_change",
