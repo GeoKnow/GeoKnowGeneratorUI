@@ -44,7 +44,7 @@ module.factory("LoginService", function ($http, $location, $cookies, AccountServ
         if(AccountService.getAccount().getEmail().indexOf("@demogenerator.geoknow.eu")>-1){
 
             postData.mode="demo_end";
-
+            postData.email = AccountService.getAccount().getEmail();
         }
 
             return $http({

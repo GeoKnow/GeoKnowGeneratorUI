@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import eu.geoknow.generator.configuration.FrameworkConfiguration;
+import eu.geoknow.generator.exceptions.InformationMissingException;
 import eu.geoknow.generator.users.FrameworkUserManager;
 import eu.geoknow.generator.users.PasswordStore;
 import eu.geoknow.generator.users.RoleType;
@@ -45,12 +46,14 @@ public class AuthenticationServlet extends HttpServlet {
    */
   private static final long serialVersionUID = 1L;
   private FrameworkUserManager frameworkUserManager;
+  private int demoCnt;
 
   @Override
   public void init(ServletConfig config) throws ServletException {
     super.init(config);
     try {
       frameworkUserManager = FrameworkConfiguration.getInstance().getFrameworkUserManager();
+      demoCnt = 0;
     } catch (FileNotFoundException e) {
       throw new ServletException(e);
     } catch (Exception e) {
@@ -281,25 +284,31 @@ public class AuthenticationServlet extends HttpServlet {
       response.getWriter().print(responseStr);
 
       } else if ("demo_start".equals(mode)) {
+        try {
+          demoCnt = FrameworkConfiguration.getInstance().getDemoUserCount();
+        } catch (InformationMissingException e1) {
+          // TODO Auto-generated catch block
+          e1.printStackTrace();
+        }
         
-        long now = new Date().getTime();
-        int rnd = (int) (((Math.random()) * 100) + 1);
-        String value = String.valueOf(rnd)+String.valueOf(now).substring(String.valueOf(now).length()-4);
-        String username = "demo"+value;
+        //long now = new Date().getTime();
+        //int rnd = (int) (((Math.random()) * 100) + 1);
+        //String value = String.valueOf(rnd)+String.valueOf(now).substring(String.valueOf(now).length()-4);
+        String username = "demo"+demoCnt;
         String emailTo = username+"@demogenerator.geoknow.eu";
         
      // check if user already exists
         boolean userExists = false;
-        try {
-          userExists = frameworkUserManager.checkUserExists(username, emailTo);
+        try {while(frameworkUserManager.checkUserExists(username, emailTo)){
+          demoCnt = FrameworkConfiguration.getInstance().getDemoUserCount();
+          username = "demo"+demoCnt;
+          emailTo = username+"@demogenerator.geoknow.eu";
+        }
+          
         } catch (Exception e) {
           e.printStackTrace();
         }
-        if (userExists) {
-          int rnd2 = (int) (((Math.random()) * 100) + 1);
-          username = username+String.valueOf(rnd2);
-          emailTo = username+"@demogenerator.geoknow.eu";
-        }
+        
         // create user
         String password = new RandomStringGenerator().generateBasic(6);
 
@@ -328,11 +337,14 @@ public class AuthenticationServlet extends HttpServlet {
         
         
         String username = request.getParameter("username");
+        String emailTo = request.getParameter("email");
         // remove user session tokens
         try {
           if (username != null && !username.isEmpty())
             //frameworkUserManager.removeAllSessionTokens(username);
+            if(frameworkUserManager.checkUserExists(username, emailTo)){
           frameworkUserManager.dropUser(username);
+            }
           // remove session token from cookies
           Cookie tokenCookie = new Cookie("token", "");
           Cookie userCookie = new Cookie("user", "");
@@ -353,4 +365,7 @@ public class AuthenticationServlet extends HttpServlet {
 
     }
   }
+  
+ 
+  
 }

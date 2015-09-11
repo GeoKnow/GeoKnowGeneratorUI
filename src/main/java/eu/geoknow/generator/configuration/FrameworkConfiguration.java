@@ -104,6 +104,8 @@ public class FrameworkConfiguration {
   private String springBatchJobsDir = "";
   private String frameworkDataDir = "";
   private File initFile;
+  
+  private int democnt = 0;
 
 
   private static FrameworkConfiguration instance;
@@ -773,6 +775,11 @@ public class FrameworkConfiguration {
 
   public String getRolesGraph() {
     return instance.getSystemGraphs().get("roles");
+  }
+
+  public int getDemoUserCount() {
+    this.democnt++;
+    return democnt;
   }
 
 }
