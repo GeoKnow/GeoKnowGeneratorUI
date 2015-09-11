@@ -5,13 +5,13 @@
 *
 ***************************************************************************************************/
 
-app.controller('FaceteFormCtrl', function($scope, ConfigurationService, ComponentsService, GraphService, AccountService, AuthSessionService, Ns) {
+app.controller('EstaLdCtrl', function($scope, ConfigurationService, ComponentsService, GraphService, AuthSessionService) {
 	//Settings for Facete
 
 
-	var componentId ="Facete";
-	var serviceId = "FaceteService";
-	var workbenchHP = "";
+	var componentId ="esta-ld";
+	var serviceId = "esta-ld-service";
+	var workbenchHP ="";
 	ComponentsService.getComponent(componentId).then(
 		//success
 		function(response){
@@ -20,16 +20,17 @@ app.controller('FaceteFormCtrl', function($scope, ConfigurationService, Componen
 			if($scope.sevice== null)
 				flash.error="Service not configured: " +serviceId;	
 
-			workbenchHP = ConfigurationService.getFrameworkHomepage();
+    	$scope.endpoints = ConfigurationService.getAllEndpoints();
+
+    	workbenchHP = ConfigurationService.getFrameworkHomepage();
 			if (workbenchHP.substr(-1) != '/') 
 				workbenchHP += '/';
-			$scope.endpoints = ConfigurationService.getAllEndpoints();
 		}, 
 		function(response){
 			flash.error="Component not configured: " +ServerErrorResponse.getMessage(response);
 		});
-  
-  	  //scope variable is for the source-graph direcitve
+
+	  //scope variable is for the source-graph direcitve
   $scope.source = { 
   		endpoint : "",
       label : "Source Graph",
@@ -40,27 +41,34 @@ app.controller('FaceteFormCtrl', function($scope, ConfigurationService, Componen
   }
 
 	$scope.openService = function(){
+		// generate the authorised-session
+		console.log($scope.source.endpoint);
+
 		if ($scope.isLocalEndpoint()){
 
 			return AuthSessionService.createSession().then(function(response){
+      		
 				var authEndpoint = workbenchHP + response.data.endpoint;
-				var url= $scope.sevice.serviceUrl + 
-					'?service-uri='				+ encodeURIComponent(authEndpoint) +
-		      '&default-graph-uri=' + encodeURIComponent(Ns.lengthen($scope.source.graph));
-		     console.log(url);
+				var url = $scope.sevice.serviceUrl + 
+								'?endpoint=' + encodeURIComponent(authEndpoint) +
+      					'&graph=' + encodeURIComponent($scope.source.graph.replace(':',ConfigurationService.getUriBase()));
+    		
+    		console.log("endpoint: " + authEndpoint);
+    		console.log("graph: " + $scope.source.graph.replace(':',ConfigurationService.getUriBase()));
+    		console.log(url);
 				window.open(url);
-		    return false;
-	  	});
+    		return false;
+      		
+			});
 		}
 		else{
-			var url= $scope.sevice.serviceUrl + 
-				'?service-uri='				+ encodeURIComponent($scope.source.endpoint) +
-	      '&default-graph-uri=' + encodeURIComponent(Ns.lengthen($scope.source.graph));
-	     console.log(url);
-			window.open($scope.url);
-	    return false;
+			var url = $scope.sevice.serviceUrl + 
+								'?endpoint=' + encodeURIComponent($scope.source.endpoint) +
+      					'&graph=' + encodeURIComponent($scope.source.graph.replace(':',ConfigurationService.getUriBase()));
+    	console.log(url);
+			window.open(url);
 		}
-
 	}
 	
+
 });
