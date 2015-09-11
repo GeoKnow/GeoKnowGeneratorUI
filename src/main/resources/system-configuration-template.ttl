@@ -29,7 +29,9 @@
   ontos:frameworkDataDir "/var/generator"^^xsd:string ;
   foaf:homepage <http://localhost:8080/generator> ;
   sd:defaultDataset :default-dataset;  
-  lds:integrates :Virtuoso, :SpringBatch, :Facete, :Limes, :Sparqlify, :TripleGeo, :GeoLift, :OntoWiki, :Mappify, :FagiGis;
+  lds:integrates :Virtuoso, :SpringBatch, :RdfImport, :Coevolution;
+  # :Facete, :Limes, :Sparqlify, :TripleGeo, :GeoLift, :esta-ld, :Mappify, :FagiGis, :DEER, 
+  lds:requires :Virtuoso, :SpringBatch, :Coevolution;
   lds:providesService :PublishingService, :UserManagerService, :EmailService
   .
 

@@ -5,10 +5,11 @@
 *
 ***************************************************************************************************/
 
-app.controller('FagiGisCtrl', function($q, $scope, ConfigurationService, ComponentsService, GraphService, AuthSessionService) {
+app.controller('FagiGisCtrl', function($q, $scope, ConfigurationService, ComponentsService, GraphService, AuthSessionService, Ns) {
 
 	var componentId ="FagiGis";
 	var serviceId = "FagiGisService";
+	var workbenchHP;
 
 	ComponentsService.getComponent(componentId).then(
 		//success
@@ -17,6 +18,11 @@ app.controller('FagiGisCtrl', function($q, $scope, ConfigurationService, Compone
 			$scope.service = ComponentsService.getComponentService(serviceId, $scope.component);
 			if($scope.service== null)
 				flash.error="Service not configured: " +serviceId;	
+
+			workbenchHP = ConfigurationService.getFrameworkHomepage();
+			if (workbenchHP.substr(-1) != '/') 
+				workbenchHP += '/';
+
 		}, 
 		function(response){
 			flash.error="Component not configured: " +ServerErrorResponse.getMessage(response);
@@ -36,7 +42,25 @@ app.controller('FagiGisCtrl', function($q, $scope, ConfigurationService, Compone
 	};
 	
 	$scope.openService = function(){
-		window.open($scope.service.serviceUrl);
+
+		createAuthEndpoint().then(function(authEndpoint){
+			var url= $scope.service.serviceUrl +
+					'?endpoint-a=' + encodeURIComponent($scope.fagi.endpointA == $scope.endpoint? authEndpoint : $scope.fagi.endpointA ) +
+					'&endpoint-b=' + encodeURIComponent($scope.fagi.endpointB == $scope.endpoint? authEndpoint : $scope.fagi.endpointB ) +
+					'&dataset-a='  + encodeURIComponent($scope.fagi.datasetA!=""? Ns.lengthen($scope.fagi.datasetA):"") +
+					'&dataset-b='  + encodeURIComponent($scope.fagi.datasetB!=""? Ns.lengthen($scope.fagi.datasetB):"") +
+					'&postgis-username='+ encodeURIComponent("fagi") +
+					'&postgis-password='+ encodeURIComponent("fagi") +
+					// '&postgis-database='+ encodeURIComponent($scope.fagi.database.dbName) +
+					// '&virtuoso-host='+ encodeURIComponent($scope.fagi.database.dbHost) +
+					// '&virtuoso-port='+ encodeURIComponent($scope.fagi.database.dbPort) +
+					'&target-endpoint='+ encodeURIComponent(authEndpoint) +
+					'&target-dataset='+ encodeURIComponent(Ns.lengthen($scope.fagi.targetGraph)) ;
+			console.log("endpoint" + authEndpoint);
+			console.log(url);
+			window.open(url);
+		});
+		
     return false;
 	}
   
@@ -50,39 +74,22 @@ app.controller('FagiGisCtrl', function($q, $scope, ConfigurationService, Compone
 
 	var createAuthEndpoint = function(){
 		var deferred = $q.defer();
+		console.log ($scope.fagi.targetEndpoint);
 		if($scope.fagi.targetEndpoint != "")
 			deferred.resolve($scope.fagi.targetEndpoint);
 		else{
-			var workbench = ConfigurationService.getComponent(ConfigurationService.getFrameworkUri());
 			// get proxied endpoint
 			AuthSessionService.createSession().then(function(response){
-  			deferred.resolve(workbench.homepage + response.data.endpoint);
+  			deferred.resolve(workbenchHP + response.data.endpoint);
   		});
 		}
 		return deferred.promise;
 	}; 
 
-	$scope.updateServiceParams = function(){
+	$scope.describeGraph=function (ngraph) {
+    return  ngraph.graph.label + " | " + ngraph.name;
+  };
 
-		if(!$scope.fagiForm.$valid) 
-			return;
-
-		createAuthEndpoint().then(function(authEndpoint){
-			$scope.url= $scope.service.serviceUrl +
-					'?endpoint-a=' + encodeURIComponent($scope.fagi.endpointA == $scope.endpoint? authEndpoint : $scope.fagi.endpointA ) +
-					'&endpoint-b=' + encodeURIComponent($scope.fagi.endpointB == $scope.endpoint? authEndpoint : $scope.fagi.endpointB ) +
-					'&dataset-a='  + encodeURIComponent($scope.fagi.datasetA!=""? $scope.fagi.datasetA.replace(':',ConfigurationService.getUriBase()):"") +
-					'&dataset-b='  + encodeURIComponent($scope.fagi.datasetB!=""? $scope.fagi.datasetB.replace(':',ConfigurationService.getUriBase()):"") +
-					'&postgis-username='+ encodeURIComponent($scope.fagi.database.dbUser) +
-					'&postgis-password='+ encodeURIComponent($scope.fagi.database.dbPassword) +
-					'&postgis-database='+ encodeURIComponent($scope.fagi.database.dbName) +
-					'&postgis-host='+ encodeURIComponent($scope.fagi.database.dbHost) +
-					'&postgis-port='+ encodeURIComponent($scope.fagi.database.dbPort) +
-					'&target-endpoint='+ encodeURIComponent(authEndpoint) +
-					'&target-dataset='+ encodeURIComponent($scope.fagi.targetGraph.replace(':',ConfigurationService.getUriBase())) ;
-			console.log($scope.url);
-		});
-	};
 
 	$scope.createTargetGraph = function(){
 		// create a new graph to save data
@@ -116,9 +123,6 @@ app.controller('FagiGisCtrl', function($q, $scope, ConfigurationService, Compone
 		$scope.updateServiceParams();
   };
 
-  $scope.$watch( function () { return $scope.fagiForm.$valid; }, function () {
-  	console.log("valid");
-    $scope.updateServiceParams();
-  });
+
 
 });

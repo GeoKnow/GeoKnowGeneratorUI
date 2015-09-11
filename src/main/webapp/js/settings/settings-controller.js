@@ -31,11 +31,15 @@ function GeneralSettingsCtrl($scope, ConfigurationService, flash) {
     ConfigurationService.getSettings().then(
       //success
       function(response){
-        
+        var workbenchHP = ConfigurationService.getFrameworkHomepage();
+        if (workbenchHP.substr(-1) != '/') 
+          workbenchHP += '/';        
+
         $scope.settings = {
           uriBase: ConfigurationService.getUriBase() ,
           endpointService: ConfigurationService.getSPARQLEndpoint(),
-          settingsGraph : ConfigurationService.getSettingsGraph()
+          settingsGraph : ConfigurationService.getSettingsGraph(),
+          workbenchUrl : workbenchHP
         }; 
 
       },
