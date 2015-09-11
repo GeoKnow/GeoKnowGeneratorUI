@@ -39,14 +39,14 @@
         <label for="DatasetA">Graph</label>
       </div>
       <div class="col-xs-4">
-        <select id="DatasetA" class="form-control" ng-model="fagi.datasetA" ng-options="namedgraph.name as describeGraph(namedgraph) for namedgraph in namedGraphsA" ng-change="updateServiceParams();">
+        <select id="DatasetA" class="form-control" ng-model="fagi.datasetA" ng-options="namedgraph.name as describeGraph(namedgraph) for namedgraph in namedGraphsA">
         </select>
       </div>
       <div class="col-xs-2">
         <label for="DatasetB">Graph</label>
       </div>
       <div class="col-xs-4">
-        <select id="DatasetB" class="form-control" ng-model="fagi.datasetB" ng-options="namedgraph.name as describeGraph(namedgraph) for namedgraph in namedGraphsB" ng-change="updateServiceParams();">
+        <select id="DatasetB" class="form-control" ng-model="fagi.datasetB" ng-options="namedgraph.name as describeGraph(namedgraph) for namedgraph in namedGraphsB">
         </select>
       </div>
     </div>
@@ -79,7 +79,7 @@
         <label for="DataSet">Target DataSet</label>
       </div>
       <div class="col-xs-8">
-        <select id="DataSet" class="form-control" ng-model="fagi.targetGraph" ng-options="namedgraph.name as namedgraph.name for namedgraph in namedGraphs" required ng-change="updateServiceParams();">
+        <select id="DataSet" class="form-control" ng-model="fagi.targetGraph" ng-options="namedgraph.name as namedgraph.name for namedgraph in namedGraphs" required >
         </select>
       </div>
       <div class="col-xs-2">
