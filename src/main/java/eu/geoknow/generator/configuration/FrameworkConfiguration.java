@@ -1,10 +1,19 @@
 package eu.geoknow.generator.configuration;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.concurrent.locks.ReentrantLock;
 
+import org.apache.commons.io.input.ReversedLinesFileReader;
 import org.apache.jena.riot.RiotException;
 import org.apache.log4j.Logger;
 
@@ -106,6 +115,7 @@ public class FrameworkConfiguration {
   private File initFile;
   
   private int democnt = 0;
+  private File demoTrackFile;
 
 
   private static FrameworkConfiguration instance;
@@ -338,6 +348,15 @@ public class FrameworkConfiguration {
 
       // create the file path for the flag
       instance.initFile = new File(instance.frameworkDataDir, "init.txt");
+      //get tracking file for demo users and extract last count value
+      instance.demoTrackFile = new File(instance.frameworkDataDir, "demo-tracking.txt");
+      if(!instance.demoTrackFile.exists()) instance.demoTrackFile.createNewFile();
+      ReversedLinesFileReader reverseReader = new ReversedLinesFileReader(instance.demoTrackFile, 4096, "UTF-8");
+      String last = reverseReader.readLine();
+      if(last!=null){
+        instance.democnt = Integer.valueOf(last.split(";")[0]);  
+      }
+      
     }
 
 
@@ -777,8 +796,29 @@ public class FrameworkConfiguration {
     return instance.getSystemGraphs().get("roles");
   }
 
-  public int getDemoUserCount() {
-    this.democnt++;
+  public int getDemoUserCount(String ipAddress) {
+    
+    democnt++;
+    String output = democnt+";"+ipAddress+";"+ZonedDateTime.now(ZoneId.of("Z")).toString();    
+    
+    PrintWriter out = null;
+    try {
+      out = new PrintWriter(new OutputStreamWriter(new FileOutputStream(demoTrackFile, true),
+          "UTF-8"));
+    } catch (UnsupportedEncodingException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    } catch (FileNotFoundException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+    
+    try {      
+      out.println(output);
+    } finally {
+      out.flush();
+      out.close();
+    }
     return democnt;
   }
 

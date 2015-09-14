@@ -285,7 +285,7 @@ public class AuthenticationServlet extends HttpServlet {
 
       } else if ("demo_start".equals(mode)) {
         try {
-          demoCnt = FrameworkConfiguration.getInstance().getDemoUserCount();
+          demoCnt = FrameworkConfiguration.getInstance().getDemoUserCount(this.getIpAddr(request));
         } catch (InformationMissingException e1) {
           // TODO Auto-generated catch block
           e1.printStackTrace();
@@ -298,16 +298,7 @@ public class AuthenticationServlet extends HttpServlet {
         String emailTo = username+"@demogenerator.geoknow.eu";
         
      // check if user already exists
-        boolean userExists = false;
-        try {while(frameworkUserManager.checkUserExists(username, emailTo)){
-          demoCnt = FrameworkConfiguration.getInstance().getDemoUserCount();
-          username = "demo"+demoCnt;
-          emailTo = username+"@demogenerator.geoknow.eu";
-        }
-          
-        } catch (Exception e) {
-          e.printStackTrace();
-        }
+        
         
         // create user
         String password = new RandomStringGenerator().generateBasic(6);
@@ -365,6 +356,25 @@ public class AuthenticationServlet extends HttpServlet {
 
     }
   }
+  
+  public static String getIpAddr(HttpServletRequest request) {
+      String ip = request.getHeader("X-Real-IP");
+      if (null != ip && !"".equals(ip.trim()) && !"unknown".equalsIgnoreCase(ip)) {
+        return ip;
+      }
+      
+      ip = request.getHeader("X-Forwarded-For");
+      if (null != ip && !"".equals(ip.trim()) && !"unknown".equalsIgnoreCase(ip)) {
+        // get first ip from proxy ip
+        int index = ip.indexOf(',');
+        if (index != -1) {
+          return ip.substring(0, index);
+        } else {
+        return ip;
+        }
+      }
+      return request.getRemoteAddr();
+    }
   
  
   
