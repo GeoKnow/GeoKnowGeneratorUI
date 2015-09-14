@@ -68,11 +68,11 @@
 
 :fagi
       a onots:Database , onots:DataSource ;
-      rdfs:label "Fagi Data"^^xsd:string ;
-      onots:dbHost "127.0.0.1"^^xsd:string ;
-      onots:dbName "fagi"^^xsd:string ;
-      onots:dbPassword "postgres"^^xsd:string ;
+      rdfs:label "local postgres Db"^^xsd:string ;
+      onots:dbHost "localhost"^^xsd:string ;
+      onots:dbName "local postgres"^^xsd:string ;
+      onots:dbPassword "fagi"^^xsd:string ;
       onots:dbPort "5432"^^xsd:string ;
       onots:dbType onots:PostGIS ;
-      onots:dbUser "postgres"^^xsd:string .
+      onots:dbUser "fagi"^^xsd:string .
 

@@ -29,8 +29,9 @@ var LimesCtrl = function($scope, $http, ConfigurationService, ComponentsService,
 
 	// retreive the publication service url
 	var pubService;
-	ConfigurationService.getWorkbenchService("PublishingService").then(
+	ConfigurationService.getWorkbenchService(Ns.lengthen(":PublishingService")).then(
 		function(response){
+			console.log(response);
 			pubService = response;
 		},
 		function(response){

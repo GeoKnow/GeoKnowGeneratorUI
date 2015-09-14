@@ -301,7 +301,7 @@ app.controller('NavbarCtrl', function($scope, $location) {
                     type: "element",
                     selector: "#graph-sets",
                     heading: "Named Graphs",
-                    text: '<strong>Graph Sets</strong> provide a naming convention for for versioning graphs.',
+                    text: '<strong>Graph Sets</strong> provide a naming convention for versioning graphs.',
                     placement: "bottom",
                     scroll: true
                 },
