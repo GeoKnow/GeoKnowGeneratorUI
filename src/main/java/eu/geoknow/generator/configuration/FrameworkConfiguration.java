@@ -10,6 +10,7 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -799,7 +800,8 @@ public class FrameworkConfiguration {
   public int getDemoUserCount(String ipAddress) {
     
     democnt++;
-    String output = democnt+";"+ipAddress+";"+ZonedDateTime.now(ZoneId.of("Z")).toString();    
+    long now = new Date().getTime();
+    String output = democnt+";"+ipAddress+";"+now;    
     
     PrintWriter out = null;
     try {
