@@ -10,6 +10,7 @@ function AccountMenuCtrl($scope) {
 function StackMenuCtrl($scope, AccountService, ConfigurationService, Ns) {
     
   var categoryToMenu = {
+    "SimulationService" :   { title: "Simulation", id:"simulation", items:[] },
     "ExtractionService" :   { title: "Extraction and Loading", id:"extraction-loading", items:[] },
     "ExplorationService" :  { title: "Search Querying and Exploration", id:"search-querying-and-exploration", 
             items:[ { name: 'Virtuoso', 

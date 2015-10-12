@@ -53,7 +53,7 @@ app.config(function($routeSegmentProvider, $routeProvider)
         .when('/settings/components', 'settings.components')
         .when('/settings/roles', 'settings.roles')
         .when('/workbench/extraction-and-loading/import-rdf', 'workbench.import-rdf')
-        .when('/workbench/extraction-and-loading/data-simulator', 'workbench.data-simulator')
+        .when('/workbench/simulation/data-simulator', 'workbench.data-simulator')
         .when('/workbench/extraction-and-loading/sparqlify', 'workbench.sparqlify')
         .when('/workbench/extraction-and-loading/triplegeo', 'workbench.triplegeo')
         .when('/workbench/extraction-and-loading/triplegeo-result', 'workbench.triplegeo-result')
@@ -106,7 +106,7 @@ app.config(function($routeSegmentProvider, $routeProvider)
                 .segment('import-rdf', {
                     templateUrl: 'js/workbench/extraction-and-loading/import-rdf.html' })
                 .segment('data-simulator', {
-                    templateUrl: 'js/workbench/extraction-and-loading/data-simulator.html' })
+                    templateUrl: 'js/workbench/simulation/data-simulator.html' })
                 .segment('sparqlify', {
                     templateUrl: 'js/workbench/extraction-and-loading/sparqlify.html' })
                 .segment('triplegeo', {

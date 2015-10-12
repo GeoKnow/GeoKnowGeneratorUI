@@ -2,10 +2,10 @@
 
 var module = angular.module('app.data-simulator-service', []);
 
-module.factory("DataSimulatorService", function ($http, ComponentsService, Ns) {
+module.factory("NewsExtractorService", function ($http, ComponentsService, Ns) {
 
   var componentId ="data-simulator";
-  var serviceId = "data-simulator-service";
+  var serviceId = "news-extraction-service";
   var serviceUrl = "";
 
   var promise = ComponentsService.getService(serviceId).then(
@@ -19,22 +19,22 @@ module.factory("DataSimulatorService", function ($http, ComponentsService, Ns) {
 	var service = {
 
 		run : function(start, end, productUri, graphUri, interval) {
-      var params="start=" + encodeURIComponent(start)
-        + "&end=" + encodeURIComponent(end)
-        + "&graphUri=" + encodeURIComponent(Ns.lengthen(graphUri))
-        + "&interval=" + encodeURIComponent(interval)
-        + "&productUri=" + encodeURIComponent(productUri);
+      var params="start=" + encodeURI(start)
+        + "&end=" + encodeURI(end)
+        + "&graphUri=" + encodeURI(Ns.lengthen(graphUri))
+        + "&interval=" + encodeURI(interval)
+        + "&productUri=" + encodeURI(productUri);
       console.log(params);
       return $http({
-        url: serviceUrl + "simulator/run?"+params,
+        url: serviceUrl + "run?"+params,
         method: "POST"
       });
 		},
 
 		step : function(start, productUri, graphUri) {
-      var params="start=" + encodeURIComponent(start)
-        + "&graphUri=" + encodeURIComponent(Ns.lengthen(graphUri))
-        + "&productUri=" + encodeURIComponent(productUri);
+      var params="start=" + encodeURI(start)
+        + "&graphUri=" + encodeURI(Ns.lengthen(graphUri))
+        + "&productUri=" + encodeURI(productUri);
         console.log(params);
       return $http({
         url: serviceUrl + "step?"+params,
@@ -49,9 +49,9 @@ module.factory("DataSimulatorService", function ($http, ComponentsService, Ns) {
       });
     },
 
-    metrics : function(productUri, graphUri) {
-      var params ="graphUri=" + encodeURIComponent(Ns.lengthen(graphUri))
-        + "&productUri=" + encodeURIComponent(productUri);
+    calculateMetrics : function(productUri, graphUri) {
+      var params ="graphUri=" + encodeURI(Ns.lengthen(graphUri))
+        + "&productUri=" + encodeURI(productUri);
       console.log(params);
       return $http({
         url: serviceUrl + "calculateMetrics?"+params,

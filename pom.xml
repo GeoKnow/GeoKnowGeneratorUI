@@ -169,7 +169,7 @@
 	</dependencies>
 
 	<build>
-		<finalName>generator</finalName>
+		<finalName>brox-generator</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

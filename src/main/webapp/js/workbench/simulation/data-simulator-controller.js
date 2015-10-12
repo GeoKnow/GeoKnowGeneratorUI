@@ -45,6 +45,19 @@ app.controller('DataSimulatorCtrl', function($scope, ComponentsService, $http, S
 	$scope.dateRange = {startDate: moment().toDate(), endDate: moment().toDate()};
 	$scope.simulation ={ startDate: "", endDate:"", interval:"1.0", productUri:""};
 
+	$scope.status = function(){
+			DataSimulatorService.metrics().then(
+				function(response){
+					console.log(response);
+				},
+				// fail
+				function(response){
+					// if 503 simmulation is not finished
+					console.log(response);
+
+				});
+	}
+
 	$scope.updateProductsList = function(){
 		
 		var requestData = {
@@ -99,7 +112,7 @@ app.controller('DataSimulatorCtrl', function($scope, ComponentsService, $http, S
     	},
     	//error
     	function(response){
-    		console.log(response);
+    		flash.error = ServerErrorResponse.getMessage(response);
     	});
   };
 

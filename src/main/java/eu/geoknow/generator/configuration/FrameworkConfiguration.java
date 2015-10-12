@@ -151,7 +151,7 @@ public class FrameworkConfiguration {
       if (!results.hasNext()) {
         instance = null;
         throw new InformationMissingException(
-            "Invalid initialization parameter in the framework-configratio file");
+            "Invalid initialization parameter in the framework-configration file");
       }
       for (; results.hasNext();) {
         QuerySolution soln = results.next();
