@@ -6,32 +6,32 @@
 *
 ***************************************************************************************************/
 
-var TripleGeoCtrl = function($scope, $http, ConfigurationService, ComponentsService, flash, ServerErrorResponse, $window, AccountService, GraphService){
+var TripleGeoCtrl = function($scope, $http, $q, ConfigurationService, ComponentsService, flash, ServerErrorResponse, AccountService, GraphService, Ns, $modal, JobService, AuthSessionService, Upload, $timeout){
 	
 	var componentId ="TripleGeo";
 	var serviceId = "TripleGeoService";
+	var workbenchHP="";
 
 	ComponentsService.getComponent(componentId).then(
 		//success
 		function(response){
 			$scope.component = response;
 			$scope.service = ComponentsService.getComponentService(serviceId, $scope.component);
-			console.log($scope.service);
 			if($scope.service== null)
 				flash.error="Service not configured: " +serviceId;	
-
+			workbenchHP = ConfigurationService.getFrameworkHomepage();
+			if (workbenchHP.substr(-1) != '/') 
+				workbenchHP += '/';
 		}, 
 		function(response){
 			flash.error="Component not configured: " +ServerErrorResponse.getMessage(response);
 		});
 
-	var configArray = new Array();
-	var dbConfigArray = new Array();
-
+	
 	$scope.inputForm = true;
-	$scope.configOptions = true;
 	$scope.dbLogin = true;
-	$scope.configForm = false;	
+	$scope.actionButtons = false;	
+	
 	$scope.endpoints = ConfigurationService.getAllEndpoints();
 	$scope.namedGraphs = [];
     GraphService.getAccessibleGraphs(true, false, true).then(function(graphs) {
@@ -39,55 +39,20 @@ var TripleGeoCtrl = function($scope, $http, ConfigurationService, ComponentsServ
     });
 	$scope.databases = ConfigurationService.getAllDatabases();
 
+	$scope.example = "";
+	$scope.datasource="";
+
 	var uploadError = false;
 	var uploadedFiles = null;
 	var inputFileName = null;
-	var importing = false;
+	var uploading = false;
 	var fileType = null;
 	var params = {};
+	$scope.tripleGeoConfig = null;
+
 	$('i').tooltip();
 	
-	configArray[0]  = ['format', ''];
-	configArray[1]  = ['targetStore', ''];
-	configArray[2]  = ['featureString', ''];
-	configArray[3]  = ['attribute', ''];
-	configArray[4]  = ['ignore', ''];
-	configArray[5]  = ['type', ''];
-	configArray[6]  = ['name', ''];
-	configArray[7]  = ['class', ''];
-	configArray[8]  = ['nsPrefix', ''];
-	configArray[9]  = ['nsURI', ''];
-	configArray[10] = ['ontologyNSPrefix', ''];
-	configArray[11] = ['ontologyNS', ''];
-	configArray[12] = ['sourceRS', ''];
-	configArray[13] = ['targetRS', ''];
-	configArray[14] = ['defaultLang', ''];
-	
-	dbConfigArray[0]  = ['format', ''];
-	dbConfigArray[1]  = ['targetStore', ''];
-	dbConfigArray[2] = ['dbType', ''];
-	dbConfigArray[3] = ['dbName', ''];
-	dbConfigArray[4] = ['dbUserName', ''];
-	dbConfigArray[5] = ['dbPassword', ''];
-	dbConfigArray[6] = ['dbHost', ''];
-	dbConfigArray[7] = ['dbPort', ''];
-	dbConfigArray[8] = ['resourceName', ''];
-	dbConfigArray[9] = ['tableName', ''];
-	dbConfigArray[10] = ['condition', ''];
-	dbConfigArray[11] = ['labelColumnName', ''];
-	dbConfigArray[12] = ['nameColumnName', ''];
-	dbConfigArray[13] = ['classColumnName', ''];
-	dbConfigArray[14] = ['geometryColumnName', ''];
-	dbConfigArray[15] = ['ignore', ''];
-	dbConfigArray[16] = ['nsPrefix', ''];
-	dbConfigArray[17] = ['nsURI', ''];
-	dbConfigArray[18] = ['ontologyNSPrefix', ''];
-	dbConfigArray[19] = ['ontologyNS', ''];
-	dbConfigArray[20] = ['sourceRS', ''];
-	dbConfigArray[21] = ['targetRS', ''];
-	dbConfigArray[22] = ['defaultLang', ''];
-	
-	$scope.tooltips = { files: "When the file upload dialog opens, select the .shp, .shx, and .dbf files " +
+	$scope.tooltips = { files: "For ESRI shapes upload 3 files the .shp, .shx, and .dbf" +
 								"you wish to upload and process. Only these 3 files are necessary.",
 						data: "Change parameters to reflect the shapefile contents that will be extracted - case sensitive!",
 						ns: "Optional parameters. Change these parameters if you want to use different"+
@@ -97,348 +62,392 @@ var TripleGeoCtrl = function($scope, $http, ConfigurationService, ComponentsServ
 						other: "Optional parameter. Default languages for the labels created in the output RDF. By default, the value is English - en."
 	};
 	
-	$scope.options = { 		
-							database: false,
-							file: false,
-							fileExample: false,
-							dbExample: false,
-							dataParams: false,
-							dbParams: false,
-							job: null,
-							inputFile: null,
-							displayConfigUpload: false,
-							format: [
-	  		     			                "RDF/XML" ,
-			     			                "RDF/XML-ABBREV",
-			     			                "N-TRIPLES",
-			     			                "TURTLE",
-			     			                "N3"
-			     			                	],
-							targetStore: [
-							              	"GeoSPARQL",
-							              	"Virtuoso",
-							              	"wgs84_pos"
-							              		],
-		     			    datasource: [
-		     			                 	"Shape File",
-											"Database"
-				     			                ],
-				     	    fileExamples: [
-											"Points shape file extraction"
-											],
-							dbExamples: [
-							             	"Wikimapia Extraction",
-						  		     		"GeospatialDB"
-						  		     		],
-						    dbtype: [
-				     		         "MySQL",
-				     		         "Oracle",
-				     		         "PostGIS",
-				     		         "DB2"
-				     		         ],
-				     	    ex: [
-				     	         ""
-				     	         ]
-								};
+	$scope.options = {
+	    database: false,
+	    file: false,
+	    configExample: null,
+	    dataParams: false,
+	    dbParams: false,
+	    job: null,
+	    inputFile: null,
+	    format: [
+	        "RDF/XML",
+	        "RDF/XML-ABBREV",
+	        "N-TRIPLES",
+	        "TURTLE",
+	        "N3"
+	    ],
+	    targetStore: [
+	        "GeoSPARQL",
+	        "Virtuoso",
+	        "wgs84_pos"
+	    ],
+	    datasource: [
+	        "ESRI shape File",
+	        "GML File",
+	        "KML File",
+	        "Database"
+	    ],
+	    esriExamples: [
+	        "POIs example"
+	    ],
+	    gmlExamples: [
+	        "Airports example"
+	    ],
+	    kmlExamples: [
+	        "Kml sample"
+	    ],
+	    dbExamples: [
+	        "Wikimapia Extraction"
+	    ],
+	    dbtype: [
+	        "MySQL",
+	        "Oracle",
+	        "PostGIS",
+	        "DB2"
+	    ],
+	    ex: [
+	        ""
+	    ]
+	};
 	
-	$scope.choice = function($name){
+	$scope.updateExamples = function(){
 		
-		$scope.configForm = false;
-		$scope.stTripleGeo = true;
+		$scope.example = "";
+		$scope.tripleGeoConfig = null;
 		
-		if($name == "Shape File"){
-			$scope.options.file = true;
-			$scope.options.database = false;
-			$scope.options.dbExample = false;
-			$scope.options.fileExample = true;
+		$scope.files=null;
+		$scope.options.dataParams = false;
+		$scope.options.dbParams = false;
+		$scope.actionButtons = false;
+
+		if($scope.datasource == "ESRI shape File"){
+			$scope.options.configExample = $scope.options.esriExamples;
 			$scope.options.dataParams = true;
-			$scope.options.dbParams = false;
-			$scope.options.job = "file";
+			$scope.options.job = "esri";
 		}
-		if($name == "Database"){
-			$scope.options.file = false;
-			$scope.options.database = true;
-			$scope.options.fileExample = false;
-			$scope.options.dbExample = true;
+		if($scope.datasource == "GML File"){
+			$scope.options.configExample = $scope.options.gmlExamples;
+			$scope.options.job = "gml";
+		}
+		if($scope.datasource == "KML File"){
+			$scope.options.configExample = $scope.options.kmlExamples;
+			$scope.options.job = "kml";
+		}
+		if($scope.datasource == "Database"){
+			$scope.options.configExample = $scope.options.dbExamples;
 			$scope.options.dbParams = true;
-			$scope.options.dataParams = false;
-			$scope.configForm = true;
 			$scope.options.job = "db";
 			$scope.tripleGeoConfig = {
-								format : $scope.options.format[0],
-								targetStore : $scope.options.targetStore[0],
-								dbtype: $scope.options.dbtype[0],
+					format : $scope.options.format[0],
+					targetStore : $scope.options.targetStore[0],
+					dbtype: $scope.options.dbtype[0],
 								
 			};
 		}
 	};
 	
-	$scope.FillForm = function(example, name){
+	$scope.isFileJob = function(){
+		return ($scope.datasource!='' &&  $scope.datasource!='Database' && $scope.example === '')
+	};
+
+	$scope.commonParams =function(){
+		if($scope.options.job==null) return false;
+		return (($scope.options.job.indexOf("esri") === 0) || ($scope.options.job.indexOf("db") === 0));
+	}
+
+	$scope.FillForm = function(){
 		
-			var params = {};
-			//console.log(example + ' ' + name);
-			
-			if(example === "fileExample" && name === "Points shape file extraction"){
+		var params = {};
+		$scope.options.dataParams = false;
+		$scope.options.dbParams = false;
+		$scope.actionButtons=false;
+
+		if($scope.example==null){
+		 $scope.example = "";
+		 $scope.tripleGeoConfig = null;
+		 return;
+		}
+		
+		if($scope.example === "POIs example"){
+			$scope.options.dataParams = true;
+			$scope.tripleGeoConfig = {
+					job : "esri-example",
+					inputFile :   "points.shp",
+					format :      $scope.options.format[0],
+					targetStore : $scope.options.targetStore[0],
 				
-				$scope.options.dataParams = true;
-				$scope.options.dbParams = false;
-				$scope.options.job = "example";
-				$scope.options.displayConfigUpload = false;
-				$scope.options.file = false;
-				$scope.options.inputDisplay = true;
-		
-				$scope.tripleGeoConfig = {
-						
-						inputDisplay: "points.shp",
-						
-						 inputFile :   "points.shp",
-						 format :      $scope.options.format[0],
-						 targetStore : $scope.options.targetStore[0],
-						
-						 featureString: "points",
-						 attribute: "osm_id",
-						 ignore: "UNK",
-						 type: "points",
-						 name: "name",
-						 dclass: "type",
-						 
-						 nsPrefix: "georesource",
-						 nsURI: "http://geoknow.eu/geodata#",
-						 ontologyNSPrefix: "geo",
-						 ontologyNS: "http://www.opengis.net/ont/geosparql#"
-						};
-			}
-			
-			if(example === "database"){
-				for(var i=0; i<$scope.databases.length; i++){
-					if($scope.databases[i].label === name){
-						$scope.options.dataParams = false;
-						$scope.options.dbParams = true;
-						$scope.options.job = "db";
-						$scope.options.dbExample = false;
-						$scope.options.inputDisplay = true;
-						$scope.options.displayConfigUpload = true;
+					featureString: "points",
+					attribute: "osm_id",
+					ignore: "UNK",
+					type: "points",
+					name: "name",
+					uclass: "type",
+				 
+				 nsPrefix: "gkg",
+					nsURI: ConfigurationService.getUriBase(), 
 					
-						$scope.tripleGeoConfig = {
-								
-								 inputDisplay: $scope.databases[i].dbName,
-								
-								 format :      $scope.options.format[2],
-								 targetStore : $scope.options.targetStore[0],
-								 
-								 dbtype: $scope.databases[i].dbType,
-								 dbName: $scope.databases[i].dbName,
-								 dbUserName: $scope.databases[i].dbUser,
-								 dbPassword: $scope.databases[i].dbPassword,
-								 dbHost: $scope.databases[i].dbHost,
-								 dbPort: $scope.databases[i].dbPort,
-								 resourceName: "",
-								 tableName: "",
-								 condition: "",
-								 labelColumnName: "",
-								 nameColumnName: "",
-								 classColumnName: "",
-								 geometryColumnName: "",
-								 ignore: "",
-								 
-								 nsPrefix: "georesource",
-								 nsURI: "http://geoknow.eu/geodata#",
-								 ontologyNSPrefix: "geo",
-								 ontologyNS: "http://www.opengis.net/ont/geosparql#"
-						};
-					}
+					ontologyNSPrefix: "geo",
+					ontologyNS: "http://www.opengis.net/ont/geosparql#"
+			};
+		}
+		else if($scope.example === "Airports example"){
+			$scope.tripleGeoConfig = {
+				job : "gml-example",
+				inputFile :   "airports.gml"
+			}
+		}
+		else if($scope.example === "Kml sample"){
+			$scope.tripleGeoConfig = {
+					job : "kml-example",
+					inputFile :   "sample.kml"
+				}
+		}
+		else if($scope.example === "Wikimapia Extraction"){
+			$scope.options.dbParams = true;
+			$scope.tripleGeoConfig = {
+					
+					job : "db-example",
+
+					 format :      $scope.options.format[2],
+					 targetStore : $scope.options.targetStore[0],
+					 
+					 
+					 dbtype: $scope.options.dbtype[2],
+					 dbName: "wikimapia",
+					 dbUserName: "gisuser",
+					 dbPassword: "admin",
+					 dbHost: "localhost",
+					 dbPort: "5432",
+					 resourceName: "points",
+					 tableName: "venue_london_buildings",
+					 condition: "",
+					 labelColumnName: "id",
+					 nameColumnName: "name",
+					 classColumnName: "type",
+					 geometryColumnName: "point",
+					 ignore: "",
+					 
+					 nsPrefix: "gkg",
+					nsURI: ConfigurationService.getUriBase(), 
+
+					 ontologyNSPrefix: "geo",
+					 ontologyNS: "http://www.opengis.net/ont/geosparql#",
+						 
+					 sourceRS: "EPSG:4326",
+					 targetRS: "EPSG:4326"
+			};
+		}
+		$scope.actionButtons = true;	
+	}
+
+	$scope.setDatabase = function(id){
+		console.log(id);
+		if(id === "GeospatialDB"){
+			for(var i=0; i<$scope.databases.length; i++){
+				if($scope.databases[i].label === name){
+				
+					$scope.tripleGeoConfig = {
+							job : "db",
+							 inputDisplay: $scope.databases[i].dbName,
+							
+							 format :      $scope.options.format[2],
+							 targetStore : $scope.options.targetStore[0],
+							 
+							 dbtype: $scope.databases[i].dbType,
+							 dbName: $scope.databases[i].dbName,
+							 dbUserName: $scope.databases[i].dbUser,
+							 dbPassword: $scope.databases[i].dbPassword,
+							 dbHost: $scope.databases[i].dbHost,
+							 dbPort: $scope.databases[i].dbPort,
+							 resourceName: "",
+							 tableName: "",
+							 condition: "",
+							 labelColumnName: "",
+							 nameColumnName: "",
+							 classColumnName: "",
+							 geometryColumnName: "",
+							 ignore: "",
+
+							nsPrefix: "gkg",
+							nsURI: ConfigurationService.getUriBase(), 
+							 
+							 ontologyNSPrefix: "geo",
+							 ontologyNS: "http://www.opengis.net/ont/geosparql#"
+					};
 				}
 			}
+		}
 			
-			if(example === "dbExample"  && name === "Wikimapia Extraction"){
-				
-						$scope.options.database = false;
-						$scope.options.dataParams = false;
-						$scope.options.dbParams = true;
-						$scope.options.job = "db";
-						$scope.options.dbExample = false;
-						$scope.options.inputDisplay = false;
-						$scope.options.displayConfigUpload = false;
+	};
+
+	$scope.isUploading = function(){
+		return uploading;
+	}
+	
+
+	$scope.uploadFiles = function(files, errFiles) {
+    
+    $scope.errFiles = errFiles;
+    $scope.errorMsg = "";
+    uploading=true;
+
+    var promises = [];
+
+    angular.forEach(files, function(file) {
+
+			 var deferred = $q.defer();
+    		file.upload = Upload.upload({
+            url:  $scope.service.serviceUrl +'/upload',
+            data: {file: file}
+        });
+
+        file.upload.then(function (response) {
+            $timeout(function () {
+            	deferred.resolve(response.data[0]);
+            });
+        }, function (response) {
+            if (response.status > 0)
+                $scope.errorMsg = response.status + ': ' + response.data;
+        }, function (evt) {
+            file.progress = Math.min(100, parseInt(100.0 * 
+                                     evt.loaded / evt.total));
+        });
+
+        promises.push(deferred.promise);
+   		}); // foreach
+ 
+ 		$q.all(promises).then(
+ 			// results: an array of data objects from each deferred.resolve(data) call
+        function(results) {
+          validateFiles(files, results);
+          uploading=false;
+        },
+        // error
+        function(response) {
+        	uploading=false;
+        }
+    );
+	}
+  
+	var validateFiles = function(files, responseMap){
+    if(files==null) return;
+    var fileName = "";
+		$scope.files=files;
+		// validate esri
+    if ($scope.options.job === "esri"){
+    	var exts=["shp", "shx" , "dbf"];
+    	
+     	if (files.length != 3){
+    		$scope.errorMsg = "You chose either too few or too many files. Please select the .shp, .shx and .dbf " +
+				"shape files (1 of each) which you wish to convert. The files must share the same base name.";
+				files = [];
+				$scope.files=null;
+				return;
+			}
+			else{
+		 	// validate extensions	
+		 		var prefix="";
+		 		angular.forEach(files, function(file) {
+		 			var name =file.name.substring(0,file.name.length-4).toLowerCase();
+		 			var ext =file.name.substring(file.name.length-3,file.name.length).toLowerCase();
+		 			
+		 			if(prefix === "") prefix = name;
+		 			if(prefix!=name){
+		 				$scope.errorMsg = "The files must share the same base name.";
+		 				files = [];
+		 				$scope.files=null;
+		 				return;
+		 			} 
+		 			var index = $.inArray(ext, exts);
+		 			if(index == -1 ){
+		 				$scope.errorMsg = "Please select the .shp, .shx and .dbf,  not valid: ." + ext;
+		 				files = [];
+		 				$scope.files=null;
+		 				return;
+		 			}
+		 			
+		 			if(ext === "shp"){
+		 				fileName = file.name;
+		 			}
+		 		});
+		 		console.log(responseMap);
+
+		 		$scope.tripleGeoConfig = {
+		 				job :"esri",
+		 				inputFileName :  fileName,
+						inputFile :    responseMap[fileName],
+						format :      $scope.options.format[0],
+						targetStore : $scope.options.targetStore[0],
 					
-						$scope.tripleGeoConfig = {
-								
-								 format :      $scope.options.format[2],
-								 targetStore : $scope.options.targetStore[0],
-								 
-								 
-								 dbtype: $scope.options.dbtype[2],
-								 dbName: "wikimapia",
-								 dbUserName: "gisuser",
-								 dbPassword: "admin",
-								 dbHost: "localhost",
-								 dbPort: "5432",
-								 resourceName: "points",
-								 tableName: "venue_london_buildings",
-								 condition: "",
-								 labelColumnName: "id",
-								 nameColumnName: "name",
-								 classColumnName: "type",
-								 geometryColumnName: "point",
-								 ignore: "",
-								 
-								 nsPrefix: "georesource",
-								 nsURI: "http://geoknow.eu/geodata#",
-								 ontologyNSPrefix: "geo",
-								 ontologyNS: "http://www.opengis.net/ont/geosparql#",
-									 
-								 sourceRS: "EPSG:4326",
-								 targetRS: "EPSG:4326"
-						};
+						featureString: name,
+						attribute: "",
+						ignore: "",
+						type: "",
+						name: "",
+						uclass: "",
 
-			}
-			
-	};
-	
-	$scope.loadShapeFile = function($files){
-		if($files.length!=3){
-			alert("You chose either too few or too many files. Please select the .shp, .shx and .dbf " +
-					"shape files (1 of each) which you wish to convert. The files must share the same base name.");
-		}else{
-			$scope.options.fileExample = false;
-			$scope.options.displayConfigUpload = true;
-			inputFileName = $files[0].name;
-			inputFileName = inputFileName.split(".");
-			console.log(inputFileName[0]);
-			inputFileName = inputFileName[0]+".shp";
-			$('#dummyShapeInput').val(inputFileName);
-			$scope.configForm = true;
-			}
-		};
+					nsPrefix: "gkg",
+					nsURI: ConfigurationService.getUriBase(), 
 
-	$scope.loadConfigFile = function($files){
+						ontologyNSPrefix: "geo",
+						ontologyNS: "http://www.opengis.net/ont/geosparql#"
+				};
+				$scope.options.dataParams = true;
+		 	}
+		}
+		else{
+
+			if (files.length != 1){
+				$scope.errorMsg = "Please select only one file";
+			 	files = [];
+			 	$scope.files=null;
+				return;
+			}
+			if ($scope.options.job === "gml"){
+				var file = files[0];
+				if(file.name.substring(file.name.length-3,file.name.length).toLowerCase() != "gml"){
+					$scope.errorMsg = "Please select the .gml ";
+			 		files = [];
+			 		$scope.files=null;
+			 		return;
+				}
+			}
+			else if ($scope.options.job === "kml"){
+				var file = files[0];
+				if(file.name.substring(file.name.length-3,file.name.length).toLowerCase() != "kml"){
+					$scope.errorMsg = "Please select the .kml ";
+			 		files = [];
+			 		$scope.files=null;
+			 		return;
+				}
+			}
+
+			$scope.tripleGeoConfig = {
+				job : $scope.options.job,
+				inputFileName :  $scope.files[0].name,
+				inputFile :    $scope.files[0].result[0],
+			}
+		}
 		
-		for (var i = 0; i < $files.length; i++) {
-		  var $file = $files[i];
-		  $http.uploadFile({
-		        url: 'UploadServlet', //upload.php script, node.js route, or servlet uplaod url)
-		        file: $file
-		      }).then(function(response, status, headers, config) {
-		        // file is uploaded successfully
-		    	  
-		    	  var filename = $files[0].name;
-		    	  $('#dummyConfigInput').val(filename);
-		  		
-					$http({
-							method: "POST",
-							url: $scope.service.serviceUrl+"/LoadFile",
-							params: {
-									file : filename,
-									shp: inputFileName
-									}
-				      	}).then(function(data) {
-				      		if($scope.options.file == true){
-				      			for(var i=0; i<configArray.length; i++){
-					      			for(var j=0; j<data.data.length; j++){
-					      				if(configArray[i][0] === data.data[j][0]){
-					      					configArray[i][1] = data.data[j][1];
-					      				}
-					      			}
-				      			}
-				      			
-						    	$scope.tripleGeoConfig = {
-										 inputFile :   data.data[0][0],
-										 format:      configArray[0][1],
-										 targetStore: configArray[1][1],
-										
-										 featureString: configArray[2][1],
-										 attribute: configArray[3][1],
-										 ignore: configArray[4][1],
-										 type: configArray[5][1],
-										 name: configArray[6][1],
-										 dclass: configArray[7][1],
-										 
-										 nsPrefix: configArray[8][1],
-										 nsURI: configArray[9][1],
-										 ontologyNSPrefix: configArray[10][1],
-										 ontologyNS: configArray[11][1],
-										 
-										 sourceRS: configArray[12][1],
-										 targetRS: configArray[13][1],
-											 
-										 defaultLang: configArray[14][1],
-										};
-				      		}
-				      		
-				      		if($scope.options.database == true){
-				      			
-				      			for(var i=0; i<dbConfigArray.length; i++){
-					      			for(var j=0; j<data.data.length; j++){
-					      				if(dbConfigArray[i][0] === data.data[j][0]){
-					      					dbConfigArray[i][1] = data.data[j][1];
-					      				}
-					      			}
-				      			}
-				      			
-				      			var inputDisplay = $scope.tripleGeoConfig.inputDisplay;
-								
-					      		dbConfigArray[2][1] = $scope.tripleGeoConfig.dbtype;
-								dbConfigArray[3][1] = $scope.tripleGeoConfig.dbName;
-								dbConfigArray[4][1] = $scope.tripleGeoConfig.dbUserName;
-								dbConfigArray[5][1] = $scope.tripleGeoConfig.dbPassword;
-								dbConfigArray[6][1] = $scope.tripleGeoConfig.dbHost;
-								dbConfigArray[7][1] = $scope.tripleGeoConfig.dbPort;
-				      			
-						    	$scope.tripleGeoConfig = {
-						    			
-						    			 inputDisplay: inputDisplay,
-						    			
-										 format:      dbConfigArray[0][1],
-										 targetStore: dbConfigArray[1][1],
-										
-										 dbtype: dbConfigArray[2][1],
-										 dbName: dbConfigArray[3][1],
-										 dbUserName: dbConfigArray[4][1],
-										 dbPassword: dbConfigArray[5][1],
-										 dbHost: dbConfigArray[6][1],
-										 dbPort: dbConfigArray[7][1],
-										 
-										 resourceName: dbConfigArray[8][1],
-										 tableName: dbConfigArray[9][1],
-										 condition: dbConfigArray[10][1],
-										 labelColumnName: dbConfigArray[11][1],
-										 nameColumnName: dbConfigArray[12][1],
-										 classColumnName: dbConfigArray[13][1],
-										 geometryColumnName: dbConfigArray[14][1],
-										 ignore: dbConfigArray[15][1],
-										 
-										 nsPrefix: dbConfigArray[16][1],
-										 nsURI: dbConfigArray[17][1],
-										 ontologyNSPrefix: dbConfigArray[18][1],
-										 ontologyNS: dbConfigArray[19][1],
-										 
-										 sourceRS: dbConfigArray[20][1],
-										 targetRS: dbConfigArray[21][1],
-											 
-										 defaultLang: dbConfigArray[22][1],
-										};
-				      		}
-						    	
-					      }, function (response){ // in the case of an error      	
-						    	flash.error = ServerErrorResponse.getMessage(response);
-	    					});
-		    	  
-		        if(response.data.status=="FAIL"){
-		          uploadError = true;
-		          $scope.uploadMessage=response.data.message;
-		        }
-		        else {
-		          uploadError = false;
-		          uploadedFiles = $file.name;
-		        }
-		      }); 
-		    }
-	};
+		$scope.actionButtons=true;
+		
+   };
+
 	
-	$scope.LaunchTripleGeo = function(){
+	var validate = function(param, defval){
+		if (typeof param === "undefined")
+			return defval;
+		else
+			return param;
+	}
+	
+
+	$scope.CreateJob = function(){
 			
-		if($scope.options.job == "file" || $scope.options.job == "example"){
+		if($scope.options.job == "esri"){
 			params = {
-					 job: $scope.options.job,
+					 job: $scope.tripleGeoConfig.job,
 					
 					 format: $scope.tripleGeoConfig.format,
 					 targetStore: $scope.tripleGeoConfig.targetStore,
@@ -449,17 +458,18 @@ var TripleGeoCtrl = function($scope, $http, ConfigurationService, ComponentsServ
 					 ignore: $scope.tripleGeoConfig.ignore,
 					 type: $scope.tripleGeoConfig.type,
 					 name: $scope.tripleGeoConfig.name,
-					 dclass: $scope.tripleGeoConfig.dclass,
+					 uclass: $scope.tripleGeoConfig.uclass,
 					 
-					 nsPrefix: $scope.tripleGeoConfig.nsPrefix,
-					 nsURI: $scope.tripleGeoConfig.nsURI,
+				nsPrefix: "gkg",
+				nsURI: ConfigurationService.getUriBase(), 
+
 					 ontologyNSPrefix: $scope.tripleGeoConfig.ontologyNSPrefix,
 					 ontologyNS: $scope.tripleGeoConfig.ontologyNS,
 					 
-					 sourceRS: $scope.tripleGeoConfig.sourceRS,
-					 targetRS: $scope.tripleGeoConfig.targetRS,
+					 sourceRS: validate($scope.tripleGeoConfig.sourceRS,""),
+					 targetRS: validate($scope.tripleGeoConfig.targetRS,""),
 					 
-					 defaultLang: $scope.tripleGeoConfig.defaultLang,
+					 defaultLang: validate($scope.tripleGeoConfig.defaultLang, "en"),
 				   };
 		}
 		
@@ -485,8 +495,9 @@ var TripleGeoCtrl = function($scope, $http, ConfigurationService, ComponentsServ
 					 geometryColumnName: $scope.tripleGeoConfig.geometryColumnName,
 					 ignore: $scope.tripleGeoConfig.ignore,
 					 
-					 nsPrefix: $scope.tripleGeoConfig.nsPrefix,
-					 nsURI: $scope.tripleGeoConfig.nsURI,
+				nsPrefix: "gkg",
+				nsURI: ConfigurationService.getUriBase(), 
+
 					 ontologyNSPrefix: $scope.tripleGeoConfig.ontologyNSPrefix,
 					 ontologyNS: $scope.tripleGeoConfig.ontologyNS,
 					 
@@ -497,94 +508,62 @@ var TripleGeoCtrl = function($scope, $http, ConfigurationService, ComponentsServ
 				   };
 		}
 			
-		$window.$windowScope = $scope;
- 		var newWindow = $window.open('popup.html#/popup-triplegeo', 'frame', 'resizeable,height=600,width=800');
-		newWindow.params = params;
-		};
-	
-	$scope.startTripleGeo= function(){
-	  
-		params = $window.params;
-		$scope.showProgress = true;
-			
-			$http({
-				url: $scope.service.serviceUrl+"/TripleGeoRun",
-		        method: "POST",
-		        params: params,
-		        dataType: "json",
-		        contentType: "application/json; charset=utf-8"
-		      }).then(function(data) {
-		    	$scope.stTripleGeo = false;
-		    	$scope.showProgress = false;
-		    	fileType = data.data;
-		    	$scope.reviewTripleGeoResult(fileType);
-		      }, function (response){ // in the case of an error      	
-		      		$scope.stTripleGeo = false;
-		    		$scope.showProgress = false;
-						flash.error = ServerErrorResponse.getMessage(response);
-	    		});
-			
-		};
-	
-	$scope.reviewTripleGeoResult = function(filetype){
-			
-	  	$scope.showProgress = true;
-	  	
-	  	params = { filetype : filetype };
-	  	
-		$http({
-			url: $scope.service.serviceUrl+"/TripleGeoReview",
-	        method: "POST",
-	        params: params,
-	        dataType: "json",
-	        contentType: "application/json; charset=utf-8"
-	      }).then(function(data){
-	    	  		var results = data.data[0];
-  	  				//results = results.substring(13,results.length-3);
-	    	  		$scope.results = results;
-	    		  	$scope.showProgress = false;
-	  	    		$scope.reviewForm = true;
-	      }, function (response){ // in the case of an error      	
-	      		$scope.enterConfig = false;
-	    		$scope.showProgress = false;
-	    		$scope.inputForm = false;
-	    		$scope.reviewForm = false;
-				flash.error = ServerErrorResponse.getMessage(response);
-	    	});
-		};
-	
-	$scope.save = function(){
 		
-		var parameters = {
-		        rdfFile: "result."+fileType,
-		        fileType: fileType,
-		        endpoint: AccountService.getAccount().getUsername()==null ? ConfigurationService.getPublicSPARQLEndpoint() : ConfigurationService.getSPARQLEndpoint(),
-		        graph: $scope.saveDataset.replace(':', ConfigurationService.getUriBase()), 
-		        uriBase : ConfigurationService.getUriBase(),
-		        username: AccountService.getAccount().getUsername()
-		      	};
-		console.log(parameters);
-		console.log($scope.service.serviceUrl+"/ImportRDF");
-		$http({
-			url: $scope.service.serviceUrl+"/ImportRDF",
-	        method: "POST",
-	        dataType: "json",
-	        params: parameters,
-	        contentType: "application/json; charset=utf-8"
-		})
-	      .success(function (data, status, headers, config){
-	        if(data.status=="FAIL"){
-	          flash.error = data.message;
-	          importing = false;
-	        }
-	        else{
-	          flash.success = data.message;
-	        }
-	      })
-	      .error(function(data, status, headers, config) {
-	          flash.error = data;
-	      });
-	  };
+
+    var now = new Date();
+
+		// ask the user for a job name and description
+    var modalInstance = $modal.open({
+    	templateUrl: 'modal-forms/workbench/modal-job.html',
+    	controller: 'ModalJobCtrl',
+    	size: 'lg',
+    	resolve : {
+    		mConf  : function(){
+    			var p = {
+    				title: "New Triple-Geo Job",
+    				prefix: "tripleGeo"};
+    			return p;
+    		} 
+    	}
+    });
+
+    // reads user's answer
+    modalInstance.result.then(function (jobDesc) {
+    	console.log(jobDesc);
+
+    	AuthSessionService.createSession().then(function(response){
+
+      	var atuhEndpoint = workbenchHP + response.data.endpoint;
+				params["targetEndpoint"] = atuhEndpoint;      	
+				params["targetGraph"] = jobDesc.namedgraph;  
+
+      	console.log(params);
+				
+				var steps = '['
+						+ '{"service":"'+ $scope.service.serviceUrl +'","contenttype":"application/json", "method":"POST", "body":"'+encodeURI(JSON.stringify(params))+'", "numberOfOrder":1}'
+            +']';
+				
+
+				JobService.addMultiServiceJob(
+							jobDesc.name, 
+							jobDesc.label, 
+							jobDesc.description, 
+							eval(steps), 
+							Ns.lengthen(jobDesc.namedgraph))
+					.then(function(response){
+						$scope.$parent.updateJobs();
+						flash.success = "Job successfully added can be executed from the dashboard";
+					}, function(response){
+						flash.error = ServerErrorResponse.getMessage(response);
+				});
+
+			});
+
+    });
+
+	};
+	
+
 	
 };
 

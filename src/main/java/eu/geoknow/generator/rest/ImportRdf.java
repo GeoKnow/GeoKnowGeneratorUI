@@ -41,8 +41,8 @@ public class ImportRdf {
   public ImportRdf(@Context ServletContext context) {
 
     filePath =
-        context.getRealPath(File.separator) + File.separator
-            + context.getInitParameter("file-upload") + File.separator;
+        context.getRealPath(File.separator) + context.getInitParameter("file-upload")
+            + File.separator;
     filePath = "file:///" + filePath.replace("\\", "/");
     filePath = filePath.replace(" ", "%20");
     log.info("Uploading directory: " + filePath);

@@ -32,8 +32,7 @@ var ImportFormCtrl = function($scope, $http, ConfigurationService, flash, Accoun
 
     
     $scope.endpoints = ConfigurationService.getAllEndpoints();
-    $scope.uploadMessage = '';
-
+    $scope.uploadMessage = "";
     $scope.sourceType = "";
 
     // source can be : file, url, endpoint or graph
@@ -233,7 +232,7 @@ var ImportFormCtrl = function($scope, $http, ConfigurationService, flash, Accoun
     
     initialise();
 
-    $scope.importFile.files = [];
+    $scope.importFile.files = null;
     $scope.urlForm.$setPristine();
     $scope.fileForm.$setPristine();
     $scope.endpointForm.$setPristine();
