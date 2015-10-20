@@ -6,7 +6,7 @@
 *
 ***************************************************************************************************/
 
-var DeerCtrl = function($scope, $http, ConfigurationService, ComponentsService, flash, ServerErrorResponse, $window, AccountService, GraphService){
+var DeerCtrl = function($scope, $http, ConfigurationService, ComponentsService, flash, ServerErrorResponse, $window, AccountService, GraphService, Ns, $modal, JobService, AuthSessionService){
 	
 	var componentId ="DEER";
 	var serviceId = "DEERService";
