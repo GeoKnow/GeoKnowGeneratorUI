@@ -43,7 +43,7 @@ app.controller('DataSimulatorCtrl', function($scope, ComponentsService, $http, S
 	  };
 
 	$scope.dateRange = {startDate: moment().toDate(), endDate: moment().toDate()};
-	$scope.simulation ={ startDate: "", endDate:"", interval:"1.0", productUri:""};
+	$scope.simulation ={ startDate: "", endDate:"", interval:"0.0", productUri:"", status:"Not running" };
 
 	$scope.status = function(){
 			DataSimulatorService.metrics().then(
@@ -84,6 +84,42 @@ app.controller('DataSimulatorCtrl', function($scope, ComponentsService, $http, S
     	// error
 			function (response) {
       	flash.error = ServerErrorResponse.getMessage(status);
+    	}
+    );
+	};
+
+	$scope.updateManufacturerList = function(){
+		$scope.manufacturer =[];
+		console.log($scope.simulation.productUri.uri);
+		if($scope.simulation.productUri==="") return;
+		var requestData = {
+            format: "application/ld+json",
+            query :  "CONSTRUCT { "
+										 + "?man  <http://schema.org/manufacturer> ?product . "
+										 + "?manu <http://schema.org/manufacturer> <"+ $scope.simulation.productUri.uri +"> . "
+										 + "} where{ "
+										 + "{ GRAPH <"+Ns.lengthen($scope.source.graph) +"> "
+										 + "{ ?manu <http://schema.org/manufacturer> <"+ $scope.simulation.productUri.uri +">} } "
+										 + "UNION{  "
+										 + "GRAPH <"+Ns.lengthen($scope.source.graph) +"> { "
+										 + "<http://www.xybermotive.com/products/Car> <http://www.xybermotive.com/ontology/productPart> ?part . "
+										 + "?part <http://www.xybermotive.com/ontology/product> ?product .  "
+										 + "?man <http://schema.org/manufacturer> ?product  } } }"
+        };
+    console.log(requestData);
+
+    $http.post("rest/RdfStoreProxy", $.param(requestData)).then(
+    	// success
+    	function (response) {
+    		console.log(response.data);
+    		var graph = response.data["@graph"];
+    		for(var i in graph){
+    			$scope.manufacturer.push(graph[i]["@id"]);
+    		}
+    	},
+    	// error
+			function (response) {
+      	flash.error = ServerErrorResponse.getMessage(response);
     	}
     );
 	};

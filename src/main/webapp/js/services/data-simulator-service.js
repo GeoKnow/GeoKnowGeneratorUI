@@ -19,15 +19,20 @@ module.factory("DataSimulatorService", function ($http, ComponentsService, Ns) {
 	var service = {
 
 		run : function(start, end, productUri, graphUri, interval) {
-      var params="start=" + encodeURIComponent(start)
-        + "&end=" + encodeURIComponent(end)
-        + "&graphUri=" + encodeURIComponent(Ns.lengthen(graphUri))
-        + "&interval=" + encodeURIComponent(interval)
-        + "&productUri=" + encodeURIComponent(productUri);
-      console.log(params);
+
+      var params="start=" + encodeURI(start)
+        + "&end=" + encodeURI(end)
+        + "&graphUri=" + encodeURI(Ns.lengthen(graphUri))
+        + "&interval=" + encodeURI(interval)
+        + "&productUri=" + encodeURI(productUri);
+      console.log(serviceUrl + "run?"+params);
       return $http({
-        url: serviceUrl + "simulator/run?"+params,
-        method: "POST"
+        url: serviceUrl + "run?"+params,
+        method: "POST", 
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+
       });
 		},
 
