@@ -60,6 +60,7 @@
 								    <li ng-repeat="f in errFiles" >{{f.name}} {{f.$error}} {{f.$errorParam}}
 								    </li> 
 								  </ul>
+                                  <br>
 								  {{errorMsg}}
                 </div>
             </div>
@@ -147,7 +148,7 @@
                         <label class="green bold">Feature String</label>
                     </div>
                     <div class="input-group-sm col-xs-4">
-                      <input class="form-control" ng-model="tripleGeoConfig.featureString"></input>
+                        <select ng-model="tripleGeoConfig.featureString" class="form-control"  ng-options="option for option in options.esriFeature" ></select>
                     </div>
                     <div class="col-xs-2">
                         <label class="green bold">Attribute</label>
@@ -307,7 +308,7 @@
                 </div>
 
 
-                <div class="row">
+                <div class="row" ng-show="commonParams()">
                     <div class="col-xs-12">
                         <label>Spatial Reference Parameters</label><i class="glyphicon glyphicon-question-sign" style="margin-left:5px" data-toggle="tooltip" data-original-title="{{tooltips.spatial}}"></i>
                     </div>

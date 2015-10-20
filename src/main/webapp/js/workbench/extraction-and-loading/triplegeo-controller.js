@@ -108,6 +108,21 @@ var TripleGeoCtrl = function($scope, $http, $q, ConfigurationService, Components
 	    ],
 	    ex: [
 	        ""
+	    ],
+	    esriFeature : [
+					"points",
+					"polyline",
+					"polygon",
+					"multipoint",
+					"pointz",
+					"polylinez",
+					"polygonz",
+					"multipointz",
+					"pointm",
+					"polylinem",
+					"polygonm",
+					"multipointm",
+					"multipatch"
 	    ]
 	};
 	
@@ -148,7 +163,7 @@ var TripleGeoCtrl = function($scope, $http, $q, ConfigurationService, Components
 	};
 	
 	$scope.isFileJob = function(){
-		return ($scope.datasource!='' &&  $scope.datasource!='Database' && $scope.example === '')
+		return ($scope.datasource!='' &&  $scope.datasource!='Database' )
 	};
 
 	$scope.commonParams =function(){
@@ -174,6 +189,7 @@ var TripleGeoCtrl = function($scope, $http, $q, ConfigurationService, Components
 			$scope.tripleGeoConfig = {
 					job : "esri-example",
 					inputFile :   "points.shp",
+					inputFileName :  "points.shp",
 					format :      $scope.options.format[0],
 					targetStore : $scope.options.targetStore[0],
 				
@@ -194,13 +210,15 @@ var TripleGeoCtrl = function($scope, $http, $q, ConfigurationService, Components
 		else if($scope.example === "Airports example"){
 			$scope.tripleGeoConfig = {
 				job : "gml-example",
-				inputFile :   "airports.gml"
+				inputFile :   "airports.gml",
+				inputFileName :  "airports.gml"
 			}
 		}
 		else if($scope.example === "Kml sample"){
 			$scope.tripleGeoConfig = {
 					job : "kml-example",
-					inputFile :   "sample.kml"
+					inputFile :   "sample.kml",
+					inputFileName:   "sample.kml"
 				}
 		}
 		else if($scope.example === "Wikimapia Extraction"){
@@ -209,11 +227,11 @@ var TripleGeoCtrl = function($scope, $http, $q, ConfigurationService, Components
 					
 					job : "db-example",
 
-					 format :      $scope.options.format[2],
-					 targetStore : $scope.options.targetStore[0],
+					format :      $scope.options.format[2],
+					targetStore : $scope.options.targetStore[0],
 					 
 					 
-					 dbtype: $scope.options.dbtype[2],
+					dbtype: $scope.options.dbtype[2],
 					 dbName: "wikimapia",
 					 dbUserName: "gisuser",
 					 dbPassword: "admin",
@@ -250,7 +268,7 @@ var TripleGeoCtrl = function($scope, $http, $q, ConfigurationService, Components
 					$scope.tripleGeoConfig = {
 							job : "db",
 							 inputDisplay: $scope.databases[i].dbName,
-							
+							 
 							 format :      $scope.options.format[2],
 							 targetStore : $scope.options.targetStore[0],
 							 
@@ -295,7 +313,7 @@ var TripleGeoCtrl = function($scope, $http, $q, ConfigurationService, Components
     var promises = [];
 
     angular.forEach(files, function(file) {
-
+    	
 			 var deferred = $q.defer();
     		file.upload = Upload.upload({
             url:  $scope.service.serviceUrl +'/upload',
@@ -304,7 +322,9 @@ var TripleGeoCtrl = function($scope, $http, $q, ConfigurationService, Components
 
         file.upload.then(function (response) {
             $timeout(function () {
-            	deferred.resolve(response.data[0]);
+            	var uploaded = new Array();
+            	uploaded[file.name] = response.data[0] ;
+            	deferred.resolve(uploaded);
             });
         }, function (response) {
             if (response.status > 0)
@@ -320,7 +340,14 @@ var TripleGeoCtrl = function($scope, $http, $q, ConfigurationService, Components
  		$q.all(promises).then(
  			// results: an array of data objects from each deferred.resolve(data) call
         function(results) {
-          validateFiles(files, results);
+        	var normalized = new Array();
+        	for(var i in results){
+        		var r = results[i];
+        		for(var k in r)
+        			normalized[k] =r[k];
+        		
+        	}
+          validateFiles(files, normalized);
           uploading=false;
         },
         // error
@@ -333,6 +360,10 @@ var TripleGeoCtrl = function($scope, $http, $q, ConfigurationService, Components
 	var validateFiles = function(files, responseMap){
     if(files==null) return;
     var fileName = "";
+
+    console.log(files);
+    console.log(responseMap);
+
 		$scope.files=files;
 		// validate esri
     if ($scope.options.job === "esri"){
@@ -371,7 +402,8 @@ var TripleGeoCtrl = function($scope, $http, $q, ConfigurationService, Components
 		 				fileName = file.name;
 		 			}
 		 		});
-		 		console.log(responseMap);
+		 		console.log(fileName);
+
 
 		 		$scope.tripleGeoConfig = {
 		 				job :"esri",
@@ -382,7 +414,7 @@ var TripleGeoCtrl = function($scope, $http, $q, ConfigurationService, Components
 					
 						featureString: name,
 						attribute: "",
-						ignore: "",
+						ignore: "UNK",
 						type: "",
 						name: "",
 						uclass: "",
@@ -426,7 +458,7 @@ var TripleGeoCtrl = function($scope, $http, $q, ConfigurationService, Components
 			$scope.tripleGeoConfig = {
 				job : $scope.options.job,
 				inputFileName :  $scope.files[0].name,
-				inputFile :    $scope.files[0].result[0],
+				inputFile :    responseMap[fileName]
 			}
 		}
 		
@@ -445,6 +477,7 @@ var TripleGeoCtrl = function($scope, $http, $q, ConfigurationService, Components
 
 	$scope.CreateJob = function(){
 			
+		console.log($scope.options.job);
 		if($scope.options.job == "esri"){
 			params = {
 					 job: $scope.tripleGeoConfig.job,
@@ -472,8 +505,19 @@ var TripleGeoCtrl = function($scope, $http, $q, ConfigurationService, Components
 					 defaultLang: validate($scope.tripleGeoConfig.defaultLang, "en"),
 				   };
 		}
-		
-		if($scope.options.job == "db"){
+		if($scope.options.job == "gml"){
+			params = {
+				job: $scope.tripleGeoConfig.job,
+				inputFile : $scope.tripleGeoConfig.inputFile,
+			}
+		}
+		if($scope.options.job == "kml"){
+			params = {
+				job: $scope.tripleGeoConfig.job,
+				inputFile : $scope.tripleGeoConfig.inputFile,
+			}
+		}
+		else if($scope.options.job == "db"){
 			params = {
 					 job: $scope.options.job,
 					
@@ -507,9 +551,7 @@ var TripleGeoCtrl = function($scope, $http, $q, ConfigurationService, Components
 					 defaultLang: $scope.tripleGeoConfig.defaultLang,
 				   };
 		}
-			
 		
-
     var now = new Date();
 
 		// ask the user for a job name and description
