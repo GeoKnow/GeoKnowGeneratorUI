@@ -49,19 +49,19 @@
                 </div>
                 <div class="col-xs-8">
 
-            			<button ngf-select="uploadFiles($files, $invalidFiles)" multiple accept="*/*" ngf-max-height="1000" ngf-max-size="1MB">Select Files</button>
-								  <ul ng-show="isUploading()">
-								    <li ng-repeat="f in files" style="font:smaller">{{f.name}} {{f.$errorParam}}
-								      <span class="progress" ng-show="f.progress >= 0">
-								        <span style="width:{{f.progress}}%"  
-								            ng-bind="f.progress + '%'"></span>
-								      </span>
-								    </li>
-								    <li ng-repeat="f in errFiles" >{{f.name}} {{f.$error}} {{f.$errorParam}}
-								    </li> 
-								  </ul>
-                                  <br>
-								  {{errorMsg}}
+            		<button ngf-select="uploadFiles($files, $invalidFiles)" multiple accept="*/*" ngf-max-height="1000" ngf-max-size="1MB">Select Files</button>
+					<ul ng-show="isUploading()">
+						    <li ng-repeat="f in files" style="font:smaller">{{f.name}} {{f.$errorParam}}
+						      <span class="progress" ng-show="f.progress >= 0">
+						        <span style="width:{{f.progress}}%"  
+						            ng-bind="f.progress + '%'"></span>
+						      </span>
+						    </li>
+						    <li ng-repeat="f in errFiles" >{{f.name}} {{f.$error}} {{f.$errorParam}}
+						    </li> 
+					</ul>
+                    <br>
+					{{errorMsg}}
                 </div>
             </div>
             <div ng-show="tripleGeoConfig!=null">
@@ -99,8 +99,8 @@
 	                        <label class="green bold">Target Store Type</label>
 	                    </div>
 	                    <div class="input-group input-group-sm col-xs-2">
-												 <select class="form-control" id="targetStore" ng-options="option for option in options.targetStore" ng-model="tripleGeoConfig.targetStore"></select>
-											</div>
+							<select class="form-control" id="targetStore" ng-options="option for option in options.targetStore" ng-model="tripleGeoConfig.targetStore"></select>
+						</div>
 	                </div>
 	                <br>
 	                

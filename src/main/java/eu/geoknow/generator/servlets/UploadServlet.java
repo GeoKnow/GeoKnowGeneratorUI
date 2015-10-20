@@ -115,7 +115,7 @@ public class UploadServlet extends HttpServlet {
           return;
         }
 
-        res.addResult(file.getAbsolutePath() + file.getName());
+        res.addResult(file.getAbsolutePath());
       }
       res.setStatus("SUCESS");
       res.setMessage("Successfuly uploaded");

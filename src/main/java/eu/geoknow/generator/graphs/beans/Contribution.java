@@ -1,5 +1,7 @@
 package eu.geoknow.generator.graphs.beans;
 
+import java.util.List;
+
 import org.hibernate.validator.constraints.NotEmpty;
 
 
@@ -15,7 +17,7 @@ public class Contribution {
   private String namedGraph;
   private String date;
   @NotEmpty
-  private String source;
+  private List<String> source;
   @NotEmpty
   private String contributor;
 
@@ -36,11 +38,11 @@ public class Contribution {
     this.date = date;
   }
 
-  public String getSource() {
+  public List<String> getSource() {
     return source;
   }
 
-  public void setSource(String source) {
+  public void setSource(List<String> source) {
     this.source = source;
   }
 

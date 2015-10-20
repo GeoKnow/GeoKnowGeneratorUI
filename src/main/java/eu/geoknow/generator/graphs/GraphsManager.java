@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.ws.rs.NotFoundException;
 
@@ -96,15 +97,20 @@ public class GraphsManager {
     log.debug(contribution.getDate());
     // "2005-07-14T03:18:56+0100"^^xsd:dateTime
 
-    String source = contribution.getSource();
+    List<String> sources = contribution.getSource();
 
     // Check if the source is a URI
-    try {
-      URL url = new URL(contribution.getSource());
-      source = "<" + contribution.getSource() + ">";
-    } catch (MalformedURLException e) {
-      source = "\"" + contribution.getSource() + "\"";
+    String sourcesTriples = "";
+    for (String source : sources) {
+      try {
+        new URL(source);
+        source = "<" + source + ">";
+      } catch (MalformedURLException e) {
+        source = "\"" + source + "\"";
+      }
+      sourcesTriples += "?graph <" + DCTerms.source.getURI() + "> " + source + " . ";
     }
+
 
     String query =
         " WITH <" + graphsGraph + "> " + "DELETE { ?graph <" + DCTerms.modified.getURI() + "> ?m ."
@@ -112,10 +118,9 @@ public class GraphsManager {
             + DCTerms.modified.getURI() + "> \"" + contribution.getDate() + "\" ." + "?graph <"
             + VOID.triples.getURI() + "> " + triples + " . " + "?graph <"
             + DCTerms.contributor.getURI() + "> <" + contribution.getContributor() + "> . "
-            + "?graph <" + DCTerms.source.getURI() + "> " + source + "   . " + " } WHERE { <"
-            + contribution.getNamedGraph() + "> <" + SD.graph.getURI() + "> ?graph"
-            + " . OPTIONAL{ ?graph <" + DCTerms.modified.getURI() + "> ?m .?graph <"
-            + VOID.triples.getURI() + "> ?t .}}";
+            + sourcesTriples + " } WHERE { <" + contribution.getNamedGraph() + "> <"
+            + SD.graph.getURI() + "> ?graph" + " . OPTIONAL{ ?graph <" + DCTerms.modified.getURI()
+            + "> ?m .?graph <" + VOID.triples.getURI() + "> ?t .}}";
 
     log.debug(query);
 
