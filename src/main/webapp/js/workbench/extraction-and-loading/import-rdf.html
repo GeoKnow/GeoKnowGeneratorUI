@@ -17,8 +17,15 @@
 	    <label for="inputFile" class="col-sm-2 control-label">File input</label>
 	    	  <!-- <input type="file" ng-file-select="onFileSelect($files)" > -->
 	    <div class="col-sm-8">
-				<input type="file" ngf-select ng-model="importFile.files" accept=".nt,.n3,.ttl,.rdf" >
-				<div class="error" ng-show="uploadedError()">File value is invalid or missed (for required fields)<span>{{uploadMessage}}</span></div>
+				<!-- <input type="file" ngf-select ng-model="importFile.files" accept=".nt,.n3,.ttl,.rdf" > -->
+				<button ngf-select="uploadFiles($files, $invalidFiles)" multiple accept=".nt,.n3,.ttl,.rdf">Select Files</button>
+
+				<div class="error">{{uploadMessageError}}</div>
+				<br>
+				<ul ng-show="uploadSuceed()">
+					<li ng-repeat="f in importRdf.source">{{f}}</li>
+				</ul>
+
 			</div>
 	  </div>
 

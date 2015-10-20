@@ -75,22 +75,27 @@ public class ImportRdf {
 
     log.debug(importConfig.getTargetGraph());
     // validate required values
-    if (importConfig.getFileName().equals(""))
+    if (importConfig.getFiles().isEmpty())
       return Response.status(Response.Status.BAD_REQUEST)
           .entity("List of files to be imported is required").build();
 
-    log.info("importing " + filePath + importConfig.getFileName());
     int triples = 0;
-    HttpRdfInsert insert = new HttpRdfInsert(rdfStoreManager);
-    try {
-      Model model = ModelFactory.createDefaultModel();
-      model.read(filePath + importConfig.getFileName());
-      triples +=
-          insert.httpInsert(importConfig.getTargetGraph(), model, config.getResourceNamespace());
-    } catch (Exception e) {
-      log.error(e);
-      e.printStackTrace();
-      return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+
+    for (String file : importConfig.getFiles()) {
+      log.info("importing " + filePath + file);
+
+      HttpRdfInsert insert = new HttpRdfInsert(rdfStoreManager);
+      try {
+        Model model = ModelFactory.createDefaultModel();
+        model.read(filePath + file);
+        triples +=
+            insert.httpInsert(importConfig.getTargetGraph(), model, config.getResourceNamespace());
+      } catch (Exception e) {
+        log.error(e);
+        e.printStackTrace();
+        return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage())
+            .build();
+      }
     }
 
     importConfig.setTriples(triples);

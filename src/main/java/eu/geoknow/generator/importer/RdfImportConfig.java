@@ -1,5 +1,8 @@
 package eu.geoknow.generator.importer;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
@@ -14,8 +17,12 @@ public class RdfImportConfig {
   private String sourceGraph;
   private String sourceEndpoint;
   private String sourceUrl;
-  private String fileName;
+  private List<String> files;
   private int triples;
+
+  public RdfImportConfig() {
+    files = new ArrayList<String>();
+  }
 
   public String getTargetGraph() {
     return targetGraph;
@@ -59,12 +66,12 @@ public class RdfImportConfig {
     this.sourceUrl = sourceUrl;
   }
 
-  public String getFileName() {
-    return fileName;
+  public List<String> getFiles() {
+    return files;
   }
 
-  public void setFileName(String fileName) {
-    this.fileName = fileName;
+  public void setFiles(List<String> files) {
+    this.files = files;
   }
 
   public int getTriples() {
