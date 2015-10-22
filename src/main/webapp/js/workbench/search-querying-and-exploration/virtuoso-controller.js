@@ -33,7 +33,6 @@ app.controller('VirtuosoCtrl', function($scope, ConfigurationService, Components
 	 	dataset   : "",
 	}
 
-	
 	$scope.updateServiceParams = function(){
 		console.log($scope.source.graph);
 	    if (AccountService.getAccount().getUsername()==null) { //user is not authorized
