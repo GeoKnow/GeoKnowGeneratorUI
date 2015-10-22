@@ -27,8 +27,14 @@ app.controller('DataSimulatorCtrl', function($scope, ComponentsService, $http, S
 
 	// the source graph where products will be queried
 	$scope.source = {
-		label: "Products graph",
-		graph : "" 
+		products : {
+			label: "Products graph",
+			graph : "" 
+		},
+		suppliers : {
+			label: "Suppliers graph",
+			graph : "" 
+		}
 	};
 
 	$scope.target = {
@@ -41,6 +47,8 @@ app.controller('DataSimulatorCtrl', function($scope, ComponentsService, $http, S
 	  	label : "",
 	  	description : ""
 	  };
+	$scope.manufacturer =[];
+
 
 	$scope.dateRange = {startDate: moment().toDate(), endDate: moment().toDate()};
 	$scope.simulation ={ startDate: "", endDate:"", interval:"0.0", productUri:"", status:"Not running" };
@@ -58,6 +66,16 @@ app.controller('DataSimulatorCtrl', function($scope, ComponentsService, $http, S
 				});
 	}
 
+	// $scope.$watch($scope.source.products.graph, function (newValue) {
+ //    console.log('products graph: ' + newValue);
+ //    updateProductsList();
+	// });
+
+	// $scope.$watch($scope.source.suppliers.graph, function (newValue) {
+ //    console.log('suppliers graph: ' + newValue);
+ //    updateManufacturerList();
+	// });
+
 	$scope.updateProductsList = function(){
 		
 		var requestData = {
@@ -66,10 +84,10 @@ app.controller('DataSimulatorCtrl', function($scope, ComponentsService, $http, S
 										+ "?uri  <http://schema.org/name> ?label "
 										+ "}"
 										+ "WHERE { "
-										+ "GRAPH <" + Ns.lengthen($scope.source.graph) + ">"
+										+ "GRAPH <" + Ns.lengthen($scope.source.products.graph) + ">"
 										+ "{?uri <http://schema.org/name> ?label }}"
         };
-
+    
     $http.post("rest/RdfStoreProxy", $.param(requestData)).then(
     	// success
     	function (response) {
@@ -88,23 +106,36 @@ app.controller('DataSimulatorCtrl', function($scope, ComponentsService, $http, S
     );
 	};
 
+
 	$scope.updateManufacturerList = function(){
 		$scope.manufacturer =[];
 		console.log($scope.simulation.productUri.uri);
 		if($scope.simulation.productUri==="") return;
+
 		var requestData = {
             format: "application/ld+json",
-            query :  "CONSTRUCT { "
-										 + "?man  <http://schema.org/manufacturer> ?product . "
-										 + "?manu <http://schema.org/manufacturer> <"+ $scope.simulation.productUri.uri +"> . "
-										 + "} where{ "
-										 + "{ GRAPH <"+Ns.lengthen($scope.source.graph) +"> "
-										 + "{ ?manu <http://schema.org/manufacturer> <"+ $scope.simulation.productUri.uri +">} } "
-										 + "UNION{  "
-										 + "GRAPH <"+Ns.lengthen($scope.source.graph) +"> { "
-										 + "<http://www.xybermotive.com/products/Car> <http://www.xybermotive.com/ontology/productPart> ?part . "
-										 + "?part <http://www.xybermotive.com/ontology/product> ?product .  "
-										 + "?man <http://schema.org/manufacturer> ?product  } } }"
+						query: "CONSTRUCT { "
+										+ " ?manu a <http://schema.org/Organization> . "
+										+ " ?manu <http://schema.org/name> ?name ."
+										+ " ?man a <http://schema.org/Organization> . "
+										+ " ?man <http://schema.org/name> ?name ."
+										+ "}"
+										+ "WHERE {"
+										+ "{ GRAPH <"+Ns.lengthen($scope.source.products.graph) +"> "
+										+ " { ?manu <http://schema.org/manufacturer> <"+ $scope.simulation.productUri.uri +">} ."
+										+ "OPTIONAL{"
+										+ " GRAPH <"+Ns.lengthen($scope.source.suppliers.graph) +">"
+										+ " { ?manu <http://schema.org/name> ?name}}"
+										+ "} "
+										+ "UNION{ "
+										+ "GRAPH <"+Ns.lengthen($scope.source.products.graph) +"> { "
+										+ "<"+ $scope.simulation.productUri.uri +"> <http://www.xybermotive.com/ontology/productPart> ?part . "
+										+ "?part <http://www.xybermotive.com/ontology/product> ?product . "
+										+ "?man <http://schema.org/manufacturer> ?product } "
+										+ "OPTIONAL{"
+										+ " GRAPH <"+Ns.lengthen($scope.source.suppliers.graph) +">"
+										+ " { ?man <http://schema.org/name> ?name}}"
+										+ "} }"	
         };
     console.log(requestData);
 
@@ -114,7 +145,9 @@ app.controller('DataSimulatorCtrl', function($scope, ComponentsService, $http, S
     		console.log(response.data);
     		var graph = response.data["@graph"];
     		for(var i in graph){
-    			$scope.manufacturer.push(graph[i]["@id"]);
+    			var n = "NA";
+    			if(graph[i]["http://schema.org/name"] != undefined ) n = graph[i]["http://schema.org/name"];
+    			$scope.manufacturer.push({uri: graph[i]["@id"] , name: n});
     		}
     	},
     	// error

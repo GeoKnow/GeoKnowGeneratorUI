@@ -60,14 +60,19 @@ module.directive('moDateInput', function ($window) {
 
 /**
 This requres that the parent scope defines in its scope:
-  - newTarget {prefix, label, description}
+  - target.isNew {prefix, label, description}
   - target.graph
+  - target.label
 */
 module.directive('targetGraph', ['$parse', 'GraphService', function($parse, GraphService){
   return {
     restrict: 'E', 
     templateUrl: 'js/workbench/partials/target-graph.html',
-    scope: true,
+    // scope: true,
+    scope: {
+      graphInfo: '=graphInfo',
+      hasChanged : '&hasChanged'
+    },
     link : function ($scope, elem, attrs, ctrl) {
 
       $scope.refreshWritableGraphs = function() {
@@ -82,22 +87,27 @@ module.directive('targetGraph', ['$parse', 'GraphService', function($parse, Grap
 
       $scope.createTargetGraph = function(){
         // create a new graph to save data
-        var name  = $scope.newTarget.prefix + "_" + new Date().getTime();
-        var label = $scope.newTarget.label;
-        var description = $scope.newTarget.description;
-        console.log($scope.newTarget);
+        var name  = $scope.graphInfo.isNew.prefix + "_" + new Date().getTime();
+        var label = $scope.graphInfo.isNew.label;
+        var description = $scope.graphInfo.isNew.description;
+        console.log($scope.graphInfo.isNew);
         GraphService.addSimpleGraph(name, label, description).then(function(response){
           $scope.refreshWritableGraphs().then(function(){
-            $scope.target.graph = ":"+name;
+            $scope.graphInfo.graph = ":"+name;
           })
         });
       };
 
-      // notify that the input changed
-      $scope.targetChanged = function(){
-        var invoker = $parse(attrs.targetChanged);
-        invoker($scope);
+      $scope.notify = function(){
+        console.log($scope.graphInfo.graph);
+        $scope.hasChanged();
       }
+
+      // notify that the input changed
+      // $scope.targetChanged = function(){
+      //   var invoker = $parse(attrs.targetChanged);
+      //   invoker($scope);
+      // }
 
       $scope.refreshWritableGraphs();
     }
@@ -106,13 +116,16 @@ module.directive('targetGraph', ['$parse', 'GraphService', function($parse, Grap
 
 /**
 * This directive requres that the parent scope defines in its scope:
-* $scope.source = {label, graph}
+* Uses an isolated scope to be able to define more than one source
 */
 module.directive('sourceGraph', ['$parse', 'GraphService', 'GraphGroupService', function($parse, GraphService, GraphGroupService){
   return {
     restrict: 'E', 
     templateUrl: 'js/workbench/partials/source-graph.html',
-    scope: true,
+    scope: {
+      graphInfo: '=graphInfo',
+      hasChanged : '&hasChanged'
+    },
     link : function ($scope, elem, attrs, ctrl) {
 
       $scope.refreshReadableGraphs = function() {
@@ -133,9 +146,11 @@ module.directive('sourceGraph', ['$parse', 'GraphService', 'GraphGroupService', 
       }
 
       // notify that the input changed
-      $scope.sourceChanged = function(){
-        var invoker = $parse(attrs.sourceChanged);
-        invoker($scope);
+      $scope.notify = function(){
+        console.log($scope.graphInfo.graph);
+        $scope.hasChanged();
+      //   var invoker = $parse(attrs.sourceChanged);
+      //   invoker($scope);
       }
 
       $scope.refreshReadableGraphs();

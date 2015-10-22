@@ -16,8 +16,8 @@
 
 :admin
   a ontos:Account;
-  foaf:accountName "admin"^^xsd:string;
-  lds:password "generatorfinal"^^xsd:string;
+  foaf:accountName "badmin"^^xsd:string;
+  lds:password "broxgenerator"^^xsd:string;
   foaf:mbox <mailto:pr@geoknow.eu>;
   ontos:role :Administrator.
 

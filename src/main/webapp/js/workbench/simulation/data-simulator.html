@@ -55,23 +55,26 @@
       </div>
     </div>
 
-    <source-graph source-changed="updateProductsList()"></source-graph>
+    <source-graph has-changed="updateProductsList()" graph-info="source.products"></source-graph>
 
-		<div class="form-group" ng-show="source.graph!=''">
-			<div class="col-sm-2"></div>
+		<div class="form-group" ng-show="source.products.graph!=''">
+			<label for="interval" class="col-xs-2 control-label">Product</label>
 			<div class="col-sm-8">
-		  	<select id="products" name="products" class="form-control" ng-model="simulation.productUri" ng-options="c.label for c in products" ng-change="updateManufacturerList()" required></select>
+		  	<select id="products" name="products" class="form-control" ng-model="simulation.productUri" ng-options="c.label for c in products" required></select>
 	  	</div>
 		</div>
 
-		<div class="form-group" ng-show="simulation.productUri!=''">
-      <label class="col-xs-2 control-label" >News about</label>
+		<source-graph has-changed="updateManufacturerList()" graph-info="source.suppliers"></source-graph>
+		
+		<div class="form-group" ng-show="manufacturer.length>0">
+      <label class="col-xs-2 control-label" >News about suppliers:</label>
       <div class="col-xs-8">
       	<ul><li ng-repeat="m in manufacturer" >{{m}}</li></ul>
 			</div>
     </div>
 
-		<target-graph></target-graph>
+
+		<target-graph graph-info="target"></target-graph>
 
 
   	<div class="form-group">
