@@ -1,13 +1,9 @@
 'use strict';
 
-function ModalJobCtrl($scope, $modalInstance, GraphService, Ns, mConf) {
+function ModalJobCtrl($scope, $modalInstance, GraphService, Ns, modalConfiguration) {
 
-    $scope.modaltitle ="New Job";
-    var mprefix ="job";
-    if(mConf.title!=undefined)
-      $scope.modaltitle = mConf.title;
-    if(mConf.prefix!=undefined)
-      mprefix = mConf.prefix;
+
+    $scope.modaltitle=modalConfiguration.title;
 
     $scope.job = {
       name : "",
@@ -18,14 +14,16 @@ function ModalJobCtrl($scope, $modalInstance, GraphService, Ns, mConf) {
       additionalSources: true,
     };
 
-    //scope variables used in the target-graph direcitve
-    $scope.target = { graph : ""};
-    $scope.newTarget ={
-      prefix :  mprefix,
+    //scope variables used in the target-graph direcitve  
+    $scope.target = { 
       label : "",
-      description : ""
+      graph : "",
+      isNew : {
+        prefix : modalConfiguration.service ,
+        label : "",
+        description : ""
+      }
     };
-   
     
     $scope.ok = function () {
       
@@ -42,11 +40,11 @@ function ModalJobCtrl($scope, $modalInstance, GraphService, Ns, mConf) {
     };
 
     $scope.updateNewTargetLabel = function () {
-      $scope.newTarget.label = "Job from " + $scope.job.label;
+      $scope.target.isNew.label = modalConfiguration.service+ " from " + $scope.job.label;
     };
 
     $scope.updateNewTargetDescription = function () {
-      $scope.newTarget.description = "Job from " + $scope.job.description;
+      $scope.target.isNew.description = "Resulct of "+  modalConfiguration.service+ " : " + $scope.job.description;
     };
 
   }

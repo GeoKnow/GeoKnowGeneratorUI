@@ -1,5 +1,5 @@
 
-
+<div id="datasource-endpoint">
 <h4>SPARQL Endpoint</h4>
 <!-- EndpointCtrl Controller -->
 <div ng-if="isUserAuthenticated()" ng-controller="EndpointCtrl">
@@ -31,8 +31,10 @@
   </tbody>
   </table>
 </div>
+</div>
 
 
+<div id="datasource-rdb">
 <h4>Relational Databases</h4>
 <!-- DatabaseCtrl Controller -->
 <div ng-if="isUserAuthenticated()" ng-controller="DatabaseCtrl">
@@ -67,19 +69,22 @@
     </tr>
   </tbody>
   </table>
+  </div>
+  </div>
 
 
 
 <!-- LicenseSourceCtrl  -->
+<div id="datasource-license">
 <h4>Licences</h4>
-<div ng-if="isUserAuthenticated()" class="col-xs-12" ng-controller="LicenseSourceCtrl">
-
+<div ng-if="isUserAuthenticated()" ng-controller="LicenseSourceCtrl">
+  <button  type="button" class="btn btn-success btn-large"
+           ng-click="new()">Add Licence</button>
   <p ng-if="licenses.length<=0">No licences found</p>
-  <button  type="button" class="btn btn-primary btn-large"
-    ng-click="new()">Add Licence</button>
 
-  <div class="col-xs-12">
-    <table class="table toowide" ng-if="licenses.length>0">
+
+
+    <table class="table table-striped" ng-if="licenses.length>0">
     <thead>
       <tr>
         <th>Actions</th>
@@ -101,7 +106,7 @@
       </tr>
     </tbody>
     </table>
-  </div>
 
+</div>
 </div>
 

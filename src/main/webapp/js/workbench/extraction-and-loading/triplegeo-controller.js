@@ -560,10 +560,11 @@ var TripleGeoCtrl = function($scope, $http, $q, ConfigurationService, Components
     	controller: 'ModalJobCtrl',
     	size: 'lg',
     	resolve : {
-    		mConf  : function(){
+    		modalConfiguration  : function(){
     			var p = {
-    				title: "New Triple-Geo Job",
-    				prefix: "tripleGeo"};
+    				title: "Triple-Geo Job",
+    				service: "tripleGeo"
+    			};
     			return p;
     		} 
     	}

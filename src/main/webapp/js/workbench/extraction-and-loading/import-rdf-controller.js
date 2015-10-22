@@ -37,21 +37,26 @@ var ImportFormCtrl = function($scope, $http, $q, $timeout, ConfigurationService,
 
     // source can be : file, url, endpoint or graph
     $scope.importRdf = { 
-      source : "" };
+      source : "",
+      files : []
+    };
    
     //scope variables used in the target-graph direcitve
     $scope.target = { 
       label : "Target Graph",
-      graph : "" };
-    $scope.newTarget ={
-      prefix : "RdfImport" ,
-      label : "",
-      description : ""
+      graph : "", 
+      isNew : {
+        prefix : "RdfImport" ,
+        label : "",
+        description : ""
+      }
     };
+
     //scope variable is for the source-graph direcitve
-    $scope.source = { 
+    $scope.source = {      
       label : "Source Graph",
-      graph : "" };
+      graph : "" 
+    };
 
     $scope.importEndpoint = {sparqlQuery : "CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o } "};
     $scope.importLocal = { action : "ADD", sparqlQuery : "ADD"};
@@ -76,22 +81,23 @@ var ImportFormCtrl = function($scope, $http, $q, $timeout, ConfigurationService,
   };
 
   $scope.updateNewTargetInfo = function(){
+    console.log($scope.source.graph);
     if($scope.sourceType.value == 'file'){
-      $scope.newTarget ={
+      $scope.target.isNew ={
         prefix : "RdfImport" ,
-        label : "Import form " + $scope.importRdf.source.length +" files",
-        description : "Import from file "+$scope.importRdf.source,
+        label : $scope.importRdf.files,
+        description : "Import from file(s) "+ $scope.importRdf.files,
       };
     }
     else if($scope.sourceType.value == 'url'){
-      $scope.newTarget ={
+      $scope.target.isNew ={
         prefix : "RdfImport" ,
         label : "Import from url",
         description : "Import from url "+$scope.importRdf.source,
       };
     }
     else if($scope.sourceType.value == 'externalQuery'){
-      $scope.newTarget ={
+      $scope.target.isNew ={
         prefix : "RdfImport" ,
         label : "Import from endpoint",
         description : "Import from endpoint "+$scope.importRdf.source,
@@ -99,7 +105,7 @@ var ImportFormCtrl = function($scope, $http, $q, $timeout, ConfigurationService,
     }
     else if($scope.sourceType.value == 'localQuery'){
       $scope.importRdf.source = $scope.source.graph;
-       $scope.newTarget ={
+       $scope.target.isNew ={
         prefix : "RdfImport" ,
         label : "Import from graph",
         description : "Import from graph "+$scope.importRdf.source,
@@ -109,6 +115,7 @@ var ImportFormCtrl = function($scope, $http, $q, $timeout, ConfigurationService,
   }
 		
   $scope.updateForm = function() {
+    
     if($scope.sourceType.value == 'file'){
     	$scope.fileElements = true;	
 		  $scope.urlElements = false;
@@ -141,7 +148,7 @@ var ImportFormCtrl = function($scope, $http, $q, $timeout, ConfigurationService,
   **/
   $scope.uploadSuceed = function(){
 
-    return ($scope.sourceType.value == 'file' && $scope.importRdf.source!=null)
+    return ($scope.sourceType.value === 'file' && $scope.importRdf.files.length>0)
   }
 
   $scope.uploadFiles = function(files, errFiles) {
@@ -178,7 +185,7 @@ var ImportFormCtrl = function($scope, $http, $q, $timeout, ConfigurationService,
       // results: an array of data objects from each deferred.resolve(data) call
         function(results) {
           flash.success='Uploaded: ' + results  ;
-          $scope.importRdf.source = results;
+          $scope.importRdf.files = results;
           $scope.updateNewTargetInfo();
         },
         // error
@@ -197,7 +204,7 @@ var ImportFormCtrl = function($scope, $http, $q, $timeout, ConfigurationService,
   $scope.isInvalid = function(){
     var invalid =true;
     if(!$scope.fileForm.$invalid){
-        if($scope.importRdf.source!= null){
+        if($scope.importRdf.files.length>0){
           invalid = false;
         }
     }
@@ -213,7 +220,7 @@ var ImportFormCtrl = function($scope, $http, $q, $timeout, ConfigurationService,
     var source;
 
     if($scope.sourceType.value == 'file')
-      importPromise = ImportRdfService.importFromFile($scope.importRdf.source, $scope.target.graph);
+      importPromise = ImportRdfService.importFromFile($scope.importRdf.files, $scope.target.graph);
     else if($scope.sourceType.value == 'url')
       importPromise = ImportRdfService.importFromUrl($scope.importRdf.source, $scope.target.graph);
     else if($scope.sourceType.value == 'externalQuery')
@@ -221,6 +228,11 @@ var ImportFormCtrl = function($scope, $http, $q, $timeout, ConfigurationService,
     else if($scope.sourceType.value == 'localQuery')
       importPromise =  ImportRdfService.importFromLocal($scope.importRdf.source, $scope.target.graph, $scope.importLocal.sparqlQuery);
     
+    if($scope.sourceType.value == 'file')
+      source = $scope.importRdf.files;
+    else
+      source = [ Ns.lengthen($scope.importRdf.source) ];
+
     importPromise.then(
       //success
       function (response){
@@ -229,7 +241,7 @@ var ImportFormCtrl = function($scope, $http, $q, $timeout, ConfigurationService,
 
         var meta = { 
           namedGraph :   imported.targetGraph, 
-          source:   $scope.importRdf.source, 
+          source:    source, 
           contributor :  Ns.lengthen(currentAccount.getAccountURI()),
           date: Helpers.getCurrentDate() 
         };
