@@ -581,12 +581,19 @@ var TripleGeoCtrl = function($scope, $http, $q, ConfigurationService, Components
 				params["targetGraph"] = jobDesc.namedgraph;  
 
       	console.log(params);
+
+      	var contributionUpdateBody = {
+		      	namedGraph   : Ns.lengthen(jobDesc.namedgraph),
+    				source       : [jobDesc.description +" (job - " + jobDesc.name + ")"],
+    				contributor  : componentId
+		      };
 				
 				var steps = '['
-						+ '{"service":"'+ $scope.service.serviceUrl +'","contenttype":"application/json", "method":"POST", "body":"'+encodeURI(JSON.stringify(params))+'", "numberOfOrder":1}'
+						+ '{"service":"'+ $scope.service.serviceUrl +'","contenttype":"application/json", "method":"POST", "body":"'+encodeURI(JSON.stringify(params))+'", "numberOfOrder":1},'
+						+ '{"service":"'+ atuhEndpoint + '","contenttype":"application/json", "method":"PUT", "body":"'+encodeURI(JSON.stringify(contributionUpdateBody))+'", "numberOfOrder":2}'
             +']';
 				
-
+        console.log(steps);
 				JobService.addMultiServiceJob(
 							jobDesc.name, 
 							jobDesc.label, 

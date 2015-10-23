@@ -132,7 +132,7 @@
 :DEERService
       a       lds:EnrichmentService ;
       rdfs:label "Deer" ;
-      lds:serviceUrl <http://localhost:8080/deer-Service> .
+      lds:serviceUrl <http://localhost:8080/deer-service/> .
 
 :OntoWiki
       a       lds:StackComponent ;

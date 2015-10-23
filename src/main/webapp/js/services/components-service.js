@@ -25,8 +25,9 @@ module.factory('ComponentsService', function ($http, $q, ConfigurationService) {
 		// parse the component data to find a service
 		getComponentService : function(id, component){
 			var uri = ConfigurationService.getUriBase() + id;
-			console.log(uri);	
+			
 			for(var i in component.services){
+				console.log(uri) + " ==?" + component.services[i].uri;	
 				if (component.services[i].uri == uri)
 					return component.services[i];
 			}

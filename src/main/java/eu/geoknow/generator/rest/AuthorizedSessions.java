@@ -66,6 +66,7 @@ import eu.geoknow.generator.users.UserProfile;
  * 
  * @author alejandragarciarojas
  * 
+ *         TODO: errors on the server are not given back to the client
  */
 @Path("/session")
 public class AuthorizedSessions {
