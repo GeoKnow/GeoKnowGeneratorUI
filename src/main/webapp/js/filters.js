@@ -17,7 +17,7 @@ module.filter('shortenURI', function(Ns) {
 */
 module.filter('formatDate', function() {
   return function(date) {
-  	if(date == "") return "";
+  	if(date == null || date == "") return "";
   	var day   = date.substring(8,10);
   	var month = date.substring(5,7);
   	var year  = date.substring(0,4);

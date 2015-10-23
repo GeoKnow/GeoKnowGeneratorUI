@@ -2,20 +2,20 @@
 
 function DashboardCtrl($scope, JobService, ComponentsService, $http, flash, ServerErrorResponse) {
  
-  var sbaId ="SpringBatch";
-  var serviceId = "SpringBatchService";
+  // var sbaId ="SpringBatch";
+  // var sbaServiceId = "SpringBatchService";
 
-  ComponentsService.getComponent(sbaId).then(
-    //success
-    function(response){
-      $scope.sba = response;
-      $scope.service = ComponentsService.getComponentService(serviceId, $scope.sba);
-      if($scope.service== null)
-        flash.error="Service not configured: " +serviceId; 
-    }, 
-    function(response){
-      flash.error="Component not configured: " +ServerErrorResponse.getMessage(response);
-    });
+  // ComponentsService.getComponent(sbaId).then(
+  //   //success
+  //   function(response){
+  //     $scope.sba = response;
+  //     $scope.sbaService = ComponentsService.getComponentService(sbaServiceId, $scope.sba);
+  //     if($scope.sbaService== null)
+  //       flash.error="Service not configured: " +sbaServiceId; 
+  //   }, 
+  //   function(response){
+  //     flash.error="Component not configured: " +ServerErrorResponse.getMessage(response);
+  //   });
 
   $scope.jobs = [];
  
@@ -31,6 +31,7 @@ function DashboardCtrl($scope, JobService, ComponentsService, $http, flash, Serv
     if($scope.jobs[index].executions == undefined){
       JobService.getJob($scope.jobs[index].name).then(
         function(response){
+          console.log(response);
           // if(response.executions.status!="COMPLETED" || response.executions.status!="FAILED")
           $scope.jobs[index].executions = response.executions;
         });

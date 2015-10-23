@@ -19,7 +19,7 @@ app.controller('EstaLdCtrl', function($scope, ConfigurationService, ComponentsSe
 			$scope.sevice = ComponentsService.getComponentService(serviceId, $scope.component);
 			if($scope.sevice== null)
 				flash.error="Service not configured: " +serviceId;	
-
+			console.log($scope.sevice);
     	$scope.endpoints = ConfigurationService.getAllEndpoints();
 
     	workbenchHP = ConfigurationService.getFrameworkHomepage();

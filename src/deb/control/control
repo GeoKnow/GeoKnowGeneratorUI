@@ -1,15 +1,12 @@
-Package: geoknow-generator-ui
-Version: 1.2.0
+Package: deer-service
+Version: 0.1.1
 Section: web
 Priority: extra
 Architecture: all
-Depends: virtuoso-opensource,spring-batch-admin-geoknow,coevolution-debian-package,limes-service,deer-service,triplegeo-service,esta-ld
+Depends: tomcat7
 Maintainer: Alejandra Garcia-Rojas M <alejandra.garciarojas@ontos.com>
 Distribution: ldstack-nightly
-Homepage: http://stack.linkeddata.org/getting-started/geoknow-generator/
-Description: The GeoKnow Generator provides a workbench that integrates of tools
- developed within GeoKnow project (http://geoknow.eu/),
- and are part of the Linked Data Stack (http://stack.linkeddata.org/).
- These workbench aim to provide the required methods and tools
- to easly integrate and process geospatial data
- across a wide range of data sources on the web of data.
+Homepage: https://github.com/GeoKnow/DEER-Service
+Description: A REST service for DEER (https://github.com/GeoKnow/DEER)
+ for Linked Data enrichment, developed within GeoKnow project (http://geoknow.eu/),
+ and part of the Linked Data Stack (http://stack.linkeddata.org/).

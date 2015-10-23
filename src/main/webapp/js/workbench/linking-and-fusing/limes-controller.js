@@ -329,12 +329,12 @@ var LimesCtrl = function($scope, $http, ConfigurationService, ComponentsService,
         		+ "&metaRdf="
         		+ "&userName="+AccountService.getAccount().getUsername();
         	
-        	if(params.output=="TAB") {params.saveendpoint="";}
-		      
+        	// if(params.output=="TAB") {params.saveendpoint="";}
+		      params.output=="N3";
 		      // configure contribution update step    	
 		      var contributionUpdateBody = {
 		      	namedGraph   : Ns.lengthen(jobDesc.namedgraph),
-    				source       : jobDesc.description +" (job - " + jobDesc.name + ")",
+    				source       : [jobDesc.description +" (job - " + jobDesc.name + ")"],
     				contributor  : componentId
 		      };
 		      
@@ -347,6 +347,7 @@ var LimesCtrl = function($scope, $http, ConfigurationService, ComponentsService,
             + '{"service":"'+ params.saveendpoint  + '","contenttype":"application/json", "method":"PUT", "body":"'+encodeURI(JSON.stringify(contributionUpdateBody))+'", "numberOfOrder":5}'
             +']';
 
+          console.log(steps);
 
 					JobService.addMultiServiceJob(
 							jobDesc.name, 
