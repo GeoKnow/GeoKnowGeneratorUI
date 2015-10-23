@@ -252,9 +252,18 @@ var LimesCtrl = function($scope, $http, ConfigurationService, ComponentsService,
 
 		// ask the user for a job name and description
     var modalInstance = $modal.open({
-    	templateUrl: 'modal-forms/workbench/modal-limes-job.html',
-    	controller: 'ModalLimesJobCtrl',
-    	size: 'lg'
+    	templateUrl: 'modal-forms/workbench/modal-job.html',
+    	controller: 'ModalJobCtrl',
+    	size: 'lg', 
+    	resolve : {
+    		modalConfiguration  : function(){
+    			var p = {
+    				title : "Limes Job", 
+    				service: "limes"
+    			};
+    			return p;
+    		} 
+    	}
     });
 
     // reads user's answer

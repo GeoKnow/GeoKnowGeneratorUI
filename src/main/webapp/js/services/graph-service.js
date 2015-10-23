@@ -555,7 +555,7 @@ module.factory("GraphService", function ($http, $q, Config, ConfigurationService
 
     // after some data updated into the graph, its metadata needs to be updated
     var addContribution = function(contribution){
-        
+        console.log(contribution);
         return $http.put("rest/graphs", contribution).then(
             function(response){
                 return response.data.namedgraph;

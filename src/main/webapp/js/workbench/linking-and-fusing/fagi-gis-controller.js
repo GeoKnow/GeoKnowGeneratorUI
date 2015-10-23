@@ -100,6 +100,7 @@ app.controller('FagiGisCtrl', function($q, $scope, ConfigurationService, Compone
   		$scope.refreshGraphList();
   		$scope.fagi.targetGraph = ":"+name;
   	});
+
   };
 
   $scope.updateGraphsA = function(){
@@ -109,6 +110,7 @@ app.controller('FagiGisCtrl', function($q, $scope, ConfigurationService, Compone
     		});
 		else
 			$scope.namedGraphsA = {};
+
   };
 
   $scope.updateGraphsB = function(){
@@ -118,6 +120,7 @@ app.controller('FagiGisCtrl', function($q, $scope, ConfigurationService, Compone
     	});
 		else
 			$scope.namedGraphsB = {};
+
   };
 
 });

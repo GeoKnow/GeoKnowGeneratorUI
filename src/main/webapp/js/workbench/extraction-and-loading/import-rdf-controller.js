@@ -6,7 +6,7 @@
 *
 ***************************************************************************************************/
 
-var ImportFormCtrl = function($scope, $http, ConfigurationService, flash, AccountService, GraphService, Ns, Upload, ImportRdfService, ServerErrorResponse, Helpers) {
+var ImportFormCtrl = function($scope, $http, $q, $timeout, ConfigurationService, flash, AccountService, GraphService, Ns, Upload, ImportRdfService, ServerErrorResponse, Helpers) {
 
   var currentAccount = AccountService.getAccount();
 	     
@@ -32,27 +32,31 @@ var ImportFormCtrl = function($scope, $http, ConfigurationService, flash, Accoun
 
     
     $scope.endpoints = ConfigurationService.getAllEndpoints();
-    $scope.uploadMessage = '';
-
+    $scope.uploadMessage = "";
     $scope.sourceType = "";
 
     // source can be : file, url, endpoint or graph
     $scope.importRdf = { 
-      source : "" };
+      source : "",
+      files : []
+    };
    
     //scope variables used in the target-graph direcitve
     $scope.target = { 
       label : "Target Graph",
-      graph : "" };
-    $scope.newTarget ={
-      prefix : "RdfImport" ,
-      label : "",
-      description : ""
+      graph : "", 
+      isNew : {
+        prefix : "RdfImport" ,
+        label : "",
+        description : ""
+      }
     };
+
     //scope variable is for the source-graph direcitve
-    $scope.source = { 
+    $scope.source = {      
       label : "Source Graph",
-      graph : "" };
+      graph : "" 
+    };
 
     $scope.importEndpoint = {sparqlQuery : "CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o } "};
     $scope.importLocal = { action : "ADD", sparqlQuery : "ADD"};
@@ -77,22 +81,23 @@ var ImportFormCtrl = function($scope, $http, ConfigurationService, flash, Accoun
   };
 
   $scope.updateNewTargetInfo = function(){
+    console.log($scope.source.graph);
     if($scope.sourceType.value == 'file'){
-      $scope.newTarget ={
+      $scope.target.isNew ={
         prefix : "RdfImport" ,
-        label : $scope.importRdf.source,
-        description : "Import from file "+$scope.importRdf.source,
+        label : $scope.importRdf.files,
+        description : "Import from file(s) "+ $scope.importRdf.files,
       };
     }
     else if($scope.sourceType.value == 'url'){
-      $scope.newTarget ={
+      $scope.target.isNew ={
         prefix : "RdfImport" ,
         label : "Import from url",
         description : "Import from url "+$scope.importRdf.source,
       };
     }
     else if($scope.sourceType.value == 'externalQuery'){
-      $scope.newTarget ={
+      $scope.target.isNew ={
         prefix : "RdfImport" ,
         label : "Import from endpoint",
         description : "Import from endpoint "+$scope.importRdf.source,
@@ -100,7 +105,7 @@ var ImportFormCtrl = function($scope, $http, ConfigurationService, flash, Accoun
     }
     else if($scope.sourceType.value == 'localQuery'){
       $scope.importRdf.source = $scope.source.graph;
-       $scope.newTarget ={
+       $scope.target.isNew ={
         prefix : "RdfImport" ,
         label : "Import from graph",
         description : "Import from graph "+$scope.importRdf.source,
@@ -110,6 +115,7 @@ var ImportFormCtrl = function($scope, $http, ConfigurationService, flash, Accoun
   }
 		
   $scope.updateForm = function() {
+    
     if($scope.sourceType.value == 'file'){
     	$scope.fileElements = true;	
 		  $scope.urlElements = false;
@@ -139,29 +145,57 @@ var ImportFormCtrl = function($scope, $http, ConfigurationService, flash, Accoun
 	
   /**
    For File Import
-   **/
-  $scope.$watch('importFile.files', function () {
-    if($scope.importFile != undefined )
-      $scope.upload($scope.importFile.files);
-  });
+  **/
+  $scope.uploadSuceed = function(){
 
-  $scope.upload = function (files) {
-    if (files && files.length) {
-      for (var i = 0; i < files.length; i++) {
-        var file = files[i];
-        Upload.upload({
-            url: 'UploadServlet',
-            file: file
-        }).progress(function (evt) {
-            var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
-            flash.success='progress: ' + parseInt(100.0 * evt.loaded / evt.total) + '% file :'+ evt.config.file.name;
-        }).success(function (data, status, headers, config) {
-          $scope.importRdf.source = config.file.name;
-          $scope.updateNewTargetInfo();
+    return ($scope.sourceType.value === 'file' && $scope.importRdf.files.length>0)
+  }
+
+  $scope.uploadFiles = function(files, errFiles) {
+    
+    $scope.errFiles = errFiles;
+    var promises = [];
+    
+    angular.forEach(files, function(file) {
+      
+       var deferred = $q.defer();
+        file.upload = Upload.upload({
+            url:  'UploadServlet',
+            data: {file: file}
         });
-      }
-    }
-  };
+
+        file.upload.then(function (response) {
+            $timeout(function () {
+              deferred.resolve(file.name);
+            });
+        }, function (response) {
+            if (response.status > 0)
+              flash.error = response.status + ': ' + response.data;
+        }, function (evt) {
+            var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);  
+            flash.success='progress: ' + parseInt(100.0 * evt.loaded / evt.total) + '% file :'+ file.name;
+            // file.progress = Math.min(100, parseInt(100.0 * 
+            //                          evt.loaded / evt.total));
+        });
+
+        promises.push(deferred.promise);
+      }); // foreach
+ 
+    $q.all(promises).then(
+      // results: an array of data objects from each deferred.resolve(data) call
+        function(results) {
+          flash.success='Uploaded: ' + results  ;
+          $scope.importRdf.files = results;
+          $scope.updateNewTargetInfo();
+        },
+        // error
+        function(response) {
+          console.log(response);
+        }
+    );
+  }
+
+
 
   $scope.isImporting =  function(){
     return importing;
@@ -170,7 +204,7 @@ var ImportFormCtrl = function($scope, $http, ConfigurationService, flash, Accoun
   $scope.isInvalid = function(){
     var invalid =true;
     if(!$scope.fileForm.$invalid){
-        if($scope.importRdf.source!= null){
+        if($scope.importRdf.files.length>0){
           invalid = false;
         }
     }
@@ -186,7 +220,7 @@ var ImportFormCtrl = function($scope, $http, ConfigurationService, flash, Accoun
     var source;
 
     if($scope.sourceType.value == 'file')
-      importPromise = ImportRdfService.importFromFile($scope.importRdf.source, $scope.target.graph);
+      importPromise = ImportRdfService.importFromFile($scope.importRdf.files, $scope.target.graph);
     else if($scope.sourceType.value == 'url')
       importPromise = ImportRdfService.importFromUrl($scope.importRdf.source, $scope.target.graph);
     else if($scope.sourceType.value == 'externalQuery')
@@ -194,24 +228,26 @@ var ImportFormCtrl = function($scope, $http, ConfigurationService, flash, Accoun
     else if($scope.sourceType.value == 'localQuery')
       importPromise =  ImportRdfService.importFromLocal($scope.importRdf.source, $scope.target.graph, $scope.importLocal.sparqlQuery);
     
+    if($scope.sourceType.value == 'file')
+      source = $scope.importRdf.files;
+    else
+      source = [ Ns.lengthen($scope.importRdf.source) ];
+
     importPromise.then(
       //success
       function (response){
         
-        console.log(response);
-
         var imported = response.data.import;
 
         var meta = { 
           namedGraph :   imported.targetGraph, 
-          source:   $scope.importRdf.source, 
+          source:    source, 
           contributor :  Ns.lengthen(currentAccount.getAccountURI()),
           date: Helpers.getCurrentDate() 
         };
         // update the metadata of the graph
         GraphService.addContribution(meta).then(
           function(response){
-            console.log(response);
             flash.success = "successfully imported " + imported.triples + " triples";
             $scope.resetValues();
           }, 
@@ -233,7 +269,6 @@ var ImportFormCtrl = function($scope, $http, ConfigurationService, flash, Accoun
     
     initialise();
 
-    $scope.importFile.files = [];
     $scope.urlForm.$setPristine();
     $scope.fileForm.$setPristine();
     $scope.endpointForm.$setPristine();

@@ -213,7 +213,7 @@
 				<artifactId>tomcat7-maven-plugin</artifactId>
 				<version>2.2</version>
 				<configuration>
-					<server>generator</server>
+					<server>localhost</server>
 					<url>${tomcat.deploy.url}</url>
 					<path>/${project.build.finalName}</path>
 					<update>true</update>
@@ -284,35 +284,5 @@
 		</plugins>
 	</build>
 
-	<profiles>
-		<profile>
-			<id>deb-pkg</id>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-antrun-plugin</artifactId>
-						<configuration>
-							<tasks>
-								<echo message="Creating debian package">
-								</echo>
-								<exec dir="${basedir}/deb-package" executable="${basedir}/deb-package/build_debpkg.sh"
-									failonerror="true">
-								</exec>
-							</tasks>
-						</configuration>
-						<executions>
-							<execution>
-								<id>deb-pkg</id>
-								<phase>package</phase>
-								<goals>
-									<goal>run</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
+
 </project>

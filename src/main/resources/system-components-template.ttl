@@ -121,7 +121,7 @@
 :TripleGeoService
       a       lds:ExtractionService ;
       rdfs:label "Triple-Geo" ;
-      lds:serviceUrl <http://localhost:8080/TripleGeo-Service> .
+      lds:serviceUrl <http://localhost:8080/triplegeo-service> .
 
 :DEER
       a       lds:StackComponent ;

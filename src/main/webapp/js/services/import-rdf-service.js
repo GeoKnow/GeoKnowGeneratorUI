@@ -7,11 +7,12 @@ module.factory('ImportRdfService', function ($http, Ns) {
 
 	var service = {
 
-		importFromFile : function(file, targetGraph){
+		importFromFile : function(files, targetGraph){
+      console.log(files);
       console.log(targetGraph);
       console.log(Ns.lengthen(targetGraph));
 			var config ={
-        fileName: file, 
+        files: files, 
         targetGraph: Ns.lengthen(targetGraph)
       }; 
       console.log(config);

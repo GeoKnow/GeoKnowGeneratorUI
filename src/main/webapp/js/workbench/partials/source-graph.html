@@ -1,8 +1,7 @@
 <div class="form-group">
-  <label for="sourceGraph" class="col-xs-2 control-label" >{{source.label}}</label>
+  <label for="sourceGraph" class="col-xs-2 control-label" >{{graphInfo.label}}</label>
   <div class="col-xs-8">
-    <select id="sourceGraph" class="form-control" ng-model="source.graph" ng-options="namedgraph.name as describeGraph(namedgraph) for namedgraph in readableGraphs" ng-change="sourceChanged()" required>
+    <select id="sourceGraph" class="form-control" ng-model="graphInfo.graph" ng-options="namedgraph.name as describeGraph(namedgraph) for namedgraph in readableGraphs" ng-change="notify()" required>
     </select>
-  </div>
+	</div>
 </div>
-<br/>
