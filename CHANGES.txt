@@ -1,4 +1,5 @@
-release date=16:13 16.06.2015,version=1.2.0,urgency=low,by=Alejandra Garcia-Rojas M <alejandra.garciarojas@ontos.com>,distribution=dstack-nightly
- * Coevolution service integration
- * Component management refactoring
- * Substantial refactored code
+release date=16:13 23.10.2015,version=1.2.0,urgency=low,by=Alejandra Garcia-Rojas M <alejandra.garciarojas@ontos.com>,distribution=ldstack-nightly
+ * Third year release
+ * Substantial refactored code for REST services
+ * integration Fagi of and esta-ld, and coevolution
+ * data provenance in graphs
