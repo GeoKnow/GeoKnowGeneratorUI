@@ -13,8 +13,8 @@
 # This file contains the configuration for the GeoKnow generator concerning
 # the endpoints and default user credentials
 # To have different instances of the workbench different prefixes for projects:
-# Replace ***PROJECT_URL*** with the desided URI
-# Replace ***REMOVED*** with the corresponding data
+# Check https://github.com/GeoKnow/GeoKnowGeneratorUI/wiki/Configuration for detailed
+# description of configuration triples in this file
 # #######################################################################################
 
 # These triples describes the URL endpoints for the application
@@ -27,10 +27,9 @@
   ontos:publicEndpoint :VirtuosoEndpoint ;
   ontos:authEndpoint :VirtuosoAuthSPARQLEndpoint ;
   ontos:frameworkDataDir "/var/generator"^^xsd:string ;
-  foaf:homepage <http://localhost:8080/generator> ;
+  foaf:homepage <http://localhost:8080/generator/> ;
   sd:defaultDataset :default-dataset;  
-  lds:integrates :Virtuoso, :SpringBatch, :RdfImport, :Coevolution;
-  # :Facete, :Limes, :Sparqlify, :TripleGeo, :GeoLift, :esta-ld, :Mappify, :FagiGis, :DEER, 
+  lds:integrates :Virtuoso, :SpringBatch, :RdfImport, :Coevolution, :Facete, :Limes, :Sparqlify, :TripleGeo, :GeoLift, :esta-ld, :Mappify, :FagiGis, :DEER;
   lds:requires :Virtuoso, :SpringBatch, :Coevolution;
   lds:providesService :PublishingService, :UserManagerService, :EmailService
   .
@@ -42,17 +41,17 @@
 
 :EmailService
   a       lds:EmailService ;
-  dcterms:description "Provides functionality to send email notifications to users, and especially to send login information."^^xsd:string ;
-  lds:password "***REMOVED***"^^xsd:string ;
-  lds:user "***REMOVED***"^^xsd:string ;
-  foaf:mbox <mailto:***REMOVED***> ;
-  ontos:smtpHost "smtp.gmail.com"^^xsd:string ;
+  dcterms:description "Provides functionality to send email, especially to send login information."^^xsd:string ;
+  lds:password "fakepwd"^^xsd:string ;
+  lds:user "admin@example.com"^^xsd:string ;
+  foaf:mbox <mailto:changeme@example.com> ;
+  ontos:smtpHost "smtp.example.com"^^xsd:string ;
   ontos:smtpTlsPort "587"^^xsd:string ;
   ontos:smtpSslPort "465"^^xsd:string .
 
 :PublishingService
   a       lds:PublicationService ;
-  dcterms:description "Provides functionality to upload data to a target graph from several graphs and to do versioning."^^xsd:string ;
+  dcterms:description "Provides functionalit to upload data to a target graph varius graphs and to do a versioning."^^xsd:string ;
   lds:serviceUrl <http://localhost:8080/generator/rest/publish> . 
 
 ##################################################################
@@ -75,4 +74,3 @@
   dcterms:title "default"^^xsd:string;
   dcterms:description "Default graph"^^xsd:string 
   .
-  
