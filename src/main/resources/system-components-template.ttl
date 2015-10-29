@@ -105,7 +105,7 @@
 :FaceteService
       a       lds:ExplorationService ;
       rdfs:label "Facete" ;
-      lds:serviceUrl <http://cstadler.aksw.org/facete2/> .
+      lds:serviceUrl <http://cstadler.aksw.org/facete2/#/home> .
 
 :Limes
       a       lds:StackComponent ;

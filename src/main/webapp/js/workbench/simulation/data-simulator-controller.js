@@ -51,19 +51,25 @@ app.controller('DataSimulatorCtrl', function($scope, ComponentsService, $http, S
 
 
 	$scope.dateRange = {startDate: moment().toDate(), endDate: moment().toDate()};
-	$scope.simulation ={ startDate: "", endDate:"", interval:"0.0", productUri:"", status:"Not running" };
+	$scope.simulation ={ startDate: "", endDate:"", interval:"0.0", productUri:""};
 
-	$scope.status = function(){
-			DataSimulatorService.metrics().then(
-				function(response){
-					console.log(response);
-				},
-				// fail
-				function(response){
-					// if 503 simmulation is not finished
-					console.log(response);
+	$scope.simulationRunning = function(){
 
-				});
+		return false;
+			// DataSimulatorService.metrics().then(
+			// 	function(response){
+			// 		return "Not running";
+			// 	},
+			// 	// fail
+			// 	function(response){
+			// 		// if 503 simmulation is not finished
+			// 		console.log(response);
+			// 		return "running";
+			// 	});
+	}
+
+	$scope.newsExtractorStatus = function(){
+		return "Not running";
 	}
 
 	// $scope.$watch($scope.source.products.graph, function (newValue) {

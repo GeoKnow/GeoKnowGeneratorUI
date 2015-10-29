@@ -24,55 +24,14 @@
       foaf:homepage <http://dbpedia.org/> ;
       void:sparqlEndpoint <http://dbpedia.org/sparql> .
 
-:GeoLinkedDataEs
-      a       void:Dataset , onots:SPARQLEndpoint , onots:DataSource ;
-      rdfs:label "Spanish GeoLinkedData"^^xsd:string ;
-      foaf:homepage <http://geo.linkeddata.es/> ;
-      void:sparqlEndpoint <http://geo.linkeddata.es/sparql> .
 
-:osm-semantic-network
-      a       void:Dataset , onots:SPARQLEndpoint , onots:DataSource ;
-      rdfs:label "OSM Semantic Network"^^xsd:string ;
-      foaf:homepage <http://wiki.openstreetmap.org/wiki/OSM_Semantic_Network> ;
-      void:sparqlEndpoint <http://spatial.ucd.ie/lod/sparql> .
-
-:LinkedGeoData
-      a       void:Dataset , onots:SPARQLEndpoint , onots:DataSource ;
-      rdfs:label "LinkedGeoData"^^xsd:string ;
-      foaf:homepage <http://linkedgeodata.org> ;
-      void:sparqlEndpoint <http://linkedgeodata.org/sparql> .
-
-:oxpoints
-      a       void:Dataset , onots:SPARQLEndpoint , onots:DataSource ;
-      rdfs:label "OxPoints (University of Oxford)"^^xsd:string ;
-      foaf:homepage <https://data.ox.ac.uk/doc/dataset/oxpoints> ;
-      void:sparqlEndpoint <https://data.ox.ac.uk/sparql/> .
- 
-:adminch
-      a       void:Dataset , onots:SPARQLEndpoint , onots:DataSource ;
-      rdfs:label "data.admin.ch - Linked Data Prototype"^^xsd:string ;
-      foaf:homepage <http://data.admin.ch> ;
-      void:sparqlEndpoint <http://data.admin.ch/sparql> .
-
-:datasemanticweborg
-      a       void:Dataset , onots:SPARQLEndpoint , onots:DataSource ;
-      rdfs:label "data.emanticweb.org"^^xsd:string ;
-      foaf:homepage <http://data.semanticweb.org> ;
-      void:sparqlEndpoint <http://data.semanticweb.org/sparql> .
-
-:drugbank
-      a       void:Dataset , onots:SPARQLEndpoint , onots:DataSource ;
-      rdfs:label "Drug bank"^^xsd:string ;
-      foaf:homepage <http://www4.wiwiss.fu-berlin.de/drugbank> ;
-      void:sparqlEndpoint <http://www4.wiwiss.fu-berlin.de/drugbank/sparql> .
-
-:fagi
+:localPostgress
       a onots:Database , onots:DataSource ;
       rdfs:label "local postgres Db"^^xsd:string ;
       onots:dbHost "localhost"^^xsd:string ;
-      onots:dbName "local postgres"^^xsd:string ;
-      onots:dbPassword "fagi"^^xsd:string ;
+      onots:dbName "Local postgres"^^xsd:string ;
+      onots:dbPassword "generator"^^xsd:string ;
       onots:dbPort "5432"^^xsd:string ;
       onots:dbType onots:PostGIS ;
-      onots:dbUser "fagi"^^xsd:string .
+      onots:dbUser "generator"^^xsd:string .
 

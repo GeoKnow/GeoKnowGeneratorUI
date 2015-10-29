@@ -24,8 +24,8 @@
 # do not modify this user, is for integration testing, and can be deleted if the Workbench installation succeed
 :testUser
   a ontos:Account;
-  foaf:accountName "testing"^^xsd:string;
-  lds:password "integration-testing"^^xsd:string;
+  foaf:accountName "alejandra"^^xsd:string;
+  lds:password "chocolate"^^xsd:string;
   foaf:mbox <mailto:testing@geoknow.eu>;
   ontos:role :Administrator.
 
