@@ -1,15 +1,15 @@
 Package: geoknow-generator-ui
+Distribution: ldstack-nightly
 Version: 1.2.0
 Section: web
 Priority: extra
 Architecture: all
-Depends: virtuoso-opensource,spring-batch-admin-geoknow,coevolution-debian-package,limes-service,deer-service,triplegeo-service,esta-ld
+Depends: tomcat7,spring-batch-admin-geoknow,coevolution-debian-package,limes-service,deer-service,triplegeo-service,esta-ld
 Maintainer: Alejandra Garcia-Rojas M <alejandra.garciarojas@ontos.com>
-Distribution: ldstack-nightly
 Homepage: http://stack.linkeddata.org/getting-started/geoknow-generator/
 Description: The GeoKnow Generator provides a workbench that integrates of tools
  developed within GeoKnow project (http://geoknow.eu/),
  and are part of the Linked Data Stack (http://stack.linkeddata.org/).
  These workbench aim to provide the required methods and tools
  to easly integrate and process geospatial data
- across a wide range of data sources on the web of data.
+ across a wide range of data sources on the web of data. 

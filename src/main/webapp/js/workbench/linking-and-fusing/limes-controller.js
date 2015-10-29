@@ -252,17 +252,18 @@ var LimesCtrl = function($scope, $http, ConfigurationService, ComponentsService,
 
 		// ask the user for a job name and description
     var modalInstance = $modal.open({
-    	templateUrl: 'modal-forms/workbench/modal-limes-job.html',
-    	controller: 'ModalLimesJobCtrl',
-    	size: 'lg',
-    	resolve: {
-        modaltitle: function() {
-          return "New Limes Job";
-        },
-        jobService: function(){
-          return "Limes-Service";
-        }
-      }
+    	templateUrl: 'modal-forms/workbench/modal-job.html',
+    	controller: 'ModalJobCtrl',
+    	size: 'lg', 
+    	resolve : {
+    		modalConfiguration  : function(){
+    			var p = {
+    				title : "Limes Job", 
+    				service: "limes"
+    			};
+    			return p;
+    		} 
+    	}
     });
 
     // reads user's answer
@@ -328,12 +329,12 @@ var LimesCtrl = function($scope, $http, ConfigurationService, ComponentsService,
         		+ "&metaRdf="
         		+ "&userName="+AccountService.getAccount().getUsername();
         	
-        	if(params.output=="TAB") {params.saveendpoint="";}
-		      
+        	// if(params.output=="TAB") {params.saveendpoint="";}
+		      params.output=="N3";
 		      // configure contribution update step    	
 		      var contributionUpdateBody = {
 		      	namedGraph   : Ns.lengthen(jobDesc.namedgraph),
-    				source       : jobDesc.description +" (job - " + jobDesc.name + ")",
+    				source       : [jobDesc.description +" (job - " + jobDesc.name + ")"],
     				contributor  : componentId
 		      };
 		      
@@ -346,6 +347,7 @@ var LimesCtrl = function($scope, $http, ConfigurationService, ComponentsService,
             + '{"service":"'+ params.saveendpoint  + '","contenttype":"application/json", "method":"PUT", "body":"'+encodeURI(JSON.stringify(contributionUpdateBody))+'", "numberOfOrder":5}'
             +']';
 
+          console.log(steps);
 
 					JobService.addMultiServiceJob(
 							jobDesc.name, 

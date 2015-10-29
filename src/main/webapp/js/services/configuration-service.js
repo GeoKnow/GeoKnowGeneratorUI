@@ -220,7 +220,6 @@ module.factory('ConfigurationService', function ($q, Config, $http, $location, f
         getAllEndpoints: function () {
             var results = [];
             var elements = Config.select("rdf:type", "ontos:SPARQLEndpoint");
-            console.log(elements);
             for (var resource in elements) {
                 var element = elements[resource];
                 if(element["rdfs:label"]== undefined) continue;

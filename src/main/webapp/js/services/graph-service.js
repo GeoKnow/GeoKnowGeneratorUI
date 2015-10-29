@@ -420,6 +420,8 @@ module.factory("GraphService", function ($http, $q, Config, ConfigurationService
                     settings[":default-dataset"]["sd:namedGraph"] = [];
                 settings[":default-dataset"]["sd:namedGraph"].push(parNamedGraph.name);
                 
+                console.log(response);
+                console.log(settings);
                 return Config.write();
             });
         return promise;

@@ -312,6 +312,8 @@ var TripleGeoCtrl = function($scope, $http, $q, ConfigurationService, Components
 
     var promises = [];
 
+    console.log(errFiles);
+
     angular.forEach(files, function(file) {
     	
 			 var deferred = $q.defer();
@@ -339,7 +341,11 @@ var TripleGeoCtrl = function($scope, $http, $q, ConfigurationService, Components
  
  		$q.all(promises).then(
  			// results: an array of data objects from each deferred.resolve(data) call
+ 			
         function(results) {
+
+        	console.log(results);
+        	
         	var normalized = new Array();
         	for(var i in results){
         		var r = results[i];
@@ -347,11 +353,14 @@ var TripleGeoCtrl = function($scope, $http, $q, ConfigurationService, Components
         			normalized[k] =r[k];
         		
         	}
+        	console.log(files);
+        	console.log(normalized);
           validateFiles(files, normalized);
           uploading=false;
         },
         // error
         function(response) {
+
         	uploading=false;
         }
     );
@@ -360,9 +369,6 @@ var TripleGeoCtrl = function($scope, $http, $q, ConfigurationService, Components
 	var validateFiles = function(files, responseMap){
     if(files==null) return;
     var fileName = "";
-
-    console.log(files);
-    console.log(responseMap);
 
 		$scope.files=files;
 		// validate esri
@@ -560,10 +566,11 @@ var TripleGeoCtrl = function($scope, $http, $q, ConfigurationService, Components
     	controller: 'ModalJobCtrl',
     	size: 'lg',
     	resolve : {
-    		mConf  : function(){
+    		modalConfiguration  : function(){
     			var p = {
-    				title: "New Triple-Geo Job",
-    				prefix: "tripleGeo"};
+    				title: "Triple-Geo Job",
+    				service: "tripleGeo"
+    			};
     			return p;
     		} 
     	}
@@ -580,12 +587,19 @@ var TripleGeoCtrl = function($scope, $http, $q, ConfigurationService, Components
 				params["targetGraph"] = jobDesc.namedgraph;  
 
       	console.log(params);
+
+      	var contributionUpdateBody = {
+		      	namedGraph   : Ns.lengthen(jobDesc.namedgraph),
+    				source       : [jobDesc.description +" (job - " + jobDesc.name + ")"],
+    				contributor  : componentId
+		      };
 				
 				var steps = '['
-						+ '{"service":"'+ $scope.service.serviceUrl +'","contenttype":"application/json", "method":"POST", "body":"'+encodeURI(JSON.stringify(params))+'", "numberOfOrder":1}'
+						+ '{"service":"'+ $scope.service.serviceUrl +'","contenttype":"application/json", "method":"POST", "body":"'+encodeURI(JSON.stringify(params))+'", "numberOfOrder":1},'
+						+ '{"service":"'+ atuhEndpoint + '","contenttype":"application/json", "method":"PUT", "body":"'+encodeURI(JSON.stringify(contributionUpdateBody))+'", "numberOfOrder":2}'
             +']';
 				
-
+        console.log(steps);
 				JobService.addMultiServiceJob(
 							jobDesc.name, 
 							jobDesc.label, 

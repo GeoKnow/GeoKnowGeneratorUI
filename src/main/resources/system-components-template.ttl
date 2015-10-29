@@ -12,6 +12,8 @@
 
 ########### COMPONENT DESCRIPTION #######################################################
 # Following triples  describes the configuration of components in the framework
+# Check https://github.com/GeoKnow/GeoKnowGeneratorUI/wiki/Configuration for detailed
+# description of configuration triples in this file
 # #######################################################################################
 
 :Virtuoso
@@ -24,6 +26,8 @@
 
 # #######################################################################################
 # the user and password provided in VirtuosoConductor should exixt
+# Check https://github.com/GeoKnow/GeoKnowGeneratorUI/wiki/Configuration for detailed
+# description of configuration triples in this file
 # #######################################################################################
 
 :VirtuosoConductor 
@@ -36,6 +40,8 @@
 
 # #######################################################################################
 # the user and password provided in VirtuosoAuthSPARQLEndpoint will be created at setup
+# Check https://github.com/GeoKnow/GeoKnowGeneratorUI/wiki/Configuration for detailed
+# description of configuration triples in this file
 # #######################################################################################
 
 :VirtuosoAuthSPARQLEndpoint
@@ -173,7 +179,7 @@
       rdfs:label "Public-Private Data Coevolution"^^xsd:string ;
       lds:providesService :CoevolutionService ;
       dcterms:hasVersion "1.0.0"^^xsd:string ;
-      foaf:homepage <http://localhost:8080/coevolution-service/> .
+      foaf:homepage <http://geoknow-generator.aws.semweb.unister.de:8080/coevolution-service/> .
 
 :CoevolutionService
       a       lds:PublicationService ;
@@ -249,9 +255,12 @@
       ontos:route "/workbench/linking-and-fusing/fagi-gis"^^xsd:string;
       ontos:requiresService :FagiGisService .
 
-
 :CoevRouteRestriction
       a     ontos:RouteRestriction;
       ontos:route "/workbench/evolution-and-repair/coevolution-apply"^^xsd:string;
       ontos:requiresService :CoevolutionService .
 
+:EstaLDRestriction
+      a     ontos:RouteRestriction;
+      ontos:route "/workbench/search-querying-and-exploration/esta-ld"^^xsd:string;
+      ontos:requiresService :esta-ld-service .

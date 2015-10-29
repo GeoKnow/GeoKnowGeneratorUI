@@ -10,10 +10,7 @@ var ImportFormCtrl = function($scope, $http, $q, $timeout, ConfigurationService,
 
   var currentAccount = AccountService.getAccount();
 	     
-  var uploadError = false;
-  var uploading = false;
   var importing = false;
-  var uploadedFiles = null;
 
   $scope.sourceTypes = [
     {value:'file', label:'File'},
@@ -25,11 +22,7 @@ var ImportFormCtrl = function($scope, $http, $q, $timeout, ConfigurationService,
   // initialise some required fields
   var initialise = function(){
 
-    uploadError = false;
-    uploading = false;
     importing = false;
-    uploadedFiles = null;
-
     
     $scope.endpoints = ConfigurationService.getAllEndpoints();
     $scope.uploadMessage = "";
@@ -85,8 +78,8 @@ var ImportFormCtrl = function($scope, $http, $q, $timeout, ConfigurationService,
     if($scope.sourceType.value == 'file'){
       $scope.target.isNew ={
         prefix : "RdfImport" ,
-        label : "Import form " + $scope.importRdf.files.length +" files",
-        description : "Import from file(s) "+ $scope.importRdf.files,
+        label : $scope.importRdf.files.join('-'),
+        description : "Import from file(s) "+  $scope.importRdf.files.join(),
       };
     }
     else if($scope.sourceType.value == 'url'){
