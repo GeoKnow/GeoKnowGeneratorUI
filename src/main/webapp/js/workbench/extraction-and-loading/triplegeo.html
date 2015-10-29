@@ -49,7 +49,7 @@
                 </div>
                 <div class="col-xs-8">
 
-            		<button ngf-select="uploadFiles($files, $invalidFiles)" multiple accept="*/*" ngf-max-height="1000" ngf-max-size="1MB">Select Files</button>
+            		<button ngf-select="uploadFiles($files, $invalidFiles)" multiple accept="*/*" ngf-max-height="1000" ngf-max-size="1GB">Select Files</button>
 					<ul ng-show="isUploading()">
 						    <li ng-repeat="f in files" style="font:smaller">{{f.name}} {{f.$errorParam}}
 						      <span class="progress" ng-show="f.progress >= 0">
