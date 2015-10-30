@@ -105,7 +105,7 @@
 :FaceteService
       a       lds:ExplorationService ;
       rdfs:label "Facete" ;
-      lds:serviceUrl <http://cstadler.aksw.org/facete2/> .
+      lds:serviceUrl <http://localhost:8080/facete2/#/home> .
 
 :Limes
       a       lds:StackComponent ;
@@ -138,7 +138,7 @@
 :DEERService
       a       lds:EnrichmentService ;
       rdfs:label "Deer" ;
-      lds:serviceUrl <http://localhost:8080/deer-Service> .
+      lds:serviceUrl <http://localhost:8080/deer-service> .
 
 :OntoWiki
       a       lds:StackComponent ;

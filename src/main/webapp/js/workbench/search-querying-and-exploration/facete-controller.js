@@ -54,8 +54,7 @@ app.controller('FaceteFormCtrl', function($scope, ConfigurationService, Componen
 		}
 		else{
 			var url= $scope.sevice.serviceUrl + 
-				'?service-uri='				+ encodeURIComponent($scope.source.endpoint) +
-	      '&default-graph-uri=' + encodeURIComponent(Ns.lengthen($scope.source.graph));
+				'?service-uri='				+ encodeURIComponent($scope.source.endpoint) ;
 	     console.log(url);
 			window.open($scope.url);
 	    return false;
