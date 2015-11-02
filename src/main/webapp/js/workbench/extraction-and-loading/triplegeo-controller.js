@@ -418,12 +418,12 @@ var TripleGeoCtrl = function($scope, $http, $q, ConfigurationService, Components
 						format :      $scope.options.format[0],
 						targetStore : $scope.options.targetStore[0],
 					
-						featureString: name,
-						attribute: "",
+						featureString: fileName.substring(0,fileName.length-4).toLowerCase(),
+						attribute: "name",
 						ignore: "UNK",
 						type: "",
-						name: "",
-						uclass: "",
+						name: "id",
+						uclass: "type",
 
 					nsPrefix: "gkg",
 					nsURI: ConfigurationService.getUriBase(), 
@@ -499,8 +499,8 @@ var TripleGeoCtrl = function($scope, $http, $q, ConfigurationService, Components
 					 name: $scope.tripleGeoConfig.name,
 					 uclass: $scope.tripleGeoConfig.uclass,
 					 
-				nsPrefix: "gkg",
-				nsURI: ConfigurationService.getUriBase(), 
+					nsPrefix: "gkg",
+						nsURI: ConfigurationService.getUriBase(), 
 
 					 ontologyNSPrefix: $scope.tripleGeoConfig.ontologyNSPrefix,
 					 ontologyNS: $scope.tripleGeoConfig.ontologyNS,
