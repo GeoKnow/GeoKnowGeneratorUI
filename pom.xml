@@ -4,7 +4,7 @@
 	<groupId>eu.geoknow</groupId>
 	<artifactId>geoknow-generator-ui</artifactId>
 	<packaging>war</packaging>
-	<version>1.2.0</version>
+	<version>1.2.2</version>
 	<name>GeoKnow Generator</name>
 
 	<properties>
@@ -213,7 +213,7 @@
 				<artifactId>tomcat7-maven-plugin</artifactId>
 				<version>2.2</version>
 				<configuration>
-					<server>localhost</server>
+					<server>generator</server>
 					<url>${tomcat.deploy.url}</url>
 					<path>/${project.build.finalName}</path>
 					<update>true</update>
