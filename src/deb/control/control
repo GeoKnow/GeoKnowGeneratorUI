@@ -1,6 +1,6 @@
 Package: geoknow-generator-ui
 Distribution: ldstack-nightly
-Version: 1.2.0
+Version: 1.2.1
 Section: web
 Priority: extra
 Architecture: all

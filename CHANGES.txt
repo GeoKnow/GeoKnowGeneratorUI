@@ -1,5 +1,2 @@
-release date=16:13 23.10.2015,version=1.2.0,urgency=low,by=Alejandra Garcia-Rojas M <alejandra.garciarojas@ontos.com>,distribution=ldstack-nightly
- * Third year release
- * Substantial refactored code for REST services
- * integration Fagi of and esta-ld, and coevolution
- * data provenance in graphs
+release date=11:13 30.10.2015,version=1.2.1,urgency=low,by=Alejandra Garcia-Rojas M <alejandra.garciarojas@ontos.com>,distribution=ldstack-nightly
+ * Allow big files for TirpleGeo

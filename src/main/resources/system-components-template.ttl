@@ -105,7 +105,11 @@
 :FaceteService
       a       lds:ExplorationService ;
       rdfs:label "Facete" ;
+<<<<<<< HEAD
       lds:serviceUrl <http://cstadler.aksw.org/facete2/#/home> .
+=======
+      lds:serviceUrl <http://localhost:8080/facete2/#/home> .
+>>>>>>> master
 
 :Limes
       a       lds:StackComponent ;
@@ -138,7 +142,7 @@
 :DEERService
       a       lds:EnrichmentService ;
       rdfs:label "Deer" ;
-      lds:serviceUrl <http://localhost:8080/deer-Service> .
+      lds:serviceUrl <http://localhost:8080/deer-service> .
 
 :OntoWiki
       a       lds:StackComponent ;
@@ -179,7 +183,7 @@
       rdfs:label "Public-Private Data Coevolution"^^xsd:string ;
       lds:providesService :CoevolutionService ;
       dcterms:hasVersion "1.0.0"^^xsd:string ;
-      foaf:homepage <http://geoknow-generator.aws.semweb.unister.de:8080/coevolution-service/> .
+      foaf:homepage <http://localhost:8080/coevolution-service/> .
 
 :CoevolutionService
       a       lds:PublicationService ;
