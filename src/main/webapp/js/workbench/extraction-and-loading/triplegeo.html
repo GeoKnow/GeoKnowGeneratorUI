@@ -148,10 +148,11 @@
                         <label class="green bold">Feature String</label>
                     </div>
                     <div class="input-group-sm col-xs-4">
-                        <select ng-model="tripleGeoConfig.featureString" class="form-control"  ng-options="option for option in options.esriFeature" ></select>
+                      {{tripleGeoConfig.featureString}}
                     </div>
+
                     <div class="col-xs-2">
-                        <label class="green bold">Attribute</label>
+                        <label class="green bold">Attribute *</label>
                     </div>
                     <div class="input-group-sm col-xs-4">
                       <input class="form-control" ng-model="tripleGeoConfig.attribute"></input>
@@ -160,35 +161,35 @@
                   <br>
                     <div class="row">
                         <div class="col-xs-2">
-                            <label class="green bold">Ignore</label>
+                            <label class="green bold">Ignore *</label>
                         </div>
                         <div class="input-group-sm col-xs-4">
-                            <input class="form-control" ng-model="tripleGeoConfig.ignore"></input>
+                            <input class="form-control" ng-model="tripleGeoConfig.ignore" required></input>
                         </div>
                         <div class="col-xs-2">
-                            <label class="green bold">Type</label>
+                            <label class="green bold">Type *</label>
                         </div>
                         <div class="input-group-sm col-xs-4">
-                          <input class="form-control" ng-model="tripleGeoConfig.type"></input>
+                          <input class="form-control" ng-model="tripleGeoConfig.type" required></input>
                         </div>
                     </div>
                     <br>
                     <div class="row">
                         <div class="col-xs-2">
-                            <label class="green bold">Name</label>
+                            <label class="green bold">Name *</label>
                         </div>
                         <div class="input-group-sm col-xs-4">
-                            <input class="form-control" ng-model="tripleGeoConfig.name"></input>
+                            <input class="form-control" ng-model="tripleGeoConfig.name" required></input>
                         </div>
                         <div class="col-xs-2">
-                            <label class="green bold">Class</label>
+                            <label class="green bold">Class *</label>
                         </div>
                         <div class="input-group-sm col-xs-4">
-                            <input class="form-control" ng-model="tripleGeoConfig.dclass"></input>
+                            <input class="form-control" ng-model="tripleGeoConfig.uclass" required></input>
                         </div>
                     </div>
                     <br>
-
+                    * required
                 </div>
                 <div ng-show="options.dbParams">
                     <div class="row">
@@ -318,13 +319,13 @@
                     <div class="col-xs-2">
                         <label class="green bold">Source</label>
                     </div>
-                    <div class="input-group-sm col-xs-2">
+                    <div class="input-group-sm col-xs-4">
                         <input class="form-control" ng-model="tripleGeoConfig.sourceRS"></input>
                     </div>
                     <div class="col-xs-2">
                         <label class="green bold">Target</label>
                     </div>
-                    <div class="input-group-sm col-xs-2">
+                    <div class="input-group-sm col-xs-4">
                         <input class="form-control" ng-model="tripleGeoConfig.targetRS"></input>
                     </div>
                 </div>
