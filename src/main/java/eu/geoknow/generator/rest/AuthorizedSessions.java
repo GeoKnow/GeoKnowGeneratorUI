@@ -27,6 +27,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Cookie;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
@@ -144,16 +145,16 @@ public class AuthorizedSessions {
 
   @GET
   @Path("{sessionToken}")
-  public Response get(@PathParam("sessionToken") String sessionToken, @Context UriInfo uriInfo)
-      throws Exception {
+  public Response get(@PathParam("sessionToken") String sessionToken, @Context UriInfo uriInfo,
+      @Context HttpHeaders headers) throws Exception {
     MultivaluedMap<String, String> formParams = new MultivaluedHashMap<String, String>();
-    return post(sessionToken, uriInfo, formParams);
+    return post(sessionToken, uriInfo, formParams, headers);
   }
 
   @POST
   @Path("{sessionToken}")
   public Response post(@PathParam("sessionToken") String sessionToken, @Context UriInfo uriInfo,
-      MultivaluedMap<String, String> formParams) throws Exception {
+      MultivaluedMap<String, String> formParams, @Context HttpHeaders headers) throws Exception {
 
     String username = "";
     try {
@@ -164,17 +165,11 @@ public class AuthorizedSessions {
       return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
     }
 
+
     log.debug("user:" + username + "-");
     if (username.equals(""))
       return Response.status(Response.Status.NOT_FOUND).build();
 
-    // ObjectPair<String, String> rdfStoreUser =
-    // frameworkUserManager.getRdfStoreUser(username);
-
-    // create a context with credentials
-    // UsernamePasswordCredentials credentials = new
-    // UsernamePasswordCredentials(rdfStoreUser
-    // .getFirst(), rdfStoreUser.getSecond());
     UsernamePasswordCredentials credentials =
         new UsernamePasswordCredentials(FrameworkConfiguration.getInstance()
             .getWorkbenchSystemAdmin(), FrameworkConfiguration.getInstance()
@@ -185,6 +180,17 @@ public class AuthorizedSessions {
     context.setCredentialsProvider(credsProvider);
     // create post method and set parameters
     HttpPost proxyMethod = new HttpPost(endpoint);
+
+    MultivaluedMap<String, String> requestHeaders = headers.getRequestHeaders();
+
+    log.debug("REQUEST HEADERS");
+    for (Entry<String, List<String>> entity : requestHeaders.entrySet()) {
+      log.debug(entity.getKey() + " -> " + entity.getValue());
+      if (entity.getKey().equals("cookie") || entity.getKey().equals("content-length"))
+        continue;
+      proxyMethod.addHeader(entity.getKey(), entity.getValue().get(0));
+    }
+
     ArrayList<NameValuePair> postParameters = new ArrayList<NameValuePair>();
     // when is GET we extract query params using uriInfo
     for (Entry<String, List<String>> entity : uriInfo.getQueryParameters().entrySet())
@@ -196,21 +202,28 @@ public class AuthorizedSessions {
     proxyMethod.setEntity(new UrlEncodedFormEntity(postParameters, "UTF-8"));
     // create the httpclient and reads/wirtes repsponse
     CloseableHttpClient httpClient = HttpClients.createDefault();
-    final CloseableHttpResponse response = httpClient.execute(proxyMethod, context);
-    StreamingOutput stream = new StreamingOutput() {
-      @Override
-      public void write(OutputStream os) throws IOException, WebApplicationException {
-        // TODO Auto-generated method stub
-        Writer writer = new BufferedWriter(new OutputStreamWriter(os));
-        int b;
-        while ((b = response.getEntity().getContent().read()) != -1) {
-          writer.write(b);
+
+    try {
+      final CloseableHttpResponse response = httpClient.execute(proxyMethod, context);
+      StreamingOutput stream = new StreamingOutput() {
+        @Override
+        public void write(OutputStream os) throws IOException, WebApplicationException {
+          // TODO Auto-generated method stub
+          Writer writer = new BufferedWriter(new OutputStreamWriter(os));
+          int b;
+          while ((b = response.getEntity().getContent().read()) != -1) {
+            writer.write(b);
+          }
+          writer.flush();
         }
-        writer.flush();
-      }
-    };
+      };
+      return Response.ok(stream).build();
+    } catch (Exception e) {
+      e.printStackTrace();
+      return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+    }
     // retuns response
-    return Response.ok(stream).build();
+
 
   }
 
