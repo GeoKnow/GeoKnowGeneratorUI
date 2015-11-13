@@ -1,7 +1,6 @@
 package eu.geoknow.generator.importer;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -16,6 +15,7 @@ import com.hp.hpl.jena.rdf.model.StmtIterator;
 
 import eu.geoknow.generator.common.APP_CONSTANT;
 import eu.geoknow.generator.common.Queries;
+import eu.geoknow.generator.exceptions.ServiceInternalServerError;
 import eu.geoknow.generator.rdf.RdfStoreManager;
 
 public class HttpRdfInsert {
@@ -28,25 +28,54 @@ public class HttpRdfInsert {
     this.rdfStoreManager = rdfStoreManager;
   }
 
-  public int localCopy(String sourceGraph, String targetGraph) throws IOException, Exception {
+  public int localCopy(String sourceGraph, String targetGraph) throws ServiceInternalServerError {
+    try {
 
-    String query = "COPY <" + sourceGraph + "> TO <" + targetGraph + ">";
-    log.debug(query);
-    String res = rdfStoreManager.execute(query, APP_CONSTANT.SPARQL_JSON_RESPONSE_FORMAT);
-    log.debug(res);
-    return Queries.countGraphTriples(targetGraph, rdfStoreManager);
+      String query = "COPY <" + sourceGraph + "> TO <" + targetGraph + ">";
+      log.debug(query);
+      String res = rdfStoreManager.execute(query, APP_CONSTANT.SPARQL_JSON_RESPONSE_FORMAT);
+      log.debug(res);
+      return Queries.countGraphTriples(targetGraph, rdfStoreManager);
+
+    } catch (Exception e) {
+      e.printStackTrace();
+      throw new ServiceInternalServerError(e.getMessage());
+
+    }
 
   }
 
-  public int localAdd(String sourceGraph, String targetGraph) throws IOException, Exception {
+  public int localAdd(String sourceGraph, String targetGraph) throws ServiceInternalServerError {
+    try {
+      int initialTriples = Queries.countGraphTriples(targetGraph, rdfStoreManager);
+      String query = "ADD <" + sourceGraph + "> TO <" + targetGraph + ">";
+      log.debug(query);
+      String res = rdfStoreManager.execute(query, APP_CONSTANT.SPARQL_JSON_RESPONSE_FORMAT);
+      log.debug(res);
+      return Queries.countGraphTriples(targetGraph, rdfStoreManager) - initialTriples;
+    } catch (Exception e) {
+      e.printStackTrace();
+      throw new ServiceInternalServerError(e.getMessage());
 
-    int initialTriples = Queries.countGraphTriples(targetGraph, rdfStoreManager);
-    String query = "ADD <" + sourceGraph + "> TO <" + targetGraph + ">";
-    log.debug(query);
-    String res = rdfStoreManager.execute(query, APP_CONSTANT.SPARQL_JSON_RESPONSE_FORMAT);
-    log.debug(res);
-    return Queries.countGraphTriples(targetGraph, rdfStoreManager) - initialTriples;
+    }
 
+  }
+
+  public int localInsertQuery(String quertString, String sourceGraph, String targetGraph)
+      throws ServiceInternalServerError {
+
+    try {
+      int initialTriples = Queries.countGraphTriples(targetGraph, rdfStoreManager);
+      String query = quertString;
+      log.debug(query);
+      String res = rdfStoreManager.execute(query, APP_CONSTANT.SPARQL_JSON_RESPONSE_FORMAT);
+      log.debug(res);
+      return Queries.countGraphTriples(targetGraph, rdfStoreManager) - initialTriples;
+    } catch (Exception e) {
+      e.printStackTrace();
+      throw new ServiceInternalServerError(e.getMessage());
+
+    }
   }
 
   public int httpInsert(String graph, Model model, String uriBase) throws Exception {

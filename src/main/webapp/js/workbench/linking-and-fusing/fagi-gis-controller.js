@@ -38,7 +38,9 @@ app.controller('FagiGisCtrl', function($q, $scope, ConfigurationService, Compone
 		datasetA : "",
 		datasetB : "", 
 		targetEndpoint : "",
-		targetGraph : ""
+		targetGraph : "",
+		linksGraph :"",
+		linksEndpoint : ""
 	};
 	
 	$scope.openService = function(){
@@ -51,9 +53,8 @@ app.controller('FagiGisCtrl', function($q, $scope, ConfigurationService, Compone
 					'&dataset-b='  + encodeURIComponent($scope.fagi.datasetB!=""? Ns.lengthen($scope.fagi.datasetB):"") +
 					'&postgis-username='+ encodeURIComponent("fagi") +
 					'&postgis-password='+ encodeURIComponent("fagi") +
-					// '&postgis-database='+ encodeURIComponent($scope.fagi.database.dbName) +
-					// '&virtuoso-host='+ encodeURIComponent($scope.fagi.database.dbHost) +
-					// '&virtuoso-port='+ encodeURIComponent($scope.fagi.database.dbPort) +
+					'&endpoint-l='+ encodeURIComponent($scope.fagi.linksEndpoint == $scope.endpoint? authEndpoint : $scope.fagi.linksEndpoint ) +
+					'&dataset-l='+ encodeURIComponent($scope.fagi.linksGraph!=""? Ns.lengthen($scope.fagi.linksGraph):"") +
 					'&target-endpoint='+ encodeURIComponent(authEndpoint) +
 					'&target-dataset='+ encodeURIComponent(Ns.lengthen($scope.fagi.targetGraph)) ;
 			console.log("endpoint" + authEndpoint);
@@ -103,6 +104,20 @@ app.controller('FagiGisCtrl', function($q, $scope, ConfigurationService, Compone
 
   };
 
+  $scope.isLocalEndpoint= function(endpoint){
+  	return (endpoint == ConfigurationService.getSPARQLEndpoint());
+  }
+
+ $scope.updateGraphsL = function(){
+  	if( $scope.fagi.linksEndpoint == ConfigurationService.getSPARQLEndpoint())
+				GraphService.getAccessibleGraphs(false, false, true).then(function(graphs) {
+					$scope.namedGraphsL = graphs;
+    		});
+		else
+			$scope.namedGraphsL = {};
+  };
+
+
   $scope.updateGraphsA = function(){
   	if( $scope.fagi.endpointA == ConfigurationService.getSPARQLEndpoint())
 				GraphService.getAccessibleGraphs(false, false, true).then(function(graphs) {
@@ -110,7 +125,6 @@ app.controller('FagiGisCtrl', function($q, $scope, ConfigurationService, Compone
     		});
 		else
 			$scope.namedGraphsA = {};
-
   };
 
   $scope.updateGraphsB = function(){

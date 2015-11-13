@@ -51,11 +51,13 @@ app.controller('DataSimulatorCtrl', function($scope, ComponentsService, $http, S
 
 
 	$scope.dateRange = {startDate: moment().toDate(), endDate: moment().toDate()};
-	$scope.simulation ={ startDate: "", endDate:"", interval:"0.0", productUri:""};
+	$scope.simulation ={ startDate: "", endDate:"", interval:"0.0", productUri:"", status:"NOT RUNNING"};
 
-	$scope.simulationRunning = function(){
+	$scope.newsExtraction = {status:"NOT RUNNING"};
 
-		return false;
+	$scope.simulationStatus = function(){
+
+		return "Not running";
 			// DataSimulatorService.metrics().then(
 			// 	function(response){
 			// 		return "Not running";
@@ -151,8 +153,16 @@ app.controller('DataSimulatorCtrl', function($scope, ComponentsService, $http, S
     		console.log(response.data);
     		var graph = response.data["@graph"];
     		for(var i in graph){
-    			var n = "NA";
-    			if(graph[i]["http://schema.org/name"] != undefined ) n = graph[i]["http://schema.org/name"];
+    			var n = "Not Available";
+    			if(graph[i]["http://schema.org/name"] != undefined ) {
+    				n = "";
+    				arr = graph[i]["http://schema.org/name"];
+    				// n is an array [{"@value":"Volkswagen AG"}]
+    				for(var na  in arr ){
+    					if (n="") n = na["@value"]
+    					else n += n +  ", " + na["@value"]
+    				}
+    			}
     			$scope.manufacturer.push({uri: graph[i]["@id"] , name: n});
     		}
     	},

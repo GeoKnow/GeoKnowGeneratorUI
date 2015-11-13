@@ -100,7 +100,7 @@
 	<form ng-show="localQueryElements" class="form-horizontal InputForm" role="form" name="localForm" novalidate>
 		
 		<source-graph graph-info="source" has-changed="updateNewTargetInfo()"></source-graph>
-		<target-graph graph-info="target"></target-graph>
+		<target-graph graph-info="target" has-changed="updateSparqlCopyQuery()"></target-graph>
 
 		<div class="form-group">
 			<div class="col-sm-2"></div>
@@ -114,15 +114,15 @@
 			    Clone All Graph (will delete content in target graph)
 			  </label><br/>
 			  <label>
-			    <input type="radio" ng-model="importLocal.action" value="QUERY">
+			    <input type="radio" ng-model="importLocal.action" value="QUERY" ng-change="updateSparqlCopyQuery()" >
 			    Add Triples using a query 
 			  </label>
 			</div>
 		</div>
-		<div class="form-group" ng-show="updateSparqlCopyQuery()" >
+		<div class="form-group" ng-show="showInputQuery()" >
 		  <label for="sparqlQuery" class="col-xs-2 control-label">Query</label>
 	    <div class="input-group col-sm-8">
-		  	<textarea class="form-control" rows="3" ng-model="importLocal.sparqlQuery" id="sparqlQuery" name="sparqlQuery" required ></textarea>
+		  	<textarea class="form-control" rows="5" ng-model="importLocal.sparqlQuery" id="sparqlQuery" name="sparqlQuery" required ></textarea>
 		  	<div class="error" ng-show="localForm.sparqlQuery.$dirty && localForm.sparqlQuery.$invalid">Invalid:
        		<span ng-show="localForm.sparqlQuery.$error.required">Specify the Query</span>
       	</div>

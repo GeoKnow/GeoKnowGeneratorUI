@@ -152,7 +152,7 @@
                     </div>
 
                     <div class="col-xs-2">
-                        <label class="green bold">Attribute *</label>
+                        <label class="green bold">ID field</label><i class="glyphicon glyphicon-question-sign" style="margin-left:5px" data-toggle="tooltip" data-original-title="{{tooltips.esriAttribute}}"></i>
                     </div>
                     <div class="input-group-sm col-xs-4">
                       <input class="form-control" ng-model="tripleGeoConfig.attribute"></input>
@@ -161,13 +161,13 @@
                   <br>
                     <div class="row">
                         <div class="col-xs-2">
-                            <label class="green bold">Ignore *</label>
+                            <label class="green bold">Ignore</label>
                         </div>
                         <div class="input-group-sm col-xs-4">
                             <input class="form-control" ng-model="tripleGeoConfig.ignore" required></input>
                         </div>
                         <div class="col-xs-2">
-                            <label class="green bold">Type *</label>
+                            <label class="green bold">Type</label><i class="glyphicon glyphicon-question-sign" style="margin-left:5px" data-toggle="tooltip" data-original-title="{{tooltips.esriType}}"></i>
                         </div>
                         <div class="input-group-sm col-xs-4">
                           <input class="form-control" ng-model="tripleGeoConfig.type" required></input>
@@ -176,20 +176,19 @@
                     <br>
                     <div class="row">
                         <div class="col-xs-2">
-                            <label class="green bold">Name *</label>
+                            <label class="green bold">Name field</label><i class="glyphicon glyphicon-question-sign" style="margin-left:5px" data-toggle="tooltip" data-original-title="{{tooltips.esriName}}"></i>
                         </div>
                         <div class="input-group-sm col-xs-4">
                             <input class="form-control" ng-model="tripleGeoConfig.name" required></input>
                         </div>
                         <div class="col-xs-2">
-                            <label class="green bold">Class *</label>
+                            <label class="green bold">Class field</label><i class="glyphicon glyphicon-question-sign" style="margin-left:5px" data-toggle="tooltip" data-original-title="{{tooltips.esriClass}}"></i>
                         </div>
                         <div class="input-group-sm col-xs-4">
                             <input class="form-control" ng-model="tripleGeoConfig.uclass" required></input>
                         </div>
                     </div>
                     <br>
-                    * required
                 </div>
                 <div ng-show="options.dbParams">
                     <div class="row">
@@ -332,7 +331,7 @@
                 <br>
                 
             </div> <!-- form-->
-						<br>
+			<br>
             <div class="row" ng-show="actionButtons">  
               <div class="col-xs-2">
                 <a class="btn btn-sm btn-success btn-block" ng-click="CreateJob()">Create Job</a></div>
