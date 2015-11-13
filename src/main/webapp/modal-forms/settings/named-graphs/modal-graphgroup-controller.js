@@ -13,7 +13,7 @@ function ModalGraphGroupCtrl($scope, $http, $modalInstance, currentGroup, allGra
 	        namedGraphs: []
 	    };
 	$scope.isNewGroup=true;
-	
+
 	if(currentGroup!=null){
 		$scope.modaltitle = "Edit";
 		$scope.graphgroup = angular.copy(currentGroup);

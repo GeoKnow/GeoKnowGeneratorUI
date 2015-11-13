@@ -203,8 +203,8 @@
       <tbody>
       <tr ng-repeat="gg in graphgroups">
           <td>
-              <button type="button" class="btn btn-default btn-xs" ng-click="deleteGroup('gg.name')"><span class="glyphicon glyphicon-trash"></span></button>
-              <button type="button" class="btn btn-default btn-xs" data-toggle="modal" data-target="#modalGroup" ng-click="editGroup('gg.name');"><span class="glyphicon glyphicon-edit"></span></button>
+              <button type="button" class="btn btn-default btn-xs" ng-click="deleteGroup(gg.name)"><span class="glyphicon glyphicon-trash"></span></button>
+              <button type="button" class="btn btn-default btn-xs" data-toggle="modal" data-target="#modalGroup" ng-click="editGroup(gg.name);"><span class="glyphicon glyphicon-edit"></span></button>
           </td>
           <td>{{gg.name}}</td>
           <td>{{gg.label}}</td>

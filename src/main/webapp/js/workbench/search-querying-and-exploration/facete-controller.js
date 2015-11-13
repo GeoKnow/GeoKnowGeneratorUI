@@ -47,7 +47,7 @@ app.controller('FaceteFormCtrl', function($scope, ConfigurationService, Componen
 				var url= $scope.sevice.serviceUrl + 
 					'?service-uri='				+ encodeURIComponent(authEndpoint) +
 		      '&default-graph-uri=' + encodeURIComponent(Ns.lengthen($scope.source.graph));
-		     console.log(url);
+		    console.log(url);
 				window.open(url);
 		    return false;
 	  	});
@@ -56,7 +56,7 @@ app.controller('FaceteFormCtrl', function($scope, ConfigurationService, Componen
 			var url= $scope.sevice.serviceUrl + 
 				'?service-uri='				+ encodeURIComponent($scope.source.endpoint) ;
 	     console.log(url);
-			window.open($scope.url);
+			window.open(url);
 	    return false;
 		}
 

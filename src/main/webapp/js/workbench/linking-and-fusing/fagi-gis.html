@@ -35,35 +35,46 @@
     <br/>
 
     <div class="row">
-      <div class="col-xs-2">
+      <div class="col-xs-2" ng-show="isLocalEndpoint(fagi.endpointA)" >
         <label for="DatasetA">Graph</label>
       </div>
-      <div class="col-xs-4">
+      <div class="col-xs-4" ng-show="isLocalEndpoint(fagi.endpointA)" >
         <select id="DatasetA" class="form-control" ng-model="fagi.datasetA" ng-options="namedgraph.name as describeGraph(namedgraph) for namedgraph in namedGraphsA">
         </select>
       </div>
-      <div class="col-xs-2">
+      <div class="col-xs-2" ng-show="isLocalEndpoint(fagi.endpointB)" >
         <label for="DatasetB">Graph</label>
       </div>
-      <div class="col-xs-4">
+      <div class="col-xs-4"  ng-show="isLocalEndpoint(fagi.endpointB)" >
         <select id="DatasetB" class="form-control" ng-model="fagi.datasetB" ng-options="namedgraph.name as describeGraph(namedgraph) for namedgraph in namedGraphsB">
         </select>
       </div>
     </div>
     <br/>
 
-<!--      <div class="row">
+    <div class="row">
       <div class="col-xs-2">
-        <label for="Database">Database</label>
+        <label for="linksEndpoint">Links Endpoint</label>  
       </div>
       <div class="col-xs-8">
-        <select id="Database" class="form-control input-sm" ng-model="fagi.database" ng-options="database.label for database in databases" required ng-change="updateServiceParams();"> 
-          <option value="">Choose a database</option>
+         <select id="linksEndpoint" class="form-control" ng-model="fagi.linksEndpoint" 
+          ng-options="c.endpoint as c.label for c in endpoints" required ng-change="updateGraphsL()">
         </select>
       </div>
     </div>
-    <br/> 
- -->
+    <br/>
+
+    <div class="row" ng-show="isLocalEndpoint(fagi.linksEndpoint)" >
+      <div class="col-xs-2">
+        <label for="LinksDataset">Links DataSet</label>
+      </div>
+      <div class="col-xs-8">
+         <select id="LinksDataset" class="form-control" ng-model="fagi.linksGraph" ng-options="namedgraph.name as describeGraph(namedgraph) for namedgraph in namedGraphsL">
+        </select>
+      </div>  
+    </div>
+    <br/>
+
     <div class="row">
       <div class="col-xs-2">
         <label for="Endpoint">Target Endpoint</label>  
