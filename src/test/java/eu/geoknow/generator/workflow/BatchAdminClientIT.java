@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.junit.Test;
@@ -84,7 +85,7 @@ public class BatchAdminClientIT {
 
   @Test(expected = UnknownException.class)
   public void getUnexistingExecution() throws Exception {
-    JobExecutionWrapper execution =
+    List<JobExecutionWrapper> execution =
         BatchAdminClient.getExecutionDetail("mmxy", "91919", springBatchServiceUri);
   }
 

@@ -3,6 +3,7 @@ package eu.geoknow.generator.workflow;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
 
@@ -46,6 +47,7 @@ import eu.geoknow.generator.workflow.beans.JobExecutions;
 import eu.geoknow.generator.workflow.beans.JobWraper;
 import eu.geoknow.generator.workflow.beans.JobsRegistered;
 import eu.geoknow.generator.workflow.beans.Registration;
+import eu.geoknow.generator.workflow.beans.StepExecution;
 
 /**
  * A client class for spring-batch-admin service. This service doesn't support authentication, thus
@@ -76,34 +78,56 @@ public class BatchAdminClient {
    * @throws ServiceInternalServerError
    * @throws Exception
    */
-  public static JobExecutionWrapper getExecutionDetail(String jobName, String jobInstanceId,
+  public static List<JobExecutionWrapper> getExecutionDetail(String jobName, String jobInstanceId,
       String springBatchServiceUri) throws ResourceNotFoundException, UnknownException,
       IOException, ServiceNotAvailableException, ServiceInternalServerError {
-    // first, we need to get the resource with ID. the URI is:
-    // http://localhost:8080/spring-batch-admin-geoknow/jobs/jobName/jobInstanceId.json
+
+    // get executions of an instance
     log.debug(springBatchServiceUri + "/jobs/" + jobName + "/" + jobInstanceId + ".json");
     HttpGet jobInstance =
         new HttpGet(springBatchServiceUri + "/jobs/" + jobName + "/" + jobInstanceId + ".json");
     String jsonString = apiRequest(jobInstance);
     log.debug(jsonString);
+
+    List<JobExecutionWrapper> executionsList = new ArrayList<JobExecutionWrapper>();
     // create Java object
     ObjectMapper mapper = new ObjectMapper();
-    JobExecutions jobExecutions = mapper.readValue(jsonString, JobExecutions.class);
-
-    // List<JobExecution> executionList =
-    // jobInst.getJobInstance().getJobExecutions().getJobExecutions();
-    // List<JobExecution> executionList =
-    // jobExecutions.getJobInstance().getJobExecutions().getJobExecutions();
-
-    // now, use first element (it has only one) to get the resource in the
-    // execution, to get the
-    // wrapper
-    HttpGet JobExecution = new HttpGet(jobExecutions.getJobExecutions().get(0).getResource());
-    jsonString = apiRequest(JobExecution);
-    // create the required wrapper
     Gson gson = new Gson();
-    JobExecutionWrapper execution = gson.fromJson(jsonString, JobExecutionWrapper.class);
-    return execution;
+
+    JobExecutions jobExecutions = mapper.readValue(jsonString, JobExecutions.class);
+    // a job instance may contain several executions
+    Iterator<JobExecution> executionsIterator = jobExecutions.getJobExecutions().iterator();
+
+    // "http://generator.geoknow.eu:8080/spring-batch-admin-geoknow/jobs/executions/11.json",
+    while (executionsIterator.hasNext()) {
+      JobExecution execution = executionsIterator.next();
+      // wrapper
+      log.debug("get execution:" + execution.getResource());
+      HttpGet JobExecution = new HttpGet(execution.getResource());
+      jsonString = apiRequest(JobExecution);
+
+      // executionsList.add(e)
+      JobExecutionWrapper ewrap = gson.fromJson(jsonString, JobExecutionWrapper.class);
+
+      JobExecution exec = gson.fromJson(jsonString, JobExecution.class);
+
+      // get the URL with the execution detailed error message
+      for (Entry<String, StepExecution> entries : exec.getStepExecutions().entrySet()) {
+        log.debug(entries.getKey());
+        log.debug(entries.getValue().getId());
+        log.debug(entries.getValue().getExitCode());
+
+        HttpGet stepExecution = new HttpGet(exec.getResource());
+        jsonString = apiRequest(stepExecution);
+        log.debug(jsonString);
+      }
+      executionsList.add(ewrap);
+    }
+
+    // create the required wrapper
+
+
+    return executionsList;
   }
 
   /**
