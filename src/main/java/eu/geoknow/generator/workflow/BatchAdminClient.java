@@ -3,6 +3,7 @@ package eu.geoknow.generator.workflow;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
 
@@ -46,6 +47,9 @@ import eu.geoknow.generator.workflow.beans.JobExecutions;
 import eu.geoknow.generator.workflow.beans.JobWraper;
 import eu.geoknow.generator.workflow.beans.JobsRegistered;
 import eu.geoknow.generator.workflow.beans.Registration;
+import eu.geoknow.generator.workflow.beans.Status;
+import eu.geoknow.generator.workflow.beans.StepExecution;
+import eu.geoknow.generator.workflow.beans.StepJobExecution;
 
 /**
  * A client class for spring-batch-admin service. This service doesn't support authentication, thus
@@ -76,34 +80,70 @@ public class BatchAdminClient {
    * @throws ServiceInternalServerError
    * @throws Exception
    */
-  public static JobExecutionWrapper getExecutionDetail(String jobName, String jobInstanceId,
+  public static List<JobExecutionWrapper> getExecutionDetail(String jobName, String jobInstanceId,
       String springBatchServiceUri) throws ResourceNotFoundException, UnknownException,
       IOException, ServiceNotAvailableException, ServiceInternalServerError {
-    // first, we need to get the resource with ID. the URI is:
-    // http://localhost:8080/spring-batch-admin-geoknow/jobs/jobName/jobInstanceId.json
+
+    // get executions of an instance
     log.debug(springBatchServiceUri + "/jobs/" + jobName + "/" + jobInstanceId + ".json");
     HttpGet jobInstance =
         new HttpGet(springBatchServiceUri + "/jobs/" + jobName + "/" + jobInstanceId + ".json");
     String jsonString = apiRequest(jobInstance);
-    log.debug(jsonString);
+
+    List<JobExecutionWrapper> executionsList = new ArrayList<JobExecutionWrapper>();
     // create Java object
     ObjectMapper mapper = new ObjectMapper();
-    JobExecutions jobExecutions = mapper.readValue(jsonString, JobExecutions.class);
-
-    // List<JobExecution> executionList =
-    // jobInst.getJobInstance().getJobExecutions().getJobExecutions();
-    // List<JobExecution> executionList =
-    // jobExecutions.getJobInstance().getJobExecutions().getJobExecutions();
-
-    // now, use first element (it has only one) to get the resource in the
-    // execution, to get the
-    // wrapper
-    HttpGet JobExecution = new HttpGet(jobExecutions.getJobExecutions().get(0).getResource());
-    jsonString = apiRequest(JobExecution);
-    // create the required wrapper
     Gson gson = new Gson();
-    JobExecutionWrapper execution = gson.fromJson(jsonString, JobExecutionWrapper.class);
-    return execution;
+
+    JobExecutions jobExecutions = mapper.readValue(jsonString, JobExecutions.class);
+    // a job instance may contain several executions
+    Iterator<JobExecution> executionsIterator = jobExecutions.getJobExecutions().iterator();
+
+    // "http://generator.geoknow.eu:8080/spring-batch-admin-geoknow/jobs/executions/11.json",
+    while (executionsIterator.hasNext()) {
+      JobExecution execution = executionsIterator.next();
+      // wrapper
+      log.debug("get execution:" + execution.getResource());
+      HttpGet JobExecution = new HttpGet(execution.getResource());
+      jsonString = apiRequest(JobExecution);
+      JobExecutionWrapper ewrap = gson.fromJson(jsonString, JobExecutionWrapper.class);
+      List<StepJobExecution> failedSteps = new ArrayList<StepJobExecution>();
+
+      // get the URL with the execution detailed error message
+      for (Entry<String, StepExecution> entries : ewrap.getJobExecution().getStepExecutions()
+          .entrySet()) {
+        log.debug(entries.getKey());
+        // next values may be null if the step was not executed
+        log.debug(entries.getValue().getId() == null);
+
+        if (entries.getValue().getId() != null) {
+          if (entries.getValue().getExitCode() == Status.FAILED) {
+            log.debug(entries.getValue().getResource());
+            HttpGet stepExecution = new HttpGet(entries.getValue().getResource());
+            jsonString = apiRequest(stepExecution);
+            StepJobExecution failedStep = gson.fromJson(jsonString, StepJobExecution.class);
+            failedSteps.add(failedStep);
+            // we add the exit description to the step metadata
+            entries.getValue().setExitDescription(
+                failedStep.getStepExecution().getExitDescription());
+          }
+        }
+      }
+
+      // here we add a exit description to the hole execution (i.e.) step 1 failed
+      Iterator<StepJobExecution> iter = failedSteps.iterator();
+      while (iter.hasNext()) {
+        StepJobExecution fs = iter.next();
+        String oldesc = ewrap.getJobExecution().getExitDescription();
+        if (!oldesc.equals(""))
+          oldesc += "<br/>";
+        ewrap.getJobExecution().setExitDescription(
+            oldesc + fs.getStepExecution().getName() + " : "
+                + fs.getStepExecution().getExitCode().toString());
+      }
+      executionsList.add(ewrap);
+    }
+    return executionsList;
   }
 
   /**
