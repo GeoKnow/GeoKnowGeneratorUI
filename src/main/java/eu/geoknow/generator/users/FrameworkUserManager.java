@@ -461,11 +461,11 @@ public class FrameworkUserManager implements UserManager {
    */
   public UserProfile getUserProfile(String userId) throws Exception {
     String query =
-        getPrefixes() + "\n" + "SELECT DISTINCT * FROM <" + frameworkConfig.getAccountsGraph()
-            + "> " + "WHERE {" + " {?account foaf:accountName \"" + userId
-            + "\" . ?account ?p ?o . } " + " UNION " + " {?account foaf:mbox <mailto:" + userId
-            + "> . ?account ?p ?o . } " + " UNION " + " {?account ?p ?o . FILTER (?account = :"
-            + userId + ")} " + "}";
+        getPrefixes() + "\n" + "SELECT DISTINCT * WHERE {GRAPH <"
+            + frameworkConfig.getAccountsGraph() + ">  {" + " {?account foaf:accountName \""
+            + userId + "\" . ?account ?p ?o . } " + " UNION " + " {?account foaf:mbox <mailto:"
+            + userId + "> . ?account ?p ?o . } " + " UNION "
+            + " {?account ?p ?o . FILTER (?account = <" + userId + ">)} " + "}}";
     log.debug(query);
 
     String result = rdfStoreManager.execute(query, jsonResponseFormat);
