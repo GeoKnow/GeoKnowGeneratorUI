@@ -59,7 +59,11 @@ var TripleGeoCtrl = function($scope, $http, $q, ConfigurationService, Components
 							" values for the namespaces and prefixes nsPrefix=georesource",
 						spatial: "Optional parameters. These fields should be filled in if a transformation between EPSG reference systems is needed. "+
 								 "If not specified, geometries are assumed to be WGS84 reference system (EPSG:4326).",
-						other: "Optional parameter. Default languages for the labels created in the output RDF. By default, the value is English - en."
+						other: "Optional parameter. Default languages for the labels created in the output RDF. By default, the value is English - en.", 
+						esriName: "The name of the field containting name of the shape of the smallest granularity e.g. the name of countryes, states",
+						esriAttribute :"The name of the field that contains the UNIQUE id of the shape",
+						esriType :"The RDF type to be set to the entity (i.e. schema:AdmnistrativeArea)",
+						esriClass : "The name of the fileld that contaisn the type of the entity: e.g.: country, city, way, river"
 	};
 	
 	$scope.options = {
@@ -404,11 +408,11 @@ var TripleGeoCtrl = function($scope, $http, $q, ConfigurationService, Components
 						targetStore : $scope.options.targetStore[0],
 					
 						featureString: fileName.substring(0,fileName.length-4).toLowerCase(),
-						attribute: "name",
+						attribute: "",
 						ignore: "UNK",
 						type: "",
-						name: "id",
-						uclass: "type",
+						name: "",
+						uclass: "",
 
 					nsPrefix: "gkg",
 					nsURI: ConfigurationService.getUriBase(), 

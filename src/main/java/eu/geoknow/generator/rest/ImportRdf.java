@@ -1,6 +1,5 @@
 package eu.geoknow.generator.rest;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 
 import javax.servlet.ServletContext;
@@ -23,8 +22,8 @@ import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 
-import eu.geoknow.generator.common.APP_CONSTANT;
 import eu.geoknow.generator.configuration.FrameworkConfiguration;
+import eu.geoknow.generator.exceptions.ServiceInternalServerError;
 import eu.geoknow.generator.importer.HttpRdfInsert;
 import eu.geoknow.generator.importer.RdfImportConfig;
 import eu.geoknow.generator.rdf.RdfStoreManager;
@@ -190,7 +189,7 @@ public class ImportRdf {
     Query query = QueryFactory.create(importConfig.getSparqlQuery());
     QueryExecution qexec =
         QueryExecutionFactory.sparqlService(importConfig.getSourceEndpoint(), query);
-    qexec.close();
+
     Model model = qexec.execConstruct();
     HttpRdfInsert insert = new HttpRdfInsert(rdfStoreManager);
     try {
@@ -201,7 +200,7 @@ public class ImportRdf {
       e.printStackTrace();
       return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
     }
-
+    qexec.close();
     importConfig.setTriples(triples);
     Gson gson = new Gson();
     String json = "{ \"import\" : " + gson.toJson(importConfig) + "}";
@@ -251,14 +250,12 @@ public class ImportRdf {
       else if (importConfig.getSparqlQuery().equals("COPY"))
         triples = insert.localCopy(importConfig.getSourceGraph(), importConfig.getTargetGraph());
       else {
-        String res =
-            rdfStoreManager.execute(importConfig.getSparqlQuery(),
-                APP_CONSTANT.SPARQL_TURTLE_RESPONSE_FORMAT);
-        Model model = ModelFactory.createDefaultModel();
-        model.read(new ByteArrayInputStream(res.getBytes()), null);
         triples =
-            insert.httpInsert(importConfig.getTargetGraph(), model, config.getResourceNamespace());
+            insert.localInsertQuery(importConfig.getSparqlQuery(), importConfig.getSourceGraph(),
+                importConfig.getTargetGraph());
       }
+    } catch (ServiceInternalServerError e) {
+      return Response.status(Response.Status.EXPECTATION_FAILED).entity(e.getMessage()).build();
     } catch (Exception e) {
       log.error(e);
       e.printStackTrace();

@@ -125,6 +125,7 @@ public class Publish {
       DataHandler dh = new DataHandler(config);
       dh.publishData();
     } catch (Exception e) {
+      e.printStackTrace();
       logger.error(e);
       return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
           .entity("{\"status\" : \"" + e.getMessage() + "\"}").build();

@@ -82,7 +82,7 @@ module.directive('targetGraph', ['$parse', 'GraphService', function($parse, Grap
       };
 
       $scope.describeGraph=function (ngraph) {
-        return  ngraph.graph.label + " | " + ngraph.name;
+        return  ngraph.graph.label + " (" + ngraph.name +")";
       }
 
       $scope.createTargetGraph = function(){
@@ -135,14 +135,22 @@ module.directive('sourceGraph', ['$parse', 'GraphService', 'GraphGroupService', 
         return GraphService.getAccessibleGraphs(false, false, true).then(function(graphs) {
             var ngraphs = graphs;
             GraphGroupService.getAllGraphGroups(true).then(function(groups) {
-               ngraphs = ngraphs.concat(groups);
-               $scope.readableGraphs = ngraphs;
+              console.log(groups);
+              ngraphs = ngraphs.concat(groups);
+              console.log(ngraphs);
+              $scope.readableGraphs = ngraphs;
            });
         });
       };
 
       $scope.describeGraph=function (ngraph) {
-        return  ngraph.graph.label + " | " + ngraph.name;
+        
+        if (ngraph.graph != undefined)
+          return  ngraph.graph.label + " (" + ngraph.name +")";
+        else if (ngraph.namedGraphs != undefined)
+          return  ngraph.label + " (" +  ngraph.namedGraphs.toString() +")"; 
+        else
+          return "";
       }
 
       // notify that the input changed

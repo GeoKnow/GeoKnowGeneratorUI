@@ -6,7 +6,7 @@
 *
 ***************************************************************************************************/
 
-var ImportFormCtrl = function($scope, $http, $q, $timeout, ConfigurationService, flash, AccountService, GraphService, Ns, Upload, ImportRdfService, ServerErrorResponse, Helpers) {
+var ImportFormCtrl = function($scope, $http, $q, $timeout, ConfigurationService, flash, AccountService, AuthSessionService, GraphService, Ns, Upload, ImportRdfService, ServerErrorResponse, Helpers) {
 
   var currentAccount = AccountService.getAccount();
 	     
@@ -40,7 +40,7 @@ var ImportFormCtrl = function($scope, $http, $q, $timeout, ConfigurationService,
       graph : "", 
       isNew : {
         prefix : "RdfImport" ,
-        label : "",
+        label : "RdfImport",
         description : ""
       }
     };
@@ -66,12 +66,18 @@ var ImportFormCtrl = function($scope, $http, $q, $timeout, ConfigurationService,
     if($scope.importLocal.action == 'QUERY'){
       $scope.importLocal.sparqlQuery = "INSERT { GRAPH <" + Ns.lengthen($scope.target.graph) + "> {?s ?p ?o}} " 
                       + "WHERE {GRAPH <" + Ns.lengthen($scope.importRdf.source) + "> {?s ?p ?o}}";
-      return true;
     }
     else 
       $scope.importLocal.sparqlQuery  = $scope.importLocal.action;
-    return false;
   };
+
+  $scope.showInputQuery = function(){
+    if($scope.importLocal.action == 'QUERY')
+      return true;
+    else
+      return false;
+  }
+
 
   $scope.updateNewTargetInfo = function(){
     console.log($scope.source.graph);
@@ -103,6 +109,7 @@ var ImportFormCtrl = function($scope, $http, $q, $timeout, ConfigurationService,
         label : "Import from graph",
         description : "Import from graph "+$scope.importRdf.source,
       };
+      $scope.updateSparqlCopyQuery();
     }
    
   }
@@ -216,8 +223,18 @@ var ImportFormCtrl = function($scope, $http, $q, $timeout, ConfigurationService,
       importPromise = ImportRdfService.importFromFile($scope.importRdf.files, $scope.target.graph);
     else if($scope.sourceType.value == 'url')
       importPromise = ImportRdfService.importFromUrl($scope.importRdf.source, $scope.target.graph);
-    else if($scope.sourceType.value == 'externalQuery')
-      importPromise =  ImportRdfService.importFromEndpoint(scope.importEndpoint.sparqlQuery, $scope.importRdf.source, $scope.target.graph);
+    else if($scope.sourceType.value == 'externalQuery'){
+     
+      if($scope.importRdf.source == ConfigurationService.getSPARQLEndpoint() ){
+        importPromise =  AuthSessionService.createSession().then(function(response){
+          var authEndpoint = ConfigurationService.getFrameworkHomepage() + response.data.endpoint;
+          return ImportRdfService.importFromEndpoint($scope.importEndpoint.sparqlQuery, authEndpoint, $scope.target.graph);
+        });
+      }
+      else
+        importPromise =  ImportRdfService.importFromEndpoint($scope.importEndpoint.sparqlQuery, $scope.importRdf.source, $scope.target.graph);
+
+    }
     else if($scope.sourceType.value == 'localQuery')
       importPromise =  ImportRdfService.importFromLocal($scope.importRdf.source, $scope.target.graph, $scope.importLocal.sparqlQuery);
     
@@ -250,6 +267,7 @@ var ImportFormCtrl = function($scope, $http, $q, $timeout, ConfigurationService,
           });
 
       }, 
+      //error
       function(response) {
         flash.error = ServerErrorResponse.getMessage(response);
         importing = false;

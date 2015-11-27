@@ -326,24 +326,40 @@ public class JobsManager {
     return job;
   }
 
+  /**
+   * Get the executions of a JOB based on instances registered in the store
+   * 
+   * @param job
+   * @return
+   * @throws IOException
+   * @throws Exception
+   */
   public JobExecutions getExcecutions(Registration job) throws IOException, Exception {
 
     // complete with execution information
     JobExecutions executions = new JobExecutions();
 
+    // TODO: check I think is instances are not sync to SBA instances- notice that if SBA is
+    // restarted these doesnt exist anymore
     if (job.getJobInstances().size() > 0) {
       Set<Integer> instances = job.getJobInstances().keySet();
       log.debug(instances.size() + " instances ");
       Iterator<Integer> it = instances.iterator();
 
+      List<JobExecutionWrapper> instanceExecutions = null;
       while (it.hasNext()) {
         // this is just the instance number, no the ID:
         // http://localhost:8080/spring-batch-admin-geoknow/jobs/d2rq_2/4
         int id = it.next();
-        JobExecutionWrapper execution =
+        instanceExecutions =
             BatchAdminClient.getExecutionDetail(job.getName(), "" + id, springBatchServiceUri);
-        executions.getJobExecutions().add(execution.getJobExecution());
-
+      }
+      if (instanceExecutions != null) {
+        Iterator<JobExecutionWrapper> instanceIterator = instanceExecutions.iterator();
+        while (instanceIterator.hasNext()) {
+          JobExecutionWrapper execution = instanceIterator.next();
+          executions.getJobExecutions().add(execution.getJobExecution());
+        }
       }
     }
     return executions;

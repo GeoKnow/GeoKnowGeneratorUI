@@ -5,12 +5,12 @@ import java.util.Map;
 
 public class JobExecutionWrapper {
   private JobExecution jobExecution;
-  private Map<String, String> errors;
-  
+  private Map<String, StepExecutionDetail> errors;
+
   private String page;
 
   public JobExecutionWrapper() {
-    this.errors = new HashMap<String, String>();
+    this.errors = new HashMap<String, StepExecutionDetail>();
   }
 
   public JobExecution getJobExecution() {
@@ -21,11 +21,11 @@ public class JobExecutionWrapper {
     this.jobExecution = jobExecution;
   }
 
-  public Map<String, String> getErrors() {
+  public Map<String, StepExecutionDetail> getErrors() {
     return errors;
   }
 
-  public void setErrors(Map<String, String> errors) {
+  public void setErrors(Map<String, StepExecutionDetail> errors) {
     this.errors = errors;
   }
 
@@ -37,5 +37,5 @@ public class JobExecutionWrapper {
     this.page = page;
   }
 
-  
+
 }

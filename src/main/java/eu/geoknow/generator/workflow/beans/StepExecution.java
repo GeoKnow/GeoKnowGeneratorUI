@@ -1,5 +1,33 @@
 package eu.geoknow.generator.workflow.beans;
 
+/**
+ * 
+ * 
+ * @author alejandragarciarojas
+ *
+ *
+ *        "multiStep_actorsex1446562308585_2" : {
+            "status" : "NONE",
+            "exitCode" : "NONE",
+            "readCount" : "0",
+            "writeCount" : "0",
+            "commitCount" : "0",
+            "rollbackCount" : "0",
+            "duration" : "-"
+        },
+        
+                "multiStep_actorsex1446562308585_1" : {
+            "status" : "FAILED",
+            "exitCode" : "FAILED",
+            "id" : "29",
+            "resource" : "http://generator.geoknow.eu:8080/spring-batch-admin-geoknow/jobs/executions/12/steps/29.json",
+            "readCount" : "0",
+            "writeCount" : "0",
+            "commitCount" : "0",
+            "rollbackCount" : "1",
+            "duration" : "00:00:00"
+        }
+ */
 public class StepExecution {
 
     private Status status;
@@ -11,7 +39,11 @@ public class StepExecution {
     private String commitCount;
     private String rollbackCount;
     private String duration;
+    // exitDescription data is added after the POJO deserialization
+    private String exitDescription;
 
+    public StepExecution(){}
+    
     public Status getStatus() {
         return status;
     }
@@ -82,6 +114,14 @@ public class StepExecution {
 
     public void setDuration(String duration) {
         this.duration = duration;
+    }
+
+    public String getExitDescription() {
+      return exitDescription;
+    }
+
+    public void setExitDescription(String exitDescription) {
+      this.exitDescription = exitDescription;
     }
 
 }

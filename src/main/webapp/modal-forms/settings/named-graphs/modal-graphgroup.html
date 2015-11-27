@@ -49,8 +49,9 @@
               <div class="row">
                   <label class="col-xs-2 text-left">Graphs</label>
                   <div class="col-xs-10">
-                      <div ng-repeat="graph in allgraphs">
-                          <input type="checkbox" ng-checked="graphgroup.namedGraphs.indexOf(graph.name) > -1" ng-click="toggleGraph(graph.name)"/>{{graph.name}}
+                      <div ng-repeat="namedgraph in allgraphs">
+                          <input type="checkbox" ng-checked="graphgroup.namedGraphs.indexOf(namedgraph.name) > -1" 
+                          ng-click="toggleGraph(namedgraph.name)"/>{{namedgraph.name}} - {{namedgraph.graph.label}}
                       </div>
                   </div>
               </div>
