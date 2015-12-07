@@ -16,7 +16,7 @@ public class StepExecutionDetail {
   private String startTime;
   private String duration;
   private int readCount;
-  private int writeCoun;
+  private int writeCount;
   private int filterCount;
   private int readSkipCount;
   private int processSkipCount;
@@ -29,8 +29,8 @@ public class StepExecutionDetail {
     return readCount;
   }
 
-  public int getWriteCoun() {
-    return writeCoun;
+  public int getWriteCount() {
+    return writeCount;
   }
 
   public int getCommitCount() {
@@ -89,8 +89,8 @@ public class StepExecutionDetail {
     this.readCount = readCount;
   }
 
-  public void setWriteCoun(int writeCoun) {
-    this.writeCoun = writeCoun;
+  public void setWriteCount(int writeCount) {
+    this.writeCount = writeCount;
   }
 
   public void setCommitCount(int commitCount) {

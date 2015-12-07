@@ -9,7 +9,6 @@
       <table class="table table-striped">
       <thead>
         <tr>
-          <th>Action</th>
           <th>Identifier</th>
           <th>Label</th>
           <th>Description</th>
@@ -20,10 +19,6 @@
       </thead>
       <tbody>
          <tr ng-repeat="vg in versionGroups">
-          <td>
-              <button type="button" class="btn btn-default btn-xs" ng-click="deleteGroup(gg.name)"><span class="glyphicon glyphicon-trash"></span></button>
-              <button type="button" class="btn btn-default btn-xs" data-toggle="modal" data-target="#modalGroup" ng-click="editGroup(gg.name);"><span class="glyphicon glyphicon-edit"></span></button>
-          </td>
           <td>{{vg.identifier}}</td>
           <td>{{vg.label}}</td>
           <td>{{vg.description}}</td>
