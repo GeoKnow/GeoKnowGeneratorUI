@@ -20,7 +20,11 @@ Therefore, the GeoKnow Generator Workbench provides a unified interface and comm
 * Batch processing
 * Provenance tracking
 
-[TODO]: add articles
+## Publications
+
+
+* Grange, J. J. L.; Lehmann, J.; Athanasiou, S.; Rojas, A. G.; Giannopoulos, G.; Hladky, D.; Isele, R.; Ngonga Ngomo, A.-C.; Sherif, M. A.; Stadler, C. & Wauer, M. (2014), [The GeoKnow Generator: Managing Geospatial Data in the Linked Data Web](http://jens-lehmann.org/files/2014/lgd_geoknow_generator.pdf), in 'Proceedings of the Linking Geospatial Data Workshop' .
+* Both, A.; Wauer, M.; Garcia-Rojas, A.; Hladky, D. & Lehmann, J. (2015), GeoKnow Generator Workbench -- [An integrated tool supporting the linked data lifecycle for enterprise usage](http://2015.wasabi-ws.org/papers/wasabi15_2.pdf), in 'Proceedings of the 11th International Conference on Semantic Systems Posters and Demos' , ACM, .
 	
 
 ## Install
