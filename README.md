@@ -1,3 +1,6 @@
+## :warning: **not maintained**
+This repository has been archived at the final state of 2016-01-14.
+
 # GeoKnow Generator UI
 
 The GeoKnow Generator provides workbench that integrates of tools developed within [GeoKnow project](http://geoknow.eu/), and are part of the [Linked Data Stack](http://stack.linkeddata.org/). These workbench aim to provide the required methods and tools to easly integrate and process geospatial data across a wide range of data sources on the web of data. Integrated tools are:
